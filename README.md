@@ -16,4 +16,4 @@ devtools::install_github(repo = "statdivlab/rigr")
 
 # Issues
 
-If you encounter any bugs or have any specific feature requests, please [file and issue](https://github.com/statdivlab/rigr/issues).
+If you encounter any bugs or have any specific feature requests, please [file an issue](https://github.com/statdivlab/rigr/issues).
