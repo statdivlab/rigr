@@ -1,0 +1,4 @@
+plot.ttest <-
+function(x,...) {
+    
+}

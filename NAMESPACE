@@ -1,0 +1,35 @@
+exportPattern("^[[:alpha:]]+")
+importFrom("graphics", "boxplot", "bxp", "lines", "mtext", "plot",
+             "points", "segments", "stripchart", "text")
+importFrom("stats", ".getXlevels", "anova", "as.formula", "binom.test",
+             "binomial", "chisq.test", "complete.cases", "dbinom",
+             "fisher.test", "glm", "glm.control", "is.empty.model",
+             "lm.fit", "lm.wfit", "lowess", "mantelhaen.test", "median",
+             "model.extract", "model.matrix", "model.offset",
+             "model.response", "model.weights", "naprint", "pbeta",
+             "pbinom", "pchisq", "pf", "pnorm", "poisson", "predict",
+             "predict.glm", "predict.lm", "printCoefmat", "prop.test",
+             "psignrank", "pt", "pwilcox", "qbeta", "qnorm", "qsignrank",
+             "qt", "quantile", "qwilcox", "residuals", "rnorm",
+             "rstandard", "rstudent", "sd", "setNames", "symnum",
+             "t.test", "terms", "uniroot", "var")
+importFrom("utils", "tail")
+importFrom("survival", "is.Surv")
+exportPattern("^[[:alpha:]]+")
+import(Exact)
+import(geepack)
+import(plyr)
+import(survival)
+import(sandwich)
+S3method(print, uRegress)
+S3method(fitted, uRegress)
+S3method(predict, uRegress)
+S3method(plot, ttest)
+S3method(print, ttest)
+S3method(print, augCoefficients)
+S3method(print, tableStat)
+S3method(print, tabulate)
+S3method(print, uCorrelate)
+S3method(print, uDescriptives)
+S3method(print, uOneSample)
+S3method(print, wilcoxon)

@@ -1,0 +1,61 @@
+---
+title: "User Specified Multiple-Partial F-tests in Regression"
+author: "Brian D. Williamson"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Multiple-Partial F-tests in Regression}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Many times in an analysis, multiple variables in the data will be measuring the same quantity. For example, in the `mri` data available at [Scott Emerson's website](http://www.emersonstatistics.com/datasets/mri.txt) and documented [on the same page](http://www.emersonstatistics.com/datasets/mri.pdf), both the `yrsquit` and `packyrs` variables measure the amount of smoking that a person does. 
+
+To fully analyze these variables, we need to run multiple-partial F-tests. Prior to the `uwIntroStats` package, the process to perform these tests involved more code than was necessary. First the user had to create a linear model (or perhaps multiple linear models), and then run an ANOVA test. 
+
+Now, using the `U()` function, the user can specify multiple-partial F-tests within a call to `regress()`, the regression function supplied by `uwIntroStats`. A full explanation of that function can be found in ["Regression in uwIntroStats"](regress_intro.html).
+
+This document provides an introduction to using the `U()` function as a supplement to regression analyses. In each case, we will use linear regression to avoid confusion, and leave all of the arguments to `regress()` up to its own vignette.
+
+# Arguments to the `U()` function
+To continue our example above, if we want to describe the association between cerebral atrophy and smoking and age using linear regression, we would have to use both the `yrsquit` and `packyrs` variables, in addition to the `age` variable. But as we already described, the former two both measure smoking habits, and thus are truly one variable. 
+
+The `U()` function only requires a formula when it is used to create a multiple-partial F-test. However, this is not a usual formula, because the response variable has already been defined in the outer formula in the call to `regress()`. For example, the formula given to `regress()` without the multiple-partial F-test would follow the usual convention of `lm()`.
+
+```
+atrophy ~ age + packyrs + yrsquit
+```
+
+Now if we want to make the F-test, we give `U()` the formula
+
+```
+~ packyrs + yrsquit
+```
+
+and it knows to use the response variable `atrophy`. In fact, an error will be returned if a response variable is entered to the `U()` formula.
+
+Now we can run the regression.
+
+```{r}
+library(uwIntroStats)
+data(mri)
+regress("mean", atrophy ~ age + U(~packyrs + yrsquit), data = mri)
+```
+
+The regression output indicates that the variable for smoking should be in the model. The F-statistic for the multiple-partial F-test, which tests that the `packyrs` and `yrsquit` coefficient estimates are simultaneously equal to zero, is 4.37 with a p-value of less than 0.05. Thus we would conclude that both age and smoking are associated with cerebral atrophy. For a full example of the inference we would make from this model, see the [vignette](regress_intro.html) for using `regress()`.
+
+# Naming the groups defined by `U()`
+
+In our example above, we stated that both variables were actually measuring smoking habits. Thus in our regression call we could name this group to have more informative output. The `U()` function allows us to name the groups by placing an "=" before the tilde in the formula, and assigning a name on the left. In our example above, we could name the group "smoke" by writing
+
+```
+U(smoke = ~packyrs + yrsquit)
+```
+
+This would return the following output.
+
+```{r}
+regress("mean", atrophy ~ age + U(smoke = ~packyrs + yrsquit), data = mri)
+```
+
+This is more informative than above, because now we are immediately reminded that `yrsquit` and `packyrs` are measuring smoking history when we look at the output.
