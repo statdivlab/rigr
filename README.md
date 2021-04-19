@@ -25,7 +25,7 @@ remotes::install_github("statdivlab/rigr")
 ```
 
 `rigr` is maintained by the
-\[StatDivLab\]\[<http://statisticaldiversitylab.com/>\], but relies on
+[StatDivLab](http://statisticaldiversitylab.com/), but relies on
 community support to log issues and implement new featues. Is there a
 method you would like to have implemented? Please submit a pull request
 or start a
@@ -40,19 +40,17 @@ or start a
 
 Maintainer: [Amy Willis](http://statisticaldiversitylab.com)
 
-Authors: \[Scott S Emerson\]\[<http://www.emersonstatistics.com/>\],
-[Andrew J
+Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Andrew J
 Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd),
-\[Brian D Williamson\]\[<https://bdwilliamson.github.io/>\], \[Travis Y
-Hee
-Wai\]\[<https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en>\],
-and Solomon Lim.
+[Brian D Williamson](https://bdwilliamson.github.io/), [Travis Y Hee
+Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en), and
+Solomon Lim.
 
 ## Issues
 
 If you encounter any bugs, please [file an
-issue](https://github.com/statdivlab/rigr/issues). Better yet, \[submit
-a pull request\]\[<https://github.com/statdivlab/rigr/pulls>\]\!
+issue](https://github.com/statdivlab/rigr/issues). Better yet, [submit a
+pull request](https://github.com/statdivlab/rigr/pulls)\!
 
 Do you have a question? Please check out the vignettes, then please post
 on the [Discussions](https://github.com/statdivlab/rigr/discussions).
