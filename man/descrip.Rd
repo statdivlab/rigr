@@ -28,135 +28,131 @@ descrip(
 )
 }
 \arguments{
-\item{\dots}{\code{\dots} an arbitrary number of
-variables for which descriptive statistics are desired. The arguments can be
-vectors, matrices, or lists. Individual columns of a matrix or elements of a
-list may be of class \code{numeric}, \code{factor}, \code{Surv}, or
-\code{Date}. Factor variables are converted to integers. Character vectors
-will be coerced to numeric. Variables may be of different lengths, unless
-\code{strata} or \code{subset} are non-\code{NULL}.}
+\item{\dots}{an arbitrary number of variables for which descriptive statistics 
+are desired. The arguments can be vectors, matrices, or lists. Individual 
+columns of a matrix or elements of a list may be of class \code{numeric}, 
+\code{factor}, \code{Surv}, or \code{Date}. Factor variables are converted 
+to integers. Character vectors will be coerced to numeric. Variables may be 
+of different lengths, unless \code{strata} or \code{subset} are non-\code{NULL}.
+A single \code{data.frame} or \code{tibble} may also be entered, in which case
+each variable in the object will be described.}
 
-\item{strata}{\code{strata} vector, matrix, or list of
-stratification variables. Descriptive statistics will be computed within
-strata defined by each unique combination of the stratification variables,
-as well as in the combined sample. If \code{strata} is supplied, all
-variables must be of that same length.}
+\item{strata}{a vector, matrix, or list of stratification variables. Descriptive 
+statistics will be computed within strata defined by each unique combination 
+of the stratification variables, as well as in the combined sample. 
+If \code{strata} is supplied, all variables must be of that same length.}
 
-\item{subset}{\code{subset} vector indicating a subset
-to be used for all descriptive statistics. If \code{subset} is supplied, all
-variables must be of that same length.}
+\item{subset}{a vector indicating a subset to be used for all descriptive statistics. 
+If \code{subset} is supplied, all variables must be of that same length.}
 
-\item{probs}{\code{probs} a vector of probabilities
-between 0 and 1 indicating quantile estimates to be included in the
-descriptive statistics. Default is to compute 25th, 50th (median) and 75th
-percentiles.}
+\item{probs}{a vector of probabilities between 0 and 1 indicating quantile 
+estimates to be included in the descriptive statistics. Default is to compute 
+25th, 50th (median) and 75th percentiles.}
 
-\item{geomInclude}{\code{geomInclude} If not
-\code{FALSE}, includes the geometric mean in the descriptive statistics.
-Default is \code{FALSE}.}
+\item{geomInclude}{if not \code{FALSE} (the default), includes the geometric mean 
+in the descriptive statistics.}
 
-\item{replaceZeroes}{\code{restriction} if not
-\code{FALSE}, this indicates a value to be used in place of zeroes when
-computing a geometric mean. If \code{TRUE}, a value equal to one-half the
-lowest nonzero value is used. If a numeric value is supplied, that value is
-used for all variables.}
+\item{replaceZeroes}{if not \code{FALSE} (the default), this indicates a value 
+to be used in place of zeroes when computing a geometric mean. If \code{TRUE}, 
+a value equal to one-half the lowest nonzero value is used. If a numeric value 
+is supplied, that value is used for all variables.}
 
-\item{restriction}{\code{restriction} a value used for
-computing restricted means, standard deviations, and geometric means with
-censored time to event data. The default value of \code{Inf} will cause
-restrictions at the highest observation. Note that the same value is used
-for all variables of class \code{Surv}.}
+\item{restriction}{a value used for computing restricted means, standard deviations, 
+and geometric means with censored time-to-event data. The default value of 
+\code{Inf} will cause restrictions at the highest observation. Note that the 
+same value is used for all variables of class \code{Surv}.}
 
-\item{above}{\code{above} a vector of values used to
-dichotomize variables. The descriptive statistics will include an estimate
-for each variable of the proportion of measurements with values greater than
-each element of \code{above}.}
+\item{above}{a vector of values used to dichotomize variables. The descriptive 
+statistics will include an estimate for each variable of the proportion of 
+measurements with values greater than each element of \code{above}.}
 
-\item{below}{\code{below} a vector of values used to
-dichotomize variables. The descriptive statistics will include an estimate
-for each variable of the proportion of measurements with values less than
-each element of \code{below}.}
+\item{below}{a vector of values used to dichotomize variables. The descriptive 
+statistics will include an estimate for each variable of the proportion of 
+measurements with values less than each element of \code{below}.}
 
-\item{labove}{\code{labove} a vector of values used to
-dichotomize variables. The descriptive statistics will include an estimate
-for each variable of the proportion of measurements with values greater than
-or equal to each element of \code{labove}.}
+\item{labove}{a vector of values used to dichotomize variables. The descriptive 
+statistics will include an estimate for each variable of the proportion of 
+measurements with values greater than or equal to each element of \code{labove}.}
 
-\item{rbelow}{\code{rbelow} a vector of values used to
-dichotomize variables. The descriptive statistics will include an estimate
-for each variable of the proportion of measurements with values less than or
-equal to each element of \code{rbelow}.}
+\item{rbelow}{a vector of values used to dichotomize variables. The descriptive 
+statistics will include an estimate for each variable of the proportion of 
+measurements with values less than or equal to each element of \code{rbelow}.}
 
-\item{lbetween}{\code{lbetween} a vector of values with
-\code{-Inf} and \code{Inf} appended is used as cutpoints to categorize
-variables. The descriptive statistics will include an estimate for each
-variable of the proportion of measurements with values between successive
-elements of \code{lbetween}, with the left hand endpoint included in each
-interval.}
+\item{lbetween}{a vector of values with \code{-Inf} and \code{Inf} appended 
+is used as cutpoints to categorize variables. The descriptive statistics will 
+include an estimate for each variable of the proportion of measurements with 
+values between successive elements of \code{lbetween}, with the left-hand 
+endpoint included in each interval.}
 
-\item{rbetween}{\code{rbetween} a vector of values with
-\code{-Inf} and \code{Inf} appended is used as cutpoints to categorize
-variables. The descriptive statistics will include an estimate for each
-variable of the proportion of measurements with values between successive
-elements of \code{rbetween}, with the right hand endpoint included in each
-interval.}
+\item{rbetween}{a vector of values with \code{-Inf} and \code{Inf} appended 
+is used as cutpoints to categorize variables. The descriptive statistics will 
+include an estimate for each variable of the proportion of measurements with 
+values between successive elements of \code{rbetween}, with the right-hand 
+endpoint included in each interval.}
 
-\item{interval}{\code{interval} a two column matrix of
-values in which each row is used to define intervals of interest to
-categorize variables. The descriptive statistics will include an estimate
-for each variable of the proportion of measurements with values between two
-elements in a row, with neither endpoint included in each interval.}
+\item{interval}{a two-column matrix of values in which each row is used to 
+define intervals of interest to categorize variables. The descriptive 
+statistics will include an estimate for each variable of the proportion of 
+measurements with values between two elements in a row, with neither endpoint 
+included in each interval.}
 
-\item{linterval}{\code{linterval} a two column matrix
-of values in which each row is used to define intervals of interest to
-categorize variables. The descriptive statistics will include an estimate
-for each variable of the proportion of measurements with values between two
-elements in a row, with the left hand endpoint included in each interval.}
+\item{linterval}{a two-column matrix of values in which each row is used to 
+define intervals of interest to categorize variables. The descriptive 
+statistics will include an estimate for each variable of the proportion of 
+measurements with values between two elements in a row, with the left-hand 
+endpoint included in each interval.}
 
-\item{rinterval}{\code{rinterval} a two column matrix
-of values in which each row is used to define intervals of interest to
-categorize variables. The descriptive statistics will include an estimate
-for each variable of the proportion of measurements with values between two
-elements in a row, with the right hand endpoint included in each interval.}
+\item{rinterval}{a two-column matrix of values in which each row is used to 
+define intervals of interest to categorize variables. The descriptive 
+statistics will include an estimate for each variable of the proportion of 
+measurements with values between two elements in a row, with the right-hand 
+endpoint included in each interval.}
 
-\item{lrinterval}{\code{lrinterval} a two column matrix
-of values in which each row is used to define intervals of interest to
-categorize variables. The descriptive statistics will include an estimate
-for each variable of the proportion of measurements with values between two
-elements in a row, with both endpoints included in each interval.}
+\item{lrinterval}{a two-column matrix of values in which each row is used to 
+define intervals of interest to categorize variables. The descriptive 
+statistics will include an estimate for each variable of the proportion of 
+measurements with values between two elements in a row, with both endpoints 
+included in each interval.}
 
-\item{version}{\code{version} If \code{TRUE}, the
-version of the function will be returned. No other computations will be
-performed.}
+\item{version}{If \code{TRUE}, the version of the function will be returned. 
+No other computations will be performed.}
 }
 \value{
-%% ~Describe the value returned An object of class
-\code{uDescriptives} is returned. Descriptive statistics for each variable
-in the entire subsetted sample, as well as within each stratum if any is
-defined, are contained in a matrix with rows corresponding to variables and
-strata and columns corresponding to the descriptive statistics. %% If it is
-a LIST, use \item{N}{the number of observations.} \item{Msng}{the number of
-observations with missing values.} \item{Mean}{the mean of the nonmissing
-observations (this is potentially a restricted mean for right censored time
-to event data).} \item{Std Dev}{the standard deviation of the nonmissing
-observations (this is potentially a restricted standard deviation for right
-censored time to event data).} \item{Geom Mn}{the geometric mean of the
-nonmissing observations (this is potentially a restricted geometric mean for
-right censored time to event data). Nonpositive values in the variable will
-generate \code{NA}, unless \code{replaceZeroes} was specified.}
-\item{Min}{the minimum value of the nonmissing observations (this is
-potentially restricted for right censored time to event data).}
-\item{-}{columns corresponding to the quantiles specified by \code{probs}}
-\item{Max}{the maximum value of the nonmissing observations (this is
-potentially restricted for right censored time to event data).}
-\item{-}{columns corresponding to the proportions as specified by
-\code{above}, \code{below}, \code{labove}, \code{rbelow}, \code{lbetween},
-\code{rbetween}, \code{interval}, \code{linterval}, \code{rinterval},
-\code{lrinterval}.} \item{restriction}{the threshold for restricted means,
-standard deviations, and geometric means.} \item{FirstEvent}{the time of the
-first event for censored time to event variables.} \item{LastEvent}{the time
-of the last event for censored time to event variables.} \item{isDate}{an
-indicator that the variable is a \code{Date} object.}
+An object of class \code{uDescriptives} is returned. Descriptive 
+  statistics for each variable in the entire subsetted sample, as well as 
+  within each stratum if any is defined, are contained in a matrix with rows 
+  corresponding to variables and strata and columns corresponding to the 
+  descriptive statistics. Descriptive statistics include
+  \itemize{
+    \item{N}{the number of observations.} 
+    \item{Msng}{the number of observations with missing values.}
+    \item{Mean}{the mean of the nonmissing observations (this is potentially 
+                  a restricted mean for right-censored time-to-event data).} 
+    \item{Std Dev}{the standard deviation of the nonmissing observations 
+                    (this is potentially a restricted standard deviation for 
+                    right-censored time to event data).} 
+    \item{Geom Mn}{the geometric mean of the nonmissing observations 
+                   (this is potentially a restricted geometric mean for 
+                   right-censored time to event data). Nonpositive values in 
+                   the variable will generate \code{NA}, unless \code{replaceZeroes} 
+                   was specified.}
+    \item{Min}{the minimum value of the nonmissing observations (this is
+                 potentially restricted for right-censored time-to-event data).}
+    \item{Quantiles}{columns corresponding to the quantiles specified by \code{probs} 
+                     (these are potentially restricted for right-censored 
+                     time-to-event data).}
+    \item{Max}{the maximum value of the nonmissing observations (this is
+                 potentially restricted for right-censored time-to-event data).}
+    \item{Proportions}{columns corresponding to the proportions as specified by
+                        \code{above}, \code{below}, \code{labove}, \code{rbelow}, 
+                        \code{lbetween}, \code{rbetween}, \code{interval}, 
+                        \code{linterval}, \code{rinterval}, and \code{lrinterval}.} 
+    \item{restriction}{the threshold for restricted means, standard deviations, 
+                         and geometric means.} 
+    \item{FirstEvent}{the time of the first event for censored time-to-event variables.} 
+    \item{LastEvent}{the time of the last event for censored time-to-event variables.} 
+    \item{isDate}{an indicator that the variable is a \code{Date} object.}
+  }
 }
 \description{
 Produces table of relevant descriptive statistics for an arbitrary number of
@@ -184,7 +180,6 @@ the Julian date since January 1, 1970.
 }
 \examples{
 
-#- Load the data -#
 #- Read in the data -#
 data(mri) 
 

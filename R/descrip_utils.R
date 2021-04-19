@@ -21,6 +21,7 @@ is.Date <- function(x) {
 #' @param x the data
 #' 
 #' @return Kaplan-Meier estimates of the survival curve
+#' 
 #' @keywords internal
 KM <- function(x) {
     if (!survival::is.Surv(x)) 
@@ -168,7 +169,6 @@ mean_KM <- function(x, restriction = Inf) {
 # ------------------------------------------------------------------------------
 
 #' Descriptive Statistics for a Vector of Data
-#' 
 #' @param x a vector of data
 #' @param probs a vector of proportions to use in describing (e.g., 0.25, 0.5)
 #' @param thresholds a vector of thresholds used to dichotomize variables.
@@ -180,7 +180,7 @@ mean_KM <- function(x, restriction = Inf) {
 #'   in place of zeroes when computing a geometric mean. If \code{TRUE}, a value 
 #'   equal to one-half the lowest nonzero value is used. If a numeric value is 
 #'   supplied, that value is used for all variables.
-#'   
+#' 
 #' @return A matrix of descriptive statistics
 #'   
 #' @keywords internal
@@ -290,7 +290,7 @@ describe_vector <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL,
 #'   observation. Note that the same value is used for all variables of class \code{Surv}.
 #' @inheritParams describe_vector
 #' 
-#' @inheritSection describe_vector return
+#' @return A matrix with descriptive statistics for the Surv object
 #' @keywords internal
 describe_surv <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL, 
                      geometricMean = FALSE, geomInclude = FALSE, 
