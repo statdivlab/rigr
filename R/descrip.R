@@ -29,6 +29,8 @@
 #'   \code{factor}, \code{Surv}, or \code{Date}. Factor variables are converted 
 #'   to integers. Character vectors will be coerced to numeric. Variables may be 
 #'   of different lengths, unless \code{strata} or \code{subset} are non-\code{NULL}.
+#'   A single \code{data.frame} or \code{tibble} may also be entered, in which case
+#'   each variable in the object will be described.
 #' @param strata a vector, matrix, or list of stratification variables. Descriptive 
 #'   statistics will be computed within strata defined by each unique combination 
 #'   of the stratification variables, as well as in the combined sample. 
@@ -90,36 +92,44 @@
 #'   statistics will include an estimate for each variable of the proportion of 
 #'   measurements with values between two elements in a row, with both endpoints 
 #'   included in each interval.
-#' @param version \code{version} If \code{TRUE}, the
-#' version of the function will be returned. No other computations will be
-#' performed.
-#' @return %% ~Describe the value returned An object of class
-#' \code{uDescriptives} is returned. Descriptive statistics for each variable
-#' in the entire subsetted sample, as well as within each stratum if any is
-#' defined, are contained in a matrix with rows corresponding to variables and
-#' strata and columns corresponding to the descriptive statistics. %% If it is
-#' a LIST, use \item{N}{the number of observations.} \item{Msng}{the number of
-#' observations with missing values.} \item{Mean}{the mean of the nonmissing
-#' observations (this is potentially a restricted mean for right censored time
-#' to event data).} \item{Std Dev}{the standard deviation of the nonmissing
-#' observations (this is potentially a restricted standard deviation for right
-#' censored time to event data).} \item{Geom Mn}{the geometric mean of the
-#' nonmissing observations (this is potentially a restricted geometric mean for
-#' right censored time to event data). Nonpositive values in the variable will
-#' generate \code{NA}, unless \code{replaceZeroes} was specified.}
-#' \item{Min}{the minimum value of the nonmissing observations (this is
-#' potentially restricted for right censored time to event data).}
-#' \item{-}{columns corresponding to the quantiles specified by \code{probs}}
-#' \item{Max}{the maximum value of the nonmissing observations (this is
-#' potentially restricted for right censored time to event data).}
-#' \item{-}{columns corresponding to the proportions as specified by
-#' \code{above}, \code{below}, \code{labove}, \code{rbelow}, \code{lbetween},
-#' \code{rbetween}, \code{interval}, \code{linterval}, \code{rinterval},
-#' \code{lrinterval}.} \item{restriction}{the threshold for restricted means,
-#' standard deviations, and geometric means.} \item{FirstEvent}{the time of the
-#' first event for censored time to event variables.} \item{LastEvent}{the time
-#' of the last event for censored time to event variables.} \item{isDate}{an
-#' indicator that the variable is a \code{Date} object.}
+#' @param version If \code{TRUE}, the version of the function will be returned. 
+#'   No other computations will be performed.
+#' @return An object of class \code{uDescriptives} is returned. Descriptive 
+#'   statistics for each variable in the entire subsetted sample, as well as 
+#'   within each stratum if any is defined, are contained in a matrix with rows 
+#'   corresponding to variables and strata and columns corresponding to the 
+#'   descriptive statistics. Descriptive statistics include
+#'   \itemize{
+#'     \item{N}{the number of observations.} 
+#'     \item{Msng}{the number of observations with missing values.}
+#'     \item{Mean}{the mean of the nonmissing observations (this is potentially 
+#'                   a restricted mean for right-censored time-to-event data).} 
+#'     \item{Std Dev}{the standard deviation of the nonmissing observations 
+#'                     (this is potentially a restricted standard deviation for 
+#'                     right-censored time to event data).} 
+#'     \item{Geom Mn}{the geometric mean of the nonmissing observations 
+#'                    (this is potentially a restricted geometric mean for 
+#'                    right-censored time to event data). Nonpositive values in 
+#'                    the variable will generate \code{NA}, unless \code{replaceZeroes} 
+#'                    was specified.}
+#'     \item{Min}{the minimum value of the nonmissing observations (this is
+#'                  potentially restricted for right-censored time-to-event data).}
+#'     \item{Quantiles}{columns corresponding to the quantiles specified by \code{probs} 
+#'                      (these are potentially restricted for right-censored 
+#'                      time-to-event data).}
+#'     \item{Max}{the maximum value of the nonmissing observations (this is
+#'                  potentially restricted for right-censored time-to-event data).}
+#'     \item{Proportions}{columns corresponding to the proportions as specified by
+#'                         \code{above}, \code{below}, \code{labove}, \code{rbelow}, 
+#'                         \code{lbetween}, \code{rbetween}, \code{interval}, 
+#'                         \code{linterval}, \code{rinterval}, and \code{lrinterval}.} 
+#'     \item{restriction}{the threshold for restricted means, standard deviations, 
+#'                          and geometric means.} 
+#'     \item{FirstEvent}{the time of the first event for censored time-to-event variables.} 
+#'     \item{LastEvent}{the time of the last event for censored time-to-event variables.} 
+#'     \item{isDate}{an indicator that the variable is a \code{Date} object.}
+#'   } 
+#' 
 #' @import survival
 #' @examples
 #' 
@@ -144,6 +154,11 @@ descrip <- function (..., strata = NULL, subset = NULL,
   
   # Get names of descriptive variables
   names(L) <- unlist(match.call(expand.dots = FALSE)$...)
+  
+  # if L is length 1 and a tibble, data.frame, or matrix, unlist
+  if ((length(L) == 1) & any(grepl("data.frame", class(L[[1]])))) {
+    L <- L[[1]]
+  }
   
   # p gets how many descriptive variables
   p <- length(L)
@@ -307,40 +322,43 @@ descrip <- function (..., strata = NULL, subset = NULL,
     if (is.list(x)) {
       names(x) <- nms[nV + (1:length(x))]
       nV <- nV + length(x)
-      rslt <- rbind(rslt, lStrdescr(x, strata, subset, 
-                                    probs, thresholds, geomInclude, replaceZeroes, 
-                                    restriction))
+      rslt <- rbind(rslt, describe_stratified_list(x, strata, subset, probs, 
+                                                   thresholds, geomInclude, 
+                                                   replaceZeroes, restriction))
     }
     else if (is.matrix(x) & !survival::is.Surv(x)) {
       dimnames(x) <- list(NULL, nms[nV + (1:(dim(x)[2]))])
       nV <- nV + dim(x)[2]
-      rslt <- rbind(rslt, mStrdescr(x, strata, subset, 
-                                    probs, thresholds, geomInclude, replaceZeroes))
+      rslt <- rbind(rslt, describe_stratified_matrix(x, strata, subset, probs, 
+                                                     thresholds, geomInclude, 
+                                                     replaceZeroes))
     }
     else if (survival::is.Surv(x)) {
       nV <- nV + 1
-      rslt <- rbind(rslt, sStrdescr(x, strata, subset, 
-                                    probs, thresholds, geomInclude, replaceZeroes, 
-                                    restriction))
+      rslt <- rbind(rslt, describe_stratified_surv(x, strata, subset, probs, 
+                                                   thresholds, geomInclude, 
+                                                   replaceZeroes, restriction))
+      rownames(rslt)[nV] <- nms[nV]
     }
     else if (is.Date(x)) {
       nV <- nV + 1
-      rslt <- rbind(rslt, dStrdescr(x, strata, subset, 
-                                    probs, thresholds, geomInclude, replaceZeroes))
+      rslt <- rbind(rslt, describe_stratified_date(x, strata, subset, probs, 
+                                                   thresholds, geomInclude, replaceZeroes))
+      rownames(rslt)[nV] <- nms[nV]
     }
     else if (is.factor(x)) {
       x <- list(x)
       nV <- nV + 1
       names(x) <- nms[nV]
-      rslt <- rbind(rslt, lStrdescr(x, strata, subset, 
-                                    probs, thresholds, geomInclude, replaceZeroes))
+      rslt <- rbind(rslt, describe_stratified_list(x, strata, subset, probs, 
+                                                   thresholds, geomInclude, replaceZeroes))
     }
     else {
       x <- matrix(x)
       nV <- nV + 1
       dimnames(x) <- list(NULL, nms[nV])
-      rslt <- rbind(rslt, mStrdescr(x, strata, subset, 
-                                    probs, thresholds, geomInclude, replaceZeroes))
+      rslt <- rbind(rslt, describe_stratified_matrix(x, strata, subset, probs, 
+                                                     thresholds, geomInclude, replaceZeroes))
     }
   }
   class(rslt) <- "uDescriptives"

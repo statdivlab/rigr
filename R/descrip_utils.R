@@ -181,13 +181,13 @@ mean_KM <- function(x, restriction = Inf) {
 #'   equal to one-half the lowest nonzero value is used. If a numeric value is 
 #'   supplied, that value is used for all variables.
 #'   
-#' @return a matrix of descriptive statistics
+#' @return A matrix of descriptive statistics
 #'   
 #' @keywords internal
 describe_vector <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL, 
                      geometricMean = FALSE, geomInclude = FALSE, 
                      replaceZeroes = FALSE) {
-    if (is.factor(x) | is.logical(x)) {
+    if (is.factor(x) | is.logical(x) | is.character(x)) {
         x <- as.numeric(x)
     }
     if (!geomInclude) {
@@ -571,10 +571,10 @@ describe_stratified_matrix <- function(x, strata, subset,
 #' @return descriptive statistics for each element of the list within strata
 #' 
 #' @keywords internal
-lStrdescr <- function(x, strata, subset, 
-                      probs = c(0.25, 0.5, 0.75), 
-                      thresholds = NULL, geomInclude = FALSE, 
-                      replaceZeroes = FALSE, restriction = Inf) {
+describe_stratified_list <- function(x, strata, subset, 
+                                     probs = c(0.25, 0.5, 0.75), 
+                                     thresholds = NULL, geomInclude = FALSE, 
+                                     replaceZeroes = FALSE, restriction = Inf) {
     if (!is.list(x)) {
         stop("x must be a list")   
     }
