@@ -1,13 +1,13 @@
-#' %% ~~function to do ... ~~ Create Linear Splines
+#' Create Linear Splines
 #' 
-#' %% ~~ A concise (1-5 lines) description of what the function does. ~~
+#'
 #' Creates linear splines, mostly for use in regression.
 #' 
 #' 
 #' @aliases lspline lsplineD
-#' @param x %% ~~Describe \code{y} here~~ variable used to create the linear
+#' @param x \code{y} variable used to create the linear
 #' splines.
-#' @param knots %% ~~Describe \code{cluster} here~~ vector of knots to create
+#' @param knots \code{cluster} vector of knots to create
 #' the splines.
 #' @param lbl a label for the splines.
 #' @param parameterization defaults to\code{"absolute"}, and provides splines
@@ -16,16 +16,12 @@
 #' \code{"change"} is entered by default.
 #' @param version if \code{TRUE}, returns the version of the function and
 #' nothing else.
-#' @return %% ~Describe the value returned A matrix containing the linear
-#' splines. %% If it is a LIST, use %% \item{comp1 }{Description of 'comp1'} %%
-#' \item{comp2 }{Description of 'comp2'} %% ...
-#' @author %% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
-#' Brian D. Williamson
-#' @keywords ~kwd1 ~kwd2
+#' @return A matrix containing the linear
+#' splines. 
 #' @examples
 #' 
 #' # Reading in a dataset
-#' mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header=TRUE)
+#' data(mri)
 #' attach(mri)
 #' # Create a spline based on absolute
 #' lspline(ldl, c(70, 100, 130, 160))

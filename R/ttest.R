@@ -1,4 +1,4 @@
-#' %% T-test with Improved Layout
+#' T-test with Improved Layout
 #' 
 #' Produces table of relevant descriptive statistics and inference for either
 #' one- or two-sample t-test. In the two-sample case, the user can specify

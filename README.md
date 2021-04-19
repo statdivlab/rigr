@@ -3,6 +3,10 @@
 
 # `rigr`: Regression, Inference, and General Data Analysis Tools for R
 
+**Sorry, but this package is “under development” and is not ready to be
+used yet. If you would like to help get it ready, please contact the
+maintainer Prof.~Amy Willis.**
+
 # Introduction
 
 `rigr` is a R package designed to facilitate easy adoption of regression
@@ -19,10 +23,10 @@ plotting.
 
 You can install `rigr` from github by running:
 
-``` r
-install.packages("remotes")
-remotes::install_github("statdivlab/rigr")
-```
+    install.packages("remotes")
+    remotes::install_github("statdivlab/rigr")
+
+or, at least, you will in the future.
 
 `rigr` is maintained by the
 [StatDivLab](http://statisticaldiversitylab.com/), but relies on
@@ -33,8 +37,8 @@ or start a
 
 ## Documentation
 
-  - The best place to start is the
-    [vignettes](https://adw96.github.io/breakaway/articles/).
+The best place to start is the
+[vignettes](https://adw96.github.io/breakaway/articles/).
 
 ## Humans
 

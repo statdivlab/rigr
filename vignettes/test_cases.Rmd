@@ -83,10 +83,10 @@ This call gives us a quick look at the distribution of each variable in the samp
 
 Notice that there are a lot of variables measured in these data, and that some interesting phenomena are measured by multiple variables. For instance, smoking is measured by `packyrs` and `yrsquit` - if someone has zero pack-years (that is, they have never smoked) then they will also have zero years quit. Similarly, a current smoker of any amount of packs per year will have zero years quit. We can also look at the variables measured through blood samples, like LDL cholesterol (`ldl`) and get an idea of the range in our sample population. Last, in the variables like `male` which consist of only two values (sex was measured as male or female in this dataset), the mean tells us the proportion of our sample who was male (or for other binary variables, it will tell us the proportion which is coded as 1). The `descrip()` function works similarly to `summary()` in base R, but gives more information and returns it in a format that, as we described above, is easier to export from R.
 
-Another powerful feature of `descrip()` is its ability to present stratified summaries, or summaries on a subset of the data. For instance, let's calculate descriptive statistics on the `age` variable within males and females:
+Another powerful feature of `descrip()` is its ability to present stratified summaries, or summaries on a subset of the data. For instance, let's calculate descriptive statistics on the `age` variable within males and females: TODO
 
 ```{r}
-descrip(mri$age, strata = mri$male)
+descrip(mri$age, strata = mri$diabetes)
 
 ## Call the summary function, to compare
 summary(mri$age)
@@ -95,7 +95,7 @@ summary(mri$age)
 Here the row for `Str 0` corresponds to females (since they are coded as 0 for `male`), and males are `Str 1`. If we further wanted to restrict to only those people who were over 75 years old, we could use the `subset` argument:
 
 ```{r}
-descrip(mri$age, strata = mri$male, subset = mri$age > 75)
+descrip(mri$age, strata = mri$diabetes, subset = mri$age > 75)
 ```
 
 However, the `descrip()` function can only give us a fixed number of summaries (mean, count, etc). Oftentimes we need only a subset of these, or perhaps different summary measures. For this, we turn to more powerful functions.
@@ -134,7 +134,7 @@ tableStat(mri$age, stat = "N: @count@; Mean (SD): @mean@ (@sd@); Range: @max@ - 
 Note that all of the values enclosed in \texttt{@} symbols are from Table \ref{stattable} and are run by \texttt{tableStat()}, while the other values in the string are used for formatting. This function can also take stratification variables; if we want to see the above stratified by sex, we use
 
 ```{r}
-tableStat(mri$age, strata = mri$male, stat = "N: @count@; Mean (SD): @mean@ (@sd@); Range: @min@ - @max@")
+tableStat(mri$age, strata = mri$diabetes, stat = "N: @count@; Mean (SD): @mean@ (@sd@); Range: @min@ - @max@")
 ```
 
 Now if we wanted to see this in table form, in perhaps a nicer layout, we could use the `tabulate()` function. When we loaded the `rigr` package at the beginning of this document, recall that we got a warning message from R saying
@@ -144,10 +144,10 @@ The following object is masked from ‘package:base’:
     tabulate
 ```
 
-This means that our function `tabulate()` overwrites the function called `tabulatte()` in the base R package, which takes a numeric vector and counts the number of times each integer occurs in it. Our function does a similar task, but on combinations of strata. The syntax is very similar to the syntax for `tableStat()`, but rather than explicitly telling `tabulate()` the strata, it creates the tables with each dimension corresponding to a variable in the order they are entered. For instance, if we want a table of `age` (in the rows) and `male` (in the columns), we would write
+This means that our function `tabulate()` overwrites the function called `tabulatte()` in the base R package, which takes a numeric vector and counts the number of times each integer occurs in it. Our function does a similar task, but on combinations of strata. The syntax is very similar to the syntax for `tableStat()`, but rather than explicitly telling `tabulate()` the strata, it creates the tables with each dimension corresponding to a variable in the order they are entered. For instance, if we want a table of `age` (in the rows) and `diabetes` (in the columns), we would write
 
 ```{r}
-tabulate(mri$age, mri$male)
+tabulate(mri$age, mri$diabetes)$rslt
 ```
 
 By default, `tabulate()` gives us the count in each combination of the strata, and gives us the overall $\chi^2$ test statistic, degrees of freedom, and p-value. We can add in other arguments as well. Let's say that we are interested in an odds ratio or a risk ratio - `tabulate()` can supply these, if we set `dispRatios = TRUE`. This is where our use of the `Exact` package comes in, because this package contains some very useful functions for calculating these ratios. However, we supply both the odds ratio and the risk ratio, even though in some cases only one is appropriate. Thus it is up to the user to know which they can use. To display these ratios for `male` versus `chf` (an indicator variable of whether the patient had been diagnosed with congestive heart failure prior to MRI), we type

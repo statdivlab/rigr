@@ -1,63 +1,58 @@
-#' %% ~~function to do ... ~~ Boxplot with Lowess Curves, Jittered Data,
+#' Boxplot with Lowess Curves, Jittered Data,
 #' Overlaid Mean and Standard Deviation, for an Arbitrary Number of Strata
 #' 
-#' %% ~~ A concise (1-5 lines) description of what the function does. ~~ This
-#' function adds functionality to the base R \code{\link[graphics]{boxplot}}
+#' This function adds functionality to the base R \code{\link[graphics]{boxplot}}
 #' function. Now it is straightforward to add jittered data to the plot, and to
 #' overlay information about the sample mean and standard deviation. The
 #' function also supports stratification.
 #' 
 #' 
-#' @param y %% ~~Describe \code{y} here~~ dependent variable.
-#' @param x %% ~~Describe \code{x} here~~ independent variable. Must by the
+#' @param y \code{y} dependent variable.
+#' @param x \code{x} independent variable. Must by the
 #' same length as \code{y}.
-#' @param data %% ~~Describe \code{data} here~~ if entered, must contain both
+#' @param data \code{data} if entered, must contain both
 #' \code{y} and \code{x}.
-#' @param strata %% ~~Describe \code{strata} here~~ strata variable(s), used to
+#' @param strata \code{strata} strata variable(s), used to
 #' stratify the plot.
-#' @param xjitter %% ~~Describe \code{jitter} here~~ a logical specifying if
+#' @param xjitter \code{jitter} a logical specifying if
 #' the jittered data (jittered on x-axis) are to be displayed or not. Default
 #' is \code{TRUE}.
-#' @param yjitter %% ~~Describe \code{jitter} here~~ a logical specifying if
+#' @param yjitter \code{jitter} a logical specifying if
 #' the jittered data (jittered on y-axis) are to be displayed or not. Default
 #' is \code{TRUE}.
-#' @param range %% ~~Describe \code{range} here~~ passed to the
+#' @param range \code{range} passed to the
 #' \code{boxplot()} function. This determines how far the plot whiskers extend
 #' out from the box. If range is positive, the whiskers extend to the most
 #' extreme data point which is no more than range times the interquartile range
 #' from the box. A value of zero causes the whiskers to extend to the data
 #' extremes.
-#' @param sd %% ~~Describe \code{sd} here~~ a logical specifying if the
+#' @param sd \code{sd} a logical specifying if the
 #' standard devation of \code{y} should be overlaid on the plot. Default value
 #' is \code{TRUE}.
-#' @param sdx %% ~~Describe \code{sdx} here~~ a logical specifying if the
+#' @param sdx \code{sdx} a logical specifying if the
 #' standard deviation of \code{x} should be overlaid on the plot. Default value
 #' is \code{TRUE}.
-#' @param log %% ~~Describe \code{log} here~~ a logical specifying if the data
+#' @param log \code{log} a logical specifying if the data
 #' are to be displayed on a log scale. Passed to \code{boxplot()}. Default
 #' value is \code{FALSE}.
-#' @param cex %% ~~Describe \code{cex} here~~ passed to \code{boxplot()}.
-#' @param col %% ~~Describe \code{col} here~~ passed to \code{boxplot()}.
-#' @param main %% ~~Describe \code{main} here~~ passed to \code{plot()}, the
+#' @param cex \code{cex} passed to \code{boxplot()}.
+#' @param col \code{col} passed to \code{boxplot()}.
+#' @param main \code{main} passed to \code{plot()}, the
 #' main title of the plot.
-#' @param xlab %% ~~Describe \code{xlab} here~~ passed to \code{plot()}, the
+#' @param xlab \code{xlab} passed to \code{plot()}, the
 #' x-axis label.
-#' @param ylab %% ~~Describe \code{ylab} here~~ passed to \code{plot()}, the
+#' @param ylab \code{ylab} passed to \code{plot()}, the
 #' y-axis label.
-#' @param names %% ~~Describe \code{names} here~~ names (if any) of \code{x}.
-#' @param ylim %% ~~Describe \code{ylim} here~~ the range for plotting the
+#' @param names \code{names} names (if any) of \code{x}.
+#' @param ylim \code{ylim} the range for plotting the
 #' y-axis, passed to \code{plot}.
 #' @param legend a logical value. If \code{TRUE}, (and the means and standard
 #' deviations have been overlaid on the graph) displays a legend next to the
 #' first boxplot plotted denoting the max, mean+sd, mean, mean-sd, and min
 #' values.
-#' @return %% ~Describe the value returned Produces a plot. No value is
-#' returned. %% If it is a LIST, use %% \item{comp1 }{Description of 'comp1'}
-#' %% \item{comp2 }{Description of 'comp2'} %% ...
-#' @author %% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
-#' Brian D. Williamson, Travis Y. Hee Wai, and Solomon Lim
+#' @return Produces a plot. No value is
+#' returned.
 #' @seealso \code{\link[graphics]{boxplot}}
-#' @keywords ~kwd1 ~kwd2
 #' @examples
 #' 
 #' #- Read in and attach the data -#

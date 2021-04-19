@@ -2,7 +2,7 @@
 % Please edit documentation in R/bplot.R
 \name{bplot}
 \alias{bplot}
-\title{%% ~~function to do ... ~~ Boxplot with Lowess Curves, Jittered Data,
+\title{Boxplot with Lowess Curves, Jittered Data,
 Overlaid Mean and Standard Deviation, for an Arbitrary Number of Strata}
 \usage{
 bplot(
@@ -27,60 +27,60 @@ bplot(
 )
 }
 \arguments{
-\item{y}{%% ~~Describe \code{y} here~~ dependent variable.}
+\item{y}{\code{y} dependent variable.}
 
-\item{x}{%% ~~Describe \code{x} here~~ independent variable. Must by the
+\item{x}{\code{x} independent variable. Must by the
 same length as \code{y}.}
 
-\item{data}{%% ~~Describe \code{data} here~~ if entered, must contain both
+\item{data}{\code{data} if entered, must contain both
 \code{y} and \code{x}.}
 
-\item{strata}{%% ~~Describe \code{strata} here~~ strata variable(s), used to
+\item{strata}{\code{strata} strata variable(s), used to
 stratify the plot.}
 
-\item{xjitter}{%% ~~Describe \code{jitter} here~~ a logical specifying if
+\item{xjitter}{\code{jitter} a logical specifying if
 the jittered data (jittered on x-axis) are to be displayed or not. Default
 is \code{TRUE}.}
 
-\item{yjitter}{%% ~~Describe \code{jitter} here~~ a logical specifying if
+\item{yjitter}{\code{jitter} a logical specifying if
 the jittered data (jittered on y-axis) are to be displayed or not. Default
 is \code{TRUE}.}
 
-\item{range}{%% ~~Describe \code{range} here~~ passed to the
+\item{range}{\code{range} passed to the
 \code{boxplot()} function. This determines how far the plot whiskers extend
 out from the box. If range is positive, the whiskers extend to the most
 extreme data point which is no more than range times the interquartile range
 from the box. A value of zero causes the whiskers to extend to the data
 extremes.}
 
-\item{sd}{%% ~~Describe \code{sd} here~~ a logical specifying if the
+\item{sd}{\code{sd} a logical specifying if the
 standard devation of \code{y} should be overlaid on the plot. Default value
 is \code{TRUE}.}
 
-\item{sdx}{%% ~~Describe \code{sdx} here~~ a logical specifying if the
+\item{sdx}{\code{sdx} a logical specifying if the
 standard deviation of \code{x} should be overlaid on the plot. Default value
 is \code{TRUE}.}
 
-\item{log}{%% ~~Describe \code{log} here~~ a logical specifying if the data
+\item{log}{\code{log} a logical specifying if the data
 are to be displayed on a log scale. Passed to \code{boxplot()}. Default
 value is \code{FALSE}.}
 
-\item{cex}{%% ~~Describe \code{cex} here~~ passed to \code{boxplot()}.}
+\item{cex}{\code{cex} passed to \code{boxplot()}.}
 
-\item{col}{%% ~~Describe \code{col} here~~ passed to \code{boxplot()}.}
+\item{col}{\code{col} passed to \code{boxplot()}.}
 
-\item{main}{%% ~~Describe \code{main} here~~ passed to \code{plot()}, the
+\item{main}{\code{main} passed to \code{plot()}, the
 main title of the plot.}
 
-\item{xlab}{%% ~~Describe \code{xlab} here~~ passed to \code{plot()}, the
+\item{xlab}{\code{xlab} passed to \code{plot()}, the
 x-axis label.}
 
-\item{ylab}{%% ~~Describe \code{ylab} here~~ passed to \code{plot()}, the
+\item{ylab}{\code{ylab} passed to \code{plot()}, the
 y-axis label.}
 
-\item{names}{%% ~~Describe \code{names} here~~ names (if any) of \code{x}.}
+\item{names}{\code{names} names (if any) of \code{x}.}
 
-\item{ylim}{%% ~~Describe \code{ylim} here~~ the range for plotting the
+\item{ylim}{\code{ylim} the range for plotting the
 y-axis, passed to \code{plot}.}
 
 \item{legend}{a logical value. If \code{TRUE}, (and the means and standard
@@ -89,13 +89,11 @@ first boxplot plotted denoting the max, mean+sd, mean, mean-sd, and min
 values.}
 }
 \value{
-%% ~Describe the value returned Produces a plot. No value is
-returned. %% If it is a LIST, use %% \item{comp1 }{Description of 'comp1'}
-%% \item{comp2 }{Description of 'comp2'} %% ...
+Produces a plot. No value is
+returned.
 }
 \description{
-%% ~~ A concise (1-5 lines) description of what the function does. ~~ This
-function adds functionality to the base R \code{\link[graphics]{boxplot}}
+This function adds functionality to the base R \code{\link[graphics]{boxplot}}
 function. Now it is straightforward to add jittered data to the plot, and to
 overlay information about the sample mean and standard deviation. The
 function also supports stratification.
@@ -113,9 +111,3 @@ bplot(y=atrophy, x=male, xlab="Gender", ylab="Atrophy")
 \seealso{
 \code{\link[graphics]{boxplot}}
 }
-\author{
-%% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
-Brian D. Williamson, Travis Y. Hee Wai, and Solomon Lim
-}
-\keyword{~kwd1}
-\keyword{~kwd2}

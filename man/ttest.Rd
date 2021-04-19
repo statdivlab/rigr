@@ -6,7 +6,7 @@
 \alias{plot.ttest}
 \alias{print.ttest}
 \alias{ttest.default}
-\title{%% T-test with Improved Layout}
+\title{T-test with Improved Layout}
 \usage{
 ttest(
   var1,

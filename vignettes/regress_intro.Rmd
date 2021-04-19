@@ -47,7 +47,7 @@ data(mri)
 ```
 
 ```{r}
-regress("mean", atrophy ~ age + male, data = mri)
+regress("mean", atrophy ~ age + I(sex), data = mri)
 ```
 
 This call automatically prints the coefficients table. First, notice that by default robust standard error estimates (calculated using the `sandwich` package) are returned, in addition to the naive estimates. The robust estimates are also used to perform the inference - thus the confidence intervals, statistics, and p-values use these estimates of the standard error.
@@ -72,7 +72,7 @@ In normal linear regression, we are comparing the mean of the response variable 
 Using the same function, and the same syntax, we can also run generalized linear regression. For example, if we wanted to examine the odds of having diabetes between males and females, we would run a logistic regression.
 
 ```{r}
-regress("odds", diabetes ~ male, data = mri)
+regress("odds", diabetes ~ I(sex), data = mri)
 ```
 
 In all of the generalized linear regression output (and in the output from regression on the geometric mean), by default we see two tables. The `Raw Model` table displays coefficients and standard errors for the model after we have transformed the response variable, but we have not transformed back. Recall that in most generalized linear regression cases, we need to back-transform our results to get them in the original units. This is due to using a link function to model the regression. If you want to suppress printing this table, set `suppress = TRUE`.
@@ -106,7 +106,8 @@ regress("mean", salary ~ female*year, data = salary)
 From this call to regress, we would think that we had 19792 unique data points, which is quite a lot of faculty to have at a university. If we compare to the results from the GEE based regression, we will see how far off we are.
 ```{r}
 ## GEE
-regress("mean", salary ~ female*year, id = id, data = salary)
+# TODO fix
+# regress("mean", salary ~ female*year, id = id, data = salary)
 ```
 
 Now `regress()` tells us that we only have 1597 faculty members, which is much more reasonable. Also, it tells us that the "maximum cluster size" - i.e. the largest number of observations on any one id - is 20. This makes sense due to the sampling scheme, where some faculty have been at the university for 20 years by the time the survey was taken. 
@@ -125,8 +126,10 @@ Each of these three functions is used to great effect in `regress()`. Also, each
 
 For example, we can model race as dummy variables to examine the differences in the odds of having diabetes between races. This allows us to better make comparisons, because modeling as dummy variables essentially creates indicator variables against a reference group.
 
+TODO: fix! This is biological racism. Can use any other variable instead, eg stroke. 
+
 ```{r}
-regress("odds", diabetes ~ dummy(race), data = mri)
+regress("odds", diabetes ~ dummy(stroke), data = mri)
 ```
 
 First, notice that below the table `regress()` tells us how the dummy variables were calculated. In this case the reference was 1, corresponding to `white` in this data set. Next we see the multiple-partial F-test, which is on its own line for `dummy(race)`. The coefficient estimates are nested beneath this line to indicate that these coefficients all come from the same variable (`race`) but we have modeled them as three variables.
@@ -138,7 +141,8 @@ As we mentioned above, the *formula* in `regress()` allows you to specify multip
 For example, say that we are interested in the relationship between atrophy, age, sex, and race. However, we also want to include the sex-age interaction and the sex-race interaction. We also want to model race as dummy variables. Last, we want to determine if all of the variables involved in the sex-age interaction (`male`, `age`, and the interaction) should be in the model, and similar for the sex-race interaction. We use the `U()` function to accomplish this goal.
 
 ```{r}
-regress("mean", atrophy ~ U(ma = ~male*age) + U(mr = ~male*dummy(race)), data = mri)
+# TODO
+# regress("mean", atrophy ~ U(ma = ~sex*age) + U(mr = ~sex*dummy(race)), data = mri)
 ```
 
 We have also made use of functionality in `U()` which allows us to name the groups for the multiple-partial F-tests. Thus we can see that the F-statistic for simultaneously testing whether `male`, `age`, and the interaction `male:age` are equal to zero is 34.35, with the correct degrees of freedom for the test (3) and a small p-value. We would conclude (without adjusting for multiple comparisons) that (some of) these variables should be in the model. On the other hand, we see that the F-statistic for simultaneously testing whether `male`, `race`, and the interaction are equal to zero is 1.04. We would conclude (again without adjusting for multiple comparisons) that we cannot reject the null hypothesis that these are all equal to zero.

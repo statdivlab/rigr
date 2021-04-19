@@ -1,31 +1,22 @@
-#' %% ~~function to do ... ~~ Create Dummy Variables
-#' 
-#' %% ~~ A concise (1-5 lines) description of what the function does. ~~
-#' Creates dummy variables.
+#' Create Dummy Variables
 #' 
 #' 
-#' @param x %% ~~Describe \code{y} here~~ variable used to create the dummy
+#' @param x \code{y} variable used to create the dummy
 #' variables.
-#' @param subset %% ~~Describe \code{cluster} here~~ a subset of the data, if
+#' @param subset \code{cluster} a subset of the data, if
 #' desired.
 #' @param reference the reference value for the dummy variables to compare to.
 #' @param includeAll logical value indicating whether all of the dummy
 #' variables should be returned (including the reference).
 #' @param version if \code{TRUE}, returns the version of the function and
 #' nothing else.
-#' @return %% ~Describe the value returned A matrix containing the dummy
-#' variables.  %% If it is a LIST, use %% \item{comp1 }{Description of 'comp1'}
-#' %% \item{comp2 }{Description of 'comp2'} %% ...
-#' @author %% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
-#' Brian D. Williamson
-#' @keywords ~kwd1 ~kwd2
+#' @return A matrix containing the dummy
+#' variables.
 #' @examples
 #' 
-#'   # Reading in a dataset
-#'   mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header=TRUE)
-#'   attach(mri)
-#'   # Create a dummy variable for race
-#'   dummy(race)
+#'   data(mri)
+#'   # Create a dummy variable for chd
+#'   dummy(mri$chd)
 #' 
 #' @export dummy
 dummy <-

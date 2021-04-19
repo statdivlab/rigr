@@ -1,27 +1,22 @@
-#' %% ~~function to do ... ~~ Create Polynomials
+#' Create Polynomials
 #' 
-#' %% ~~ A concise (1-5 lines) description of what the function does. ~~
 #' Creates polynomial variables.
 #' 
 #' 
-#' @param x %% ~~Describe \code{y} here~~ variable used to create the
+#' @param x variable used to create the
 #' polynomials.
-#' @param degree %% ~~Describe \code{cluster} here~~ the maximum degree
+#' @param degree the maximum degree
 #' polynomial to be returned. Polynomials of degree <= \code{degree} will be
 #' returned.
 #' @param center the value to center the polynomials at.
 #' @param version if \code{TRUE}, returns the version of the function and
 #' nothing else.
-#' @return %% ~Describe the value returned A matrix containing the linear
-#' splines.  %% If it is a LIST, use %% \item{comp1 }{Description of 'comp1'}
-#' %% \item{comp2 }{Description of 'comp2'} %% ...
-#' @author %% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
-#' Brian D. Williamson
-#' @keywords ~kwd1 ~kwd2
+#' @return A matrix containing the linear
+#' splines. 
 #' @examples
 #' 
 #'   # Reading in a dataset
-#'   mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header=TRUE)
+#'   data(mri)
 #'   attach(mri)
 #'   # Create a polynomial on ldl
 #'   polynomial(ldl, degree=3)
