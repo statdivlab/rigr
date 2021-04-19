@@ -1,3 +1,70 @@
+#' Scatter Plot with Lowess Curves
+#' 
+#' Produces a scatter plot of two variables with (possibly stratified)
+#' superimposed lowess smooths and least squares fitted lines.
+#' 
+#' 
+#' @param y \code{y} a numeric vector containing the
+#' values to be plotted on the y-axis.
+#' @param x \code{x} a numeric vector containing the
+#' values to be plotted on the x-axis.
+#' @param strata \code{strata} a vector, matrix, or list
+#' of stratification variables. Descriptive statistics will be computed within
+#' strata defined by each unique combination of the stratification variables,
+#' as well as in the combined sample. If \code{strata} is supplied, all
+#' variables must be of that same length.
+#' @param subset \code{subset} a vector indicating a
+#' subset to be used for all descriptive statistics. If \code{subset} is
+#' supplied, all variables must be of that same length.
+#' @param reference \code{reference} a list of the strata
+#' in the order they are to be plotted.
+#' @param plotPoints \code{plotPoints} an indicator that
+#' points are to be plotted. A different color and point type combination will
+#' be used for each stratum. Default value is \code{TRUE}.
+#' @param plotLowess \code{plotLowess} an indicator that
+#' lowess smoths are to be plotted. A different color and line type combination
+#' will be used for each stratum. Default value is \code{TRUE}.
+#' @param plotLSfit \code{plotLSfit} an indicator that
+#' least squares fitted lines are to be plotted. A different color and line
+#' type combination will be used for each stratum. Default value is
+#' \code{TRUE}.
+#' @param legend \code{legend} where to place the legend
+#' on the plot
+#' @param colors \code{colors} a vector of colors used in
+#' plotting strata.
+#' @param xJitter \code{xJitter} the proportion of the
+#' minimal difference between adjacent x-values divided by 8 by which plotted
+#' points are to be jittered in the x-dimension. A value of 0 implies no
+#' jittering.
+#' @param yJitter \code{yJitter} the proportion of the
+#' minimal difference between adjacent y-values divided by 8 by which plotted
+#' points are to be jittered in the y-dimension. A value of 0 implies no
+#' jittering.
+#' @param newplot \code{newplot} logical value indicating
+#' that the graph should be plotted on a new set of axes. Default value is
+#' \code{TRUE}.
+#' @param lty,lwd,log,pch plotting parameters.
+#' @param \dots \code{\dots} optional arguments for
+#' plotting parameters (e.g. \code{xlab}, \code{ylab}, \code{main}) that will
+#' be passed to \code{plot()}.
+#' @param version \code{version} if \code{TRUE}, the
+#' version of the function will be returned. No other computations will be
+#' performed.
+#' @return This function produces a plot. No value is returned. 
+#' @examples
+#' 
+#' #- Read in and attach the data -#
+#' mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header=TRUE)
+#' attach(mri)
+#' 
+#' #- Create a scatterplot with lowess curves and least squares fitted regression lines -#
+#' scatter(atrophy, age, ylab="Atrophy", xlab="Age")
+#' 
+#' #- Create a scatterplot stratified by age on the log scale with lowess curves and -#
+#' #- least squares fitted regression lines -#
+#' scatter(atrophy, age, strata=male,ylab="Atrophy", xlab="Age",log="y")
+#' 
+#' @export scatter
 scatter <-
 function (y, x, strata=rep(1,length(y)), subset= rep(TRUE,length(y)), reference=sort(unique(strata)), 
             plotPoints=TRUE, plotLowess=TRUE, plotLSfit=FALSE, legend=0.05,

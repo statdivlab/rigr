@@ -11,6 +11,57 @@
 ##        eform - logical, whether to return exponentiated coefficients or not
 ## Returns: estimate of the linear combination of coefficients, specified by the comb vector
 ## Version: 20150604
+
+
+
+
+#' %% ~~function to do ... ~~ Tests of Linear Combinations of Regression
+#' Coefficients
+#' 
+#' %% ~~ A concise (1-5 lines) description of what the function does. ~~
+#' Produces point estimates, interval estimates, and p values for linear
+#' combinations of regression coefficients using a \code{ uRegress} object.
+#' 
+#' 
+#' @param reg an object of class \code{uRegress}.
+#' @param comb a vector or matrix containing the values of the constants which
+#' create the linear combination of the form \deqn{c_0 + c_1\beta_1 + \dots}.
+#' @param hyp the null hypothesis to compare the linear combination of
+#' coefficients against. The default value is \code{0}. An error will be thrown
+#' if the number of columns of this matrix are not equal to the number of
+#' coefficients in the model.
+#' @param conf.level a number between 0 and 1, indicating the desired
+#' confidence level for intervals.
+#' @param robustSE a logical value indicating whether or not to use robust
+#' standard errors in calculation. If \code{TRUE}, then \code{robustSE} must
+#' have been \code{TRUE} when \code{reg} was created.
+#' @param eform a logical value indicating whether or not to exponentiate the
+#' estimated coefficient. By default this is performed based on the type of
+#' regression used.
+#' @return %% ~Describe the value returned Prints a matrix with the point
+#' estimate of the linear combination of coefficients, a p-value, and
+#' confidence interval.
+#' @author %% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
+#' Brian D. Williamson
+#' @keywords ~kwd1 ~kwd2
+#' @examples
+#' 
+#' # Loading required libraries
+#' library(survival)
+#' library(sandwich)
+#' 
+#' # Reading in a dataset
+#' mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt",header=TRUE)
+#' attach(mri)
+#' 
+#' # Linear regression of LDL on age (with robust SE by default)
+#' testReg <- regress ("mean", ldl~age+stroke)
+#' 
+#' # Testing coefficient created by .5*age - stroke (the first 1 comes from including the intercept)
+#' testC <- c(1, .5, -1)
+#' lincom(testReg, testC)
+#' 
+#' @export lincom
 lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$fnctl!="mean"){
   ## if conf.level is not between 0 and 1, throw error
   if(conf.level < 0 | conf.level > 1){

@@ -1,15 +1,66 @@
-## Perform a wilcoxon test
-## Args: y           - the first variable
-##       x           - the second variable
-##       alternative - the alternative hypothesis
-##       mu          - the null hypothesis
-##       paired      - paired test?
-##       exact       - exact binomial?
-##       correct     - continuity correction?
-##       conf.int    - return CI?
-##       conf.level  - default confidence level
-## Returns:
-## Version: 2015 05 25
+#' Wilcoxon Signed Rank and Mann-Whitney-Wilcoxon Rank Sum Test
+#' 
+#' Performs Wilcoxon signed rank test or Mann-Whitney-Wilcoxon rank sum test
+#' depending on data and logicals entered. Relies heavily on the function
+#' \code{\link[stats]{wilcox.test}}. Adds formatting and variances, and prints
+#' the z-score and p-value in addition to the test statistic and p-value.
+#' 
+#' 
+#' @aliases wilcoxon wilcoxon.do print.wilcoxon wilcoxon.default
+#' @param y \code{y} numeric vector of data values.
+#' Non-finite (missing or infinite) values will be omitted.
+#' @param x \code{\dots} optional numeric vector of data
+#' values. Non-finite (missing or infinite) values will be omitted.
+#' @param alternative \code{\dots} specifies the
+#' alternative hypothesis for the test; acceptable values are
+#' \code{"two.sided"}, \code{"greater"}, or \code{"less"}.
+#' @param mu \code{\dots} the value of the null
+#' hypothesis.
+#' @param paired \code{\dots} logical indicating whether
+#' the data are paired or not. Default is \code{FALSE}. If \code{TRUE}, data
+#' must be the same length.
+#' @param exact \code{\dots} logical value indicating
+#' whether or not an exact test should be computed.
+#' @param correct \code{\dots} logical indicating whether
+#' or not a continuity correction should be used and displayed.
+#' @param conf.int \code{\dots} logical indicating whether
+#' or not to calculate and display a 'confidence interval' (performs a
+#' semi-parametric test on medians, and is non-robust) and point estimate.
+#' @param conf.level \code{\dots} confidence level for the
+#' interval.
+#' @param \dots only used in the generic S3 class.
+#' @return A list with class \code{"wilcoxon"}
+#' is returned. The print method lays out the information in an easy to read
+#' format. \item{statistic}{the value of the test
+#' statistic with a name describing it.} \item{parameter}{the parameter(s) for
+#' the exact distribution of the test statistic.} \item{p.value}{the p-value
+#' for the test (calculated for the test statistic).} \item{null.value}{the
+#' parameter \code{mu}.} \item{alternative}{character string describing the
+#' alternative hypothesis.} \item{method}{the type of test applied.}
+#' \item{data.name}{a character string giving the names of the data.}
+#' \item{conf.int}{a confidence interval for the location parameter (only
+#' present if the argument \code{conf.int=TRUE}).} \item{estimate}{an estimate
+#' of the location parameter (only present if the argument
+#' \code{conf.int=TRUE}).} \item{table}{a formatted table of rank sum and
+#' number of observation values, for printing.} \item{vars}{a formatted table
+#' of variances, for printing.} \item{hyps}{a formatted table of the
+#' hypotheses, for printing.} \item{inf}{a formatted table of inference values,
+#' for printing.}
+#' 
+#' @seealso \code{\link[stats]{wilcox.test}}
+#' @examples
+#' 
+#' #- Create the data -#
+#' cf <- c(1153, 1132, 1165, 1460, 1162, 1493, 1358, 1453, 1185, 1824, 1793, 1930, 2075)
+#' healthy <- c(996, 1080, 1182, 1452, 1634, 1619, 1140, 1123, 1113, 1463, 1632, 1614, 1836)
+#' 
+#' #- Perform the test -#
+#' wilcoxon(cf, healthy, paired=TRUE)
+#' 
+#' #- Perform the test -#
+#' wilcoxon(cf, healthy, conf.int=TRUE)
+#' 
+#' @export wilcoxon
 wilcoxon <- function(y, x = NULL, alternative = "two.sided", 
                      mu = 0, paired = FALSE, exact = NULL, correct = FALSE, conf.int = FALSE, 
                      conf.level = 0.95) {

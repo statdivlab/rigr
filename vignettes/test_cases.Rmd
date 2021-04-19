@@ -1,5 +1,5 @@
 ---
-title: "Using the `uwIntroStats` Package"
+title: "Using the `rigr` Package"
 author: "Brian D. Williamson and Scott S. Emerson, MD PhD"
 date: "`r Sys.Date()`"
 output:
@@ -13,7 +13,7 @@ header - includes:
 - \usepackage{graphicx}
 - \usepackage[colorlinks=true, linktoc=all, linkcolor=blue]{hyperref}
 vignette: >
-  %\VignetteIndexEntry{Using uwIntroStats}
+  %\VignetteIndexEntry{Using rigr}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -40,17 +40,17 @@ pasteLabel <- function(preText, inObj, objName, insLink = TRUE) {
 ```
 # Introduction
 
-## Preparing `uwIntroStats`
+## Preparing `rigr`
 
 Before we can dive in and run any analyses, we first need to install the package. This is done via
 
 ```{r eval = FALSE}
-install.packages("uwIntroStats")
+install.packages("rigr")
 ```
 
 Regardless of the graphical user interface (GUI) that you are using, R will prompt you to select a CRAN mirror. It is essentially asking you where you want to download the package files from. Select the mirror closest to you - for us at the University of Washington it is `WA(1)` or the Fred Hutchinson Cancer Research Center (FHCRC) - and the package will download and say that it has installed. Now each time we open a new R session (whether that is at the command line, a new RGui window, or a new RStudio window) we need to load the package for use. 
 
-Five other packages provide a few key functions that the `uwIntroStats` package uses or adds functionality to. We must install these packages like we did above if we have not installed them previously, and then load `uwIntroStats`. While the packages do not need to be loaded every time (in fact, some are only used for specific functions) it is good practice to load them for the R session where you need to use `uwIntroStats`. This makes sure that we can use their other functions while doing analyses.
+Five other packages provide a few key functions that the `rigr` package uses or adds functionality to. We must install these packages like we did above if we have not installed them previously, and then load `rigr`. While the packages do not need to be loaded every time (in fact, some are only used for specific functions) it is good practice to load them for the R session where you need to use `rigr`. This makes sure that we can use their other functions while doing analyses.
 
 ```{r}
 library(Exact)
@@ -58,7 +58,7 @@ library(geepack)
 library(plyr)
 library(sandwich)
 library(survival)
-library(uwIntroStats)
+library(rigr)
 ```
 
 Don't worry about the warning message for now; that will be covered in section 3.2. Last, we load the data, `mri` that we will be using throughout this document. Information about the dataset can be found at [mri.pdf](http://www.emersonstatistics.com/datasets/mri.pdf). Since the data is part of the package, we can load it via
@@ -67,16 +67,16 @@ Don't worry about the warning message for now; that will be covered in section 3
 data(mri)
 ```
 
-The `uwIntroStats` package should be used for descriptive statistics, basic plotting (like scatterplots and boxplots), and regression analyses. The following sections will go through examples of these tasks, in addition to pointing out how our package differs from base R and other existing packages. We will assume familiarity with basic data manipulation and statistical tasks (for a refresher, see ["An Introduction to R"](http://www.emersonstatistics.com/GeneralMaterials/R/IntroToR.pdf).
+The `rigr` package should be used for descriptive statistics, basic plotting (like scatterplots and boxplots), and regression analyses. The following sections will go through examples of these tasks, in addition to pointing out how our package differs from base R and other existing packages. We will assume familiarity with basic data manipulation and statistical tasks (for a refresher, see ["An Introduction to R"](http://www.emersonstatistics.com/GeneralMaterials/R/IntroToR.pdf).
 
 # Descriptive Statistics
 Descriptive statistics are an important part of any analysis. Often, they are just as important for the statistician or data analysist as they are for the scientific collaborators on a project. For example, descriptive statistics can help identify errors in the data, like observations that are particularly unusual (usually far out of the expected or observed range). They can also help to identify patterns of missing data, examine the study population, and identify aspects of the data that might lead to statistical issues. Descriptive statistics can also unearth relationships that had not previously been considered for analysis, thereby generating new studies. More information on this, and an outline of an approach to analysing a dataset, ["Organizing Your Approach to a Data Analysis"](http://www.emersonstatistics.com/GeneralMaterials/analysis.pdf), was written by Scott Emerson for this purpose. 
 
 ## The basics: `descrip()`
-The `uwIntroStats` package was designed with descriptive statistics in mind. The basic function for descriptive statistics is `descrip()`. This function takes in an arbitrary number of variables, and by default calculates the number of observations, the number of missing values, the mean, standard deviation, mininum value, maximum value, and the 25th, 50th, and 75th percentiles of each variable. For instance, if we wanted a quick glance at the `mri` data, we could type
+The `rigr` package was designed with descriptive statistics in mind. The basic function for descriptive statistics is `descrip()`. This function takes in an arbitrary number of variables, and by default calculates the number of observations, the number of missing values, the mean, standard deviation, mininum value, maximum value, and the 25th, 50th, and 75th percentiles of each variable. For instance, if we wanted a quick glance at the `mri` data, we could type
 
 ```{r}
-descrip(mri)
+descrip(mri %>% as.data.frame)
 ```
 
 This call gives us a quick look at the distribution of each variable in the sample, and can be easily exported to a word processing software. This is important, because displaying raw R output in a publication is not usually ideal, and taking the time to format the output is a pain.
@@ -137,7 +137,7 @@ Note that all of the values enclosed in \texttt{@} symbols are from Table \ref{s
 tableStat(mri$age, strata = mri$male, stat = "N: @count@; Mean (SD): @mean@ (@sd@); Range: @min@ - @max@")
 ```
 
-Now if we wanted to see this in table form, in perhaps a nicer layout, we could use the `tabulate()` function. When we loaded the `uwIntroStats` package at the beginning of this document, recall that we got a warning message from R saying
+Now if we wanted to see this in table form, in perhaps a nicer layout, we could use the `tabulate()` function. When we loaded the `rigr` package at the beginning of this document, recall that we got a warning message from R saying
 ```
 The following object is masked from ‘package:base’:
 
@@ -264,7 +264,7 @@ While correlation is not an excellent source of inference, since it is inherentl
 ## Base R - returns only one number!
 cor(mri$male, mri$diabetes)
 
-## uwIntroStats version
+## rigr version
 correlate(mri$male, mri$diabetes)
 
 ## Stratify on race
@@ -279,12 +279,12 @@ As mentioned above, since correlation is a function of the data gathered, we usu
 
 ### T-tests
 
-In the base R package, the `t.test()` function performs a t-test as you would expect. Our function `ttest()` improves on this by allowing stratification, calculation of the geometric mean, allowing for presuming unequal variances between samples, and making a cleaner output. For example, a t-test of whether the mean of the `ldl` variable is equal to 125 yields, in base R and `uwIntroStats`
+In the base R package, the `t.test()` function performs a t-test as you would expect. Our function `ttest()` improves on this by allowing stratification, calculation of the geometric mean, allowing for presuming unequal variances between samples, and making a cleaner output. For example, a t-test of whether the mean of the `ldl` variable is equal to 125 yields, in base R and `rigr`
 
 ```{r}
 ## base R
 t.test(mri$ldl, mu = 125)
-## uwIntroStats
+## rigr
 ttest(mri$ldl, null.hypoth = 125)
 ```
 
@@ -294,7 +294,7 @@ If instead we wanted a two-sample t-test of whether the difference in mean LDL b
 ## base R
 t.test(mri$ldl[mri$male == 0], mri$ldl[mri$male == 1])
 
-## uwIntroStats
+## rigr
 ttest(mri$ldl, by = mri$male)
 ```
 
@@ -353,7 +353,7 @@ healthy <- c(996, 1080, 1182, 1452, 1634, 1619, 1140, 1123, 1113, 1463, 1632, 16
 ## base R
 wilcox.test(healthy, cf, paired = TRUE)
 
-## uwIntroStats
+## rigr
 wilcoxon(cf, healthy, paired = TRUE)
 ```
 
@@ -373,7 +373,7 @@ The minimum we need to enter into `regress()` is a functional, a formula, and a 
 ```{r}
 ## base R
 summary(lm(atrophy ~ age, data = mri))
-## uwIntroStats
+## rigr
 regress("mean", atrophy ~ age, data = mri)
 ```
 

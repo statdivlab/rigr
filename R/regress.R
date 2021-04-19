@@ -1,36 +1,126 @@
-## A function to perform lm, glm, correlated data regression, and report multiple partial f-tests
-## Args: fnctl         - the functional to calculate, e.g. "mean"
-##       formula       - the formula to compute
-##       data          - the data frame or matrix to use. if missing, assumed to be attached
-##       intercept     - whether or not to include an intercept. no intercept for hazard regression
-##       strata        - stratified regression
-##       weights       - the weights for the regression
-##       id            - id for correlated data regression
-##       ties          - method for breaking ties in hazard regression
-##       subset        - subset of the data for the regression
-##       robustSE      - compute robustSE standard error estimates
-##       conf.level    - confidence level for tests
-##       exponentiate  - return a table with exponentiated estimates and confidence intervals
-##       replaceZeroes - the value to replace zeroes in the data with
-##       useFdstn      - use the f-distribution for tests
-##       suppress      - suppress the printing of the raw model table
-##       na.action     - how to deal with NAs in the data
-##       method        - the method for regression
-##       model.f       - return the model frame
-##       model.x       - return the x values entered
-##       model.y       - return the y vector
-##       qr            - qr method
-##       singular.ok   - takes singular design matrices
-##       contrasts     - special contrasts for regression
-##       offset        - any offset
-##       control       - 
-##       init          - for cox regression
-##       ...           - other arbitrary arguments to lower level functions
-##       version       - the version of the function
-## Returns: a uRegress object, with a list of tables and tests and coefficients
-## Version: 2015 06 02
+#' General Regression for an Arbitrary Functional
+#' 
+#' Produces point estimates, interval estimates, and p values for an arbitrary
+#' functional (mean, geometric mean, proportion, median, quantile, odds) of a
+#' variable of class \code{integer}, \code{numeric}, \code{Surv}, when
+#' regressed on an arbitrary number of covariates. Multiple Partial F-tests can
+#' be specified using the \code{\link[uwIntroStats]{U}} function.
+#' 
+#' Regression models include linear regression (for the ``mean'' functional), logistic
+#' regression (for the ``odds'' functional), Poisson regression (for the
+#' ``rate'' functional).  Proportional hazards regression is currently not
+#' supported in the \code{regress} function. Objects created using the
+#' \code{\link[uwIntroStats]{U}} function can also be passed in. If the
+#' \code{\link[uwIntroStats]{U}} call involves a partial formula of the form
+#' \code{~ var1 + var2}, then \code{regress} will return a multiple-partial
+#' F-test involving \code{var1} and \code{var2}. The multiple partial tests
+#' must be the last terms specified in the model (i.e. no other predictors can
+#' follow them).
+#' 
+#' @aliases regress fitted.uRegress print.augCoefficients print.uRegress
+#' uLRtest uWaldtest termTraverse explode indentNames getLevels testList
+#' pasteTwo processTerm addArgs pasteOn pasteOnSpline pastePair movingSum
+#' myNext reFormatReg createCols checkNesting splitOnParen reFormat equal
+#' @param fnctl a character string indicating
+#' the functional (summary measure of the distribution) for which inference is
+#' desired. Choices include \code{"mean"}, \code{"geometric mean"},
+#' \code{"odds"}, \code{"rate"}, \code{"hazard"}. The character string may be
+#' shortened to a unique substring. Hence \code{"mea"} will suffice for
+#' \code{"mean"}.
+#' @param formula an object of class
+#' \code{formula} as might be passed to \code{lm}, \code{glm}, or \code{coxph}.
+#' @param data a data frame, matrix, or other data structure with matching
+#' names to those entered in \code{formula}.
+#' @param intercept a logical value
+#' indicating whether a intercept exists or not.
+#' @param strata vector indicating a
+#' variable to be used for stratification in proportional hazards regression.
+#' @param weights vector indicating
+#' optional weights for weighted regression.
+#' @param id vector with ids for the variables.
+#' If any ids are repeated, runs a clustered regression.
+#' @param ties One of \code{"efron"} (by default), \code{"breslow"}, or
+#' \code{"exact"}. Determines the method used to handle ties in proportional
+#' hazard regression.
+#' @param subset vector indicating a subset
+#' to be used for all inference.
+#' @param robustSE a logical indicator
+#' that standard errors are to be computed using the Huber-White sandwich
+#' estimator.
+#' @param conf.level a numeric scalar
+#' indicating the level of confidence to be used in computing confidence
+#' intervals. The default is 0.95.
+#' @param exponentiate a logical
+#' indicator that the regression parameters should be exponentiated. This is by
+#' default true for all functionals except the mean.
+#' @param replaceZeroes if not
+#' \code{FALSE}, this indicates a value to be used in place of zeroes when
+#' computing a geometric mean. If \code{TRUE}, a value equal to one-half the
+#' lowest nonzero value is used. If a numeric value is supplied, that value is
+#' used.
+#' @param useFdstn a logical indicator
+#' that the F distribution should be used for test statistics instead of the
+#' chi squared distribution even in logistic and proportional hazard regression
+#' models. When using the F distribution, the degrees of freedom are taken to
+#' be the sample size minus the number of parameters, as it would be in a
+#' linear regression model.
+#' @param suppress if \code{TRUE}, and a model which requires exponentiation
+#' (for instance, regression on the geometric mean) is computed, then a table
+#' with only the exponentiated coefficients and confidence interval is
+#' returned. Otherwise, two tables are returned - one with the original
+#' unexponentiated coefficients, and one with the exponentiated coefficients.
+#' @param
+#' na.action,method,model.f,model.x,model.y,qr,singular.ok,offset,contrasts,control
+#' optional arguments that are passed to the functionality of \code{lm} or
+#' \code{glm}.
+#' @param init optional argument that are passed to the functionality of
+#' \code{coxph}.
+#' @param version If \code{TRUE}, returns
+#' the version of the function. No other computation is performed.
+#' @return An object of class uRegress is
+#' returned. Parameter estimates, confidence intervals, and p values are
+#' contained in a matrix $augCoefficients. 
+#' @author Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
+#' Brian D. Williamson, Travis Hee Wai
+#' @seealso Functions for fitting linear models (\code{\link[stats]{lm}}),
+#' generalized linear models (\code{\link[stats]{glm}}), proportional hazards
+#' models (\code{\link[survival]{coxph}}), and generalized estimating equations
+#' (\code{\link[geepack]{geeglm}}). Also see the function to specify
+#' multiple-partial F-tests, \code{\link[uwIntroStats]{U}}.
+#' @import geepack
+#' @import sandwich
+#' @import stats
+#' @import survival
+#' @examples
+#' 
+#' # Loading required libraries
+#' library(survival)
+#' library(sandwich)
+#' 
+#' # Reading in a dataset
+#' mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt",header=TRUE)
+#' 
+#' # Creating a Surv object to reflect time to death
+#' mri$ttodth <- Surv(mri$obstime,mri$death)
+#' 
+#' # Attaching the mri dataset
+#' attach(mri)
+#' 
+#' # Linear regression of atrophy on age
+#' regress("mean", atrophy~age, data=mri)
+#' 
+#' ## Linear regression of atrophy on male and race and their interaction, 
+#' ## with a multiple-partial F-test on the race-age interaction
+#' regress("mean", atrophy~ male + U(ra=~race*age), data=mri)
+#' 
+#' ## Linear regression of atrophy on age, male, race (as a dummy variable), chf,
+#' ## and diabetes. There are two multiple partial F-tests and both are named
+#' regress("mean", atrophy~age+male+U(rc=~dummy(race)+chf)+U(md=~male+diabetes), data=mri)
+#' 
+#' 
+#' @export regress
 regress <-
-  function(fnctl, formula, data,                     # the terms in the regression analysis
+  function(fnctl, formula, data,                     
            intercept = fnctl != "hazard", 
            strata = rep(1,n), weights = rep(1,n), id = 1:n, ties = "efron", subset = rep(TRUE,n),
            robustSE = TRUE, conf.level = 0.95, exponentiate=fnctl != "mean",
@@ -710,7 +800,7 @@ regress <-
       }
       if(!anyRepeated & !robust){
         if (robustSE) {
-          m <- sandwich(fit,adjust=T)
+          m <- sandwich::sandwich(fit,adjust=T)
           zzs$coefficients <- cbind(zzs$coefficients[,1:2,drop=F],sqrt(diag(m)),zzs$coefficients[,-(1:2),drop=F])
           dimnames(zzs$coefficients)[[2]][2:3] <- c("Naive SE","Robust SE")
           zzs$robustCov <- m
@@ -743,7 +833,7 @@ regress <-
       }
       if(!anyRepeated){
         if (robustSE) {
-          m <- sandwich(fit,adjust=T)
+          m <- sandwich::sandwich(fit,adjust=T)
           zzs$coefficients <- cbind(zzs$coefficients[,1:2,drop=F],sqrt(diag(m)),zzs$coefficients[,-(1:2),drop=F])
           dimnames(zzs$coefficients)[[2]][2:3] <- c("Naive SE","Robust SE")
           zzs$robustCov <- m

@@ -1,30 +1,31 @@
-Package: uwIntroStats
-Type: Package
-Title: Descriptive Statistics, Inference, Regression, and Plotting in
-        an Introductory Statistics Course
-Version: 0.0.7
-Date: 2018-10-9
-Maintainer: Travis Y. Hee Wai <theewai@uw.edu>
-Authors@R: c(person(given = "Scott S.", family = "Emerson", role = "aut"),
-	     person(given = "Andrew J.", family = "Spieker", role = "aut"),
-	     person(given = "Brian D.", family = "Williamson", role= "aut"),
-	     person(given = "Travis Y.", family = "Hee Wai", role = c("aut","cre"),email="theewai@uw.edu"),
-	     person(given = "Solomon", family = "Lim", role = "aut"),
-	     person("R Core Team", role = "ctb"),
-	     person(given = "Terry M", family = "Therneu", role = "ctb"),
-             person("Thomas", "Lumley", role = "ctb"))
-Description: A set of tools designed to facilitate easy adoption of R for students in introductory classes with little programming experience. Compiles output from existing routines together in an intuitive format, and adds functionality to existing functions. For instance, the regression function can perform linear models, generalized linear models, Cox models, or generalized estimating equations. The user can also specify multiple-partial F-tests to print out with the model coefficients. We also give many routines for descriptive statistics and plotting. 
-Imports: Exact, geepack, plyr, survival, sandwich
-License: GPL-2
-Suggests: knitr, rmarkdown
+Package: rigr
+Title: Regression, Inference, and General Data Analysis Tools for R
+Version: 0.0.1
+Date: 2021-04-19
+Authors@R: as.person(c(
+    "Amy D Willis <adwillis@uw.edu> [aut, cre]",
+    "Scott S Emerson [aut]",
+    "Andrew J Spieker [aut]",
+    "Brian D Williamson [aut]",
+    "Travis Y Hee Wai [aut]",
+    "Solomon Lim [aut]",
+    "Terry M Therneu [ctb]",
+    "Thomas Lumley [ctb]"
+  ))
+Description: TODO A set of tools designed to facilitate easy adoption of R for students in introductory classes with little programming experience. Compiles output from existing routines together in an intuitive format, and adds functionality to existing functions. For instance, the regression function can perform linear models, generalized linear models, Cox models, or generalized estimating equations. The user can also specify multiple-partial F-tests to print out with the model coefficients. We also give many routines for descriptive statistics and plotting.
+License: MIT + file LICENSE
+BugReports: https://github.com/statdivlab/rigr/issues
+Depends:
+    R (>= 3.5.0)
+Imports: 
+    Exact,
+    geepack,
+    plyr,
+    sandwich,
+    tibble,
+    survival
+Suggests: knitr,
+    rmarkdown,
+    tidyverse
 VignetteBuilder: knitr
-NeedsCompilation: no
-Packaged: 2018-10-10 02:27:52 UTC; theewai
-Author: Scott S. Emerson [aut],
-  Andrew J. Spieker [aut],
-  Brian D. Williamson [aut],
-  Travis Y. Hee Wai [aut, cre],
-  Solomon Lim [aut],
-  R Core Team [ctb],
-  Terry M Therneu [ctb],
-  Thomas Lumley [ctb]
+RoxygenNote: 7.1.1

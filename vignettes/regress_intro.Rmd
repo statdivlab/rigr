@@ -1,15 +1,15 @@
 ---
-title: "Regression in uwIntroStats"
+title: "Regression in rigr"
 author: "Brian D. Williamson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Regression in uwIntroStats}
+  %\VignetteIndexEntry{Regression in rigr}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
-In the `uwIntroStats` package, we have set out to make regression and analysis easier by:
+In the `rigr` package, we have set out to make regression and analysis easier by:
 
 * allowing the user to specify any type of regression from one function
 * allowing the user to specify multiple-partial F-tests
@@ -38,13 +38,14 @@ The *data* argument is exactly the same as that in `lm()` or any of the other re
 Last, *id* allows the user to fit a generalized estimating equations (GEE) model while using the same syntax as any of the functionals to `regress()`. The GEE framework is a useful way to model correlated data, which often comes in the form of repeated measurements.
 
 # Linear Regression
-As a first example, we run a linear regression analysis of atrophy on age and male, from the `mri` data. This dataset is included in the `uwIntroStats` package, and its documentation can be found on Scott Emerson's website [here](http://www.emersonstatistics.com/datasets/mri.pdf).
+As a first example, we run a linear regression analysis of atrophy on age and male, from the `mri` data. This dataset is included in the `rigr` package, and its documentation can be found on Scott Emerson's website [here](http://www.emersonstatistics.com/datasets/mri.pdf).
 
 ```{r}
 ## Preparing our R session
-library(uwIntroStats)
+library(rigr)
 data(mri)
 ```
+
 ```{r}
 regress("mean", atrophy ~ age + male, data = mri)
 ```
@@ -114,7 +115,7 @@ While our estimates of the coefficients are the same between the two calls to `r
 
 # Re-parameterizations of a Variable
 
-There are three special functions in `uwIntroStats` which allow us to re-parameterize variables:
+There are three special functions in `rigr` which allow us to re-parameterize variables:
 
 * `dummy` - create dummy variables
 * `lspline` - create linear splines

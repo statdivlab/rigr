@@ -1,3 +1,162 @@
+#' One Sample Inferential Methods
+#' 
+#' Produces point estimates, interval estimates, and p values for an arbitrary
+#' functional (mean, geometric mean, proportion, median, quantile, odds) of a
+#' variable of class \code{integer}, \code{numeric}, \code{Surv}, or
+#' \code{Date}. A variety of inferential methods are provided, with the choices
+#' depending on the functional and the data type.
+#' 
+#' Default values for inference correspond to the most commonly implemented methods.
+#' Additional methods are provided more for educational purposed than for
+#' purposes of statistical analysis.
+#' 
+#' @aliases oneSample binomInference.exactLR binomInference.exactTail
+#' binomInference.halfP binomInference.jeffreys binomInference.wald
+#' binomInference.cwald binomInference.score binomInference.cscore
+#' binomInference.agresti KMinference.ident CIptKM CIefrKM CIhwKM qSupBrnMotn
+#' qSupBrnBrdg print.uOneSample
+#' @param fnctl \code{fnctl} a character string indicating
+#' the functional (summary measure of the distribution) for which inference is
+#' desired. Choices include \code{"mean"}, \code{"geometric mean"},
+#' \code{"proportion"}, \code{"median"}, \code{"quantile"}, \code{"odds"},
+#' \code{"rate"}. The character string may be shortened to a unique substring.
+#' Hence \code{"mea"} will suffice for \code{"mean"}.
+#' @param y \code{y} a variable for which inference is
+#' desired. The variable may be of class \code{numeric}, \code{Surv}, or
+#' \code{Date}.
+#' @param null.hypothesis \code{null.hypothesis} a numeric
+#' scalar indicating any null hypothesis to be tested.
+#' @param test.type \code{test.type} a character string
+#' indicating whether a hypothesis test is to be of a one sided test of a
+#' lesser alternative hypothesis (\code{"less"}), a one sided test of a greater
+#' alternative hypothesis (\code{"greater"}), or a test of a two sided
+#' alternative hypothesis (\code{"two.sided"}). The default value is
+#' \code{"two.sided"}.
+#' @param subset \code{subset} a vector indicating a
+#' subset to be used for all inference.
+#' @param conf.level \code{conf.level} a numeric scalar
+#' indicating the level of confidence to be used in computing confidence
+#' intervals. The default is 0.95.
+#' @param na.rm \code{na.rm} an indicator that missing
+#' data is to be removed prior to computation of the descriptive statistics.
+#' @param probs \code{probs} a vector of probabilities
+#' between 0 and 1 indicating quantile estimates to be included in the
+#' descriptive statistics. Default is to the 50th (median) percentile.
+#' @param replaceZeroes \code{replaceZeroes} if not
+#' \code{FALSE}, this indicates a value to be used in place of zeroes when
+#' computing a geometric mean. If \code{TRUE}, a value equal to one-half the
+#' lowest nonzero value is used. If a numeric value is supplied, that value is
+#' used for all variables.
+#' @param restriction \code{restriction} a value used for
+#' computing restricted means, standard deviations, and geometric means with
+#' censored time to event data. The default value of \code{Inf} will cause
+#' restrictions at the highest observation. Note that the same value is used
+#' for all variables of class \code{Surv}.
+#' @param subjTime \code{subjTime} a vector of values for
+#' use with rates.
+#' @param method \code{method} a character string used to
+#' indicate inferential methods. Allowed choices depend on the variable type
+#' and the functional. Default values are \code{"t.test"} for means and
+#' geometric means, and \code{"exact"} for proportions of uncensored data, and
+#' \code{"KM"} for censored survival data.
+#' @param above \code{above} a vector of values used to
+#' dichotomize variables. The descriptive statistics will include an estimate
+#' for each variable of the proportion of measurements with values greater than
+#' each element of \code{above}.
+#' @param below \code{below} a vector of values used to
+#' dichotomize variables. The descriptive statistics will include an estimate
+#' for each variable of the proportion of measurements with values less than
+#' each element of \code{below}.
+#' @param labove \code{labove} a vector of values used to
+#' dichotomize variables. The descriptive statistics will include an estimate
+#' for each variable of the proportion of measurements with values greater than
+#' or equal to each element of \code{labove}.
+#' @param rbelow \code{rbelow} a vector of values used to
+#' dichotomize variables. The descriptive statistics will include an estimate
+#' for each variable of the proportion of measurements with values less than or
+#' equal to each element of \code{rbelow}.
+#' @param interval \code{interval} a two column matrix of
+#' values in which each row is used to define intervals of interest to
+#' categorize variables. The descriptive statistics will include an estimate
+#' for each variable of the proportion of measurements with values between two
+#' elements in a row, with neither endpoint included in each interval.
+#' @param linterval \code{linterval} a two column matrix
+#' of values in which each row is used to define intervals of interest to
+#' categorize variables. The descriptive statistics will include an estimate
+#' for each variable of the proportion of measurements with values between two
+#' elements in a row, with the left hand endpoint included in each interval.
+#' @param rinterval \code{rinterval} a two column matrix
+#' of values in which each row is used to define intervals of interest to
+#' categorize variables. The descriptive statistics will include an estimate
+#' for each variable of the proportion of measurements with values between two
+#' elements in a row, with the right hand endpoint included in each interval.
+#' @param lrinterval \code{lrinterval} a two column matrix
+#' of values in which each row is used to define intervals of interest to
+#' categorize variables. The descriptive statistics will include an estimate
+#' for each variable of the proportion of measurements with values between two
+#' elements in a row, with both endpoints included in each interval.
+#' @param g1 \code{g1} used in
+#' \code{method="mean-variance"}.
+#' @param g2 \code{g2} used in
+#' \code{method="mean-variance"}.
+#' @param dispersion \code{dispersion} dispersion, used in
+#' \code{method="mean-variance"}.
+#' @param nbstrap \code{nbstrap} number of bootstrap
+#' iterations to perform, used with \code{method="bootstrap"}.
+#' @param resample \code{resample} character string
+#' specifying how the bootstrap should resample, used with
+#' \code{method="bootstrap"}.
+#' @param seed \code{seed} sets the seed (for random
+#' number generation), used with \code{method="bootstrap"}.
+#' @param \dots \code{\dots} other arguments.
+#' @param version \code{version} if \code{TRUE}, the
+#' version of the function will be returned. No other computations will be
+#' performed.
+#' @return An object of class \code{uOneSample}
+#' is returned. Inferential statistics are contained in a vector named
+#' \code{$Inference} that includes the sample size, the point estimate, the
+#' lower and upper bounds of a confidence interval, any null hypothesis that
+#' was specified, and the p-value. Also included is a vector named
+#' \code{$Statistics} that includes more technical information. There is a
+#' print method that will format the descriptive statistics for the \code{Date}
+#' and \code{Surv} objects. 
+#' @examples
+#' 
+#' # Load required libraries
+#' library(survival)
+#' 
+#' # Reading in a dataset
+#' mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt",header=TRUE)
+#' 
+#' # Creating a Surv object to reflect time to death
+#' mri$ttodth <- Surv(mri$obstime,mri$death)
+#' 
+#' # Reformatting an integer MMDDYY representation of date to be a Date object
+#' mri$mridate <- as.Date(paste(trunc(mri$mridate/10000),trunc((mri$mridate %% 10000)/100),
+#' mri$mridate %% 100,sep="/"),"%m/%d/%y")
+#' 
+#' # Inference about the mean LDL: a two sample t test that mean LDL is 135 mg/dl
+#' oneSample ("mean", mri$ldl, null.hypothesis=125)
+#' 
+#' # Inference about the mean LDL: a one sample t test of a lesser alternative
+#' # that mean LDL is 125 mg/dl
+#' oneSample ("mean", mri$ldl, null.hypothesis=125, test.type="less")
+#' 
+#' # Inference about the mean LDL: a one sample t test of a greater alternative
+#' # that mean LDL is 125 mg/dl
+#' oneSample ("mean", mri$ldl, null.hypothesis=125, test.type="greater")
+#' 
+#' # Inference about the geometric mean LDL: a one sample t test of a greater
+#' # alternative that geometric mean LDL is 125 mg/dl
+#' oneSample ("geom", mri$ldl, null.hypothesis=125, test.type="greater")
+#' 
+#' # Inference about the proportion of subjects with LDL greater than 128: exact binomial
+#' # inference that 50% of subjects have LDL greater than 128 mg/dl
+#' oneSample ("prop", mri$ldl, null.hypothesis=0.5, above=128)
+#' oneSample ("prop",mri$ldl>128, null.hypothesis=0.5)
+#' 
+#' 
+#' @export oneSample
 oneSample<-function (fnctl, y, null.hypothesis = NA, test.type = "two.sided", 
           subset = rep(TRUE, N), conf.level = 0.95, na.rm = TRUE, probs = 0.5, 
           replaceZeroes = NULL, restriction = Inf, subjTime = rep(1, 

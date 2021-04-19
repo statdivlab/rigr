@@ -1,10 +1,42 @@
-## Extract Studentized Residuals from a uRegress object
-## Created 20150116 by Brian Williamson
-## Last modified 20150116 by Brian Williamson
-## Relies on functionality from stats package
-
-## Args: object - object returned from regress()
-##       type - type of residuals; nothing, "standardized", "studentized", "jackknife"
+#' Extract Residuals from uRegress objects
+#' 
+#' Extracts residuals (unstandardized, standardized, studentized, or jackknife)
+#' from \code{uRegress} objects.
+#' 
+#' Relies on
+#' functionality from the \code{stats} package to return residuals from the
+#' \code{uRegress} object. \code{"studentized"} residuals are computed as
+#' internally studentized residuals, while \code{"jackknife"} computes the
+#' externally studentized residuals.
+#' 
+#' @param object an object of class \code{uRegress}, as returned by
+#' \link[uwIntroStats]{regress}.
+#' @param type denotes the type of residuals to return. Default value is
+#' \code{""}, which returns unstandardized residuals. \code{"standardized"},
+#' \code{"studentized"}, and \code{"jackknife"} return the expected type of
+#' residuals.
+#' @param version if \code{TRUE}, the
+#' version of the function will be returned. No other computations will be
+#' performed.
+#' @return Returns the type of residuals
+#' requested. 
+#' @seealso \code{\link[uwIntroStats]{regress}}, \code{\link[stats]{rstudent}},
+#' \code{\link[stats]{rstandard}}
+#' @examples
+#' 
+#' # Reading in a dataset
+#' data(mri)
+#' 
+#' # Create a uRegress object, regressing ldl on age
+#' ldlReg <- regress("mean", age~ldl, data=mri)
+#' 
+#' # Get the studentized residuals
+#' uResiduals(ldlReg, "studentized")
+#' 
+#' # Get the jackknifed residuals
+#' uResiduals(ldlReg, "jackknife")
+#' 
+#' @export uResiduals
 uResiduals <- function(object, type="", version=FALSE){
   if(version){
     return("20150120")
