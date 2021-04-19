@@ -187,7 +187,10 @@ mean_KM <- function(x, restriction = Inf) {
 describe_vector <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL, 
                      geometricMean = FALSE, geomInclude = FALSE, 
                      replaceZeroes = FALSE) {
-    if (is.factor(x) | is.logical(x) | is.character(x)) {
+    if (is.character(x)) {
+        x <- as.factor(x)
+    }
+    if (is.factor(x) | is.logical(x)) {
         x <- as.numeric(x)
     }
     if (!geomInclude) {
