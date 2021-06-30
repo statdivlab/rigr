@@ -4,8 +4,7 @@
 # `rigr`: Regression, Inference, and General Data Analysis Tools for R
 
 **Sorry, but this package is “under development” and is not ready to be
-used yet. If you would like to help get it ready, please contact the
-maintainer Prof.~Amy Willis.**
+used yet. We will update this note as developments occur.**
 
 # Introduction
 
