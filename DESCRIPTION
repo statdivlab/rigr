@@ -24,8 +24,11 @@ Imports:
     sandwich,
     tibble,
     survival
-Suggests: knitr,
+Suggests: 
+    testthat (>= 3.0.0),
+    knitr,
     rmarkdown,
     tidyverse
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
+Config/testthat/edition: 3
