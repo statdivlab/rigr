@@ -30,7 +30,7 @@
 #' @param null.hypoth \code{var1} a number specifying the
 #' null hypothesis for the mean (or difference in means if performing a
 #' two-sample test). Defaults to zero.
-#' @param test.type \code{var1} a string: one of
+#' @param alternative \code{var1} a string: one of
 #' \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
 #' of the test. Defaults to a two-sided test.
 #' @param var.eq \code{var1} a logical value, either
@@ -76,7 +76,7 @@
 #' attach(psa)
 #' 
 #' #- Perform t-test -#
-#' ttest(pretxpsa, null.hypoth = 100, test.type = "greater", more.digits = 1)
+#' ttest(pretxpsa, null.hypoth = 100, alternative = "greater", more.digits = 1)
 #' 
 #' #- Define new binary variable as indicator -#
 #' #- of whether or not bss was worst possible -#
@@ -95,11 +95,11 @@
 #' 
 #' @export ttest
 ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE, 
-          prop = FALSE, exact = FALSE, null.hypoth = 0, test.type = "two.sided", 
+          prop = FALSE, exact = FALSE, null.hypoth = 0, alternative = "two.sided", 
           var.eq = FALSE, conf.level = 0.95, matched = FALSE, more.digits = 0) 
 {
   ttest.do <- function(var1, var2 = NA, by = NA, geom = FALSE, 
-                       prop = FALSE, exact = FALSE, null.hypoth = 0, test.type = "two.sided", 
+                       prop = FALSE, exact = FALSE, null.hypoth = 0, alternative = "two.sided", 
                        var.eq = FALSE, conf.level = 0.95, matched = FALSE, more.digits = 0, 
                        myargs, ...) {
     var1 <- var1
@@ -201,7 +201,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
       # var2 is not entered
       if (length(var2) == 1 & is.na(var2[1])) {
         # here we do one sample t test with var1 using built in t.test function
-        route <- t.test(var1, alternative = test.type, 
+        route <- t.test(var1, alternative = alternative, 
                         var.equal = vareq, conf.level = conf.level, 
                         mu = null.hypoth)
         mn <- route$estimate
@@ -234,7 +234,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
             if (abs(route$estimate) < 1) {
               binom <- binom.test(x = round(abs(route$estimate * 
                                                    length(var1))), n = length(var1), p = null.hypoth + 
-                                    1e-10, alternative = test.type, conf.level = cl)
+                                    1e-10, alternative = alternative, conf.level = cl)
               propCIL <- as.numeric(format(min(binom$conf.int), 
                                            digits = digits))
               propCIH <- as.numeric(format(max(binom$conf.int), 
@@ -243,7 +243,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
             else {
               binom <- binom.test(x = round(abs(route$estimate)), 
                         #####          n = length(var1), p = null.hypoth + 1e-10, 
-                                  alternative = test.type, conf.level = cl)
+                                  alternative = alternative, conf.level = cl)
               propCIL <- as.numeric(format(min(binom$conf.int) * 
                                              length(var1), digits = digits))
               propCIH <- as.numeric(format(max(binom$conf.int) * 
@@ -320,7 +320,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
         row.names(main4) <- c("")
       }
       if (length(var2) > 1) {
-        route <- t.test(var1, var2, alternative = test.type, 
+        route <- t.test(var1, var2, alternative = alternative, 
                         var.equal = vareq, conf.level = conf.level, 
                         paired = matched, mu = null.hypoth)
         mns <- c(mean(var1, na.rm = TRUE), mean(var2, 
@@ -362,7 +362,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
               binom <- binom.test(x = round(abs((route$estimate[1] - 
                                                    route$estimate[2])) * (length(var1) + 
                                                                             length(var2))), n = length(var1) + length(var2), 
-                                  p = null.hypoth + 1e-10, alternative = test.type, 
+                                  p = null.hypoth + 1e-10, alternative = alternative, 
                                   conf.level = cl)
               propCIL <- as.numeric(format(min(binom$conf.int), 
                                            digits = digits))
@@ -373,7 +373,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
               binom <- binom.test(x = round(abs((route$estimate[1] - 
                                                    route$estimate[2]))), n = length(var1) + 
                                     length(var2), p = null.hypoth + 1e-10, 
-                                  alternative = test.type, conf.level = cl)
+                                  alternative = alternative, conf.level = cl)
               propCIL <- as.numeric(format(min(binom$conf.int) * 
                                              (length(var1) + length(var2)), digits = digits))
               propCIH <- as.numeric(format(max(binom$conf.int) * 
@@ -499,7 +499,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
     }
     if (length(by) > 1) {
       if (length(var2) > 1) {
-        route <- t.test(var1, var2, alternative = test.type, 
+        route <- t.test(var1, var2, alternative = alternative, 
                         var.equal = vareq, conf.level = conf.level, 
                         paired = matched, mu = null.hypoth)
         mns <- c(mean(var1, na.rm = TRUE), mean(var2, 
@@ -541,7 +541,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
               binom <- binom.test(x = round(abs((route$estimate[1] - 
                                                    route$estimate[2])) * (length(var1) + 
                                                                             length(var2))), n = length(var1) + length(var2), 
-                                  p = null.hypoth + 1e-10, alternative = test.type, 
+                                  p = null.hypoth + 1e-10, alternative = alternative, 
                                   conf.level = cl)
               propCIL <- as.numeric(format(min(binom$conf.int), 
                                            digits = digits))
@@ -552,7 +552,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
               binom <- binom.test(x = round(abs((route$estimate[1] - 
                                                    route$estimate[2]))), n = length(var1) + 
                                     length(var2), p = null.hypoth + 1e-10, 
-                                  alternative = test.type, conf.level = cl)
+                                  alternative = alternative, conf.level = cl)
               propCIL <- as.numeric(format(min(binom$conf.int) * 
                                              (length(var1) + length(var2)), digits = digits))
               propCIH <- as.numeric(format(max(binom$conf.int) * 
@@ -683,7 +683,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
         dfr <- as.numeric(format(dfr[3], digits = digits))
       }
     }
-    par <- c(geom = geom, null.hypoth = null.hypoth, test.type = test.type, 
+    par <- c(geom = geom, null.hypoth = null.hypoth, alternative = alternative, 
              var.eq = var.eq, conf.level = conf.level, matched = matched, 
              digits = digits)
     chisqTest <- c(prop = prop, exact = exact, chisqStat = chisqStat, 
@@ -765,7 +765,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
           }
           ttest.obj <- ttest.do(var1 = x, var2 = var2, 
                                 geom = geom, prop = prop, exact = exact, 
-                                by = by, null.hypoth = null.hypoth, test.type = test.type, 
+                                by = by, null.hypoth = null.hypoth, alternative = alternative, 
                                 var.eq = var.eq, conf.level = conf.level, 
                                 matched = matched, more.digits = more.digits, 
                                 myargs = myargs)
@@ -789,7 +789,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
           }
           ttest.obj <- ttest.do(var1 = x, var2 = var2, 
                                 geom = geom, prop = prop, exact = exact, 
-                                by = cby, null.hypoth = null.hypoth, test.type = test.type, 
+                                by = cby, null.hypoth = null.hypoth, alternative = alternative, 
                                 var.eq = var.eq, conf.level = conf.level, 
                                 matched = matched, more.digits = more.digits, 
                                 myargs = myargs)
@@ -812,7 +812,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
             cat(ustrat[t])
           }
           ttest.obj <- ttest.do(x, y, geom = geom, prop = prop, 
-                                exact = exact, by = by, null.hypoth, test.type, 
+                                exact = exact, by = by, null.hypoth, alternative, 
                                 var.eq, conf.level, matched, more.digits, 
                                 myargs)
           ttest.obj$call <- match.call()
@@ -831,7 +831,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
           }
           
           ttest.obj <- ttest.do(x, y, geom = geom, prop = prop, 
-                                exact = exact, by = by, null.hypoth, test.type, 
+                                exact = exact, by = by, null.hypoth, alternative, 
                                 var.eq, conf.level, matched, more.digits, 
                                 myargs)
           ttest.obj$call <- match.call()
