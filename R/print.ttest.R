@@ -23,7 +23,7 @@ function(x, ...) {
     geom = par[1]
     null.hypoth = par[2]
     if (geom == T) {null.hypoth = exp(as.numeric(null.hypoth))}
-    test.type = par[3]
+    alternative = par[3]
     var.eq = par[4]
     conf.level = par[5]
     matched = par[6]
@@ -32,9 +32,9 @@ function(x, ...) {
     if (var.eq == T) {robust <- F}
     if (var.eq == F) {robust <- T}
     myargs <- c(deparse(substitute(var1)), deparse(substitute(var2)), deparse(substitute(by)))
-    if (test.type == "less") {par1 <- c(">=", "<", "Pr(T < t) = ")}
-	if (test.type == "two.sided") {par1 <- c("=", "!=", "Pr(|T| > t) = ")}
-	if (test.type == "greater") {par1 <- c("<=",">", "Pr(T > t) = ")}
+    if (alternative == "less") {par1 <- c(">=", "<", "Pr(T < t) = ")}
+	if (alternative == "two.sided") {par1 <- c("=", "!=", "Pr(|T| > t) = ")}
+	if (alternative == "greater") {par1 <- c("<=",">", "Pr(T > t) = ")}
 	par2 <- ""
     partest <- ""
     partest2 <- "difference in"
