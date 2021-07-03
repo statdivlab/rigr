@@ -116,6 +116,10 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
     if (length(var2) > 1 & length(by) > 1) {
       stop("Please specify only one of the variables 'by' or 'var2'")
     }
+    # check that alternative is one of "less", "two.sided", or "greater"
+    if (!(alternative %in% c("less", "two.sided", "greater"))) {
+      stop("'alternative' must be either 'less', 'two.sided', or 'greater'")
+    }
     # See whether requested test presumes equal variance
     if (var.eq == TRUE) {
       robust <- FALSE
