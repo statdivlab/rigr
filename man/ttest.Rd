@@ -17,7 +17,7 @@ ttest(
   prop = FALSE,
   exact = FALSE,
   null.hypoth = 0,
-  test.type = "two.sided",
+  alternative = "two.sided",
   var.eq = FALSE,
   conf.level = 0.95,
   matched = FALSE,
@@ -52,7 +52,7 @@ intervals.}
 null hypothesis for the mean (or difference in means if performing a
 two-sample test). Defaults to zero.}
 
-\item{test.type}{\code{var1} a string: one of
+\item{alternative}{\code{var1} a string: one of
 \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
 of the test. Defaults to a two-sided test.}
 
@@ -116,7 +116,7 @@ psa <- read.table("http://www.emersonstatistics.com/datasets/psa.txt", header=TR
 attach(psa)
 
 #- Perform t-test -#
-ttest(pretxpsa, null.hypoth = 100, test.type = "greater", more.digits = 1)
+ttest(pretxpsa, null.hypoth = 100, alternative = "greater", more.digits = 1)
 
 #- Define new binary variable as indicator -#
 #- of whether or not bss was worst possible -#
