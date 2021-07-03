@@ -25,13 +25,13 @@ ttest(
 )
 }
 \arguments{
-\item{var1}{\code{var1} a (non-empty) numeric vector of
+\item{var1}{a (non-empty) numeric vector of
 data values.}
 
-\item{var2}{\code{var1} an optional (non-empty) numeric
+\item{var2}{an optional (non-empty) numeric
 vector of data.}
 
-\item{by}{\code{var1} a variable of equal length to
+\item{by}{a variable of equal length to
 that of \code{var1} with two outcomes. This will be used to define strata
 for a t-test on \code{var1}.}
 
@@ -48,27 +48,27 @@ Wald based confidence intervals.}
 test of equality of proportions with Exact Binomial based confidence
 intervals.}
 
-\item{null.hypoth}{\code{var1} a number specifying the
+\item{null.hypoth}{a number specifying the
 null hypothesis for the mean (or difference in means if performing a
 two-sample test). Defaults to zero.}
 
-\item{alternative}{\code{var1} a string: one of
+\item{alternative}{a string: one of
 \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
 of the test. Defaults to a two-sided test.}
 
-\item{var.eq}{\code{var1} a logical value, either
+\item{var.eq}{a logical value, either
 \code{TRUE} or \code{FALSE} (default), specifying whether or not equal
 variances should be presumed in a two-sample t-test. Also controls robust
 standard errors.}
 
-\item{conf.level}{\code{var1} confidence level of the
+\item{conf.level}{confidence level of the
 test. Defaults to 95/100.}
 
-\item{matched}{\code{var1} a logical value, either
+\item{matched}{a logical value, either
 \code{TRUE} or \code{FALSE}, indicating whether or not the variables of a
 two-sample t-test are matched. Variables must be of equal length.}
 
-\item{more.digits}{\code{var1} a numeric value
+\item{more.digits}{a numeric value
 specifying whether or not to display more or fewer digits in the output.
 Non-integers are automatically rounded down. Any call to \code{ttest()} will
 run \code{ttest.default()}, with user specified values in place of the
