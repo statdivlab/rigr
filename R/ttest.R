@@ -11,11 +11,11 @@
 #' values in place of defaults in the appropriate places.
 #' 
 #' @aliases ttest ttest.do plot.ttest print.ttest ttest.default
-#' @param var1 \code{var1} a (non-empty) numeric vector of
+#' @param var1 a (non-empty) numeric vector of
 #' data values.
-#' @param var2 \code{var1} an optional (non-empty) numeric
+#' @param var2 an optional (non-empty) numeric
 #' vector of data.
-#' @param by \code{var1} a variable of equal length to
+#' @param by a variable of equal length to
 #' that of \code{var1} with two outcomes. This will be used to define strata
 #' for a t-test on \code{var1}.
 #' @param strat a variable to use instead of \code{by}. However, using
@@ -27,22 +27,22 @@
 #' @param exact must be \code{FALSE} if \code{prop=FALSE}. If true, performs a
 #' test of equality of proportions with Exact Binomial based confidence
 #' intervals.
-#' @param null.hypoth \code{var1} a number specifying the
+#' @param null.hypoth a number specifying the
 #' null hypothesis for the mean (or difference in means if performing a
 #' two-sample test). Defaults to zero.
-#' @param alternative \code{var1} a string: one of
+#' @param alternative a string: one of
 #' \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
 #' of the test. Defaults to a two-sided test.
-#' @param var.eq \code{var1} a logical value, either
+#' @param var.eq a logical value, either
 #' \code{TRUE} or \code{FALSE} (default), specifying whether or not equal
 #' variances should be presumed in a two-sample t-test. Also controls robust
 #' standard errors.
-#' @param conf.level \code{var1} confidence level of the
+#' @param conf.level confidence level of the
 #' test. Defaults to 95/100.
-#' @param matched \code{var1} a logical value, either
+#' @param matched a logical value, either
 #' \code{TRUE} or \code{FALSE}, indicating whether or not the variables of a
 #' two-sample t-test are matched. Variables must be of equal length.
-#' @param more.digits \code{var1} a numeric value
+#' @param more.digits a numeric value
 #' specifying whether or not to display more or fewer digits in the output.
 #' Non-integers are automatically rounded down. Any call to \code{ttest()} will
 #' run \code{ttest.default()}, with user specified values in place of the
