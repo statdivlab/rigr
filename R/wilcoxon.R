@@ -7,30 +7,32 @@
 #' 
 #' 
 #' @aliases wilcoxon wilcoxon.do print.wilcoxon wilcoxon.default
-#' @param y \code{y} numeric vector of data values.
+#' 
+#' @param y numeric vector of data values.
 #' Non-finite (missing or infinite) values will be omitted.
-#' @param x \code{\dots} optional numeric vector of data
+#' @param x optional numeric vector of data
 #' values. Non-finite (missing or infinite) values will be omitted.
-#' @param alternative \code{\dots} specifies the
+#' @param alternative specifies the
 #' alternative hypothesis for the test; acceptable values are
 #' \code{"two.sided"}, \code{"greater"}, or \code{"less"}.
-#' @param mu \code{\dots} the value of the null
+#' @param mu the value of the null
 #' hypothesis.
-#' @param paired \code{\dots} logical indicating whether
+#' @param paired logical indicating whether
 #' the data are paired or not. Default is \code{FALSE}. If \code{TRUE}, data
 #' must be the same length.
-#' @param exact \code{\dots} logical value indicating
+#' @param exact logical value indicating
 #' whether or not an exact test should be computed.
-#' @param correct \code{\dots} logical indicating whether
+#' @param correct logical indicating whether
 #' or not a continuity correction should be used and displayed.
-#' @param conf.int \code{\dots} logical indicating whether
+#' @param conf.int logical indicating whether
 #' or not to calculate and display a 'confidence interval' (performs a
 #' semi-parametric test on medians, and is non-robust) and point estimate.
-#' @param conf.level \code{\dots} confidence level for the
+#' @param conf.level confidence level for the
 #' interval.
 #' @param \dots only used in the generic S3 class.
-#' @return A list with class \code{"wilcoxon"}
-#' is returned. The print method lays out the information in an easy to read
+#' 
+#' @return A list of class \code{wilcoxon}
+#' is returned. The print method lays out the information in an easy-to-read
 #' format. \item{statistic}{the value of the test
 #' statistic with a name describing it.} \item{parameter}{the parameter(s) for
 #' the exact distribution of the test statistic.} \item{p.value}{the p-value
@@ -183,9 +185,10 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
             METHOD <- paste(METHOD, "with continuity correction")
           }
           z <- (z - CORRECTION)/SIGMA
-          PVAL <- switch(alternative, less = pnorm(z), greater = pnorm(z, 
-                                                                       lower.tail = FALSE), two.sided = 2 * min(pnorm(z), 
-                                                                                                                pnorm(z, lower.tail = FALSE)))
+          PVAL <- switch(alternative, 
+                         less = pnorm(z), 
+                         greater = pnorm(z, lower.tail = FALSE), 
+                         two.sided = 2 * min(pnorm(z), pnorm(z, lower.tail = FALSE)))
           if (conf.int) {# calculate confidence interval if requested
             x <- x + mu
             alpha <- 1 - conf.level
@@ -351,9 +354,10 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
             METHOD <- paste(METHOD, "with continuity correction")
           }
           z <- (z - CORRECTION)/SIGMA
-          PVAL <- switch(alternative, less = pnorm(z), greater = pnorm(z, 
-                                                                       lower.tail = FALSE), two.sided = 2 * min(pnorm(z), 
-                                                                                                                pnorm(z, lower.tail = FALSE)))
+          PVAL <- switch(alternative, 
+                         less = pnorm(z), 
+                         greater = pnorm(z, lower.tail = FALSE), 
+                         two.sided = 2 * min(pnorm(z), pnorm(z, lower.tail = FALSE)))
           if (conf.int) {
             alpha <- 1 - conf.level
             mumin <- min(x) - max(y)
@@ -426,15 +430,28 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         ## matrix of variances
         vars <- matrix(c(unadjVar, tiedAdjVar, zeroAdjVar, adjVar), ncol=1)
         colnames(vars) <- " "
-        rownames(vars) <- c("unadjusted variance", "adjustment for ties", "adjustment for zeroes", "adjusted variance")
+        rownames(vars) <- c("unadjusted variance", 
+                            "adjustment for ties", 
+                            "adjustment for zeroes", 
+                            "adjusted variance")
         ## format z and pvalue
         if(conf.int){
-          inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), paste("[", cint[1],", ", cint[2],"]", sep=""), ESTIMATE), nrow=1)
-          inf <- rbind(inf, matrix(c(format(z, digits=5), format(1-pnorm(z), digits=5), " ", " "), nrow=1))
+          inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), 
+                          paste("[", cint[1],", ", cint[2],"]", sep=""), ESTIMATE), nrow=1)
+          inf <- rbind(inf, 
+                       matrix(c(format(z, digits=5), 
+                                format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
+                                              two.sided=2*min(pnorm(z),1-pnorm(z))), digits = 5)), 
+                                nrow=1))
           colnames(inf) <- c("Test Statistic", "p-value", "CI", "Point Estimate")
         } else {
           inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
-          inf <- rbind(inf, matrix(c(format(z, digits=5), format(1-pnorm(z), digits=5)), nrow=1))
+          inf <- rbind(inf, 
+                       matrix(c(format(z, digits=5), 
+                                format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
+                                                                        two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                       digits = 5)), 
+                              nrow=1))
           colnames(inf) <- c("Test Statistic", "p-value")
         }
         rownames(inf) <- c(names(STATISTIC), "Z")
@@ -453,12 +470,22 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         rownames(vars) <- c("unadjusted variance", "adjustment for ties", "adjusted variance")
         ## format z and pvalue
         if(conf.int){
-          inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), paste("[", cint[1],", ", cint[2],"]", sep=""), ESTIMATE), nrow=1)
-          inf <- rbind(inf, matrix(c(format(z, digits=5), format(1-pnorm(z), digits=5), " ", " "), nrow=1))
+          inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), 
+                          paste("[", cint[1],", ", cint[2],"]", sep=""), ESTIMATE), nrow=1)
+          inf <- rbind(inf, 
+                       matrix(c(format(z, digits=5),
+                                # is this also a bug???
+                                format(1-pnorm(z), digits=5), " ", " "), 
+                              nrow=1))
           colnames(inf) <- c("Test Statistic", "p-value", "CI", "Point Estimate")
         } else {
           inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
-          inf <- rbind(inf, matrix(c(format(z, digits=5), format(1-pnorm(z), digits=5)), nrow=1))
+          inf <- rbind(inf, 
+                       matrix(c(format(z, digits=5), 
+                                format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
+                                                                        two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                       digits = 5)), 
+                              nrow=1))
           colnames(inf) <- c("Test Statistic", "p-value")
         }
         rownames(inf) <- c(names(STATISTIC), "Z")
@@ -474,7 +501,14 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
     }
   
   
-  wilcox.obj <- wilcoxon.do(x=y,y=x,alternative=alternative,mu=mu,paired=paired,exact=exact,correct=correct,conf.int=conf.int,conf.level=conf.level)
+  wilcox.obj <- wilcoxon.do(x=y,
+                            y=x,
+                            alternative=alternative,
+                            mu=mu,paired=paired,
+                            exact=exact,
+                            correct=correct,
+                            conf.int=conf.int,
+                            conf.level=conf.level)
   wilcox.obj$call <- match.call()
   class(wilcox.obj) <- "wilcoxon"
   wilcox.obj

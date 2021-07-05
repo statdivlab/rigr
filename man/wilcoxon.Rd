@@ -20,40 +20,40 @@ wilcoxon(
 )
 }
 \arguments{
-\item{y}{\code{y} numeric vector of data values.
+\item{y}{numeric vector of data values.
 Non-finite (missing or infinite) values will be omitted.}
 
-\item{x}{\code{\dots} optional numeric vector of data
+\item{x}{optional numeric vector of data
 values. Non-finite (missing or infinite) values will be omitted.}
 
-\item{alternative}{\code{\dots} specifies the
+\item{alternative}{specifies the
 alternative hypothesis for the test; acceptable values are
 \code{"two.sided"}, \code{"greater"}, or \code{"less"}.}
 
-\item{mu}{\code{\dots} the value of the null
+\item{mu}{the value of the null
 hypothesis.}
 
-\item{paired}{\code{\dots} logical indicating whether
+\item{paired}{logical indicating whether
 the data are paired or not. Default is \code{FALSE}. If \code{TRUE}, data
 must be the same length.}
 
-\item{exact}{\code{\dots} logical value indicating
+\item{exact}{logical value indicating
 whether or not an exact test should be computed.}
 
-\item{correct}{\code{\dots} logical indicating whether
+\item{correct}{logical indicating whether
 or not a continuity correction should be used and displayed.}
 
-\item{conf.int}{\code{\dots} logical indicating whether
+\item{conf.int}{logical indicating whether
 or not to calculate and display a 'confidence interval' (performs a
 semi-parametric test on medians, and is non-robust) and point estimate.}
 
-\item{conf.level}{\code{\dots} confidence level for the
+\item{conf.level}{confidence level for the
 interval.}
 
 \item{\dots}{only used in the generic S3 class.}
 }
 \value{
-A list with class \code{"wilcoxon"}
+A list with class \code{wilcoxon}
 is returned. The print method lays out the information in an easy to read
 format. \item{statistic}{the value of the test
 statistic with a name describing it.} \item{parameter}{the parameter(s) for
