@@ -79,14 +79,14 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
           stop("'conf.level' must be a single number between 0 and 1")
       }
       if (!is.numeric(x)) 
-        stop("'x' must be numeric")
+        stop("'y' must be numeric")
       if (!is.null(y)) {
         if (!is.numeric(y)) 
-          stop("'y' must be numeric")
+          stop("'x' must be numeric")
         DNAME <- paste(deparse(substitute(x)), "and", deparse(substitute(y)))
         if (paired) {
           if (length(x) != length(y)) 
-            stop("'x' and 'y' must have the same length")
+            stop("'y' and 'x' must have the same length")
           OK <- complete.cases(x, y)
           x <- x[OK] - y[OK]
           y <- NULL
@@ -99,11 +99,11 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       else {
         DNAME <- deparse(substitute(x))
         if (paired) 
-          stop("'y' is missing for paired test")
+          stop("'x' is missing for paired test")
         x <- x[is.finite(x)]
       }
       if (length(x) < 1L) 
-        stop("not enough (finite) 'x' observations")
+        stop("not enough finite 'y' observations")
       CORRECTION <- 0
       if (is.null(y)) {
         METHOD <- "Wilcoxon signed rank test"
@@ -275,7 +275,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       }
       else { 
         if (length(y) < 1L) 
-          stop("not enough 'y' observations")
+          stop("not enough finite 'x' observations")
         METHOD <- "Wilcoxon rank sum test"
         r <- rank(c(x - mu, y))
         n.x <- as.double(length(x))
@@ -441,15 +441,18 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
           inf <- rbind(inf, 
                        matrix(c(format(z, digits=5), 
                                 format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
-                                              two.sided=2*min(pnorm(z),1-pnorm(z))), digits = 5)), 
+                                              two.sided=2*min(pnorm(z),1-pnorm(z))), digits = 5),
+                                " ", " "), 
                                 nrow=1))
           colnames(inf) <- c("Test Statistic", "p-value", "CI", "Point Estimate")
         } else {
           inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
           inf <- rbind(inf, 
                        matrix(c(format(z, digits=5), 
-                                format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
-                                                                        two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                format(switch(alternative,
+                                              less=pnorm(z), 
+                                              greater=1-pnorm(z), 
+                                              two.sided=2*min(pnorm(z),1-pnorm(z))), 
                                        digits = 5)), 
                               nrow=1))
           colnames(inf) <- c("Test Statistic", "p-value")
@@ -482,8 +485,10 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
           inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
           inf <- rbind(inf, 
                        matrix(c(format(z, digits=5), 
-                                format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
-                                                                        two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                format(switch(alternative,
+                                              less=pnorm(z), 
+                                              greater=1-pnorm(z), 
+                                              two.sided=2*min(pnorm(z),1-pnorm(z))), 
                                        digits = 5)), 
                               nrow=1))
           colnames(inf) <- c("Test Statistic", "p-value")
