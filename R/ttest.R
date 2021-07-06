@@ -11,6 +11,7 @@
 #' values in place of defaults in the appropriate places.
 #' 
 #' @aliases ttest ttest.do plot.ttest print.ttest ttest.default
+#' 
 #' @param var1 a (non-empty) numeric vector of
 #' data values.
 #' @param var2 an optional (non-empty) numeric
@@ -48,6 +49,7 @@
 #' run \code{ttest.default()}, with user specified values in place of the
 #' appropriate defaults.
 #' @param \dots only used in the generic S3 class.
+#' 
 #' @return Prints a summary of the data and the
 #' corresponding t-test. \item{Variable}{the variable
 #' name supplied to the t-test function} \item{Group}{the group name: either

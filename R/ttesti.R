@@ -151,11 +151,20 @@ ttesti <- function(obs, mean, sd, obs2=NA, mean2=NA, sd2=NA, null.hyp = 0, level
     cat("\n", "t-statistic =", round(tStat, 3), ", df =", floor(obs-1), "\n")
     cat("\n", paste("Ho: mean = ", null.hyp),"\n")
     if(alternative == "two.sided"){
-      cat("\n", paste("Ha: mean !=", null.hyp, ","), paste("Pr(|T| > |t|) =", format.pval(2*pt(-abs(tStat), obs-1), 5)), "\n")
+      cat("\n", 
+          paste("Ha: mean !=", null.hyp, ","), 
+          paste("Pr(|T| > |t|) =", format.pval(2*pt(-abs(tStat), obs-1), 5)), 
+          "\n")
     } else if (alternative == "less"){
-      cat("\n", paste("Ha: mean <", null.hyp, ","), paste("Pr(T < t) =", format.pval(pt(-abs(tStat), obs-1), 5)), "\n")
+      cat("\n", 
+          paste("Ha: mean <", null.hyp, ","), 
+          paste("Pr(T < t) =", format.pval(pt(-abs(tStat), obs - 1), 5)),#   pt(tStat, obs - 1), 5)), 
+          "\n")
     } else {
-      cat("\n", paste("Ha: mean >", null.hyp, ","), paste("Pr(T > t) =", format.pval(1-pt(abs(tStat), obs-1), 5)), "\n")
+      cat("\n", 
+          paste("Ha: mean >", null.hyp, ","), 
+          paste("Pr(T > t) =", format.pval(1-pt(abs(tStat), obs-1), 5)), 
+          "\n")
     }
     if(prop){
       if(exact){
@@ -242,11 +251,20 @@ ttesti <- function(obs, mean, sd, obs2=NA, mean2=NA, sd2=NA, null.hyp = 0, level
       cat("\n", "t-statistic =", round(tStat, 3), ", df =", floor(obs+obs2-2), "\n")
       cat("\n", paste("Ho: mean(x) - mean(y) = diff = ", null.hyp),"\n")
       if(alternative == "two.sided"){
-        cat("\n", paste("Ha: diff !=", null.hyp, ","), paste("Pr(|T| > |t|) =", format.pval(2*pt(-abs(tStat), obs+obs2-2), 5)), "\n")
+        cat("\n", 
+            paste("Ha: diff !=", null.hyp, ","), 
+            paste("Pr(|T| > |t|) =", format.pval(2*pt(-abs(tStat), obs+obs2-2), 5)), 
+            "\n")
       } else if (alternative == "less"){
-        cat("\n", paste("Ha: diff <", null.hyp, ","), paste("Pr(T < t) =", format.pval(pt(-abs(tStat), obs+obs2-2), 5)), "\n")
+        cat("\n", 
+            paste("Ha: diff <", null.hyp, ","), 
+            paste("Pr(T < t) =", format.pval(pt(tStat, obs + obs2 - 2), 5)),
+            "\n")
       } else {
-        cat("\n", paste("Ha: diff >", null.hyp, ","), paste("Pr(T > t) =", format.pval(1-pt(abs(tStat), obs+obs2-2), 5)), "\n")
+        cat("\n", 
+            paste("Ha: diff >", null.hyp, ","), 
+            paste("Pr(T > t) =", format.pval(1-pt(abs(tStat), obs+obs2-2), 5)), 
+            "\n")
       }
       if(prop){
         if(exact){
@@ -333,11 +351,20 @@ ttesti <- function(obs, mean, sd, obs2=NA, mean2=NA, sd2=NA, null.hyp = 0, level
       cat("\n", "t-statistic =", round(tStat, 3), ", Satterthwaite's df =", floor(df), "\n")
       cat("\n", paste("Ho: mean(x) - mean(y) = diff = ", null.hyp),"\n")
       if(alternative == "two.sided"){
-        cat("\n", paste("Ha: diff !=", null.hyp, ","), paste("Pr(|T| > |t|) =", format.pval(2*pt(-abs(tStat), df), 5)), "\n")
+        cat("\n", 
+            paste("Ha: diff !=", null.hyp, ","), 
+            paste("Pr(|T| > |t|) =", format.pval(2*pt(-abs(tStat), df), 5)), 
+            "\n")
       } else if (alternative == "less"){
-        cat("\n", paste("Ha: diff <", null.hyp, ","), paste("Pr(T < t) =", format.pval(pt(-abs(tStat), df), 5)), "\n")
+        cat("\n", 
+            paste("Ha: diff <", null.hyp, ","), 
+            paste("Pr(T < t) =", format.pval(pt(tStat, df), 5)), 
+            "\n")
       } else {
-        cat("\n", paste("Ha: diff >", null.hyp, ","), paste("Pr(T > t) =", format.pval(1-pt(abs(tStat), df), 5)), "\n")
+        cat("\n", 
+            paste("Ha: diff >", null.hyp, ","), 
+            paste("Pr(T > t) =", format.pval(1-pt(abs(tStat), df), 5)), 
+            "\n")
       }
       if(prop){
         if(exact){
