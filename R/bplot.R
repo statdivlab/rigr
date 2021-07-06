@@ -67,7 +67,7 @@
 #' 
 #' @export bplot
 bplot<-function (y, x = rep(1, length(y)), data = NULL, strata = NULL, 
-                 # xjitter = TRUE, yjitter = TRUE, range = 0, sd = TRUE, sdx = TRUE, 
+                 xjitter = TRUE, yjitter = TRUE, range = 0, sd = TRUE, sdx = TRUE, 
                  log = FALSE, cex = c(meancex = 1, jittercex = 0.8), col = c(sdcol = "dodgerblue3", 
                                                                              jittercol = "gray30"), main = NULL, xlab = NULL, ylab = NULL, 
                  names = NULL, ylim = NULL, legend = FALSE) 
