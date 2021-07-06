@@ -477,8 +477,11 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
                           paste("[", cint[1],", ", cint[2],"]", sep=""), ESTIMATE), nrow=1)
           inf <- rbind(inf, 
                        matrix(c(format(z, digits=5),
-                                # is this also a bug???
-                                format(1-pnorm(z), digits=5), " ", " "), 
+                                format(switch(alternative,
+                                              less=pnorm(z), 
+                                              greater=1-pnorm(z), 
+                                              two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                       digits=5), " ", " "), 
                               nrow=1))
           colnames(inf) <- c("Test Statistic", "p-value", "CI", "Point Estimate")
         } else {
