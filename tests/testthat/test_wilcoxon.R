@@ -2,14 +2,17 @@
 
 y <- rnorm(100)
 
-test_that("wilcoxon() throws error if mu is not a scalar", {
+test_that("wilcoxon() throws error if mu is not a (finite) scalar", {
   expect_error(wilcoxon(y, mu = c(1,2)), "'mu' must be a single number")
+  expect_error(wilcoxon(y, mu = Inf), "'mu' must be a single number")
 })
 
 test_that("wilcoxon() throws error if conf.level is not a number between 0 and 1", {
-  expect_error(wilcoxon(y, 
-                        conf.level = 1.01,
-                        conf.int = TRUE), 
+  expect_error(wilcoxon(y, conf.level = 1.01, conf.int = TRUE), 
+               "'conf.level' must be a single number between 0 and 1")
+  expect_error(wilcoxon(y, conf.level = Inf, conf.int = TRUE),
+               "'conf.level' must be a single number between 0 and 1")
+  expect_error(wilcoxon(y, conf.level = c(0.9, 0.95), conf.int = TRUE),
                "'conf.level' must be a single number between 0 and 1")
 })
 
