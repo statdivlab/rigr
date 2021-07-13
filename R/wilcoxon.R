@@ -78,66 +78,74 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
             (conf.level > 0) && (conf.level < 1))) 
         stop("'conf.level' must be a single number between 0 and 1")
     }
-    if (!is.numeric(y)) 
+    # variables must be numeric and have same length (if two-sample)
+    if (!is.numeric(y)) { 
       stop("'y' must be numeric")
+    }
     if (!is.null(x)) {
       if (!is.numeric(x)) 
         stop("'x' must be numeric")
-      DNAME <- paste(deparse(substitute(y)), "and", deparse(substitute(x)))
-      if (paired) {
+      DNAME <- paste(deparse(substitute(y)), "and", deparse(substitute(x))) # data name
+      if (paired) { # if paired, calculate differences
         if (length(y) != length(x)) 
           stop("'y' and 'x' must have the same length")
         OK <- complete.cases(y, x)
         y <- y[OK] - x[OK]
         x <- NULL
       }
-      else {
+      else { # only finite values allowed
         y <- y[is.finite(y)]
         x <- x[is.finite(x)]
       }
     }
     else {
-      DNAME <- deparse(substitute(y))
+      DNAME <- deparse(substitute(y)) # data name
       if (paired) 
         stop("'x' is missing for paired test")
       y <- y[is.finite(y)]
     }
     if (length(y) < 1L) 
       stop("not enough finite 'y' observations")
+    
+    # one-sample test
     CORRECTION <- 0
     if (is.null(x)) {
       METHOD <- "Wilcoxon signed rank test"
-      y <- y - mu
+      y <- y - mu # shift by null mu
+      # keep track of but drop zeroes
       ZEROES <- any(y == 0)
       nZeroes <- sum(y==0)
       sumZeroes <- 0
       if (ZEROES) 
         y <- y[y != 0]
       n <- as.double(length(y))
+      # if user doesn't specify exact test, do exact automatically for < 50 obs
       if (is.null(exact)) 
         exact <- (n < 50)
       r <- rank(abs(y))
       signs <- sign(y)
       nPos <- sum(signs>0)
       nNeg <- sum(signs<0)
+      # sum ranks of pos and neg obs
       sumPos <- sum(r[y>0])
       sumNeg <- sum(r[y<0])
-      STATISTIC <- setNames(sum(r[y > 0]), "V")
+      STATISTIC <- setNames(sum(r[y > 0]), "V") # V statistic - sum ranks of pos obs
       TIES <- length(r) != length(unique(r))
       ePos <- n*(n+1)/4
       unadjVar <- (n*(n+1)*(2*n+1))/24
       zeroAdjVar <- (nZeroes*(nZeroes+1)*(2*nZeroes+1))/24
-      if (exact && !TIES && !ZEROES) {# no adjustment necessary
+      if (exact && !TIES && !ZEROES) {# exact test + no adjustments
         tiedAdjVar <- 0
         adjVar <- unadjVar - zeroAdjVar
-        PVAL <- switch(alternative, two.sided = {
-          p <- if (STATISTIC > (n * (n + 1)/4)) psignrank(STATISTIC - 
-                                                            1, n, lower.tail = FALSE) else psignrank(STATISTIC, 
-                                                                                                     n)
-          min(2 * p, 1)
-        }, greater = psignrank(STATISTIC - 1, n, lower.tail = FALSE), 
-        less = psignrank(STATISTIC, n))
+        PVAL <- switch(alternative, 
+                       two.sided = {p <- if 
+                          (STATISTIC > (n * (n + 1)/4)) psignrank(STATISTIC - 
+                          1, n, lower.tail = FALSE) else psignrank(STATISTIC, n)
+                          min(2 * p, 1)}, 
+                       greater = psignrank(STATISTIC - 1, n, lower.tail = FALSE), 
+                       less = psignrank(STATISTIC, n))
         z <- 2*(STATISTIC - ePos)/sqrt(n*(n+1)*(2*n+1)/6)
+        # confidence interval
         if (conf.int) {
           x <- x + mu
           alpha <- 1 - conf.level
@@ -172,19 +180,20 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
           ESTIMATE <- c(`(pseudo)median` = median(diffs))
         }
       }
-      else {# need to adjust for ties
+      else {# non-exact test and/or adjusting for ties
         NTIES <- table(r)
         z <- STATISTIC - n * (n + 1)/4
         SIGMA <- sqrt(n * (n + 1) * (2 * n + 1)/24 - sum(NTIES^3 - 
                                                            NTIES)/48)
         adjVar <- SIGMA^2
         tiedAdjVar <- adjVar - unadjVar - zeroAdjVar
-        if (correct) {
+        if (correct) { # continuity correction
           CORRECTION <- switch(alternative, two.sided = sign(z) * 
                                  0.5, greater = 0.5, less = -0.5)
           METHOD <- paste(METHOD, "with continuity correction")
         }
         z <- (z - CORRECTION)/SIGMA
+        # normal approx for p-value
         PVAL <- switch(alternative, 
                        less = pnorm(z), 
                        greater = pnorm(z, lower.tail = FALSE), 
@@ -273,6 +282,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         }
       }
     }
+    # two sample test
     else { 
       if (length(x) < 1L) 
         stop("not enough finite 'x' observations")

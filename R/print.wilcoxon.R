@@ -1,3 +1,6 @@
+# Print method for class wilcoxon
+#' @noRd
+#' @export
 print.wilcoxon <-
 function(x,...){
   out <- x
