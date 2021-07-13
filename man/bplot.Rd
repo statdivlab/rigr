@@ -10,6 +10,11 @@ bplot(
   x = rep(1, length(y)),
   data = NULL,
   strata = NULL,
+  xjitter = TRUE,
+  yjitter = TRUE,
+  range = 0,
+  sd = TRUE,
+  sdx = TRUE,
   log = FALSE,
   cex = c(meancex = 1, jittercex = 0.8),
   col = c(sdcol = "dodgerblue3", jittercol = "gray30"),
@@ -32,6 +37,29 @@ same length as \code{y}.}
 
 \item{strata}{strata variable(s), used to
 stratify the plot.}
+
+\item{xjitter}{a logical specifying if
+the jittered data (jittered on x-axis) are to be displayed or not. Default
+is \code{TRUE}.}
+
+\item{yjitter}{a logical specifying if
+the jittered data (jittered on y-axis) are to be displayed or not. Default
+is \code{TRUE}.}
+
+\item{range}{passed to the
+\code{boxplot()} function. This determines how far the plot whiskers extend
+out from the box. If range is positive, the whiskers extend to the most
+extreme data point which is no more than range times the interquartile range
+from the box. A value of zero causes the whiskers to extend to the data
+extremes.}
+
+\item{sd}{a logical specifying if the
+standard devation of \code{y} should be overlaid on the plot. Default value
+is \code{TRUE}.}
+
+\item{sdx}{a logical specifying if the
+standard deviation of \code{x} should be overlaid on the plot. Default value
+is \code{TRUE}.}
 
 \item{log}{a logical specifying if the data
 are to be displayed on a log scale. Passed to \code{boxplot()}. Default
@@ -62,29 +90,6 @@ of the input dependent variable \code{y}.}
 deviations have been overlaid on the graph) displays a legend next to the
 first boxplot plotted denoting the max, mean+sd, mean, mean-sd, and min
 values.}
-
-\item{xjitter}{a logical specifying if
-the jittered data (jittered on x-axis) are to be displayed or not. Default
-is \code{TRUE}.}
-
-\item{yjitter}{a logical specifying if
-the jittered data (jittered on y-axis) are to be displayed or not. Default
-is \code{TRUE}.}
-
-\item{range}{passed to the
-\code{boxplot()} function. This determines how far the plot whiskers extend
-out from the box. If range is positive, the whiskers extend to the most
-extreme data point which is no more than range times the interquartile range
-from the box. A value of zero causes the whiskers to extend to the data
-extremes.}
-
-\item{sd}{a logical specifying if the
-standard devation of \code{y} should be overlaid on the plot. Default value
-is \code{TRUE}.}
-
-\item{sdx}{a logical specifying if the
-standard deviation of \code{x} should be overlaid on the plot. Default value
-is \code{TRUE}.}
 }
 \value{
 Produces a plot. No value is

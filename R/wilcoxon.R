@@ -135,6 +135,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       unadjVar <- (n*(n+1)*(2*n+1))/24
       zeroAdjVar <- (nZeroes*(nZeroes+1)*(2*nZeroes+1))/24
       if (exact && !TIES && !ZEROES) {# exact test + no adjustments
+        METHOD <- sub("test", "exact test", METHOD, fixed = TRUE)
         tiedAdjVar <- 0
         adjVar <- unadjVar - zeroAdjVar
         PVAL <- switch(alternative, 
@@ -147,7 +148,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         z <- 2*(STATISTIC - ePos)/sqrt(n*(n+1)*(2*n+1)/6)
         # confidence interval
         if (conf.int) {
-          x <- x + mu
+          y <- y + mu
           alpha <- 1 - conf.level
           diffs <- outer(y, y, "+")
           diffs <- sort(diffs[!lower.tri(diffs)])/2
@@ -279,6 +280,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
           warning("cannot compute exact p-value with zeroes")
           if (conf.int) 
             warning("cannot compute exact confidence interval with zeroes")
+        }
+        if (exact && correct) {
+          warnings("continuity correction does not apply to exact p-value")
         }
       }
     }
@@ -423,6 +427,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         }
       }
     }
+
     names(mu) <- if (paired || !is.null(x)) 
       "location shift"
     else "location"
