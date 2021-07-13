@@ -53,3 +53,116 @@ test_that("wilcoxon() throws error if y and x values are all identical and CI is
   expect_error(wilcoxon(y = rep(100, 100), x = rep(100, 100), conf.int = TRUE), 
                "cannot compute confidence interval when all observations are tied")
 })
+
+
+### one-sample test
+set.seed(1)
+a <- rnorm(50)
+b <- rnorm(50)
+y <- a - b
+
+wil1 <- wilcoxon(y, correct = FALSE, conf.int = TRUE)
+wil2 <- wilcox.test(y, correct = FALSE, conf.int = TRUE)
+
+### TO-DO: really I should also be testing other quantities returned, but they mostly aren't provided
+### by wilcox.test() so maybe by-hand using online calculator? e.g. vars, rank sums, z
+test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", {
+  expect_s3_class(wil1, "wilcoxon")
+  expect_equal(wil1$statistic, wil2$statistic)
+  expect_equal(wil1$p.value, wil2$p.value)
+  expect_equal(wil1$method, wil2$method)
+  expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
+  expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
+               round(rep(wil2$p.value, 2), digits = 4))
+  expect_equal(wil1$alternative, wil2$alternative)
+  expect_equal(as.numeric(wil1$hyps[1,1]), as.numeric(wil1$null.value))
+  expect_equal(wil1$hyps[1,2], wil1$alternative)
+  expect_equal(wil1$null.value, wil2$null.value) 
+  expect_equal(wil1$parameter, wil2$parameter)
+  expect_equal(wil1$method, wil2$method)
+  expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
+                                          stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
+               as.numeric(wil2$conf.int))
+})
+
+wil1 <- wilcoxon(y, correct = TRUE, conf.int = TRUE)
+wil2 <- wilcox.test(y, correct = TRUE, conf.int = TRUE)
+
+test_that("wilcoxon() returns correct numbers for one-sample corrected test", {
+  expect_s3_class(wil1, "wilcoxon")
+  expect_equal(wil1$statistic, wil2$statistic)
+  expect_equal(wil1$p.value, wil2$p.value)
+  expect_equal(wil1$method, wil2$method)
+  expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
+  expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
+               round(rep(wil2$p.value, 2), digits = 4))
+  expect_equal(wil1$alternative, wil2$alternative)
+  expect_equal(as.numeric(wil1$hyps[1,1]), as.numeric(wil1$null.value))
+  expect_equal(wil1$hyps[1,2], wil1$alternative)
+  expect_equal(wil1$null.value, wil2$null.value) 
+  expect_equal(wil1$parameter, wil2$parameter)
+  expect_equal(wil1$method, wil2$method)
+  expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
+                                          stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
+               as.numeric(wil2$conf.int))
+})
+
+wil1 <- wilcoxon(y, correct = FALSE, alternative = "less", conf.int = TRUE)
+wil2 <- wilcox.test(y, correct = FALSE, alternative = "less", conf.int = TRUE)
+
+test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (left)", {
+  expect_s3_class(wil1, "wilcoxon")
+  expect_equal(wil1$statistic, wil2$statistic)
+  expect_equal(wil1$p.value, wil2$p.value)
+  expect_equal(wil1$method, wil2$method)
+  expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
+  expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
+               round(rep(wil2$p.value, 2), digits = 4))
+  expect_equal(wil1$alternative, wil2$alternative)
+  expect_equal(as.numeric(wil1$hyps[1,1]), as.numeric(wil1$null.value))
+  expect_equal(wil1$hyps[1,2], wil1$alternative)
+  expect_equal(wil1$null.value, wil2$null.value) 
+  expect_equal(wil1$parameter, wil2$parameter)
+  expect_equal(wil1$method, wil2$method)
+  expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
+                                          stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
+               as.numeric(wil2$conf.int))
+})
+
+wil1 <- wilcoxon(y, correct = FALSE, alternative = "greater", conf.int = TRUE)
+wil2 <- wilcox.test(y, correct = FALSE, alternative = "greater", conf.int = TRUE)
+
+test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (right)", {
+  expect_s3_class(wil1, "wilcoxon")
+  expect_equal(wil1$statistic, wil2$statistic)
+  expect_equal(wil1$p.value, wil2$p.value)
+  expect_equal(wil1$method, wil2$method)
+  expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
+  expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
+               round(rep(wil2$p.value, 2), digits = 4))
+  expect_equal(wil1$alternative, wil2$alternative)
+  expect_equal(as.numeric(wil1$hyps[1,1]), as.numeric(wil1$null.value))
+  expect_equal(wil1$hyps[1,2], wil1$alternative)
+  expect_equal(wil1$null.value, wil2$null.value) 
+  expect_equal(wil1$parameter, wil2$parameter)
+  expect_equal(wil1$method, wil2$method)
+  expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
+                                          stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
+               as.numeric(wil2$conf.int))
+})
+
+test_that("wilcoxon() returns correct CIs other than 95%", {
+})
+

@@ -423,7 +423,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         }
       }
     }
-    names(mu) <- if (paired || !is.null(y)) 
+    names(mu) <- if (paired || !is.null(x)) 
       "location shift"
     else "location"
     RVAL <- list(statistic = STATISTIC, parameter = NULL, p.value = as.numeric(PVAL), 
@@ -529,6 +529,6 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
                             conf.level=conf.level)
   wilcox.obj$call <- match.call()
   class(wilcox.obj) <- "wilcoxon"
-  wilcox.obj
+  return(wilcox.obj)
 }
 
