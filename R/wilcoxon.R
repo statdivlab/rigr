@@ -304,6 +304,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
                                                          1)/2)
       TIES <- (length(r) != length(unique(r)))
       if (exact && !TIES) { #no need for correction
+        METHOD <- sub("test", "exact test", METHOD, fixed = TRUE)
         tiedAdjVar <- 0
         adjVar <- unadjVar
         z <- STATISTIC - n.y * n.x/2
@@ -453,26 +454,35 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       if(conf.int){
         inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), 
                         paste("[", cint[1],", ", cint[2],"]", sep=""), ESTIMATE), nrow=1)
-        inf <- rbind(inf, 
-                     matrix(c(format(z, digits=5), 
-                              format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
-                                            two.sided=2*min(pnorm(z),1-pnorm(z))), digits = 5),
-                              " ", " "), 
-                            nrow=1))
+        # if exact test, do not calculate z-score or corresponding p
+        if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
+          inf <- rbind(inf, 
+                       matrix(c(format(z, digits=5), 
+                                format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
+                                              two.sided=2*min(pnorm(z),1-pnorm(z))), digits = 5),
+                                " ", " "), 
+                              nrow=1))
+        }
         colnames(inf) <- c("Test Statistic", "p-value", "CI", "Point Estimate")
       } else {
         inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
-        inf <- rbind(inf, 
-                     matrix(c(format(z, digits=5), 
-                              format(switch(alternative,
-                                            less=pnorm(z), 
-                                            greater=1-pnorm(z), 
-                                            two.sided=2*min(pnorm(z),1-pnorm(z))), 
-                                     digits = 5)), 
-                            nrow=1))
+        if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
+          inf <- rbind(inf, 
+                       matrix(c(format(z, digits=5), 
+                                format(switch(alternative,
+                                              less=pnorm(z), 
+                                              greater=1-pnorm(z), 
+                                              two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                       digits = 5)), 
+                              nrow=1))
+        }
         colnames(inf) <- c("Test Statistic", "p-value")
       }
-      rownames(inf) <- c(names(STATISTIC), "Z")
+      if ("exact" %in% strsplit(METHOD, " ")[[1]]){
+        rownames(inf) <- c(names(STATISTIC))
+      } else{
+        rownames(inf) <- c(names(STATISTIC), "Z")
+      }
       hyps <- matrix(c(mu, alternative),nrow=1)
       colnames(hyps) <- c("H0", "Ha")
       rownames(hyps) <- "Hypothesized Median"
@@ -490,28 +500,36 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       if(conf.int){
         inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), 
                         paste("[", cint[1],", ", cint[2],"]", sep=""), ESTIMATE), nrow=1)
-        inf <- rbind(inf, 
-                     matrix(c(format(z, digits=5),
-                              format(switch(alternative,
-                                            less=pnorm(z), 
-                                            greater=1-pnorm(z), 
-                                            two.sided=2*min(pnorm(z),1-pnorm(z))), 
-                                     digits=5), " ", " "), 
-                            nrow=1))
+        if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
+          inf <- rbind(inf, 
+                       matrix(c(format(z, digits=5),
+                                format(switch(alternative,
+                                              less=pnorm(z), 
+                                              greater=1-pnorm(z), 
+                                              two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                       digits=5), " ", " "), 
+                              nrow=1))
+        }
         colnames(inf) <- c("Test Statistic", "p-value", "CI", "Point Estimate")
       } else {
         inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
-        inf <- rbind(inf, 
-                     matrix(c(format(z, digits=5), 
-                              format(switch(alternative,
-                                            less=pnorm(z), 
-                                            greater=1-pnorm(z), 
-                                            two.sided=2*min(pnorm(z),1-pnorm(z))), 
-                                     digits = 5)), 
-                            nrow=1))
+        if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
+          inf <- rbind(inf, 
+                       matrix(c(format(z, digits=5), 
+                                format(switch(alternative,
+                                              less=pnorm(z), 
+                                              greater=1-pnorm(z), 
+                                              two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                       digits = 5)), 
+                              nrow=1))
+        }
         colnames(inf) <- c("Test Statistic", "p-value")
       }
-      rownames(inf) <- c(names(STATISTIC), "Z")
+      if ("exact" %in% strsplit(METHOD, " ")[[1]]){
+        rownames(inf) <- c(names(STATISTIC))
+      } else{
+        rownames(inf) <- c(names(STATISTIC), "Z")
+      }
       hyps <- matrix(c(mu, alternative),nrow=1)
       colnames(hyps) <- c("H0", "Ha")
       rownames(hyps) <- "Hypothesized Median"
