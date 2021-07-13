@@ -215,36 +215,81 @@ descrip <- function (..., strata = NULL, subset = NULL,
         snms <- rep("", length(strata))
       tmp <- paste(snms[1], format(strata[[1]]))
       if (length(strata) > 1) {
-        for (i in 2:length(strata)) tmp <- paste(
-          tmp, snms[i], format(strata[[i]])
-        )
+        for (i in 2:length(strata)) {
+          tmp <- paste(tmp, snms[i], format(strata[[i]]))
+        }
       }
     }
     else {
       strata <- as.matrix(strata)
       snms <- dimnames(strata)[[2]]
-      if (is.null(snms)) 
+      if (is.null(snms)) {
         snms <- rep("", dim(strata)[2])
+      }
       tmp <- paste(snms[1], format(strata[, 1]))
       if (dim(strata)[2] > 1) {
-        for (i in 2:(dim(strata)[2])) tmp <- paste(
-          tmp, snms[i], format(strata[, i])
-        )
+        for (i in 2:(dim(strata)[2])) {
+          tmp <- paste(tmp, snms[i], format(strata[, i]))
+        }
       }
     }
     strata <- tmp
   }
   
+  # if thresholds are not vectors, throw an error
+  if (!is.atomic(above) & !is.null(above)) {
+    stop("above must be a vector")
+  }
+  if (!is.atomic(below) & !is.null(below)) {
+    stop("below must be a vector")
+  }
+  if (!is.atomic(labove) & !is.null(labove)) {
+    stop("labove must be a vector")
+  }
+  if (!is.atomic(rbelow) & !is.null(rbelow)) {
+    stop("rbelow must be a vector")
+  }
+  if (!is.atomic(lbetween) & !is.null(lbetween)) {
+    stop("lbetween must be a vector")
+  }
+  if (!is.atomic(rbetween) & !is.null(rbetween)) {
+    stop("rbetween must be a vector")
+  }
+  
+  # if thresholds are not numeric, give warning
+  if (!is.numeric(above) & !is.null(above)) {
+    stop("above must be numeric")
+  }
+  if (!is.numeric(below) & !is.null(below)) {
+    stop("below must be numeric")
+  }
+  if (!is.numeric(labove) & !is.null(labove)) {
+    stop("labove must be numeric")
+  }
+  if (!is.numeric(rbelow) & !is.null(rbelow)) {
+    stop("rbelow must be numeric")
+  }
+  if (!is.numeric(lbetween) & !is.null(lbetween)) {
+    stop("lbetween must be numeric")
+  }
+  if (!is.numeric(rbetween) & !is.null(rbetween)) {
+    stop("rbetween must be numeric")
+  }
+  
   # Calculate the thresholds
   thresholds <- NULL
-  if (length(above) > 0) 
+  if (length(above) > 0) {
     thresholds <- rbind(thresholds, cbind(0, above, 0, Inf))
-  if (length(labove) > 0) 
+  }
+  if (length(labove) > 0) {
     thresholds <- rbind(thresholds, cbind(1, labove, 0, Inf))
-  if (length(below) > 0) 
+  }
+  if (length(below) > 0) {
     thresholds <- rbind(thresholds, cbind(0, -Inf, 0, below))
-  if (length(rbelow) > 0) 
+  }
+  if (length(rbelow) > 0) {
     thresholds <- rbind(thresholds, cbind(0, -Inf, 1, rbelow))
+  }
   if (length(lbetween) > 0) {
     lbetween <- sort(unique(c(-Inf, lbetween, Inf)))
     thresholds <- rbind(thresholds, cbind(1, lbetween[-length(lbetween)], 
@@ -255,61 +300,115 @@ descrip <- function (..., strata = NULL, subset = NULL,
     thresholds <- rbind(thresholds, cbind(0, rbetween[-length(rbetween)], 
                                           1, rbetween[-1]))
   }
-  interval_warning <- paste0("Assuming intervals between points specified in vector. ", 
-                             "To specify specific intervals, enter interval argument as ", 
-                             "a 2 column matrix instead of a vector")
+  
+  # Add interval, linterval, rinterval, rlinterval to thresholds
+  
   if (!is.null(interval)) {
-    if (length(interval) == 2) 
+    if (length(interval) == 2) {
       interval <- matrix(interval, ncol = 2)
+    }
+      
     # add option to input interval as a vector
     if (is.vector(interval)) {
       interval <- sort(unique(interval))
       interval <- matrix(c(interval[-length(interval)], interval[-1]), 
                          ncol = 2, byrow = FALSE)
+      
+      interval_warning <- paste0("Assuming intervals between points specified in vector. ", 
+                                 "To specify specific intervals, enter interval argument as ", 
+                                 "a 2 column matrix instead of a vector")
+      
       warning(interval_warning)
     }
-    if (dim(interval)[2] != 2) 
-      stop("intervals must be specified in a 2 column matrix")
+    
+    # if matrix has more than 2 columns, throw an error
+    if (dim(interval)[2] != 2) {
+      stop("interval must be specified in a 2 column matrix")
+    }
+    
+    # add interval to thresholds
     thresholds <- rbind(thresholds, cbind(0, interval[, 1], 
                                           0, interval[, 2]))
   }
+  
   if (!is.null(linterval)) {
-    if (length(linterval) == 2) 
+    if (length(linterval) == 2) {
       linterval <- matrix(linterval, ncol = 2)
-    if (is.vector(linterval)) {
-      interval <- sort(unique(linterval))
-      linterval <- matrix(c(interval[-length(interval)], interval[-1]), 
-                          ncol = 2, byrow = FALSE)
-      warning(interval_warning)
     }
-    if (dim(linterval)[2] != 2) 
-      stop("intervals must be specified in a 2 column matrix")
+    
+    # add option to input linterval as a vector  
+    if (is.vector(linterval)) {
+      linterval <- sort(unique(linterval))
+      linterval <- matrix(c(linterval[-length(linterval)], linterval[-1]), 
+                          ncol = 2, byrow = FALSE)
+      
+      linterval_warning <- paste0("Assuming lintervals between points specified in vector. ", 
+                                 "To specify specific lintervals, enter linterval argument as ", 
+                                 "a 2 column matrix instead of a vector")
+    
+      warning(linterval_warning)
+    }
+    
+    # if matrix has more than 2 columns, throw an error
+    if (dim(linterval)[2] != 2) {
+      stop("linterval must be specified in a 2 column matrix")
+    }
+      
+    # add to thresholds
     thresholds <- rbind(thresholds, cbind(1, linterval[, 1], 0, linterval[, 2]))
   }
+  
   if (!is.null(rinterval)) {
-    if (length(rinterval) == 2) 
+    if (length(rinterval) == 2) {
       rinterval <- matrix(rinterval, ncol = 2)
-    if (is.vector(rinterval)) {
-      interval <- sort(unique(rinterval))
-      rinterval <- matrix(c(interval[-length(interval)], interval[-1]), 
-                          ncol = 2, byrow = FALSE)
-      warning(interval_warning)
     }
-    if (dim(rinterval)[2] != 2) 
-      stop("intervals must be specified in a 2 column matrix")
+      
+    # add option to input rinterval as a vector  
+    if (is.vector(rinterval)) {
+      rinterval <- sort(unique(rinterval))
+      rinterval <- matrix(c(rinterval[-length(rinterval)], rinterval[-1]), 
+                          ncol = 2, byrow = FALSE)
+      
+      rinterval_warning <- paste0("Assuming rintervals between points specified in vector. ", 
+                                  "To specify specific rintervals, enter rinterval argument as ", 
+                                  "a 2 column matrix instead of a vector")
+      
+      warning(rinterval_warning)
+    }
+    
+    # if matrix has more than 2 columns, throw an error
+    if (dim(rinterval)[2] != 2) {
+      stop("rinterval must be specified in a 2 column matrix")
+    }
+      
+    # add to thresholds
     thresholds <- rbind(thresholds, cbind(0, rinterval[,1], 1, rinterval[, 2]))
   }
+  
   if (!is.null(lrinterval)) {
-    if (length(lrinterval) == 2) 
+    if (length(lrinterval) == 2) {
       lrinterval <- matrix(lrinterval, ncol = 2)
-    if (is.vector(lrinterval)) {
-      interval <- sort(unique(lrinterval))
-      lrinterval <- matrix(c(interval[-length(interval)], interval[-1]),
-                           ncol = 2, byrow = FALSE)
-      warning(interval_warning)
     }
-    if (dim(lrinterval)[2] != 2) 
-      stop("intervals must be specified in a 2 column matrix")
+      
+    # add option to input lrinterval as a vector 
+    if (is.vector(lrinterval)) {
+      lrinterval <- sort(unique(lrinterval))
+      lrinterval <- matrix(c(lrinterval[-length(lrinterval)], lrinterval[-1]),
+                           ncol = 2, byrow = FALSE)
+      
+      lrinterval_warning <- paste0("Assuming lrintervals between points specified in vector. ", 
+                                  "To specify specific lrintervals, enter lrinterval argument as ", 
+                                  "a 2 column matrix instead of a vector")
+      
+      warning(lrinterval_warning)
+    }
+    
+    # if matrix has more than 2 columns, throw an error
+    if (dim(lrinterval)[2] != 2) {
+      stop("lrinterval must be specified in a 2 column matrix")
+    }
+      
+    # add to thresholds
     thresholds <- rbind(thresholds, cbind(1, lrinterval[,1], 1, lrinterval[, 2]))
   }
   
