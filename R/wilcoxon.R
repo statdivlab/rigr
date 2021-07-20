@@ -85,7 +85,8 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
     if (!is.null(x)) {
       if (!is.numeric(x)) 
         stop("'x' must be numeric")
-      DNAME <- paste(deparse(substitute(y)), "and", deparse(substitute(x))) # data name
+      DNAME <- paste(deparse(substitute(y, sys.frame(1))), "and", 
+                     deparse(substitute(x, sys.frame(1)))) # data name
       if (paired) { # if paired, calculate differences
         if (length(y) != length(x)) 
           stop("'y' and 'x' must have the same length")
@@ -99,7 +100,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       }
     }
     else {
-      DNAME <- deparse(substitute(y)) # data name
+      DNAME <- deparse(substitute(y, sys.frame(1))) # data name
       if (paired) 
         stop("'x' is missing for paired test")
       y <- y[is.finite(y)]
@@ -540,7 +541,6 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       RVAL <- c(RVAL, list(conf.int = cint, estimate = ESTIMATE))
     invisible(RVAL)
   }
-  
   
   wilcox.obj <- wilcoxon.do(y=y,
                             x=x,
