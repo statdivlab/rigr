@@ -27,24 +27,32 @@ KM <- function(x) {
     if (!survival::is.Surv(x)) 
         stop("x must be a Surv object")
     x <- x[!is.na(x)]
+    # time of observations
     obs <- x[, 1]
+    # event status (yes/no, 1/0)
     ev <- x[, 2]
+    # censored observation (yes/no, 1/0)
     ce <- 1 - ev
     if (length(obs) == 0) 
         stop("No data to estimate survival curve")
     N <- length(obs)
+    # if there are no observations at time 0, add in values for time zero (no events)
     if (!any(obs == 0)) {
         obs <- c(0, obs)
         ev <- c(0, ev)
-        ce <- c(0, ce)
+        ce <- c(0, ce) 
     }
+    # reorder vectors according to observation time
     i <- order(obs, 1 - ev)
     obs <- obs[i]
     ev <- ev[i]
     ce <- ce[i]
+
     ev <- rev(cumsum(rev(ev)))
     ce <- rev(cumsum(rev(ce)))
+    # cumulative number of people at risk for event
     n <- ce + ev
+    # remove duplicate observations
     i <- !duplicated(obs)
     obs <- obs[i]
     n <- n[i]
@@ -318,6 +326,7 @@ describe_surv <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL,
             x2 <- x
             x2[, 1] <- x2[, 1]^2
             z2 <- KM(x2)
+            # compute standard deviation as \sqrt{E[X^2] - E[X]^2}
             tmp2 <- sqrt(mean_KM(z2, restriction^2) - tmp1^2)
             if (geometricMean) {
                 x2 <- x
