@@ -206,34 +206,37 @@ describe_vector <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL,
     }
     ntholds <- ifelse(is.null(thresholds), 0, dim(thresholds)[1])
     probs <- sort(unique(c(probs, 0, 1)))
+    # add sample size
     rslt <- length(x)
     if (rslt == 0) {
         rslt <- c(rslt, rep(NaN, 7 + length(probs) + ntholds))
     }
     else {
+        # add number missing
         u <- is.na(x)
         rslt <- c(rslt, sum(u))
+        # only look at non-missing observations for remaining summaries
         x <- x[!u]
         if (length(x) == 0 | is.character(x)) {
             if (!geomInclude) {
                 rslt <- c(rslt, rep(NA, 6 + length(probs) + ntholds))
-            }
-            else {
+            } else {
                 rslt <- c(rslt, rep(NA, 7 + length(probs) + ntholds))
             }
-        }
-        else {
+        } else {
             if (geomInclude) {
+                # add mean, sd, geometric mean, quantiles
                 rslt <- c(rslt, mean(x), sd(x), ifelse1(
                     geometricMean, 
                     exp(mean(log(ifelse(x == 0, replaceZeroes, x)))), 
                     NA
                 ), quantile(x, probs))
-            }
-            else {
+            } else {
+                # add mean, sd, quantiles
                 rslt <- c(rslt, mean(x), sd(x), quantile(x, probs))
             }
             if (ntholds > 0) {
+                # add thresholds if any are specified
                 for (j in 1:ntholds) {
                     u <- ifelse1(
                         thresholds[j, 1] == 0, x > thresholds[j, 2], x >= thresholds[j, 2]
@@ -243,20 +246,24 @@ describe_vector <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL,
                     rslt <- c(rslt, mean(u))
                 }
             }
-            rslt <- c(rslt, Inf, rslt[5 + c(1, length(probs))])
+            # add in firstEvent and lastEvent
+            rslt <- c(rslt, Inf, NA, NA)
         }
     }
     if (length(x) > 0) {
+        # add in a 0 if the vector is not a date
         rslt <- matrix(c(rslt, 0), 1)
     }
     else {
         rslt <- matrix(rslt, 1)
     }
+    # set quantile names
     qnames <- paste(format(100 * probs), "%", sep = "")
     qnames[probs == 0.5] <- " Mdn"
     qnames[probs == 0] <- " Min"
     qnames[probs == 1] <- " Max"
     tnames <- NULL
+    # set threshold column names
     if (ntholds > 0) {
         tholds <- thresholds
         tholds[tholds == Inf | tholds == -Inf] <- 0
@@ -431,16 +438,14 @@ describe_stratified_vector <- function(x, strata, subset,
     x <- x[subset]
     if (is.factor(x) | all(x[!is.na(x)] %in% c(0, 1))) {
         geometricMean <- FALSE
-    }
-    else {
+    } else {
         geometricMean <- !any(x[!is.na(x)] < 0)
     }
     if (is.logical(replaceZeroes)) {
         if (!replaceZeroes | is.factor(x) | all(x[!is.na(x)] %in% 
                                                 c(0, 1))) {
             replaceZeroes <- NA
-        }
-        else {
+        } else {
             replaceZeroes <- min(x[!is.na(x) & x > 0])/2
         }
     }
