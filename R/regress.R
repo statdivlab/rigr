@@ -127,47 +127,79 @@ regress <- function(fnctl, formula, data,
     
     cl <- match.call()
     fit <- NULL
-    if(missing(formula)){
+    if (missing(formula)) {
       stop("You must enter a formula")
     }
-    # checking functional  fnctl
-    findx <-  pmatch(fnctl,c("mean", "geometric mean", "odds", "rate", "hazard"))
-    if (is.na(findx)) stop("unsupported functional")
+    
+    # ensure fnctl is one of the ones supported
+    findx <-  pmatch(fnctl, c("mean", "geometric mean", "odds", "rate", "hazard"))
+    if (is.na(findx)) {
+      stop("unsupported functional")
+    }
+    
+    # set fnctl to user specification
     fnctl <- c("mean", "geometric mean", "odds", "rate", "hazard")[findx]
-    if(fnctl=="hazard") stop("proportional hazards regression no longer supported")
-    if (intercept & fnctl=="hazard") stop("hazard regression cannot include an intercept")
+    
+    # if fnctl is "hazard", throw an error
+    if (fnctl == "hazard") {
+      stop("proportional hazards regression no longer supported")
+    }
+    
+    # if fnctl = "hazard" and intercept = TRUE, throw an error
+    if (intercept & fnctl == "hazard") {
+      stop("hazard regression cannot include an intercept")
+    }
+    
+    # get family and glm vs. lm
     glm <- FALSE
-    ## get the family for glm if we need it
-    if(fnctl%in%c("odds", "rate")){
+    
+    if(fnctl %in% c("odds", "rate")) {
       glm <- TRUE
-      if(method=="qr") method <- "glm.fit"
-      if(fnctl=="odds"){
+      
+      # if fnctl is "odds" or "rate" and method = "qr", internally change to method = "glm.fit"
+      if (method == "qr") {
+        method <- "glm.fit"
+      }
+      
+      if (fnctl == "odds") {
+        # if fnctl = "odds", then family = "binomial"
         family <- "binomial"
       } else {
+        # if fnctl = "rate", then family = "poisson"
         family <- "poisson"
       }
     } else {
+      
       if(fnctl!="hazard"){
         family="gaussian"
       }
+      
     }
+    
+    # if intercept = FALSE, add a "-1" to the formula
     if(!intercept){
+      
       form <- deparse(formula)
+      
       if(length(form) > 1) {
         form <- paste(form, collapse = "")
       }
+      
       form <- paste(form, "-1")
       formula <- as.formula(form, env=.GlobalEnv)
     }
-    ## Set up the model matrix and formula
-    if(fnctl != "hazard"){
+    
+    # Set up the model matrix and formula
+    if(fnctl != "hazard") {
       cl <- match.call()
+      
+      # set up the model frame (mf), which will become the model matrix
       mf <- match.call(expand.dots = FALSE)
       m <- match(c("formula", "data", "subset", "weights", "na.action", 
                    "offset"), names(mf), 0L)
       if(glm){
         m <- match(c("formula", "data", "subset", "weights", "na.action", 
-                     "etastart", "mustart", "offset"), names(mf), 0L)
+                     "etastart", "mustart", "offset"), names(mf), 0L) # what are etastart and mustart?
       }
     } else {
       replaceZeroes <- NA
@@ -176,21 +208,24 @@ regress <- function(fnctl, formula, data,
       Call <- match.call()
       indx <- match(c("formula", "data", "weights", "subset", "na.action"), 
                     names(Call), nomatch = 0)
-      if (indx[1] == 0) 
-        stop("A formula argument is required")
+      
+      # set up the model frame (mf), which will become the model matrix
       mf <- Call[c(1, indx)]
       mf[[1]] <- as.name("model.frame")
-      #special <- c("strata", "cluster", "tt")
       special <- c("strata", "cluster")
     }
-    ## Get the correct formula and any multiple-partial F-tests
+    
+    # Get the correct formula and any multiple-partial F-tests
     testlst <- testList(formula, mf, m, data)
     formula <- testlst$formula
-    ## length is zero if no tests
+    
+    # length of tmplist is zero if no tests
     tmplist <- testlst$testList
-    ## get the terms lists
+    
+    # get the terms lists
     termlst <- testlst$termList
     mf$formula <- formula
+    
     mftmp <- mf
     mfGee <- mf
     mG <- match(c("formula", "data", "subset", "weights", "na.action", 
@@ -200,7 +235,8 @@ regress <- function(fnctl, formula, data,
     mfGee <- eval(mfGee, parent.frame())
     id <- model.extract(mfGee, id)    
     
-    ## Evaluate the formula and get the correct returns
+    # Evaluate the formula and get the correct returns
+    
     if(fnctl != "hazard"){  
       ret.x <- model.x
       ret.y <- model.y
