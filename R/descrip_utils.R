@@ -8,6 +8,7 @@
 #' @return A logical flag indicating whether the variable is a "Date" variable.
 #' 
 #' @keywords internal
+#' @noRd
 is.Date <- function(x) {
     inherits(x, "Date")
 }
@@ -23,6 +24,7 @@ is.Date <- function(x) {
 #' @return Kaplan-Meier estimates of the survival curve
 #' 
 #' @keywords internal
+#' @noRd
 KM <- function(x) {
     if (!survival::is.Surv(x)) 
         stop("x must be a Surv object")
@@ -79,6 +81,7 @@ KM <- function(x) {
 #' @return the summed survival curve, over the entered times
 #' 
 #' @keywords internal
+#' @noRd
 sum_KM <- function(x, times, rightCtsCDF = TRUE) {
     if (!inherits(x, "KM")) 
         stop("x must be a KM object")
@@ -100,6 +103,7 @@ sum_KM <- function(x, times, rightCtsCDF = TRUE) {
 #' @return the lifetime distribution function, 1 - S(t)
 #' 
 #' @keywords internal
+#' @noRd
 prob_KM <- function(x, times, rightCtsCDF = TRUE) {
     1 - sum_KM(x, times, rightCtsCDF)
 }
@@ -112,6 +116,7 @@ prob_KM <- function(x, times, rightCtsCDF = TRUE) {
 #' @return quantiles of the estimated Kaplan-Meier curve
 #' 
 #' @keywords internal
+#' @noRd
 quantile_KM <- function(x, probs) {
     rslt <- length(probs)
     for (i in 1:length(probs)) {
@@ -146,6 +151,7 @@ quantile_KM <- function(x, probs) {
 #' 
 #' @return the restricted mean survival time
 #' @keywords internal
+#' @noRd
 mean_KM <- function(x, restriction = Inf) {
     if (length(restriction) == 1) 
         restriction <- c(x$t[1] - 1, restriction)
@@ -192,6 +198,7 @@ mean_KM <- function(x, restriction = Inf) {
 #' @return A matrix of descriptive statistics
 #'   
 #' @keywords internal
+#' @noRd
 describe_vector <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL, 
                      geometricMean = FALSE, geomInclude = FALSE, 
                      replaceZeroes = FALSE) {
@@ -307,6 +314,7 @@ describe_vector <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL,
 #' 
 #' @return A matrix with descriptive statistics for the Surv object
 #' @keywords internal
+#' @noRd
 describe_surv <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL, 
                      geometricMean = FALSE, geomInclude = FALSE, 
                      replaceZeroes = FALSE, restriction = Inf) {
@@ -423,6 +431,7 @@ describe_surv <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL,
 #' @return the descriptive statistics within strata
 #' 
 #' @keywords internal
+#' @noRd
 describe_stratified_vector <- function(x, strata, subset, 
                                        probs = c(0.25, 0.5, 0.75), 
                                        thresholds = NULL, geomInclude = FALSE, 
@@ -477,6 +486,7 @@ describe_stratified_vector <- function(x, strata, subset,
 #' @return descriptive statistics within strata for a Date object
 #' 
 #' @keywords internal
+#' @noRd
 describe_stratified_date <- function(x, strata, subset, 
                                      probs = c(0.25, 0.5, 0.75), 
                                      thresholds = NULL, geomInclude = FALSE, 
@@ -498,6 +508,7 @@ describe_stratified_date <- function(x, strata, subset,
 #' @return descriptive statistics within strata for a Surv object
 #'
 #' @keywords internal
+#' @noRd
 describe_stratified_surv <- function(x, strata, subset, 
                                      probs = c(0.25, 0.5, 0.75), 
                                      thresholds = NULL, geomInclude = FALSE, 
@@ -557,6 +568,7 @@ describe_stratified_surv <- function(x, strata, subset,
 #' @return descriptive statistics within strata for a matrix object
 #' 
 #' @keywords internal
+#' @noRd
 describe_stratified_matrix <- function(x, strata, subset, 
                                        probs = c(0.25, 0.5, 0.75), 
                                        thresholds = NULL, geomInclude = FALSE, 
@@ -588,6 +600,7 @@ describe_stratified_matrix <- function(x, strata, subset,
 #' @return descriptive statistics for each element of the list within strata
 #' 
 #' @keywords internal
+#' @noRd
 describe_stratified_list <- function(x, strata, subset, 
                                      probs = c(0.25, 0.5, 0.75), 
                                      thresholds = NULL, geomInclude = FALSE, 

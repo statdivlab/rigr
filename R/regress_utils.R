@@ -9,6 +9,7 @@
 #' @return a list of lists of tests to perform (and overall formula)
 #' 
 #' @keywords internal
+#' @noRd
 testList <- function(form, modelframe, mat, data){
   tmplist <- parsePartials(form[[3]], modelframe, mat)
   charForm <- parseParseFormula(parseFormula(form[[3]], modelframe, mat))
@@ -32,6 +33,7 @@ testList <- function(form, modelframe, mat, data){
 #' @return a vector of individual characters
 #' 
 #' @keywords internal
+#' @noRd
 explode <- function(str){
   chars <- strsplit(str, "")[[1]]
   return (chars)
@@ -45,6 +47,7 @@ explode <- function(str){
 #' @return the list of terms
 #' 
 #' @keywords internal
+#' @noRd
 getTerms <- function(form, y){
   f1 <- as.list(form)
   if(length(f1)==2){
@@ -94,6 +97,7 @@ getTerms <- function(form, y){
 #' @return the list 
 #' 
 #' @keywords internal
+#' @noRd
 parseFormula <- function(form, modelframe, mat){
   f1 <- as.list(form)
   if(length(f1)==1){
@@ -160,6 +164,7 @@ parseFormula <- function(form, modelframe, mat){
 #' @return a list with two components - the formula and a list of all of the matrices
 #' 
 #' @keywords internal
+#' @noRd
 parseParseFormula <- function(lst){
   tmp <- unlist(lst)
   parsetmp <- sapply(tmp, deparse)
@@ -180,6 +185,7 @@ parseParseFormula <- function(lst){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 insertVec <- function(x1, x2, indx){
   if(length(x2)==1){
     if(length(x1)==1){
@@ -239,6 +245,7 @@ insertVec <- function(x1, x2, indx){
 #' @return LinearList: Named list
 #' 
 #' @keywords internal
+#' @noRd
 LinearizeNestedList <- function(NList, LinearizeDataFrames=FALSE,
                                 NameSep="/", ForceNames=FALSE) {
   
@@ -349,6 +356,7 @@ LinearizeNestedList <- function(NList, LinearizeDataFrames=FALSE,
 #' @return a list with only the non-null components
 #' 
 #' @keywords internal
+#' @noRd
 parseList <- function(lst){
   indx <- !sapply(lst, is.null)
   tmp <- lst[indx]
@@ -408,12 +416,14 @@ parseList <- function(lst){
 
 #' Used in parseList
 #' @keywords internal
+#' @noRd
 getindx <- function(strlst){
   return(sapply(strlst, function(x) x=="U"))
 }
 
 #' Used in parseList
 #' @keywords internal
+#' @noRd
 getnm <- function(strmat, indx){
   newmat <- paste(strmat[indx[1]:dim(strmat)[1],1], collapse="")
   if(length(indx)>1){
@@ -433,6 +443,7 @@ getnm <- function(strmat, indx){
 #' @return the list
 #' 
 #' @keywords internal
+#' @noRd
 parsePartials <- function(form, modelframe, mat){
   f1 <- as.list(form)
   if(length(f1)==1){
@@ -642,6 +653,7 @@ U <- function(..., type=NULL, subset=rep(T,length(x)), knots=NULL, degree=2, ref
 #' @return A list with the updated augmented coefficients matrix and the current indices
 #' 
 #' @keywords internal
+#' @noRd
 termTraverse <- function(termlist, mat, ind){
   current <- termlist
   lbls <- attr(current[[1]], "term.labels")
@@ -676,6 +688,7 @@ termTraverse <- function(termlist, mat, ind){
 #' @return \code{TRUE}/\code{FALSE}
 #' 
 #' @keywords internal
+#' @noRd
 equal <- function(x){
   if(length(x)==1){
     return(TRUE)
@@ -698,6 +711,7 @@ equal <- function(x){
 #' @return A list with an updated augmented coefficients matrix and the current indices
 #' 
 #' @keywords internal
+#' @noRd
 reFormat <- function(current, lbls, mat, ind){
   include <- grepl(names(current), dimnames(mat)[[1]], fixed=TRUE)
   includeHasInter <- grepl(":", dimnames(mat[include,])[[1]])
@@ -790,6 +804,7 @@ reFormat <- function(current, lbls, mat, ind){
 #' @return a vector with every two elements pasted together
 #' 
 #' @keywords internal
+#' @noRd
 pasteTwo <- function(vec){
   if(length(vec)==2){
     return(paste(vec[1], vec[2], sep=""))
@@ -810,6 +825,7 @@ pasteTwo <- function(vec){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 addArgs <- function(varname, var, type){
   findx <- pmatch(type, c("polynomial", "lspline", "dummy"))
   type <- c("polynomial", "lspline", "dummy")[findx]
@@ -853,6 +869,7 @@ addArgs <- function(varname, var, type){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 pasteOn <- function(x, str, num){
   if(length(x)==1){
     return(paste(x, str, num, sep=""))
@@ -872,6 +889,7 @@ pasteOn <- function(x, str, num){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 pasteOnSpline <- function(x, nums){
   if(length(x)==1){
     return(paste(x, ".K(", nums, ")", sep=""))
@@ -890,6 +908,7 @@ pasteOnSpline <- function(x, nums){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 pastePair <- function(vec){
   if(length(vec)==2){
     return(paste(vec[1], ":", vec[2], sep=""))
@@ -908,6 +927,7 @@ pastePair <- function(vec){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 movingSum <- function(vec){
   s <- rep(0, length(vec))
   for(i in 1:length(vec)){
@@ -928,6 +948,7 @@ movingSum <- function(vec){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 myNext <- function(num, vec){
   if(which(vec==num)+1<= length(vec)){
     ret <- vec[which(vec==num)+1]
@@ -947,6 +968,7 @@ myNext <- function(num, vec){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 reFormatReg <- function(p, h, mf){
   lspline <- grepl("lspline", h)
   polynomial <- grepl("polynomial", h)
@@ -1110,6 +1132,7 @@ reFormatReg <- function(p, h, mf){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 createCols <- function(pds, tms){
   interact <- grepl(":", pds, fixed=TRUE)
   lspline <- grepl("lspline", pds, fixed=TRUE)
@@ -1153,6 +1176,7 @@ createCols <- function(pds, tms){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 checkNesting <- function(col, nested){
   if(!any(col)){
     rowInd <- length(col)
@@ -1176,6 +1200,7 @@ checkNesting <- function(col, nested){
 #' @return a string with no parentheses
 #' 
 #' @keywords internal
+#' @noRd
 splitOnParen <- function(x){
   char <- explode(x)
   if(length(char)>0){
@@ -1202,6 +1227,7 @@ splitOnParen <- function(x){
 #' @return 
 #' 
 #' @keywords internal
+#' @noRd
 uLRtest <- function (full, reduced) {
   
   if (dimnames(full$coefficients)[[2]][2]=="Robust SE")
@@ -1236,6 +1262,7 @@ uLRtest <- function (full, reduced) {
 #' @return a wald test on the given coefficients
 #' 
 #' @keywords internal
+#' @noRd
 uWaldtest <- function (full, contrasts=c(0,rep(1,p-1)), hypothesis=matrix(0,r,1)) {
   
   if (!inherits(full,"uRegress")) stop("not a uRegress object")
