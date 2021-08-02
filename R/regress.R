@@ -75,8 +75,6 @@
 #' \code{glm}.
 #' @param init optional argument that are passed to the functionality of
 #' \code{coxph}.
-#' @param version If \code{TRUE}, returns
-#' the version of the function. No other computation is performed.
 #' @return An object of class uRegress is
 #' returned. Parameter estimates, confidence intervals, and p values are
 #' contained in a matrix $augCoefficients. 
@@ -125,10 +123,7 @@ regress <-
            strata = rep(1,n), weights = rep(1,n), id = 1:n, ties = "efron", subset = rep(TRUE,n),
            robustSE = TRUE, conf.level = 0.95, exponentiate=fnctl != "mean",
            replaceZeroes, useFdstn = TRUE, suppress = FALSE, na.action, method = "qr", model.f = TRUE, model.x = FALSE, model.y = FALSE, qr = TRUE,
-           singular.ok = TRUE, contrasts = NULL, offset,control = list(...), init, ..., version = FALSE) {
-    
-    vrsn <- "20160301"
-    if (version) return(vrsn)
+           singular.ok = TRUE, contrasts = NULL, offset,control = list(...), init, ...) {
     
     cl <- match.call()
     fit <- NULL

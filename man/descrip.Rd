@@ -23,8 +23,7 @@ descrip(
   interval = NULL,
   linterval = NULL,
   rinterval = NULL,
-  lrinterval = NULL,
-  version = FALSE
+  lrinterval = NULL
 )
 }
 \arguments{
@@ -113,9 +112,6 @@ define intervals of interest to categorize variables. The descriptive
 statistics will include an estimate for each variable of the proportion of 
 measurements with values between two elements in a row, with both endpoints 
 included in each interval.}
-
-\item{version}{If \code{TRUE}, the version of the function will be returned. 
-No other computations will be performed.}
 }
 \value{
 An object of class \code{uDescriptives} is returned. Descriptive 

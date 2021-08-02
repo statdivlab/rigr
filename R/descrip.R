@@ -92,8 +92,6 @@
 #'   statistics will include an estimate for each variable of the proportion of 
 #'   measurements with values between two elements in a row, with both endpoints 
 #'   included in each interval.
-#' @param version If \code{TRUE}, the version of the function will be returned. 
-#'   No other computations will be performed.
 #' @return An object of class \code{uDescriptives} is returned. Descriptive 
 #'   statistics for each variable in the entire subsetted sample, as well as 
 #'   within each stratum if any is defined, are contained in a matrix with rows 
@@ -144,10 +142,7 @@ descrip <- function (..., strata = NULL, subset = NULL,
           probs = c(0.25, 0.5, 0.75), geomInclude = FALSE, replaceZeroes = FALSE, 
           restriction = Inf, above = NULL, below = NULL, labove = NULL, rbelow = NULL, 
           lbetween = NULL, rbetween = NULL, interval = NULL, linterval = NULL, 
-          rinterval = NULL, lrinterval = NULL, version = FALSE) {
-  vrsn <- "20160730"
-  if (version) 
-    return(vrsn)
+          rinterval = NULL, lrinterval = NULL) {
   
   # Get list of descriptive variables
   L <- list(...)

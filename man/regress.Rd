@@ -55,8 +55,7 @@ regress(
   offset,
   control = list(...),
   init,
-  ...,
-  version = FALSE
+  ...
 )
 }
 \arguments{
@@ -128,9 +127,6 @@ unexponentiated coefficients, and one with the exponentiated coefficients.}
 
 \item{init}{optional argument that are passed to the functionality of
 \code{coxph}.}
-
-\item{version}{If \code{TRUE}, returns
-the version of the function. No other computation is performed.}
 }
 \value{
 An object of class uRegress is
