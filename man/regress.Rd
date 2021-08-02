@@ -73,7 +73,8 @@ shortened to a unique substring. Hence \code{"mea"} will suffice for
 names to those entered in \code{formula}.}
 
 \item{intercept}{a logical value
-indicating whether a intercept exists or not.}
+indicating whether a intercept exists or not. Default value is \code{TRUE} for all 
+functionals other than \code{"hazard"}}
 
 \item{strata}{vector indicating a
 variable to be used for stratification in proportional hazards regression.}

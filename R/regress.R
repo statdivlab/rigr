@@ -32,7 +32,8 @@
 #' @param data a data frame, matrix, or other data structure with matching
 #' names to those entered in \code{formula}.
 #' @param intercept a logical value
-#' indicating whether a intercept exists or not.
+#' indicating whether a intercept exists or not. Default value is \code{TRUE} for all 
+#' functionals other than \code{"hazard"}
 #' @param strata vector indicating a
 #' variable to be used for stratification in proportional hazards regression.
 #' @param weights vector indicating
@@ -119,7 +120,7 @@
 #' @export regress
 regress <-
   function(fnctl, formula, data,                     
-           intercept = fnctl != "hazard", 
+           intercept = fnctl != "hazard", # defaults to true if fnctl is not 'hazard'
            strata = rep(1,n), weights = rep(1,n), id = 1:n, ties = "efron", subset = rep(TRUE,n),
            robustSE = TRUE, conf.level = 0.95, exponentiate=fnctl != "mean",
            replaceZeroes, useFdstn = TRUE, suppress = FALSE, na.action, method = "qr", model.f = TRUE, model.x = FALSE, model.y = FALSE, qr = TRUE,
@@ -127,47 +128,79 @@ regress <-
     
     cl <- match.call()
     fit <- NULL
-    if(missing(formula)){
+    if(missing(formula)) {
       stop("You must enter a formula")
     }
-    # checking functional  fnctl
+    
+    # ensure fnctl is one of the ones supported
     findx <-  pmatch(fnctl,c("mean", "geometric mean", "odds", "rate", "hazard"))
-    if (is.na(findx)) stop("unsupported functional")
+    if (is.na(findx)) {
+      stop("unsupported functional")
+    }
+    
+    # set fnctl to user specification
     fnctl <- c("mean", "geometric mean", "odds", "rate", "hazard")[findx]
-    if(fnctl=="hazard") stop("proportional hazards regression no longer supported")
-    if (intercept & fnctl=="hazard") stop("hazard regression cannot include an intercept")
+    
+    # if fnctl is "hazard" throw an error
+    if (fnctl=="hazard") {
+      stop("proportional hazards regression no longer supported")
+    }
+    
+    # if fnctl = 'hazard' and intercept = TRUE, throw an error
+    if (intercept & fnctl=="hazard") {
+      stop("hazard regression cannot include an intercept")
+    }
+    
+    # get family and glm vs. lm
     glm <- FALSE
-    ## get the family for glm if we need it
-    if(fnctl%in%c("odds", "rate")){
+    
+    if( fnctl %in% c("odds", "rate")) {
       glm <- TRUE
-      if(method=="qr") method <- "glm.fit"
-      if(fnctl=="odds"){
+      
+      # if fnctl is "odds" or "rate" and method = "qr", interally change to method = "glm.fit"
+      if (method == "qr") {
+        method <- "glm.fit"
+      }
+    
+      if (fnctl == "odds") {
+        # if fnctl = "odds", then family = "binomial"
         family <- "binomial"
-      } else {
+      } else { 
+        # if fnctl = "rate", then family = "poisson"
         family <- "poisson"
       }
     } else {
-      if(fnctl!="hazard"){
-        family="gaussian"
+      
+      # if fnctl = "mean" or "geometric mean", then family = "gaussian"
+      if (fnctl != "hazard") {
+        family <- "gaussian"
       }
+      
     }
+    
+    # if intercept = FALSE, add a "-1" to the formula
     if(!intercept){
       form <- deparse(formula)
+
       if(length(form) > 1) {
         form <- paste(form, collapse = "")
       }
+      
       form <- paste(form, "-1")
       formula <- as.formula(form, env=.GlobalEnv)
     }
-    ## Set up the model matrix and formula
+    
+    # Set up the model matrix and formula
     if(fnctl != "hazard"){
       cl <- match.call()
+      
+      # set up the model frame (mf), which will become the model matrix
       mf <- match.call(expand.dots = FALSE)
       m <- match(c("formula", "data", "subset", "weights", "na.action", 
                    "offset"), names(mf), 0L)
       if(glm){
         m <- match(c("formula", "data", "subset", "weights", "na.action", 
-                     "etastart", "mustart", "offset"), names(mf), 0L)
+                     "etastart", "mustart", "offset"), names(mf), 0L) # what are etastart and mustart?
       }
     } else {
       replaceZeroes <- NA
@@ -176,21 +209,25 @@ regress <-
       Call <- match.call()
       indx <- match(c("formula", "data", "weights", "subset", "na.action"), 
                     names(Call), nomatch = 0)
-      if (indx[1] == 0) 
-        stop("A formula argument is required")
+      
+      # set up the model frame (mf), which will become the model matrix
       mf <- Call[c(1, indx)]
       mf[[1]] <- as.name("model.frame")
-      #special <- c("strata", "cluster", "tt")
       special <- c("strata", "cluster")
     }
-    ## Get the correct formula and any multiple-partial F-tests
+    
+    # Get the correct formula and any multiple-partial F-tests
     testlst <- testList(formula, mf, m, data)
     formula <- testlst$formula
-    ## length is zero if no tests
+    
+    # length of tmplist is zero if no tests
     tmplist <- testlst$testList
-    ## get the terms lists
+    
+    # get the terms lists
     termlst <- testlst$termList
     mf$formula <- formula
+    
+    # Taylor - figure out what this is and document better
     mftmp <- mf
     mfGee <- mf
     mG <- match(c("formula", "data", "subset", "weights", "na.action", 
@@ -200,7 +237,8 @@ regress <-
     mfGee <- eval(mfGee, parent.frame())
     id <- model.extract(mfGee, id)    
     
-    ## Evaluate the formula and get the correct returns
+    # Evaluate the formula and get the correct returns
+    
     if(fnctl != "hazard"){  
       ret.x <- model.x
       ret.y <- model.y
@@ -269,9 +307,9 @@ regress <-
           stop("'weights' must be a numeric vector")
         offset <- as.vector(model.offset(mf))
         if (!is.null(offset)) {
-          if (length(offset) != NROW(y)) 
+          if (length(offset) != nrow(y)) 
             stop(gettextf("number of offsets is %d, should equal %d (number of observations)", 
-                          length(offset), NROW(y)), domain = NA)
+                          length(offset), nrow(y)), domain = NA)
         }
         if (is.empty.model(mt)) {
           x <- NULL
@@ -364,14 +402,14 @@ regress <-
         }
         x <- if (!is.empty.model(mt)) 
           model.matrix(mt, mf, contrasts)
-        else matrix(, NROW(y), 0L)
-        n <- NROW(y)
+        else matrix(, nrow(y), 0L)
+        n <- nrow(y)
         msng <- FALSE
         if(!missing(strata)){msng <- TRUE}
         if (!is.null(strata) & msng & fnctl != "hazard") warning("Strata ignored unless hazard regression")
-        if (!is.null(strata) & length(strata) != NROW(y)) stop("Response variable and strata must be of same length")
-        if (length(weights) != NROW(y)) stop("Response variable and weights must be of same length")
-        if (length(subset) != NROW(y)) stop("Response variable and subsetting variable must be of same length")
+        if (!is.null(strata) & length(strata) != nrow(y)) stop("Response variable and strata must be of same length")
+        if (length(weights) != nrow(y)) stop("Response variable and weights must be of same length")
+        if (length(subset) != nrow(y)) stop("Response variable and subsetting variable must be of same length")
         w <- as.vector(model.weights(mf))
         if (!is.null(w) && !is.numeric(w)) 
           stop("'weights' must be a numeric vector")
@@ -379,9 +417,9 @@ regress <-
           stop("negative weights not allowed")
         offset <- as.vector(model.offset(mf))
         if (!is.null(offset)) {
-          if (length(offset) != NROW(y)) 
+          if (length(offset) != nrow(y)) 
             stop(gettextf("number of offsets is %d should equal %d (number of observations)", 
-                          length(offset), NROW(y)), domain = NA)
+                          length(offset), nrow(y)), domain = NA)
         }
         start <- model.extract(mf, "start")
         mustart <- model.extract(mf, "mustart")
