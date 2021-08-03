@@ -59,12 +59,165 @@ test_that("ttest() throws error if by argument contains >2 unique values", {
                "Variable 'by' has more than two unique values.")
 })
 
-test_that("ttest() throws error ifi by argument is not of same length as data", {
+test_that("ttest() throws error if by argument is not of same length as data", {
   expect_error(ttest(x1, by = c(rep(1, 50), rep(2, 51))), 
                "Variable 'by' is not of equal length to data vector")
 })
 
+### one-sample test (or two-sample paired test)
 
+set.seed(1)
+a <- rnorm(50)
+b <- rnorm(50)
+d <- a - b
 
+t1 <- ttest(d)
+t2 <- t.test(d)
+t3 <- ttest(a, b, matched = TRUE)
+t4 <- t.test(a, b, paired = TRUE)
 
+### TO-DO: really I should also be testing other quantities returned, but they mostly aren't provided
+### by t.test() so maybe by-hand?
+test_that("ttest() returns correct numbers for one-sample test", {
+  expect_s3_class(t1, "ttest")
+  expect_equal(t1$df, t2$parameter[[1]]) # df
+  expect_equal(t1$tstat, t2$statistic[[1]], tolerance = 1e-3) # test statistic
+  expect_equal(t1$p, t2$p.value, tolerance = 1e-3) # p-value
+  expect_equal(as.numeric(strsplit(substr(t1$tab[[7]], start = 2, stop = nchar(t1$tab[[7]])-1), ", ")[[1]]),
+               t2$conf.int[1:2], tolerance = 1e-3) # conf int
+  expect_equal(t1$tab[[1]], "d") # var name
+  expect_equal(as.numeric(t1$tab[[2]]), length(d)) # n obs
+  expect_equal(as.numeric(t1$tab[[3]]), sum(is.na(d))) # NAs
+  expect_equal(as.numeric(t1$tab[[4]]), t2$estimate[[1]], tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[5]]), t2$stderr[[1]], tolerance = 3) # standard error of mean est
+  expect_equal(as.numeric(t1$tab[[6]]), sd(d), tolerance = 3) # std dev of data
+  expect_equal(t1$var1, d) 
+  expect_equal(t1$var2, NA)
+  expect_equal(t1$by, NA)
+  expect_false(as.logical(t1$par[[1]])) # geom parameter
+  expect_equal(as.numeric(t1$par[[2]]), t2$null.value[[1]]) # null 
+  expect_equal(t1$par[[3]], t2$alternative) # alternative
+  expect_false(as.logical(t1$par[[4]])) # equal var
+  expect_equal(as.numeric(t1$par[[5]]), attr(t2$conf.int, "conf.level")) # conf level
+  expect_false(as.logical(t1$par[[6]])) # matched
+  expect_equal(as.numeric(t1$par[[7]]), 3) # digits
+  
+  expect_s3_class(t3, "ttest")
+  expect_equal(t3$df, t4$parameter[[1]]) # df
+  expect_equal(t3$tstat, t4$statistic[[1]], tolerance = 1e-3) # test statistic
+  expect_equal(t3$p, t4$p.value, tolerance = 1e-3) # p-value
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[3, 7]], start = 2, stop = nchar(t3$tab[[3, 7]])-1), ", ")[[1]]),
+               t4$conf.int[1:2], tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[1, 7]], start = 2, stop = nchar(t3$tab[[1, 7]])-1), ", ")[[1]]),
+               c(mean(a) - qt(0.975, 49)*sd(a)/sqrt(length(a)), mean(a) + qt(0.975, 49)*sd(a)/sqrt(length(a))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[2, 7]], start = 2, stop = nchar(t3$tab[[2, 7]])-1), ", ")[[1]]),
+               c(mean(b) - qt(0.975, 49)*sd(b)/sqrt(length(b)), mean(b) + qt(0.975, 49)*sd(b)/sqrt(length(b))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(t3$tab[[1,1]], "a") # var name
+  expect_equal(t3$tab[[2,1]], "b") # var name
+  expect_equal(t3$tab[[3,1]], "Difference") # var name
+  expect_equal(as.numeric(t3$tab[[1, 2]]), length(a)) # n obs
+  expect_equal(as.numeric(t3$tab[[2, 2]]), length(b)) # n obs
+  expect_equal(as.numeric(t3$tab[[3, 2]]), length(d)) # n obs
+  expect_equal(as.numeric(t3$tab[[1, 3]]), sum(is.na(a))) # NAs
+  expect_equal(as.numeric(t3$tab[[2, 3]]), sum(is.na(b))) # NAs
+  expect_equal(as.numeric(t3$tab[[3, 3]]), sum(is.na(d))) # NAs
+  expect_equal(as.numeric(t3$tab[[1, 4]]), mean(a), tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[2, 4]]), mean(b), tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[3, 4]]), t4$estimate[[1]], tolerance = 3) # estimate of mean
+  expect_equal(t3$var1, a)
+  expect_equal(t3$var2, b)
+  expect_equal(t3$by, NA)
+  expect_false(as.logical(t3$par[[1]])) # geom parameter
+  expect_equal(as.numeric(t3$par[[2]]), t4$null.value[[1]]) # null
+  expect_equal(t3$par[[3]], t4$alternative) # alternative
+  expect_false(as.logical(t3$par[[4]])) # equal var
+  expect_equal(as.numeric(t3$par[[5]]), attr(t4$conf.int, "conf.level")) # conf level
+  expect_true(as.logical(t3$par[[6]])) # matched
+  expect_equal(as.numeric(t3$par[[7]]), 3) # digits
+})
+
+t1 <- ttest(d, alternative = "less")
+t2 <- t.test(d, alternative = "less")
+t3 <- ttest(a, b, matched = TRUE, alternative = "less")
+t4 <- t.test(a, b, paired = TRUE, alternative = "less")
+
+test_that("ttest() returns correct numbers for one-sample test (left)", {
+  expect_equal(t1$tstat, t2$statistic[[1]], tolerance = 1e-3) # test statistic
+  expect_equal(t1$p, t2$p.value, tolerance = 1e-3) # p-value
+  expect_equal(t1$par[[3]], t2$alternative) # alternative
+  
+  expect_equal(t3$tstat, t4$statistic[[1]], tolerance = 1e-3) # test statistic
+  expect_equal(t3$p, t4$p.value, tolerance = 1e-3) # p-value
+  expect_equal(t3$par[[3]], t4$alternative) # alternative
+})
+
+t1 <- ttest(d, alternative = "greater")
+t2 <- t.test(d, alternative = "greater")
+t3 <- ttest(a, b, matched = TRUE, alternative = "greater")
+t4 <- t.test(a, b, paired = TRUE, alternative = "greater")
+
+test_that("ttest() returns correct numbers for one-sample test (right)", {
+  expect_equal(t1$p, t2$p.value, tolerance = 1e-3) # p-value
+  expect_equal(t1$par[[3]], t2$alternative) # alternative
+
+  expect_equal(t3$p, t4$p.value, tolerance = 1e-3) # p-value
+  expect_equal(t3$par[[3]], t4$alternative) # alternative
+})
+
+t1 <- ttest(d, conf.level = 0.8)
+t2 <- t.test(d, conf.level = 0.8)
+t3 <- ttest(a, b, matched = TRUE, conf.level = 0.8)
+t4 <- t.test(a, b, paired = TRUE, conf.level = 0.8)
+
+test_that("ttest() returns correct numbers for one-sample test with conf.level other than 0.95", {
+  expect_equal(as.numeric(strsplit(substr(t1$tab[[7]], start = 2, stop = nchar(t1$tab[[7]])-1), ", ")[[1]]),
+               t2$conf.int[1:2], tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(t1$par[[5]]), attr(t2$conf.int, "conf.level")) # conf level
+  
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[3, 7]], start = 2, stop = nchar(t3$tab[[3, 7]])-1), ", ")[[1]]),
+               t4$conf.int[1:2], tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[1, 7]], start = 2, stop = nchar(t3$tab[[1, 7]])-1), ", ")[[1]]),
+               c(mean(a) - qt(0.9, 49)*sd(a)/sqrt(length(a)), mean(a) + qt(0.9, 49)*sd(a)/sqrt(length(a))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[2, 7]], start = 2, stop = nchar(t3$tab[[2, 7]])-1), ", ")[[1]]),
+               c(mean(b) - qt(0.9, 49)*sd(b)/sqrt(length(b)), mean(b) + qt(0.9, 49)*sd(b)/sqrt(length(b))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(t3$par[[5]]), attr(t4$conf.int, "conf.level")) # conf level
+
+})
+
+t1 <- ttest(exp(d), geom = TRUE, null.hypoth = 1)
+t2 <- t.test(d, geom = TRUE)
+t3 <- ttest(exp(a), exp(b), matched = TRUE, geom = TRUE, null.hypoth = 1)
+t4 <- t.test(a, b, paired = TRUE, geom = TRUE)
+
+test_that("ttest() returns correct numbers for one-sample test of geometric mean", {
+  expect_equal(t1$tstat, t2$statistic[[1]], tolerance = 1e-3) # test statistic
+  expect_equal(t1$p, t2$p.value, tolerance = 1e-3) # p-value
+  expect_equal(as.numeric(strsplit(substr(t1$tab[[7]], start = 2, stop = nchar(t1$tab[[7]])-1), ", ")[[1]]),
+               t2$conf.int[1:2], tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(t1$tab[[4]]), exp(t2$estimate[[1]]), tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[5]]), t2$stderr[[1]], tolerance = 3) # standard error of mean est
+  expect_equal(as.numeric(t1$tab[[6]]), sd(exp(d)), tolerance = 3) # std dev of data
+  expect_true(as.logical(t1$par[[1]])) # geom parameter
+  expect_equal(as.numeric(t1$par[[2]]), 0) # null 
+  
+  expect_equal(t3$tstat, t4$statistic[[1]], tolerance = 1e-3) # test statistic
+  expect_equal(t3$p, t4$p.value, tolerance = 1e-3) # p-value
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[3, 7]], start = 2, stop = nchar(t3$tab[[3, 7]])-1), ", ")[[1]]),
+               t4$conf.int[1:2], tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[1, 7]], start = 2, stop = nchar(t3$tab[[1, 7]])-1), ", ")[[1]]),
+               c(mean(a) - qt(0.975, 49)*sd(a)/sqrt(length(a)), mean(a) + qt(0.975, 49)*sd(a)/sqrt(length(a))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[2, 7]], start = 2, stop = nchar(t3$tab[[2, 7]])-1), ", ")[[1]]),
+               c(mean(b) - qt(0.975, 49)*sd(b)/sqrt(length(b)), mean(b) + qt(0.975, 49)*sd(b)/sqrt(length(b))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(t3$tab[[1, 4]]), exp(mean(a)), tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[2, 4]]), exp(mean(b)), tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[3, 4]]), exp(t4$estimate[[1]]), tolerance = 3) # estimate of mean
+  expect_true(as.logical(t3$par[[1]])) # geom parameter
+  expect_equal(as.numeric(t3$par[[2]]), 0) # null
+})
 
