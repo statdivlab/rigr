@@ -135,13 +135,6 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
     if (!(alternative %in% c("less", "two.sided", "greater"))) {
       stop("'alternative' must be either 'less', 'two.sided', or 'greater'")
     }
-    # See whether requested test presumes equal variance
-    if (var.eq == TRUE) {
-      robust <- FALSE
-    }
-    if (var.eq == FALSE) {
-      robust <- TRUE
-    }
     # checks to make sure it is proportion if exact binomial conf int is requested
     if (exact == TRUE & prop == FALSE) {
       stop("Exact binomial confidence intervals cannot be computed for anything but a proportion.")
@@ -195,8 +188,6 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
     }
     digits <- 3 + more.digits
     
-    # vareq is made into var.eq, basically
-    vareq <- as.logical(1 - robust)
     cl <- (1 + conf.level)/2
     if (matched == TRUE) {
       to.include <- (1 - as.numeric(is.na(var1))) * (1 - 
@@ -221,7 +212,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
       if (length(var2) == 1 & is.na(var2[1])) {
         # here we do one sample t test with var1 using built in t.test function
         route <- t.test(var1, alternative = alternative, 
-                        var.equal = vareq, conf.level = conf.level, 
+                        var.equal = var.eq, conf.level = conf.level, 
                         mu = null.hypoth)
         mn <- route$estimate
         stdev <- sd(var1, na.rm = TRUE)
@@ -229,12 +220,11 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
         ster <- stdev/sqrt(dfr + 1)
         tstat <- route$statistic
         talpha <- qt(cl, dfr)
-        #### WHY NOT USE BUILT IN CONF.INT FROM T.TEST HERE?
+        # do two-sided CI, even if test is one-sided
         lci <- mn - talpha * ster
         hci <- mn + talpha * ster
         mn <- as.numeric(format(mn, digits = digits))
         stdev <- as.numeric(format(stdev, digits = digits))
-        ### HERE WE USE BUILT IN P VALUE AND T STATISTIC
         pval <- as.numeric(format(route$p.value, digits = max(digits, 
                                                               digits + 3)))
         tstat <- as.numeric(format(tstat, digits = max(digits + 
@@ -340,25 +330,25 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
       }
       if (length(var2) > 1) {
         route <- t.test(var1, var2, alternative = alternative, 
-                        var.equal = vareq, conf.level = conf.level, 
+                        var.equal = var.eq, conf.level = conf.level, 
                         paired = matched, mu = null.hypoth)
         mns <- c(mean(var1, na.rm = TRUE), mean(var2, 
                                                 na.rm = TRUE), as.numeric(route$estimate[1]))
-        if (matched == FALSE) {
+        if (!matched) {
           mns[3] <- mns[3] - as.numeric(route$estimate[2])
         }
         stdev <- c(sd(var1, na.rm = TRUE), sd(var2, na.rm = TRUE), 
                    NA)
-        if (matched == TRUE) {
+        if (matched) {
           stdev[3] <- sd((var2 - var1), na.rm = TRUE)
         }
         ns <- c(length(var1), length(var2), length(var1))
-        if (matched == FALSE) {
+        if (!matched) {
           ns[3] <- length(var1) + length(var2)
         }
         msg <- c(sum(is.na(var1)), sum(is.na(var2)), 
                  sum(is.na(var1)) + sum(is.na(var2)))
-        if (matched == TRUE) {
+        if (matched) {
           msg[3] <- sum(is.na(var1 * var2))
         }
         dfr <- as.numeric(c((ns[1:2] - msg[1:2]), route$parameter[1]))
@@ -519,25 +509,25 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
     if (length(by) > 1) {
       if (length(var2) > 1) {
         route <- t.test(var1, var2, alternative = alternative, 
-                        var.equal = vareq, conf.level = conf.level, 
+                        var.equal = var.eq, conf.level = conf.level, 
                         paired = matched, mu = null.hypoth)
         mns <- c(mean(var1, na.rm = TRUE), mean(var2, 
                                                 na.rm = TRUE), as.numeric(route$estimate[1]))
-        if (matched == FALSE) {
+        if (!matched) {
           mns[3] <- mns[3] - as.numeric(route$estimate[2])
         }
         stdev <- c(sd(var1, na.rm = TRUE), sd(var2, na.rm = TRUE), 
                    NA)
-        if (matched == TRUE) {
+        if (matched) {
           stdev[3] <- sd((var2 - var1), na.rm = TRUE)
         }
         ns <- c(length(var1), length(var2), length(var1))
-        if (matched == FALSE) {
+        if (!matched) {
           ns[3] <- length(var1) + length(var2)
         }
         msg <- c(sum(is.na(var1)), sum(is.na(var2)), 
                  sum(is.na(var1)) + sum(is.na(var2)))
-        if (matched == TRUE) {
+        if (matched) {
           msg[3] <- sum(is.na(var1 * var2))
         }
         dfr <- as.numeric(c((ns[1:2] - msg[1:2]), route$parameter[1]))
@@ -624,7 +614,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
         mns <- as.numeric(format(mns, digits = digits))
         stdev <- c(as.numeric(format(stdev[1:2], digits = digits)), 
                    NA)
-        if (matched == TRUE) {
+        if (matched) {
           stdev[3] <- as.numeric(format(ster[3] * sqrt(dfr[3]), 
                                         digits = digits))
         }
@@ -715,39 +705,28 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
   
   myargs <- c(deparse(substitute(var1)), deparse(substitute(var2)), 
               deparse(substitute(by)))
-  out <- list()
   uby <- unique(by)
   if (is.null(strat)) {
     if (is.na(var2[1]) & length(var2) == 1) {
       if (is.na(by[1]) & length(by) == 1) {
-        if (matched == TRUE) {
-        }
-        if (matched == FALSE) {
+        if (!matched) {
           strat <- rep(1, length(var1))
         }
       }
       if (length(by) > 1) {
-        if (matched == TRUE) {
-        }
-        if (matched == FALSE) {
+        if (!matched) {
           strat <- rep(1, length(var1))
         }
       }
     }
     if (length(var2) > 1) {
       if (is.na(by[1]) & length(by) == 1) {
-        if (matched == TRUE) {
+        if (matched) {
           strat <- rep(1, length(var1))
         }
-        if (matched == FALSE) {
+        if (!matched) {
           strat1 <- rep(1, length(var1))
           strat2 <- rep(1, length(var2))
-        }
-      }
-      if (length(by) > 1) {
-        if (matched == TRUE) {
-        }
-        if (matched == FALSE) {
         }
       }
     }
@@ -755,7 +734,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
   if (!is.null(strat)) {
     if (is.na(var2[1]) & length(var2) == 1) {
       if (length(by) > 1) {
-        if (matched == FALSE) {
+        if (!matched) {
           strat1 <- unlist(strat[1])
           strat2 <- unlist(strat[2])
         }
@@ -763,7 +742,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
     }
     if (length(var2) > 1) {
       if (is.na(by[1]) & length(by) == 1) {
-        if (matched == FALSE) {
+        if (!matched) {
           strat1 <- unlist(strat[1])
           strat2 <- unlist(strat[2])
         }
@@ -772,9 +751,7 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
   }
   if (is.na(var2[1]) & length(var2) == 1) {
     if (is.na(by[1]) & length(by) == 1) {
-      if (matched == TRUE) {
-      }
-      if (matched == FALSE) {
+      if (!matched) {
         ustrat <- unique(strat)
         for (t in 1:length(ustrat)) {
           x <- subset(var1, strat == ustrat[t])
@@ -788,15 +765,13 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
                                 var.eq = var.eq, conf.level = conf.level, 
                                 matched = matched, more.digits = more.digits, 
                                 myargs = myargs)
-          ttest.obj$call <- match.call()
-          class(ttest.obj) <- "ttest"
         }
       }
     }
     if (length(by) > 1) {
-      if (matched == TRUE) {
+      if (matched) {
       }
-      if (matched == FALSE) {
+      if (!matched) {
         ustrat <- unique(strat)
         for (t in 1:length(ustrat)) {
           x <- subset(var1, strat == ustrat[t])
@@ -811,15 +786,13 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
                                 var.eq = var.eq, conf.level = conf.level, 
                                 matched = matched, more.digits = more.digits, 
                                 myargs = myargs)
-          ttest.obj$call <- match.call()
-          class(ttest.obj) <- "ttest"
         }
       }
     }
   }
   if (length(var2) > 1) {
     if (is.na(by[1]) & length(by) == 1) {
-      if (matched == TRUE) {
+      if (matched) {
         ustrat <- unique(strat)
         for (t in 1:length(ustrat)) {
           x <- subset(var1, strat == ustrat[t])
@@ -832,11 +805,9 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
                                 exact = exact, by = by, null.hypoth, alternative, 
                                 var.eq, conf.level, matched, more.digits, 
                                 myargs)
-          ttest.obj$call <- match.call()
-          class(ttest.obj) <- "ttest"
         }
       }
-      if (matched == FALSE) {
+      if (!matched) {
         ustrat <- unique(c(strat1, strat2))
         for (t in 1:length(ustrat)) {
           x <- subset(var1, strat1 == ustrat[t])
@@ -845,16 +816,15 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
             cat("\nStratum Value:")
             cat(ustrat[t])
           }
-          
           ttest.obj <- ttest.do(x, y, geom = geom, prop = prop, 
                                 exact = exact, by = by, null.hypoth, alternative, 
                                 var.eq, conf.level, matched, more.digits, 
                                 myargs)
-          ttest.obj$call <- match.call()
-          class(ttest.obj) <- "ttest"
         }
       }
     }
   }
+  ttest.obj$call <- match.call()
+  class(ttest.obj) <- "ttest"
   return(ttest.obj)
 }
