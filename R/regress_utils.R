@@ -1289,4 +1289,48 @@ uWaldtest <- function (full, contrasts=c(0,rep(1,p-1)), hypothesis=matrix(0,r,1)
   rslt	
 }
 
+#' Function to get the order of predictors 
+#' Used in regress, used to be inside of regress()
+#' 
+#' @param vec
+#' @param n 
+#' 
+#' @return a wald test on the given coefficients
+#' 
+#' @keywords internal
+#' @noRd
+getn <- function(vec, n){
+  if(n > length(vec)){
+    return(vec)
+  } else {
+    return(vec[n:length(vec)])
+  }
+}
 
+#' Inserts a column into a matrix
+#' Used to be inside of regress()
+#' 
+#' @param x
+#' @param indx
+#' @param col
+#' 
+#' @return 
+#' 
+#' @keywords internal
+#' @noRd
+insertCol <- function(x, indx, col){
+  if(length(indx)==1){
+    if(indx > dim(x)[2]){
+      tmp <- cbind(x, col)
+    } else if (indx > 1){
+      tmp <- cbind(x[,1:(indx-1)], col, x[,(indx):dim(x)[2]])
+    } else {
+      tmp <- cbind(col, x)
+    }
+    return(tmp)
+  } else {
+    tmp1 <- insertCol(x, indx[1], col)
+    tmp2 <- insertCol(tmp1, indx[-1], col)
+    return(tmp2)
+  }
+}

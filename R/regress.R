@@ -732,15 +732,8 @@ regress <- function(fnctl, formula, data,
       }
     }
     
-    ## Now I want to build the augmented coefficients matrix
-    ## First I need to get the order of the predictors
-    getn <- function(vec, n){
-      if(n > length(vec)){
-        return(vec)
-      } else {
-        return(vec[n:length(vec)])
-      }
-    }
+    # Now I want to build the augmented coefficients matrix
+    # First I need to get the order of the predictors, using getn() helper function
     
     ## Formatting the terms and getting the correct ordering for the augmented Coefficients matrix
     z <- list(call=cl, terms=NULL,firstPred=NULL,lastPred=NULL,preds=NULL,X=NULL)
@@ -1056,23 +1049,6 @@ regress <- function(fnctl, formula, data,
     }
     zzs$suppress <- suppress
     zzs$coefNums <- matrix(1:length(fit$coefficients), nrow=1)
-    ## Inserts a column into a matrix
-    insertCol <- function(x, indx, col){
-      if(length(indx)==1){
-        if(indx > dim(x)[2]){
-          tmp <- cbind(x, col)
-        } else if (indx > 1){
-          tmp <- cbind(x[,1:(indx-1)], col, x[,(indx):dim(x)[2]])
-        } else {
-          tmp <- cbind(col, x)
-        }
-        return(tmp)
-      } else {
-        tmp1 <- insertCol(x, indx[1], col)
-        tmp2 <- insertCol(tmp1, indx[-1], col)
-        return(tmp2)
-      }
-    }
     
     ## Add in blanks for dummy labels etc
     p <- length(zzs$coefNums)
