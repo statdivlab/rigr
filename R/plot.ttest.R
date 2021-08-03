@@ -1,4 +1,0 @@
-plot.ttest <-
-function(x,...) {
-    
-}

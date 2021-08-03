@@ -161,3 +161,9 @@ print.ttest <-
       }
     }
   }
+
+# not sure what this does...
+plot.ttest <-
+  function(x,...) {
+    
+  }
