@@ -883,6 +883,9 @@ regress <- function(fnctl, formula, data,
         LRStat <- c(LRStat,1-pf(LRStat,p-intercept,n-p),p-intercept,n-p)
         if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pf(scoreStat,p-intercept,n-p),p-intercept,n-p)
         zzs$coefficients[,secol+2] <- 2 * pt(- abs(zzs$coefficients[,secol+1]),df=n-p)
+        # change label for p-value from Pr(>|z|) to Pr(>|t|), and "z value" to "t value"
+        colnames(zzs$coefficients)[secol+1] <- "t value"
+        colnames(zzs$coefficients)[secol+2] <- "Pr(>|t|)"
       } else {
         waldStat <- c(waldStat,1-pchisq(waldStat,p-intercept),p-intercept)
         LRStat <- c(LRStat,1-pchisq(LRStat,p-intercept),p-intercept)
