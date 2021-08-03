@@ -1,3 +1,6 @@
+# Print method for class "ttest"
+#' @noRd
+#' @export
 print.ttest <-
 function(x, ...) {
     out <- x

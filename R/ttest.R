@@ -777,7 +777,6 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
                                 myargs = myargs)
           ttest.obj$call <- match.call()
           class(ttest.obj) <- "ttest"
-          print(ttest.obj)
         }
       }
     }
@@ -801,7 +800,6 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
                                 myargs = myargs)
           ttest.obj$call <- match.call()
           class(ttest.obj) <- "ttest"
-          print(ttest.obj)
         }
       }
     }
@@ -823,7 +821,6 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
                                 myargs)
           ttest.obj$call <- match.call()
           class(ttest.obj) <- "ttest"
-          print(ttest.obj)
         }
       }
       if (matched == FALSE) {
@@ -842,7 +839,6 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
                                 myargs)
           ttest.obj$call <- match.call()
           class(ttest.obj) <- "ttest"
-          print(ttest.obj)
         }
       }
     }
@@ -853,4 +849,5 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
       }
     }
   }
+  return(ttest.obj)
 }
