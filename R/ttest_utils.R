@@ -2,7 +2,7 @@
 #' @noRd
 #' @export
 print.ttest <-
-function(x, ...) {
+  function(x, ...) {
     out <- x
     cat("\nCall:\n")
     print(out$call)
@@ -36,19 +36,19 @@ function(x, ...) {
     if (var.eq == F) {robust <- T}
     myargs <- c(deparse(substitute(var1)), deparse(substitute(var2)), deparse(substitute(by)))
     if (alternative == "less") {par1 <- c(">=", "<", "Pr(T < t) = ")}
-	if (alternative == "two.sided") {par1 <- c("=", "!=", "Pr(|T| > t) = ")}
-	if (alternative == "greater") {par1 <- c("<=",">", "Pr(T > t) = ")}
-	par2 <- ""
+    if (alternative == "two.sided") {par1 <- c("=", "!=", "Pr(|T| > t) = ")}
+    if (alternative == "greater") {par1 <- c("<=",">", "Pr(T > t) = ")}
+    par2 <- ""
     partest <- ""
     partest2 <- "difference in"
     if (geom == T) {partest = c("geometric")}
     if (geom == T) {partest2 <- "ratio of"}
     
     if (length(var2) > 1 & !is.na(var2[1]) & matched == F) {
-        par2 <- "presuming equal variances"; if (robust == T) {par2 <- "allowing for unequal variances"}
-	}
+      par2 <- "presuming equal variances"; if (robust == T) {par2 <- "allowing for unequal variances"}
+    }
     if (length(by) == 1 & is.na(by[1])) { #If not given a strata variable
-    if (length(var2) == 1 & is.na(var2[1])) { #If additionally not given second variable
+      if (length(var2) == 1 & is.na(var2[1])) { #If additionally not given second variable
         inference0 <- paste("Ho: ", partest, " mean ", par1[1], " ", null.hypoth," ;", sep = "")
         inference1 <- paste("Ha: ", partest, " mean ", par1[2], " ", null.hypoth, sep = "")
         inferencet <- paste("t = ", tstat, sep = "")
@@ -61,10 +61,10 @@ function(x, ...) {
         propp <- paste("p.value = ", chisqP, sep="")
         cat("\nOne-sample t-test", ":\n", collapse = "\n")
         if (geom == F & prop == F) {cat("Summary:\n")
-            print(main)}
+          print(main)}
         if (geom == T & prop == F) {
-            cat("Summary:\n")
-            print(main2)
+          cat("Summary:\n")
+          print(main2)
         } 
         if (geom == F & prop == T){
           cat("Summary:\n")
@@ -81,8 +81,8 @@ function(x, ...) {
         } else {
           cat("\n",paste(inference0, "                 ", propInf0, sep=""),"\n", paste(inference1, "                  ", propInf1, sep=""),"\n", inferencet,",", inferencedf, "          ",propChi, propdf ,"\n",inferencep, "    ", propp, collapse = "\n")
         }
-    }
-    if (length(var2) > 1) { #If given a second variable
+      }
+      if (length(var2) > 1) { #If given a second variable
         #dfr <- as.numeric(format(dfr[3], digits = digits))
         inference0 <- paste("Ho: ", partest2, " ", partest, " means ", par1[1], " ", null.hypoth," ;", sep = "")
         inference1 <- paste("Ha: ", partest2, " ", partest, " means ", par1[2], " ", null.hypoth, sep = "")
@@ -98,7 +98,7 @@ function(x, ...) {
         propp <- paste("p.value = ", chisqP, sep="")
         cat("\nOne-sample t-test", ":\n", collapse = "\n")
         if (geom == F & prop == F) {cat("Summary:\n")
-                                    print(main)}
+          print(main)}
         if (geom == T & prop == F) {
           cat("Summary:\n")
           print(main2)
@@ -118,12 +118,12 @@ function(x, ...) {
         } else {
           cat("\n",paste(inference0, "  ", propInf0, sep=""),"\n", paste(inference1, "   ", propInf1, sep=""),"\n", inferencet,",", inferencedf, "          ",propChi, propdf ,"\n",inferencep, "       ", propp, collapse = "\n")
         }
+      }
     }
-}
-
-if (length(by) > 1) { #If given a strata variable
     
-    if (length(var2) > 1) { #If given a second variable
+    if (length(by) > 1) { #If given a strata variable
+      
+      if (length(var2) > 1) { #If given a second variable
         inference0 <- paste("Ho: ", partest2, " ", partest, " means ", par1[1], " ", null.hypoth," ;", sep = "")
         inference1 <- paste("Ha: ", partest2, " ", partest, " means ", par1[2], " ", null.hypoth, sep = "")
         inferencet <- paste("t = ", tstat, sep = "")
@@ -138,7 +138,7 @@ if (length(by) > 1) { #If given a strata variable
         propp <- paste("p.value = ", chisqP, sep="")
         #cat("\nOne-sample t-test", ":\n", collapse = "\n")
         if (geom == F & prop == F) {cat("Summary:\n")
-                                    print(main)}
+          print(main)}
         if (geom == T & prop == F) {
           cat("Summary:\n")
           print(main2)
@@ -158,6 +158,6 @@ if (length(by) > 1) { #If given a strata variable
         } else {
           cat("\n",paste(inference0, "  ", propInf0, sep=""),"\n", paste(inference1, "   ", propInf1, sep=""),"\n", inferencet,",", inferencedf, "          ",propChi, propdf ,"\n",inferencep, "       ", propp, collapse = "\n")
         }
+      }
     }
-}
-}
+  }

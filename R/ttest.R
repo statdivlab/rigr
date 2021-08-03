@@ -842,12 +842,6 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
         }
       }
     }
-    if (length(by) > 1) {
-      if (matched == TRUE) {
-      }
-      if (matched == FALSE) {
-      }
-    }
   }
   return(ttest.obj)
 }
