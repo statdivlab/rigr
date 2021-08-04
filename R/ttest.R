@@ -19,8 +19,6 @@
 #' @param by a variable of equal length to
 #' that of \code{var1} with two outcomes. This will be used to define strata
 #' for a t-test on \code{var1}.
-#' @param strat a variable to use instead of \code{by}. However, using
-#' \code{by} instead is recommended.
 #' @param geom a logical indicating whether the geometric mean should be
 #' calculated and displayed.
 #' @param prop if \code{TRUE}, performs a test of equality of proportions with
@@ -109,7 +107,7 @@
 #' 
 #' 
 #' @export ttest
-ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE, 
+ttest<-function (var1, var2 = NA, by = NA, geom = FALSE, 
           prop = FALSE, exact = FALSE, null.hypoth = 0, alternative = "two.sided", 
           var.eq = FALSE, conf.level = 0.95, matched = FALSE, more.digits = 0) 
 {
@@ -706,49 +704,32 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
   myargs <- c(deparse(substitute(var1)), deparse(substitute(var2)), 
               deparse(substitute(by)))
   uby <- unique(by)
-  if (is.null(strat)) {
-    if (is.na(var2[1]) & length(var2) == 1) {
-      if (is.na(by[1]) & length(by) == 1) {
-        if (!matched) {
-          strat <- rep(1, length(var1))
-        }
-      }
-      if (length(by) > 1) {
-        if (!matched) {
-          strat <- rep(1, length(var1))
-        }
+
+  if (is.na(var2[1]) & length(var2) == 1) {
+    if (is.na(by[1]) & length(by) == 1) {
+      if (!matched) {
+        strat <- rep(1, length(var1))
       }
     }
-    if (length(var2) > 1) {
-      if (is.na(by[1]) & length(by) == 1) {
-        if (matched) {
-          strat <- rep(1, length(var1))
-        }
-        if (!matched) {
-          strat1 <- rep(1, length(var1))
-          strat2 <- rep(1, length(var2))
-        }
+    if (length(by) > 1) {
+      if (!matched) {
+        strat <- rep(1, length(var1))
       }
     }
   }
-  if (!is.null(strat)) {
-    if (is.na(var2[1]) & length(var2) == 1) {
-      if (length(by) > 1) {
-        if (!matched) {
-          strat1 <- unlist(strat[1])
-          strat2 <- unlist(strat[2])
-        }
+  if (length(var2) > 1) {
+    if (is.na(by[1]) & length(by) == 1) {
+      if (matched) {
+        strat <- rep(1, length(var1))
       }
-    }
-    if (length(var2) > 1) {
-      if (is.na(by[1]) & length(by) == 1) {
-        if (!matched) {
-          strat1 <- unlist(strat[1])
-          strat2 <- unlist(strat[2])
-        }
+      if (!matched) {
+        strat1 <- rep(1, length(var1))
+        strat2 <- rep(1, length(var2))
       }
     }
   }
+  
+  
   if (is.na(var2[1]) & length(var2) == 1) {
     if (is.na(by[1]) & length(by) == 1) {
       if (!matched) {
@@ -769,8 +750,6 @@ ttest<-function (var1, var2 = NA, by = NA, strat = NULL, geom = FALSE,
       }
     }
     if (length(by) > 1) {
-      if (matched) {
-      }
       if (!matched) {
         ustrat <- unique(strat)
         for (t in 1:length(ustrat)) {

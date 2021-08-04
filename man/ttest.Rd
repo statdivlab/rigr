@@ -12,7 +12,6 @@ ttest(
   var1,
   var2 = NA,
   by = NA,
-  strat = NULL,
   geom = FALSE,
   prop = FALSE,
   exact = FALSE,
@@ -34,9 +33,6 @@ vector of data.}
 \item{by}{a variable of equal length to
 that of \code{var1} with two outcomes. This will be used to define strata
 for a t-test on \code{var1}.}
-
-\item{strat}{a variable to use instead of \code{by}. However, using
-\code{by} instead is recommended.}
 
 \item{geom}{a logical indicating whether the geometric mean should be
 calculated and displayed.}
@@ -79,22 +75,35 @@ appropriate defaults.}
 \value{
 Prints a summary of the data and the
 corresponding t-test. \item{Variable}{the variable
-name supplied to the t-test function} \item{Group}{the group name: either
+name supplied to the t-test function} 
+
+\item{Group}{the group name: either
 the variable names supplied to the function or the names of the strata if
-the variable \code{by} was specified.} \item{Obs}{Number of observations of
-each variable: includes missing values.} \item{Missing}{number of missing
-values in each data vector.} \item{Mean}{the sample mean of each data
+the variable \code{by} was specified.} 
+\item{Obs}{Number of observations of
+each variable: includes missing values.} 
+\item{Missing}{number of missing
+values in each data vector.} 
+\item{Mean}{the sample mean of each data
 vector; also, the estimated difference in means in a two-sample test.}
 \item{Std.Err.}{the estimated standard error of the mean and of the
-difference in the two-sample test.} \item{Std.Dev.}{standard deviation
-estimates from the data.} \item{CI}{a confidence interval for the means, and
+difference in the two-sample test.} 
+\item{Std.Dev.}{standard deviation
+estimates from the data.} 
+\item{CI}{a confidence interval for the means, and
 for the difference in the two-sample test. This is at the confidence level
-specified in the argument. If \code{prop} and/or \code{exact} are
+specified in the argument and is a two-sided confidence interval, regardless of the 
+alternatuive hypothesis. If \code{prop} and/or \code{exact} are
 \code{TRUE}, also returns the appropriate confidence interval for the test
-of equality of proportions.} \item{Null hypothesis}{a statement of the null
-hypothesis.} \item{Alternative hypothesis}{a statement of the alternative
-hypothesis.} \item{t}{value of the t-statistic.} \item{df}{the degrees of
-freedom for the test.} \item{Pr}{a p-value for inference on the
+of equality of proportions.}
+\item{Null hypothesis}{a statement of the null
+hypothesis.} 
+\item{Alternative hypothesis}{a statement of the alternative
+hypothesis.}
+\item{t}{value of the t-statistic.} 
+\item{df}{the degrees of
+freedom for the test.} 
+\item{Pr}{a p-value for inference on the
 corresponding hypothesis test.}
 }
 \description{
