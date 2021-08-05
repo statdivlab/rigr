@@ -22,10 +22,10 @@ test_that("ttest() throws error if alternative is not 'two.sided', 'less', or 'g
                "'alternative' must be either 'less', 'two.sided', or 'greater'")
 })
 
-test_that("ttest() throws error if exact test requested for non-proportion", {
-  expect_error(ttest(x1, exact = TRUE), 
-               "Exact binomial confidence intervals cannot be computed for anything but a proportion.")
-})
+# test_that("ttest() throws error if exact test requested for non-proportion", {
+#   expect_error(ttest(x1, exact = TRUE), 
+#                "Exact binomial confidence intervals cannot be computed for anything but a proportion.")
+# })
 
 test_that("ttest() throws error if var.eq is not logical", {
   expect_error(ttest(x1, var.eq = 2), 

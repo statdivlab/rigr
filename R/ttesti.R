@@ -79,11 +79,27 @@
 #' 
 #' 
 #' @export ttesti
-ttesti <- function(obs, mean, sd, obs2=NA, mean2=NA, sd2=NA, null.hyp = 0, level=.95, alternative="two.sided", var.eq = FALSE, prop=FALSE, exact=FALSE){
-  if(is.na(obs)|is.na(mean)|is.na(sd)) stop("A value for obs, mean, and sd must be entered")
-  if(is.na(obs2) & (!is.na(mean2) | !is.na(sd2))){stop("A second observation must be entered for two sample test")}
-  if(!is.na(obs2) & (is.na(mean2) | is.na(sd2))){stop("SD and mean must be entered for two sample test")}
-  if(exact & !prop){stop("Exact binomial confidence intervals cannot be computed for anything but a proportion.")}
+ttesti <- function(obs, 
+                   mean, 
+                   sd, 
+                   obs2=NA, 
+                   mean2=NA, 
+                   sd2=NA, 
+                   null.hyp = 0, 
+                   level=.95, 
+                   alternative="two.sided", 
+                   var.eq = FALSE, 
+                   prop=FALSE, 
+                   exact=FALSE){
+  if(is.na(obs2) & (!is.na(mean2) | !is.na(sd2))) {
+    stop("A second observation must be entered for two sample test")
+  }
+  if(!is.na(obs2) & (is.na(mean2) | is.na(sd2))){
+    stop("SD and mean must be entered for two sample test")
+  }
+  if(exact & !prop){
+    stop("Exact binomial confidence intervals cannot be computed for anything but a proportion.")
+  }
   digits <- 3
   cl <- level+(1-level)/2
   if(is.na(obs2)){

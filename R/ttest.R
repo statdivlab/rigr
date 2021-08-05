@@ -21,11 +21,6 @@
 #' for a t-test on \code{var1}.
 #' @param geom a logical indicating whether the geometric mean should be
 #' calculated and displayed.
-#' @param prop if \code{TRUE}, performs a test of equality of proportions with
-#' Wald based confidence intervals.
-#' @param exact must be \code{FALSE} if \code{prop=FALSE}. If true, performs a
-#' test of equality of proportions with Exact Binomial based confidence
-#' intervals.
 #' @param null.hypoth a number specifying the
 #' null hypothesis for the mean (or difference in means if performing a
 #' two-sample test). Defaults to zero.
@@ -108,11 +103,11 @@
 #' 
 #' @export ttest
 ttest<-function (var1, var2 = NA, by = NA, geom = FALSE, 
-          prop = FALSE, exact = FALSE, null.hypoth = 0, alternative = "two.sided", 
+          null.hypoth = 0, alternative = "two.sided", 
           var.eq = FALSE, conf.level = 0.95, matched = FALSE, more.digits = 0) 
 {
   ttest.do <- function(var1, var2 = NA, by = NA, geom = FALSE, 
-                       prop = FALSE, exact = FALSE, null.hypoth = 0, alternative = "two.sided", 
+                       null.hypoth = 0, alternative = "two.sided", 
                        var.eq = FALSE, conf.level = 0.95, matched = FALSE, more.digits = 0, 
                        myargs, ...) {
     var1 <- var1
@@ -132,10 +127,6 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
     # check that alternative is one of "less", "two.sided", or "greater"
     if (!(alternative %in% c("less", "two.sided", "greater"))) {
       stop("'alternative' must be either 'less', 'two.sided', or 'greater'")
-    }
-    # checks to make sure it is proportion if exact binomial conf int is requested
-    if (exact == TRUE & prop == FALSE) {
-      stop("Exact binomial confidence intervals cannot be computed for anything but a proportion.")
     }
     # make sure var.eq is either true or false
     if (!is.logical(var.eq)) {
@@ -230,63 +221,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         ster <- as.numeric(format(ster, digits = digits))
         lci <- as.numeric(format(lci, digits = digits))
         hci <- as.numeric(format(hci, digits = digits))
-        propSter <- NULL
-        propCIL <- NULL
-        propCIH <- NULL
-        chisqStat <- NULL
-        chisqP <- NULL
-        chisqdf <- NULL
-        if (prop) {
-          if (exact) {
-            if (abs(route$estimate) < 1) {
-              binom <- binom.test(x = round(abs(route$estimate * 
-                                                   length(var1))), n = length(var1), p = null.hypoth + 
-                                    1e-10, alternative = alternative, conf.level = cl)
-              propCIL <- as.numeric(format(min(binom$conf.int), 
-                                           digits = digits))
-              propCIH <- as.numeric(format(max(binom$conf.int), 
-                                           digits = digits))
-            }
-            else {
-              binom <- binom.test(x = round(abs(route$estimate)), 
-                        #####          n = length(var1), p = null.hypoth + 1e-10, 
-                                  alternative = alternative, conf.level = cl)
-              propCIL <- as.numeric(format(min(binom$conf.int) * 
-                                             length(var1), digits = digits))
-              propCIH <- as.numeric(format(max(binom$conf.int) * 
-                                             length(var1), digits = digits))
-            }
-            chisqStat <- as.numeric(format(binom$statistic, 
-                                           digits = digits))
-            chisqdf <- as.numeric(format(binom$parameter, 
-                                         digits = digits))
-            chisqP <- as.numeric(format(binom$p.value, 
-                                        digits = digits))
-          }
-          else {
-            if (abs(route$estimate) < 1) {
-              chisq <- prop.test(x = round(abs(route$estimate * 
-                                                 length(var1))), n = length(var1), conf.level = cl, 
-                                 correct = FALSE)
-            }
-            else {
-              chisq <- prop.test(x = round(abs(route$estimate)), 
-                                 n = length(var1), conf.level = cl, correct = FALSE)
-            }
-            chisqStat <- as.numeric(format(chisq$statistic, 
-                                           digits = digits))
-            chisqdf <- as.numeric(format(chisq$parameter, 
-                                         digits = digits))
-            chisqP <- as.numeric(format(chisq$p.value, 
-                                        digits = digits))
-            propSter <- sd(var1, na.rm = TRUE) * sqrt(1/length(var1))
-            propCIL <- route$estimate - qnorm(cl) * propSter
-            propCIH <- route$estimate + qnorm(cl) * propSter
-            propCIL <- as.numeric(format(propCIL, digits = digits))
-            propCIH <- as.numeric(format(propCIH, digits = digits))
-            propSter <- as.numeric(format(propSter, digits = digits))
-          }
-        }
+      
         main <- matrix(c(myargs[1], length(var1), sum(is.na(var1)), 
                          mn, ster, stdev, paste("[", lci, ", ", hci, 
                                                 "]", sep = "")), ncol = 7)
@@ -305,26 +240,6 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
                           "Geom. Mean", paste(conf.level * 100, "% CI", 
                                               sep = ""))
         row.names(main2) <- c("")
-        main3 <- matrix(c(myargs[1], length(var1), sum(is.na(var1)), 
-                          mn, ster, stdev, paste("[", lci, ", ", hci, 
-                                                 "]", sep = ""), paste("[", propCIL, ", ", 
-                                                                       propCIH, "]", sep = "")), ncol = 8)
-        main3 <- data.frame(main3)
-        names(main3) <- c("Variable", "Obs", "Missing", 
-                          "Mean", "Std. Err.", "Std. Dev.", paste(conf.level * 
-                                                                    100, "% CI", sep = ""), paste(conf.level * 
-                                                                                                    100, "% CI", " [Wald]", sep = ""))
-        row.names(main3) <- c("")
-        main4 <- matrix(c(myargs[1], length(var1), sum(is.na(var1)), 
-                          mn, ster, stdev, paste("[", lci, ", ", hci, 
-                                                 "]", sep = ""), paste("[", propCIL, ", ", 
-                                                                       propCIH, "]", sep = "")), ncol = 8)
-        main4 <- data.frame(main4)
-        names(main4) <- c("Variable", "Obs", "Missing", 
-                          "Mean", "Std. Err.", "Std. Dev.", paste(conf.level * 
-                                                                    100, "% CI", sep = ""), paste(conf.level * 
-                                                                                                    100, "% CI", " [Exact Binomial]", sep = ""))
-        row.names(main4) <- c("")
       }
       if (length(var2) > 1) {
         route <- t.test(var1, var2, alternative = alternative, 
@@ -356,72 +271,6 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         tstat <- route$statistic
         talpha <- c(qt(cl, dfr[1] - 1), qt(cl, dfr[2] - 
                                              1), qt(cl, dfr[3]))
-        propSter <- NULL
-        propCIL <- NULL
-        propCIH <- NULL
-        chisqStat <- NULL
-        chisqP <- NULL
-        chisqdf <- NULL
-        if (prop) {
-          if (exact) {
-            if (abs((route$estimate[1] - route$estimate[2])) < 
-                1) {
-              binom <- binom.test(x = round(abs((route$estimate[1] - 
-                                                   route$estimate[2])) * (length(var1) + 
-                                                                            length(var2))), n = length(var1) + length(var2), 
-                                  p = null.hypoth + 1e-10, alternative = alternative, 
-                                  conf.level = cl)
-              propCIL <- as.numeric(format(min(binom$conf.int), 
-                                           digits = digits))
-              propCIH <- as.numeric(format(max(binom$conf.int), 
-                                           digits = digits))
-            }
-            else {
-              binom <- binom.test(x = round(abs((route$estimate[1] - 
-                                                   route$estimate[2]))), n = length(var1) + 
-                                    length(var2), p = null.hypoth + 1e-10, 
-                                  alternative = alternative, conf.level = cl)
-              propCIL <- as.numeric(format(min(binom$conf.int) * 
-                                             (length(var1) + length(var2)), digits = digits))
-              propCIH <- as.numeric(format(max(binom$conf.int) * 
-                                             (length(var1) + length(var2)), digits = digits))
-            }
-            chisqStat <- as.numeric(format(binom$statistic, 
-                                           digits = digits))
-            chisqdf <- as.numeric(format(binom$parameter, 
-                                         digits = digits))
-            chisqP <- as.numeric(format(binom$p.value, 
-                                        digits = digits))
-          }
-          else {
-            if (abs((route$estimate[1] - route$estimate[2])) < 
-                1) {
-              chisq <- prop.test(x = round(abs((route$estimate[1] - 
-                                                  route$estimate[2])) * (length(var1) + 
-                                                                           length(var2))), n = length(var1) + length(var2), 
-                                 conf.level = cl, correct = FALSE)
-            }
-            else {
-              chisq <- prop.test(x = round(abs((route$estimate[1] - 
-                                                  route$estimate[2]))), n = length(var1) + 
-                                   length(var2), conf.level = cl, correct = FALSE)
-            }
-            chisqStat <- as.numeric(format(chisq$statistic, 
-                                           digits = digits))
-            chisqdf <- as.numeric(format(chisq$parameter, 
-                                         digits = digits))
-            chisqP <- as.numeric(format(chisq$p.value, 
-                                        digits = digits))
-            propSter <- sd(var1, na.rm = TRUE) * sqrt(1/length(var1))
-            propCIL <- route$estimate[1] - route$estimate[2] - 
-              qnorm(cl) * propSter
-            propCIH <- route$estimate[1] - route$estimate[2] + 
-              qnorm(cl) * propSter
-            propCIL <- as.numeric(format(propCIL, digits = digits))
-            propCIH <- as.numeric(format(propCIH, digits = digits))
-            propSter <- as.numeric(format(propSter, digits = digits))
-          }
-        }
         pval <- as.numeric(format(route$p.value, digits = max(digits, 
                                                               digits + 3)))
         tstat <- as.numeric(format(tstat, digits = max(digits + 
@@ -472,36 +321,6 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
                           "Geom. Mean", paste(conf.level * 100, "% CI", 
                                               sep = ""))
         row.names(main2) <- c("", " ", "  ")
-        main3 <- matrix(c(myargs[a], ns[1], msg[1], mns[1], 
-                          ster[1], stdev[1], paste("[", lci[1], ", ", 
-                                                   hci[1], "]", sep = ""), " ", myargs[b], ns[2], 
-                          msg[2], mns[2], ster[2], stdev[2], paste("[", 
-                                                                   lci[2], ", ", hci[2], "]", sep = ""), " ", 
-                          "Difference", ns[3], msg[3], mns[3], ster[3], 
-                          stdev[3], paste("[", lci[3], ", ", hci[3], 
-                                          "]", sep = ""), paste("[", propCIL, ", ", 
-                                                                propCIH, "]", sep = "")), ncol = 8, byrow = TRUE)
-        main3 <- data.frame(main3)
-        names(main3) <- c("Group", "Obs", "Missing", 
-                          "Mean", "Std. Err.", "Std. Dev.", paste(conf.level * 
-                                                                    100, "% CI", sep = ""), paste(conf.level * 
-                                                                                                    100, "% CI", " [Wald]", sep = ""))
-        row.names(main3) <- c("", " ", "  ")
-        main4 <- matrix(c(myargs[a], ns[1], msg[1], mns[1], 
-                          ster[1], stdev[1], paste("[", lci[1], ", ", 
-                                                   hci[1], "]", sep = ""), " ", myargs[b], ns[2], 
-                          msg[2], mns[2], ster[2], stdev[2], paste("[", 
-                                                                   lci[2], ", ", hci[2], "]", sep = ""), " ", 
-                          "Difference", ns[3], msg[3], mns[3], ster[3], 
-                          stdev[3], paste("[", lci[3], ", ", hci[3], 
-                                          "]", sep = ""), paste("[", propCIL, ", ", 
-                                                                propCIH, "]", sep = "")), ncol = 8, byrow = TRUE)
-        main4 <- data.frame(main4)
-        names(main4) <- c("Group", "Obs", "Missing", 
-                          "Mean", "Std. Err.", "Std. Dev.", paste(conf.level * 
-                                                                    100, "% CI", sep = ""), paste(conf.level * 
-                                                                                                    100, "% CI", " [Exact Binomial]", sep = ""))
-        row.names(main4) <- c("", " ", "  ")
       }
     }
     if (length(by) > 1) {
@@ -535,72 +354,6 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         tstat <- route$statistic
         talpha <- c(qt(cl, dfr[1] - 1), qt(cl, dfr[2] - 
                                              1), qt(cl, dfr[3]))
-        propSter <- NULL
-        propCIL <- NULL
-        propCIH <- NULL
-        chisqStat <- NULL
-        chisqP <- NULL
-        chisqdf <- NULL
-        if (prop) {
-          if (exact) {
-            if (abs((route$estimate[1] - route$estimate[2])) < 
-                1) {
-              binom <- binom.test(x = round(abs((route$estimate[1] - 
-                                                   route$estimate[2])) * (length(var1) + 
-                                                                            length(var2))), n = length(var1) + length(var2), 
-                                  p = null.hypoth + 1e-10, alternative = alternative, 
-                                  conf.level = cl)
-              propCIL <- as.numeric(format(min(binom$conf.int), 
-                                           digits = digits))
-              propCIH <- as.numeric(format(max(binom$conf.int), 
-                                           digits = digits))
-            }
-            else {
-              binom <- binom.test(x = round(abs((route$estimate[1] - 
-                                                   route$estimate[2]))), n = length(var1) + 
-                                    length(var2), p = null.hypoth + 1e-10, 
-                                  alternative = alternative, conf.level = cl)
-              propCIL <- as.numeric(format(min(binom$conf.int) * 
-                                             (length(var1) + length(var2)), digits = digits))
-              propCIH <- as.numeric(format(max(binom$conf.int) * 
-                                             (length(var1) + length(var2)), digits = digits))
-            }
-            chisqStat <- as.numeric(format(binom$statistic, 
-                                           digits = digits))
-            chisqdf <- as.numeric(format(binom$parameter, 
-                                         digits = digits))
-            chisqP <- as.numeric(format(binom$p.value, 
-                                        digits = digits))
-          }
-          else {
-            if (abs((route$estimate[1] - route$estimate[2])) < 
-                1) {
-              chisq <- prop.test(x = round(abs((route$estimate[1] - 
-                                                  route$estimate[2])) * (length(var1) + 
-                                                                           length(var2))), n = length(var1) + length(var2), 
-                                 conf.level = cl, correct = FALSE)
-            }
-            else {
-              chisq <- prop.test(x = round(abs((route$estimate[1] - 
-                                                  route$estimate[2]))), n = length(var1) + 
-                                   length(var2), conf.level = cl, correct = FALSE)
-            }
-            chisqStat <- as.numeric(format(chisq$statistic, 
-                                           digits = digits))
-            chisqdf <- as.numeric(format(chisq$parameter, 
-                                         digits = digits))
-            chisqP <- as.numeric(format(chisq$p.value, 
-                                        digits = digits))
-            propSter <- sd(var1, na.rm = TRUE) * sqrt(1/length(var1))
-            propCIL <- route$estimate[1] - route$estimate[2] - 
-              qnorm(cl) * propSter
-            propCIH <- route$estimate[1] - route$estimate[2] + 
-              qnorm(cl) * propSter
-            propCIL <- as.numeric(format(propCIL, digits = digits))
-            propCIH <- as.numeric(format(propCIH, digits = digits))
-            propSter <- as.numeric(format(propSter, digits = digits))
-          }
-        }
         pval <- as.numeric(format(route$p.value, digits = max(digits, 
                                                               digits + 3)))
         tstat <- as.numeric(format(tstat, digits = max(digits + 
@@ -653,51 +406,14 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
                           "Geom. Mean", paste(conf.level * 100, "% CI", 
                                               sep = ""))
         row.names(main2) <- c("", " ", "  ")
-        main3 <- matrix(c(paste(myargs[3], " = ", byt[a], 
-                                sep = ""), ns[1], msg[1], mns[1], ster[1], 
-                          stdev[1], paste("[", lci[1], ", ", hci[1], 
-                                          "]", sep = ""), " ", paste(myargs[3], " = ", 
-                                                                     byt[b], sep = ""), ns[2], msg[2], mns[2], 
-                          ster[2], stdev[2], paste("[", lci[2], ", ", 
-                                                   hci[2], "]", sep = ""), " ", "Difference", 
-                          ns[3], msg[3], mns[3], ster[3], stdev[3], paste("[", 
-                                                                          lci[3], ", ", hci[3], "]", sep = ""), paste("[", 
-                                                                                                                      propCIL, ", ", propCIH, "]", sep = "")), 
-                        ncol = 8, byrow = TRUE)
-        main3 <- data.frame(main3)
-        names(main3) <- c("Group", "Obs", "Missing", 
-                          "Mean", "Std. Err.", "Std. Dev.", paste(conf.level * 
-                                                                    100, "% CI", sep = ""), paste(conf.level * 
-                                                                                                    100, "% CI", " [Wald]", sep = ""))
-        row.names(main3) <- c("", " ", "  ")
-        main4 <- matrix(c(paste(myargs[3], " = ", byt[a], 
-                                sep = ""), ns[1], msg[1], mns[1], ster[1], 
-                          stdev[1], paste("[", lci[1], ", ", hci[1], 
-                                          "]", sep = ""), " ", paste(myargs[3], " = ", 
-                                                                     byt[b], sep = ""), ns[2], msg[2], mns[2], 
-                          ster[2], stdev[2], paste("[", lci[2], ", ", 
-                                                   hci[2], "]", sep = ""), " ", "Difference", 
-                          ns[3], msg[3], mns[3], ster[3], stdev[3], paste("[", 
-                                                                          lci[3], ", ", hci[3], "]", sep = ""), paste("[", 
-                                                                                                                      propCIL, ", ", propCIH, "]", sep = "")), 
-                        ncol = 8, byrow = TRUE)
-        main4 <- data.frame(main4)
-        names(main4) <- c("Group", "Obs", "Missing", 
-                          "Mean", "Std. Err.", "Std. Dev.", paste(conf.level * 
-                                                                    100, "% CI", sep = ""), paste(conf.level * 
-                                                                                                    100, "% CI", " [Exact Binomial]", sep = ""))
-        row.names(main4) <- c("", " ", "  ")
         dfr <- as.numeric(format(dfr[3], digits = digits))
       }
     }
     par <- c(geom = geom, null.hypoth = null.hypoth, alternative = alternative, 
              var.eq = var.eq, conf.level = conf.level, matched = matched, 
              digits = digits)
-    chisqTest <- c(prop = prop, exact = exact, chisqStat = chisqStat, 
-                   chisqdf = chisqdf, chisqP = chisqP)
     invisible(list(tab = main, df = dfr, p = pval, tstat = tstat, 
-                   var1 = var1, var2 = var2, by = by, par = par, geo = main2, 
-                   wald = main3, exact = main4, chisqTest = chisqTest))
+                   var1 = var1, var2 = var2, by = by, par = par, geo = main2))
   }
   
   
@@ -741,7 +457,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
             cat(ustrat[t])
           }
           ttest.obj <- ttest.do(var1 = x, var2 = var2, 
-                                geom = geom, prop = prop, exact = exact, 
+                                geom = geom, 
                                 by = by, null.hypoth = null.hypoth, alternative = alternative, 
                                 var.eq = var.eq, conf.level = conf.level, 
                                 matched = matched, more.digits = more.digits, 
@@ -760,7 +476,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
             cat(ustrat[t])
           }
           ttest.obj <- ttest.do(var1 = x, var2 = var2, 
-                                geom = geom, prop = prop, exact = exact, 
+                                geom = geom,  
                                 by = cby, null.hypoth = null.hypoth, alternative = alternative, 
                                 var.eq = var.eq, conf.level = conf.level, 
                                 matched = matched, more.digits = more.digits, 
@@ -780,8 +496,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
             cat("\nStratum Value:")
             cat(ustrat[t])
           }
-          ttest.obj <- ttest.do(x, y, geom = geom, prop = prop, 
-                                exact = exact, by = by, null.hypoth, alternative, 
+          ttest.obj <- ttest.do(x, y, geom = geom, by = by, null.hypoth, alternative, 
                                 var.eq, conf.level, matched, more.digits, 
                                 myargs)
         }
@@ -795,8 +510,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
             cat("\nStratum Value:")
             cat(ustrat[t])
           }
-          ttest.obj <- ttest.do(x, y, geom = geom, prop = prop, 
-                                exact = exact, by = by, null.hypoth, alternative, 
+          ttest.obj <- ttest.do(x, y, geom = geom, by = by, null.hypoth, alternative, 
                                 var.eq, conf.level, matched, more.digits, 
                                 myargs)
         }
