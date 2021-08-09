@@ -58,7 +58,8 @@
 #' \code{FALSE}, this indicates a value to be used in place of zeroes when
 #' computing a geometric mean. If \code{TRUE}, a value equal to one-half the
 #' lowest nonzero value is used. If a numeric value is supplied, that value is
-#' used. Defaults to \code{TRUE} when \code{fnctl = "geometric mean"}.
+#' used. Defaults to \code{TRUE} when \code{fnctl = "geometric mean"}. This parameter
+#' is always \code{FALSE} for all other values of \code{fnctl}.
 #' @param useFdstn a logical indicator
 #' that the F distribution should be used for test statistics instead of the
 #' chi squared distribution even in logistic and proportional hazard regression
@@ -300,12 +301,21 @@ regress <- function(fnctl, formula, data,
           } else if (!replaceZeroes) {
             # if fnctl == "geometric mean" and !replaceZeroes, throw an error if y contains any zeroes
             stop("replaceZeroes cannot be false if fnctl = 'geometric mean' and y contains any zeroes")
-          } else {
+          } else if (isTRUE(replaceZeroes)) {
             replaceZeroes <- min(y[y>0]/2)
           }
           
           y <- log(ifelse(y<=0,replaceZeroes,y))
         } else {
+          # if replaceZeroes is either TRUE or a numeric value, give a warning that it will do nothing
+          if (!missing(replaceZeroes)) {
+            if (!replaceZeroes) {
+              replaceZeroes <- NA
+            } else {
+              warning("replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
+              replaceZeroes <- NA
+            }
+          }
           replaceZeroes <- NA
         }
         

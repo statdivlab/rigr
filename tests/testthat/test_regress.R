@@ -22,6 +22,16 @@ test_that("regress() throws error if fnctl = 'geometric mean', replaceZeroes = F
                "replaceZeroes cannot be false if fnctl = 'geometric mean' and y contains any zeroes")
 })
 
+### warning handling
+
+test_that("regress() gives warning if fnctl != 'geometric mean' and replaceZeroes != FALSE", {
+  expect_warning(regress("mean", packyrs ~ age, data = mri, replaceZeroes = TRUE), 
+               "replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
+  expect_warning(regress("mean", packyrs ~ age, data = mri, replaceZeroes = 7), 
+                 "replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
+})
+
+
 ### linear regression output
 
 mod_rigr <- regress("mean", atrophy ~ age, data = mri)
@@ -281,7 +291,46 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean', r
                mod_lm_robust_p)
 })
 
-# replaceZeroes, fnctl = 'mean'
+# replaceZeroes = value, fnctl = 'geometric mean'
+
+mod_rigr <- regress("geometric mean", packyrs ~ age, data = mri, replaceZeroes = 7)
+replace_val <- 7
+#replace_val <- TRUE
+mri_temp <- mri
+mri_temp$packyrs <- log(ifelse(mri_temp$packyrs == 0, replace_val, mri_temp$packyrs))
+mod_lm <- lm(data = mri_temp, packyrs ~ age)
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+# - 3 because there's one missing observation
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 3) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 3) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 3, lower.tail = FALSE)
+
+test_that("regress() returns same output as lm() for fnctl = 'geometric mean', replaceZeroes = TRUE", {
+  # Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
+               mod_lm$coefficients)
+  # Naive SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"],
+               summary(mod_lm)$coefficients[,2])
+  # Robust SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"],
+               mod_lm_robust_se)
+  # e^Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "e(Est)"],
+               exp(mod_lm$coefficients))
+  # 95%L (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "e(95%L)"],
+               exp(mod_lm_robust_ci_lower))
+  # 95%H (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "e(95%H)"],
+               exp(mod_lm_robust_ci_higher))
+  # t value (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"],
+               mod_lm$coefficients/ mod_lm_robust_se)
+  # p-value
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"],
+               mod_lm_robust_p)
+})
 
 # utilization of U for F-tests
 
