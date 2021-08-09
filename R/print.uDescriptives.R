@@ -1,8 +1,7 @@
-print.uDescriptives <-
-function (x, ..., sigfigs=max(3,getOption("digits")-3),width=9,nonsci.limit=5, print.it= TRUE, version=F) {
-  
-  vrsn <- "20121026"
-  if (version) return(vrsn)
+# Print method for class uDescriptives
+#' @noRd
+#' @export
+print.uDescriptives <- function (x, ..., sigfigs=max(3,getOption("digits")-3),width=9,nonsci.limit=5, print.it= TRUE) {
   
   #
   # prints CI or exp(CI) to specified sigfigs
