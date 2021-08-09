@@ -58,7 +58,7 @@
 #' \code{FALSE}, this indicates a value to be used in place of zeroes when
 #' computing a geometric mean. If \code{TRUE}, a value equal to one-half the
 #' lowest nonzero value is used. If a numeric value is supplied, that value is
-#' used.
+#' used. Defaults to \code{TRUE} when \code{fnctl = "geometric mean"}.
 #' @param useFdstn a logical indicator
 #' that the F distribution should be used for test statistics instead of the
 #' chi squared distribution even in logistic and proportional hazard regression
@@ -153,7 +153,7 @@ regress <- function(fnctl, formula, data,
     # get family and glm vs. lm
     glm <- FALSE
     
-    if(fnctl %in% c("odds", "rate")) {
+    if (fnctl %in% c("odds", "rate")) {
       glm <- TRUE
       
       # if fnctl is "odds" or "rate" and method = "qr", internally change to method = "glm.fit"
@@ -170,18 +170,18 @@ regress <- function(fnctl, formula, data,
       }
     } else {
       
-      if(fnctl!="hazard"){
+      if (fnctl!="hazard") {
         family="gaussian"
       }
       
     }
     
     # if intercept = FALSE, add a "-1" to the formula
-    if(!intercept){
+    if (!intercept) {
       
       form <- deparse(formula)
       
-      if(length(form) > 1) {
+      if (length(form) > 1) {
         form <- paste(form, collapse = "")
       }
       
@@ -190,7 +190,7 @@ regress <- function(fnctl, formula, data,
     }
     
     # Set up the model matrix and formula
-    if(fnctl != "hazard") {
+    if (fnctl != "hazard") {
       cl <- match.call()
       
       # set up the model frame (mf), which will become the model matrix
@@ -237,27 +237,31 @@ regress <- function(fnctl, formula, data,
     
     # Evaluate the formula and get the correct returns
     
-    if(fnctl != "hazard"){  
+    if (fnctl != "hazard") {  
       ret.x <- model.x
       ret.y <- model.y
-      if(any(m)>0){
+      if (any(m)>0) {
         mf <- mf[c(1L, m)]
         mf$drop.unused.levels <- TRUE
         mf[[1L]] <- quote(stats::model.frame)
         mf <- eval(mf, parent.frame())
       }
-      if(method=="model.frame") return(mf)
-      else if (!glm){
-        if (method != "qr") 
+      if (method == "model.frame") {
+        return(mf)
+      } else if (!glm) {
+        
+        if (method != "qr") {
           warning(gettextf("method = '%s' is not supported. Using 'qr'", 
                            method), domain = NA)
+        }
+          
         mt <- attr(mf, "terms")
         factorMat <- NULL
         term.labels <- NULL
-        if(length(tmplist)>0){
+        if (length(tmplist)>0) {
           factorMat <- attr(mt, "factors")
           term.labels <- attr(mt, "term.labels")
-          for(i in 1:length(tmplist)){
+          for (i in 1:length(tmplist)) {
             tmpFactors <- attr(attr(tmplist[[i]], "terms"), "factors")
             tmpVec <- as.matrix(apply(tmpFactors, 1, sum))
             tmpCol <- matrix(rep(0, dim(factorMat)[1]))
@@ -266,11 +270,11 @@ regress <- function(fnctl, formula, data,
             factorMat <- cbind(factorMat, tmpCol)
             ter <- attr(termlst[[i+1]], "term.labels")
             hasU <- grepl("U", ter)
-            if(any(hasU)){
+            if (any(hasU)) {
               tmpter <- ter[hasU] 
               tmpEqter <- tmpter[grepl("=", tmpter, fixed=TRUE)]
               tmpEqter <- unlist(strsplit(tmpEqter, "U", fixed=TRUE))
-              if(sum(grepl(")", tmpEqter, fixed=TRUE))!=length(tmpEqter)-1){
+              if (sum(grepl(")", tmpEqter, fixed=TRUE))!=length(tmpEqter)-1) {
                 tmpEqter <- tmpEqter[-which(grepl(")", tmpEqter, fixed=TRUE))]
               }
               tmpEqter <- as.matrix(tmpEqter)
@@ -288,26 +292,42 @@ regress <- function(fnctl, formula, data,
         }
         y <- model.response(mf, "numeric")
         # checking response variable y  
-        if (fnctl=="geometric mean") {
-          if (missing(replaceZeroes)) replaceZeroes <- min(y[y>0]/2)
+        if (fnctl == "geometric mean") {
+          
+          if (missing(replaceZeroes)) {
+            replaceZeroes <- min(y[y>0]/2)
+            
+          } else if (!replaceZeroes) {
+            # if fnctl == "geometric mean" and !replaceZeroes, throw an error if y contains any zeroes
+            stop("replaceZeroes cannot be false if fnctl = 'geometric mean' and y contains any zeroes")
+          } else {
+            replaceZeroes <- min(y[y>0]/2)
+          }
+          
           y <- log(ifelse(y<=0,replaceZeroes,y))
-        } else replaceZeroes <- NA
+        } else {
+          replaceZeroes <- NA
+        }
+        
         n <- length(y)
         msng <- FALSE
-        if(!missing(strata)){msng <- TRUE}
+        if (!missing(strata)) {msng <- TRUE}
         if (!is.null(strata) & msng & fnctl != "hazard") warning("Strata ignored unless hazard regression")
         if (!is.null(strata) & length(strata) != n) stop("Response variable and strata must be of same length")
         if (length(weights) != n) stop("Response variable and weights must be of same length")
         if (length(subset) != n) stop("Response variable and subsetting variable must be of same length")
         
         w <- as.vector(model.weights(mf))
-        if (!is.null(w) && !is.numeric(w)) 
+        if (!is.null(w) && !is.numeric(w)) {
           stop("'weights' must be a numeric vector")
+        }
+          
         offset <- as.vector(model.offset(mf))
         if (!is.null(offset)) {
-          if (length(offset) != NROW(y)) 
+          if (length(offset) != NROW(y)) {
             stop(gettextf("number of offsets is %d, should equal %d (number of observations)", 
                           length(offset), NROW(y)), domain = NA)
+          }
         }
         if (is.empty.model(mt)) {
           x <- NULL
@@ -355,18 +375,24 @@ regress <- function(fnctl, formula, data,
           print(family)
           stop("'family' not recognized")
         }
-        if (!is.character(method) && !is.function(method)) 
+        if (!is.character(method) && !is.function(method)) {
           stop("invalid 'method' argument")
-        if(missing(control)) control <- glm.control(...)
-        if (identical(method, "glm.fit")) 
+        }
+          
+        if (missing(control)) {
+          control <- glm.control(...)
+        }
+        if (identical(method, "glm.fit")) {
           control <- do.call("glm.control", control)
+        }
+          
         mt <- attr(mf, "terms")
         factorMat <- NULL
         term.labels <- NULL
-        if(length(tmplist)>0){
+        if (length(tmplist)>0) {
           factorMat <- attr(mt, "factors")
           term.labels <- attr(mt, "term.labels")
-          for(i in 1:length(tmplist)){
+          for (i in 1:length(tmplist)) {
             tmpFactors <- attr(attr(tmplist[[i]], "terms"), "factors")
             tmpVec <- as.matrix(apply(tmpFactors, 1, sum))
             tmpCol <- matrix(rep(0, dim(factorMat)[1]))
@@ -375,7 +401,7 @@ regress <- function(fnctl, formula, data,
             factorMat <- cbind(factorMat, tmpCol)
             ter <- attr(termlst[[i+1]], "term.labels")
             hasU <- grepl("U", ter)
-            if(any(hasU)){
+            if (any(hasU)) {
               tmpter <- ter[hasU] 
               tmpEqter <- tmpter[grepl("=", tmpter, fixed=TRUE)]
               tmpEqter <- unlist(strsplit(tmpEqter, "U", fixed=TRUE))

@@ -108,7 +108,7 @@ default true for all functionals except the mean.}
 \code{FALSE}, this indicates a value to be used in place of zeroes when
 computing a geometric mean. If \code{TRUE}, a value equal to one-half the
 lowest nonzero value is used. If a numeric value is supplied, that value is
-used.}
+used. Defaults to \code{TRUE} when \code{fnctl = "geometric mean"}.}
 
 \item{useFdstn}{a logical indicator
 that the F distribution should be used for test statistics instead of the
