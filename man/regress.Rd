@@ -32,11 +32,9 @@ regress(
   fnctl,
   formula,
   data,
-  intercept = fnctl != "hazard",
-  strata = rep(1, n),
+  intercept = TRUE,
   weights = rep(1, n),
   id = 1:n,
-  ties = "efron",
   subset = rep(TRUE, n),
   robustSE = TRUE,
   conf.level = 0.95,
@@ -72,20 +70,13 @@ names to those entered in \code{formula}.}
 
 \item{intercept}{a logical value
 indicating whether a intercept exists or not. Default value is \code{TRUE} for all 
-functionals other than \code{"hazard"}}
-
-\item{strata}{vector indicating a
-variable to be used for stratification in proportional hazards regression.}
+functionals.}
 
 \item{weights}{vector indicating
 optional weights for weighted regression.}
 
 \item{id}{vector with ids for the variables.
 If any ids are repeated, runs a clustered regression.}
-
-\item{ties}{One of \code{"efron"} (by default), \code{"breslow"}, or
-\code{"exact"}. Determines the method used to handle ties in proportional
-hazard regression.}
 
 \item{subset}{vector indicating a subset
 to be used for all inference.}
@@ -111,7 +102,7 @@ is always \code{FALSE} for all other values of \code{fnctl}.}
 
 \item{useFdstn}{a logical indicator
 that the F distribution should be used for test statistics instead of the
-chi squared distribution even in logistic and proportional hazard regression
+chi squared distribution even in logistic regression
 models. When using the F distribution, the degrees of freedom are taken to
 be the sample size minus the number of parameters, as it would be in a
 linear regression model.}
@@ -155,17 +146,10 @@ follow them).
 \examples{
 
 # Loading required libraries
-library(survival)
 library(sandwich)
 
 # Reading in a dataset
 mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt",header=TRUE)
-
-# Creating a Surv object to reflect time to death
-mri$ttodth <- Surv(mri$obstime,mri$death)
-
-# Attaching the mri dataset
-attach(mri)
 
 # Linear regression of atrophy on age
 regress("mean", atrophy~age, data=mri)
@@ -181,10 +165,8 @@ regress("mean", atrophy~age+male+U(rc=~dummy(race)+chf)+U(md=~male+diabetes), da
 
 }
 \seealso{
-Functions for fitting linear models (\code{\link[stats]{lm}}),
-generalized linear models (\code{\link[stats]{glm}}), proportional hazards
-models (\code{\link[survival]{coxph}}), and generalized estimating equations
-(\code{\link[geepack]{geeglm}}). Also see the function to specify
+Functions for fitting linear models (\code{\link[stats]{lm}}), and
+generalized linear models (\code{\link[stats]{glm}}). Also see the function to specify
 multiple-partial F-tests, \code{\link[uwIntroStats]{U}}.
 }
 \author{
