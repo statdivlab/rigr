@@ -13,8 +13,6 @@ ttest(
   var2 = NA,
   by = NA,
   geom = FALSE,
-  prop = FALSE,
-  exact = FALSE,
   null.hypoth = 0,
   alternative = "two.sided",
   var.eq = FALSE,
@@ -36,13 +34,6 @@ for a t-test on \code{var1}.}
 
 \item{geom}{a logical indicating whether the geometric mean should be
 calculated and displayed.}
-
-\item{prop}{if \code{TRUE}, performs a test of equality of proportions with
-Wald based confidence intervals.}
-
-\item{exact}{must be \code{FALSE} if \code{prop=FALSE}. If true, performs a
-test of equality of proportions with Exact Binomial based confidence
-intervals.}
 
 \item{null.hypoth}{a number specifying the
 null hypothesis for the mean (or difference in means if performing a
