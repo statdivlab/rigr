@@ -471,8 +471,8 @@ regress <- function(fnctl, formula, data,
   ## Formatting the terms and getting the correct ordering for the augmented Coefficients matrix
   z <- list(call=cl, terms=NULL,firstPred=NULL,lastPred=NULL,preds=NULL,X=NULL)
   terms <- attr(fit$terms, "term.labels")
-
-    model <- model.matrix(fit)
+  
+  model <- model.matrix(fit)
   
   preds <- dimnames(model)[[2]]
   preds1 <- preds
