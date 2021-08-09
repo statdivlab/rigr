@@ -2,6 +2,7 @@
 
 S3method(print,ttest)
 S3method(print,uDescriptives)
+S3method(print,uRegress)
 S3method(print,wilcoxon)
 export(U)
 export(bplot)

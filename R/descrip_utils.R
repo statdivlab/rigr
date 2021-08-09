@@ -634,7 +634,7 @@ describe_stratified_list <- function(x, strata, subset,
     rslt
 }
 
-# Print method for class uDescriptives
+#' Print method for class uDescriptives
 #' @noRd
 #' @export
 print.uDescriptives <- function (x, ..., sigfigs=max(3,getOption("digits")-3),width=9,nonsci.limit=5, print.it= TRUE) {
