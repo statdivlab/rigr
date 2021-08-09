@@ -1,7 +1,7 @@
 #' General Regression for an Arbitrary Functional
 #' 
 #' Produces point estimates, interval estimates, and p values for an arbitrary
-#' functional (mean, geometric mean, proportion, median, quantile, odds) of a
+#' functional (mean, geometric mean, proportion, odds) of a
 #' variable of class \code{integer}, \code{numeric}, \code{Surv}, when
 #' regressed on an arbitrary number of covariates. Multiple Partial F-tests can
 #' be specified using the \code{\link[uwIntroStats]{U}} function.
@@ -24,9 +24,7 @@
 #' @param fnctl a character string indicating
 #' the functional (summary measure of the distribution) for which inference is
 #' desired. Choices include \code{"mean"}, \code{"geometric mean"},
-#' \code{"odds"}, \code{"rate"}, \code{"hazard"}. The character string may be
-#' shortened to a unique substring. Hence \code{"mea"} will suffice for
-#' \code{"mean"}.
+#' \code{"odds"}, \code{"rate"}. 
 #' @param formula an object of class
 #' \code{formula} as might be passed to \code{lm}, \code{glm}, or \code{coxph}.
 #' @param data a data frame, matrix, or other data structure with matching
@@ -133,22 +131,8 @@ regress <- function(fnctl, formula, data,
     }
     
     # ensure fnctl is one of the ones supported
-    findx <-  pmatch(fnctl, c("mean", "geometric mean", "odds", "rate", "hazard"))
-    if (is.na(findx)) {
+    if (!(fnctl %in% c("mean", "geometric mean", "odds", "rate"))) {
       stop("unsupported functional")
-    }
-    
-    # set fnctl to user specification
-    fnctl <- c("mean", "geometric mean", "odds", "rate", "hazard")[findx]
-    
-    # if fnctl is "hazard", throw an error
-    if (fnctl == "hazard") {
-      stop("proportional hazards regression no longer supported")
-    }
-    
-    # if fnctl = "hazard" and intercept = TRUE, throw an error
-    if (intercept & fnctl == "hazard") {
-      stop("hazard regression cannot include an intercept")
     }
     
     # get family and glm vs. lm

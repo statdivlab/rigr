@@ -10,11 +10,10 @@ test_that("regress() throws error if formula is not specified", {
 test_that("regress() throws error if fnctl is not supported", {
   expect_error(regress("blah", atrophy~age, data = mri), 
                "unsupported functional")
-})
-
-test_that("regress() throws error if fnctl = 'hazard'", {
-  expect_error(regress("hazard", atrophy~age, data = mri), 
-               "proportional hazards regression no longer supported")
+  expect_error(regress("hazard", atrophy~age, data = mri), # make sure hazard is unsupported now
+               "unsupported functional")
+  expect_error(regress("mea", atrophy~age, data = mri), # shortened strings no longer supported
+               "unsupported functional")
 })
 
 test_that("regress() throws error if fnctl = 'geometric mean', replaceZeroes = FALSE, and zeroes are present in outcome", {

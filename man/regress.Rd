@@ -62,9 +62,7 @@ regress(
 \item{fnctl}{a character string indicating
 the functional (summary measure of the distribution) for which inference is
 desired. Choices include \code{"mean"}, \code{"geometric mean"},
-\code{"odds"}, \code{"rate"}, \code{"hazard"}. The character string may be
-shortened to a unique substring. Hence \code{"mea"} will suffice for
-\code{"mean"}.}
+\code{"odds"}, \code{"rate"}.}
 
 \item{formula}{an object of class
 \code{formula} as might be passed to \code{lm}, \code{glm}, or \code{coxph}.}
@@ -137,7 +135,7 @@ contained in a matrix $augCoefficients.
 }
 \description{
 Produces point estimates, interval estimates, and p values for an arbitrary
-functional (mean, geometric mean, proportion, median, quantile, odds) of a
+functional (mean, geometric mean, proportion, odds) of a
 variable of class \code{integer}, \code{numeric}, \code{Surv}, when
 regressed on an arbitrary number of covariates. Multiple Partial F-tests can
 be specified using the \code{\link[uwIntroStats]{U}} function.
