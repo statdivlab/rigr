@@ -67,7 +67,7 @@ wil3 <- wilcoxon(a, b, paired = TRUE, correct = FALSE, conf.int = TRUE)
 wil4 <- wilcox.test(a, b, paired = TRUE, correct = FALSE, conf.int = TRUE)
 
 ### TO-DO: really I should also be testing other quantities returned, but they mostly aren't provided
-### by wilcox.test() so maybe by-hand using online calculator? e.g. vars, rank sums, z
+### by wilcox.test() so maybe by-hand using online calculator? e.g. vars, z
 test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", {
   expect_s3_class(wil1, "wilcoxon")
   expect_equal(wil1$statistic, wil2$statistic)
@@ -88,6 +88,18 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", 
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
                as.numeric(wil2$conf.int))
+  expect_equal(wil1$table[1,1], sum(d > 0))
+  expect_equal(wil1$table[2,1], sum(d < 0))
+  expect_equal(wil1$table[3,1], sum(d == 0))
+  expect_equal(wil1$table[4,1], length(d))
+  expect_equal(wil1$table[1,2], sum(rank(abs(d))[d > 0]))
+  expect_equal(wil1$table[2,2], sum(rank(abs(d))[d < 0]))
+  expect_equal(wil1$table[3,2], sum(rank(abs(d))[d == 0]))
+  expect_equal(wil1$table[4,2], sum(rank(abs(d))))
+  expect_equal(wil1$table[1,3], (sum(rank(abs(d))[d > 0]) + sum(rank(abs(d))[d < 0]))/2)
+  expect_equal(wil1$table[2,3], (sum(rank(abs(d))[d > 0]) + sum(rank(abs(d))[d < 0]))/2)
+  expect_equal(wil1$table[3,3], 0)
+  expect_equal(wil1$table[4,3], sum(rank(abs(d))))
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
@@ -107,6 +119,18 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", 
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
                as.numeric(wil4$conf.int))
+  expect_equal(wil3$table[1,1], sum(d > 0))
+  expect_equal(wil3$table[2,1], sum(d < 0))
+  expect_equal(wil3$table[3,1], sum(d == 0))
+  expect_equal(wil3$table[4,1], length(d))
+  expect_equal(wil3$table[1,2], sum(rank(abs(d))[d > 0]))
+  expect_equal(wil3$table[2,2], sum(rank(abs(d))[d < 0]))
+  expect_equal(wil3$table[3,2], sum(rank(abs(d))[d == 0]))
+  expect_equal(wil3$table[4,2], sum(rank(abs(d))))
+  expect_equal(wil3$table[1,3], (sum(rank(abs(d))[d > 0]) + sum(rank(abs(d))[d < 0]))/2)
+  expect_equal(wil3$table[2,3], (sum(rank(abs(d))[d > 0]) + sum(rank(abs(d))[d < 0]))/2)
+  expect_equal(wil3$table[3,3], 0)
+  expect_equal(wil3$table[4,3], sum(rank(abs(d))))
 })
 
 wil1 <- wilcoxon(d, correct = TRUE, conf.int = TRUE)
@@ -558,6 +582,15 @@ test_that("wilcoxon() returns correct numbers for two-sample uncorrected test", 
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
                as.numeric(wil2$conf.int))
+  expect_equal(wil1$table[1,1], length(a))
+  expect_equal(wil1$table[2,1], length(b))
+  expect_equal(wil1$table[3,1], length(a) + length(b))
+  expect_equal(wil1$table[1,2], sum(rank(c(a,b))[1:length(a)]))
+  expect_equal(wil1$table[2,2], sum(rank(c(a,b))[(length(a) + 1):(length(a) + length(b))]))
+  expect_equal(wil1$table[3,2], sum(rank(c(a,b))))
+  expect_equal(wil1$table[1,3], length(a)*(length(a) + length(b) + 1)/2)
+  expect_equal(wil1$table[2,3], length(b)*(length(a) + length(b) + 1)/2)
+  expect_equal(wil1$table[3,3], sum(rank(c(a,b))))
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = TRUE, conf.int = TRUE)

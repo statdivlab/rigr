@@ -64,7 +64,7 @@
 #' 
 #' @export wilcoxon
 wilcoxon <- function(y, x = NULL, alternative = "two.sided", 
-                     mu = 0, paired = FALSE, exact = NULL, correct = FALSE, conf.int = FALSE, 
+                     mu = 0, paired = FALSE, exact = FALSE, correct = FALSE, conf.int = FALSE, 
                      conf.level = 0.95){
   wilcoxon.do <- function (y, x, alternative, 
                            mu, paired, exact, correct, conf.int, 
@@ -121,8 +121,8 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         y <- y[y != 0]
       n <- as.double(length(y))
       # if user doesn't specify exact test, do exact automatically for < 50 obs
-      if (is.null(exact)) 
-        exact <- (n < 50)
+      # if (is.null(exact)) 
+      #   exact <- (n < 50)
       r <- rank(abs(y))
       signs <- sign(y)
       nPos <- sum(signs>0)
@@ -298,9 +298,10 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       rankSumX <- sum(r[seq(from=length(y)+1, to=length(y)+length(x))]) #- n.x * (n.x + 1)/2
       rankSumY <- sum(r[seq_along(y)]) #- n.y * (n.y + 1)/2
       unadjVar <- (n.y * n.x/12) * ((n.y + n.x + 1))
-      expected <- (rankSumX+rankSumY)/2
-      if (is.null(exact)) 
-        exact <- (n.y < 50) && (n.x < 50)
+      expectedY <- n.y*(n.y + n.x + 1)/2#(rankSumX+rankSumY)/2
+      expectedX <- n.x*(n.y + n.x + 1)/2#(rankSumX+rankSumY)/2
+      # if (is.null(exact)) 
+      #   exact <- (n.y < 50) && (n.x < 50)
       STATISTIC <- c(W = sum(r[seq_along(y)]) - n.y * (n.y + 
                                                          1)/2)
       TIES <- (length(r) != length(unique(r)))
@@ -488,9 +489,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       colnames(hyps) <- c("H0", "Ha")
       rownames(hyps) <- "Hypothesized Median"
     } else{ # formatted matrices for printing rank sum test
-      printMat <- matrix(c(n.y, rankSumY, expected), nrow=1)
+      printMat <- matrix(c(n.y, rankSumY, expectedY), nrow=1)
       colnames(printMat) <- c("obs", "rank sum", "expected")
-      printMat <- rbind(printMat, matrix(c(n.y, rankSumY, expected), nrow=1))
+      printMat <- rbind(printMat, matrix(c(n.x, rankSumX, expectedX), nrow=1))
       printMat <- rbind(printMat, apply(printMat, 2, sum))
       rownames(printMat) <- c("Y", "X", "combined")
       ## matrix of variances
