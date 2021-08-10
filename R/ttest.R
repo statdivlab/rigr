@@ -136,7 +136,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
     byt <- sort(unique(by),decreasing=FALSE)
     byt <- byt[!is.na(byt)]
     # make sure var1 and var2 are the same length if a paired t test is requested
-    if (matched == TRUE & (length(var2) > 1)) {
+    if (matched && (length(var2) > 1)) {
       if (length(var1) != length(var2)) {
         stop("Cannot perform matched t-test on variable of unequal length")
       }
@@ -435,13 +435,9 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
   }
   if (length(var2) > 1) {
     if (is.na(by[1]) & length(by) == 1) {
-      if (matched) {
-        strat <- rep(1, length(var1))
-      }
-      if (!matched) {
-        strat1 <- rep(1, length(var1))
-        strat2 <- rep(1, length(var2))
-      }
+      strat1 <- rep(1, length(var1))
+      strat2 <- rep(1, length(var2))
+      
     }
   }
   
@@ -487,34 +483,19 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
   }
   if (length(var2) > 1) {
     if (is.na(by[1]) & length(by) == 1) {
-      if (matched) {
-        ustrat <- unique(strat)
-        for (t in 1:length(ustrat)) {
-          x <- subset(var1, strat == ustrat[t])
-          y <- subset(var2, strat == ustrat[t])
-          if (length(ustrat) > 1) {
-            cat("\nStratum Value:")
-            cat(ustrat[t])
-          }
-          ttest.obj <- ttest.do(x, y, geom = geom, by = by, null.hypoth, alternative, 
-                                var.eq, conf.level, matched, more.digits, 
-                                myargs)
+      ustrat <- unique(c(strat1, strat2))
+      for (t in 1:length(ustrat)) {
+        x <- subset(var1, strat1 == ustrat[t])
+        y <- subset(var2, strat2 == ustrat[t])
+        if (length(ustrat) > 1) {
+          cat("\nStratum Value:")
+          cat(ustrat[t])
         }
+        ttest.obj <- ttest.do(x, y, geom = geom, by = by, null.hypoth, alternative, 
+                              var.eq, conf.level, matched, more.digits, 
+                              myargs)
       }
-      if (!matched) {
-        ustrat <- unique(c(strat1, strat2))
-        for (t in 1:length(ustrat)) {
-          x <- subset(var1, strat1 == ustrat[t])
-          y <- subset(var2, strat2 == ustrat[t])
-          if (length(ustrat) > 1) {
-            cat("\nStratum Value:")
-            cat(ustrat[t])
-          }
-          ttest.obj <- ttest.do(x, y, geom = geom, by = by, null.hypoth, alternative, 
-                                var.eq, conf.level, matched, more.digits, 
-                                myargs)
-        }
-      }
+      
     }
   }
   ttest.obj$call <- match.call()

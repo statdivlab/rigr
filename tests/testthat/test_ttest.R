@@ -22,11 +22,6 @@ test_that("ttest() throws error if alternative is not 'two.sided', 'less', or 'g
                "'alternative' must be either 'less', 'two.sided', or 'greater'")
 })
 
-# test_that("ttest() throws error if exact test requested for non-proportion", {
-#   expect_error(ttest(x1, exact = TRUE), 
-#                "Exact binomial confidence intervals cannot be computed for anything but a proportion.")
-# })
-
 test_that("ttest() throws error if var.eq is not logical", {
   expect_error(ttest(x1, var.eq = 2), 
                "Please specify a logical value for variable 'var.eq'")
@@ -35,8 +30,10 @@ test_that("ttest() throws error if var.eq is not logical", {
 x3 <- rnorm(99)
 
 test_that("ttest() throws error if matched test performedm on different numbers of observations", {
-#  expect_error(ttest(x1, x3, matched = TRUE), 
-#               "Cannot perform matched t-test on variable of unequal length")
+  expect_error(ttest(x1, x3, matched = TRUE),
+              "Cannot perform matched t-test on variable of unequal length")
+  expect_error(ttest(x3, x1, matched = TRUE),
+               "Cannot perform matched t-test on variable of unequal length")
 })
 
 test_that("ttest() throws error for non-numeric data", {

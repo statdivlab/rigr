@@ -17,7 +17,9 @@ print.ttest <-
     par <- out$par
     geom = as.logical(par[1])
     null.hypoth = par[2]
-    if (geom) {null.hypoth = exp(as.numeric(null.hypoth))}
+    if (geom) {
+      null.hypoth = exp(as.numeric(null.hypoth))
+    }
     alternative = par[3]
     var.eq = as.logical(par[4])
     conf.level = par[5]
