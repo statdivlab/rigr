@@ -173,18 +173,22 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
       by2 <- sort(unique(by), decreasing = TRUE)[2]
       var2 <- var1[by == by1]
       var1 <- var1[by == by2]
+      # check for equal length vectors in paired test, using by
+      if (matched && length(var1) != length(var2)){
+        stop("Cannot perform matched t-test on variable of unequal length")
+      }
     }
     digits <- 3 + more.digits
     
     cl <- (1 + conf.level)/2
-    if (matched == TRUE) {
+    if (matched) {
       to.include <- (1 - as.numeric(is.na(var1))) * (1 - 
                                                        as.numeric(is.na(var2)))
       var1[to.include == 0] <- NA
       var2[to.include == 0] <- NA
     }
     # adjust values if the geometric means are to be compared
-    if (geom == TRUE) {
+    if (geom) {
       var1 <- log(var1)
       var2 <- log(var2)
       if (null.hypoth == 0) {
@@ -427,9 +431,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
       }
     }
     if (length(by) > 1) {
-      if (!matched) {
-        strat <- rep(1, length(var1))
-      }
+      strat <- rep(1, length(var1))
     }
   }
   if (length(var2) > 1) {
@@ -458,22 +460,20 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
       }
     }
     if (length(by) > 1) {
-      if (!matched) {
-        ustrat <- unique(strat)
-        for (t in 1:length(ustrat)) {
-          x <- subset(var1, strat == ustrat[t])
-          cby <- subset(by, strat == ustrat[t])
-          if (length(ustrat) > 1) {
-            cat("\nStratum Value:")
-            cat(ustrat[t])
-          }
-          ttest.obj <- ttest.do(var1 = x, var2 = var2, 
-                                geom = geom,  
-                                by = cby, null.hypoth = null.hypoth, alternative = alternative, 
-                                var.eq = var.eq, conf.level = conf.level, 
-                                matched = matched, more.digits = more.digits, 
-                                myargs = myargs)
+      ustrat <- unique(strat)
+      for (t in 1:length(ustrat)) {
+        x <- subset(var1, strat == ustrat[t])
+        cby <- subset(by, strat == ustrat[t])
+        if (length(ustrat) > 1) {
+          cat("\nStratum Value:")
+          cat(ustrat[t])
         }
+        ttest.obj <- ttest.do(var1 = x, var2 = var2, 
+                              geom = geom,  
+                              by = cby, null.hypoth = null.hypoth, alternative = alternative, 
+                              var.eq = var.eq, conf.level = conf.level, 
+                              matched = matched, more.digits = more.digits, 
+                              myargs = myargs)
       }
     }
   }

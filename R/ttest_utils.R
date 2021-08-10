@@ -88,8 +88,6 @@ print.ttest <-
         inferencep <- paste(par1[3],pval)
         if (matched == F) {cat("\nTwo-sample t-test", par2, ":\n", collapse = "\n")}
         if (matched == T) {cat("\nTwo-sample (matched) t-test", par2, ":\n", collapse = "\n")}
-        propdf <- paste("df = ", chisqdf, sep="")
-        propp <- paste("p.value = ", chisqP, sep="")
         if (!geom) {
           cat("Summary:\n")
           print(main)
