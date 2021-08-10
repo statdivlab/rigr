@@ -15,10 +15,9 @@
 \item{level}{Tolerance/confidence level}
 
 \item{...}{other arguments to pass to the appropriate predict function for
-the class of \code{object$fit}. See \code{\link[survival]{predict.coxph}},
-\code{\link[stats]{predict.lm}}, or \code{\link[stats]{predict.glm}} for
-more details. Predictions are not currently implemented for objects of type
-\code{\link[geepack]{geeglm}}.}
+the class of \code{object$fit}. See \code{\link[stats]{predict.lm}}, 
+or \code{\link[stats]{predict.glm}} for
+more details.}
 }
 \value{
 %% ~Describe the value returned Returns a matrix with the fitted

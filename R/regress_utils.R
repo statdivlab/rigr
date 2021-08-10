@@ -1873,12 +1873,9 @@ print.augCoefficients <-
   }
 
 fitted.uRegress <-
-  function (object,...,X, version=FALSE) {
+  function (object,...,X) {
     
     obj <- object
-    vrsn <- "20110928"
-    if (version) return(vrsn)
-    
     
     if (!missing(X)) {
       if (dim(X)[2] != dim(obj$processTerms$X)[2]) stop("new data not appropriate dimensions")
@@ -1899,10 +1896,9 @@ fitted.uRegress <-
 #' @param interval Type of interval calculation
 #' @param level Tolerance/confidence level
 #' @param ...  other arguments to pass to the appropriate predict function for
-#' the class of \code{object$fit}. See \code{\link[survival]{predict.coxph}},
-#' \code{\link[stats]{predict.lm}}, or \code{\link[stats]{predict.glm}} for
-#' more details. Predictions are not currently implemented for objects of type
-#' \code{\link[geepack]{geeglm}}.
+#' the class of \code{object$fit}. See \code{\link[stats]{predict.lm}}, 
+#' or \code{\link[stats]{predict.glm}} for
+#' more details. 
 #' @return %% ~Describe the value returned Returns a matrix with the fitted
 #' value and prediction interval for the entered X. 
 #' @seealso \code{\link[uwIntroStats]{regress}}
@@ -1931,13 +1927,9 @@ predict.uRegress <- function(object, interval="prediction",level=0.95,...){
   }
   if(class(object$fit)=="lm"){
     ret <- predict.lm(object$fit,interval=interval,level=level, ...)
-  } else if(class(object$fit)[1]=="glm"){
-    ret <- predict.glm(object$fit,interval=interval,level=level,...)
-  } else if (class(object$fit)[1]=="coxph"){
-    ret <- predict(object$fit,interval=interval,level=level, ...)
   } else {
-    stop("Predictions not yet implemented for objects of type 'geeglm'")
-  }
+    ret <- predict.glm(object$fit,interval=interval,level=level,...)
+  } 
   return(ret)
 }
 
