@@ -110,7 +110,6 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
                        null.hypoth = 0, alternative = "two.sided", 
                        var.eq = FALSE, conf.level = 0.95, matched = FALSE, more.digits = 0, 
                        myargs, ...) {
-    var1 <- var1
     # geometric mean check (only possible for positive nonzero data)
     if (geom == TRUE & (sum(var1 <= 0, na.rm = TRUE) > 0) | 
         geom == TRUE & sum(var2 <= 0, na.rm = TRUE) > 0) {
@@ -434,11 +433,8 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
     }
   }
   if (length(var2) > 1) {
-    if (is.na(by[1]) & length(by) == 1) {
-      strat1 <- rep(1, length(var1))
-      strat2 <- rep(1, length(var2))
-      
-    }
+    strat1 <- rep(1, length(var1))
+    strat2 <- rep(1, length(var2))
   }
   
   
@@ -482,20 +478,17 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
     }
   }
   if (length(var2) > 1) {
-    if (is.na(by[1]) & length(by) == 1) {
-      ustrat <- unique(c(strat1, strat2))
-      for (t in 1:length(ustrat)) {
-        x <- subset(var1, strat1 == ustrat[t])
-        y <- subset(var2, strat2 == ustrat[t])
-        if (length(ustrat) > 1) {
-          cat("\nStratum Value:")
-          cat(ustrat[t])
-        }
-        ttest.obj <- ttest.do(x, y, geom = geom, by = by, null.hypoth, alternative, 
-                              var.eq, conf.level, matched, more.digits, 
-                              myargs)
+    ustrat <- unique(c(strat1, strat2))
+    for (t in 1:length(ustrat)) {
+      x <- subset(var1, strat1 == ustrat[t])
+      y <- subset(var2, strat2 == ustrat[t])
+      if (length(ustrat) > 1) {
+        cat("\nStratum Value:")
+        cat(ustrat[t])
       }
-      
+      ttest.obj <- ttest.do(x, y, geom = geom, by = by, null.hypoth, alternative, 
+                            var.eq, conf.level, matched, more.digits, 
+                            myargs)
     }
   }
   ttest.obj$call <- match.call()

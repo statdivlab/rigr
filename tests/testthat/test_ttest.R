@@ -22,6 +22,11 @@ test_that("ttest() throws error if alternative is not 'two.sided', 'less', or 'g
                "'alternative' must be either 'less', 'two.sided', or 'greater'")
 })
 
+test_that("ttest() throws error if two variables and by also given", {
+  expect_error(ttest(x1, x2, by = rep(1, 100)),
+               "Please specify only one of the variables 'by' or 'var2'")
+})
+
 test_that("ttest() throws error if var.eq is not logical", {
   expect_error(ttest(x1, var.eq = 2), 
                "Please specify a logical value for variable 'var.eq'")
