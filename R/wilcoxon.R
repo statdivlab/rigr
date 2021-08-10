@@ -68,7 +68,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
                      conf.level = 0.95){
   wilcoxon.do <- function (y, x, alternative, 
                            mu, paired, exact, correct, conf.int, 
-                           conf.level,...){
+                           conf.level, myargs, ...){
     # error handling for mu (null hypothesis mean)
     if (!missing(mu) && ((length(mu) > 1L) || !is.finite(mu))) 
       stop("'mu' must be a single number")
@@ -85,8 +85,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
     if (!is.null(x)) {
       if (!is.numeric(x)) 
         stop("'x' must be numeric")
-      DNAME <- paste(deparse(substitute(y, sys.frame(1))), "and", 
-                     deparse(substitute(x, sys.frame(1)))) # data name
+      DNAME <- paste(myargs[1], #deparse(substitute(y, sys.frame(1))), 
+                     "and", 
+                     myargs[2])#deparse(substitute(x, sys.frame(1)))) # data name
       if (paired) { # if paired, calculate differences
         if (length(y) != length(x)) 
           stop("'y' and 'x' must have the same length")
@@ -100,7 +101,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       }
     }
     else {
-      DNAME <- deparse(substitute(y, sys.frame(1))) # data name
+      DNAME <- myargs[1]#deparse(substitute(y, sys.frame(1))) # data name
       if (paired) 
         stop("'x' is missing for paired test")
       y <- y[is.finite(y)]
@@ -493,7 +494,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       colnames(printMat) <- c("obs", "rank sum", "expected")
       printMat <- rbind(printMat, matrix(c(n.x, rankSumX, expectedX), nrow=1))
       printMat <- rbind(printMat, apply(printMat, 2, sum))
-      rownames(printMat) <- c("Y", "X", "combined")
+      rownames(printMat) <- c(myargs[1], myargs[2], "combined")
       ## matrix of variances
       vars <- matrix(c(unadjVar, tiedAdjVar, adjVar), ncol=1)
       colnames(vars) <- " "
@@ -543,6 +544,8 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
     invisible(RVAL)
   }
   
+  myargs <- c(deparse(substitute(y)), deparse(substitute(x)))
+  
   wilcox.obj <- wilcoxon.do(y=y,
                             x=x,
                             alternative=alternative,
@@ -550,7 +553,8 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
                             exact=exact,
                             correct=correct,
                             conf.int=conf.int,
-                            conf.level=conf.level)
+                            conf.level=conf.level,
+                            myargs = myargs)
   wilcox.obj$call <- match.call()
   class(wilcox.obj) <- "wilcoxon"
   return(wilcox.obj)

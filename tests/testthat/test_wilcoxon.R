@@ -73,7 +73,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", 
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -82,8 +82,6 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", 
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -104,7 +102,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", 
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
+  expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1:2,2]), digits = 4), 
                round(rep(wil4$p.value, 2), digits = 4))
@@ -113,8 +111,6 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", 
   expect_equal(wil3$hyps[1,2], wil3$alternative)
   expect_equal(wil3$null.value, wil4$null.value) 
   expect_equal(wil3$parameter, wil4$parameter)
-  expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
@@ -143,7 +139,7 @@ test_that("wilcoxon() returns correct numbers for one-sample corrected test", {
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -152,8 +148,6 @@ test_that("wilcoxon() returns correct numbers for one-sample corrected test", {
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -162,7 +156,7 @@ test_that("wilcoxon() returns correct numbers for one-sample corrected test", {
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
+  expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1:2,2]), digits = 4), 
                round(rep(wil4$p.value, 2), digits = 4))
@@ -171,8 +165,6 @@ test_that("wilcoxon() returns correct numbers for one-sample corrected test", {
   expect_equal(wil3$hyps[1,2], wil3$alternative)
   expect_equal(wil3$null.value, wil4$null.value) 
   expect_equal(wil3$parameter, wil4$parameter)
-  expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
@@ -189,7 +181,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -198,8 +190,6 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -208,7 +198,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
+  expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1:2,2]), digits = 4), 
                round(rep(wil4$p.value, 2), digits = 4))
@@ -217,8 +207,6 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil3$hyps[1,2], wil3$alternative)
   expect_equal(wil3$null.value, wil4$null.value) 
   expect_equal(wil3$parameter, wil4$parameter)
-  expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
@@ -235,7 +223,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -244,8 +232,6 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -254,7 +240,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
+  expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1:2,2]), digits = 4), 
                round(rep(wil4$p.value, 2), digits = 4))
@@ -263,8 +249,6 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil3$hyps[1,2], wil3$alternative)
   expect_equal(wil3$null.value, wil4$null.value) 
   expect_equal(wil3$parameter, wil4$parameter)
-  expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
@@ -343,7 +327,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test, n
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -352,13 +336,11 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test, n
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
+  expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1:2,2]), digits = 4), 
                round(rep(wil4$p.value, 2), digits = 4))
@@ -367,8 +349,6 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test, n
   expect_equal(wil3$hyps[1,2], wil3$alternative)
   expect_equal(wil3$null.value, wil4$null.value) 
   expect_equal(wil3$parameter, wil4$parameter)
-  expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
 })
 
 ### one-sample test, exact
@@ -383,7 +363,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
                round(wil2$p.value, digits = 4))
@@ -392,8 +372,6 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -402,7 +380,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
+  expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1,2]), digits = 4), 
                round(wil4$p.value, digits = 4))
@@ -411,8 +389,6 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_equal(wil3$hyps[1,2], wil3$alternative)
   expect_equal(wil3$null.value, wil4$null.value) 
   expect_equal(wil3$parameter, wil4$parameter)
-  expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
@@ -429,7 +405,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
                round(wil2$p.value, digits = 4))
@@ -438,8 +414,6 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -448,7 +422,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
+  expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1,2]), digits = 4), 
                round(wil4$p.value, digits = 4))
@@ -457,8 +431,6 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_equal(wil3$hyps[1,2], wil3$alternative)
   expect_equal(wil3$null.value, wil4$null.value) 
   expect_equal(wil3$parameter, wil4$parameter)
-  expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
@@ -475,7 +447,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
                round(wil2$p.value, digits = 4))
@@ -484,8 +456,6 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -494,7 +464,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
+  expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1,2]), digits = 4), 
                round(wil4$p.value, digits = 4))
@@ -503,8 +473,6 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_equal(wil3$hyps[1,2], wil3$alternative)
   expect_equal(wil3$null.value, wil4$null.value) 
   expect_equal(wil3$parameter, wil4$parameter)
-  expect_equal(wil3$method, wil4$method)
-  #expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
@@ -567,7 +535,7 @@ test_that("wilcoxon() returns correct numbers for two-sample uncorrected test", 
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -576,8 +544,6 @@ test_that("wilcoxon() returns correct numbers for two-sample uncorrected test", 
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -601,7 +567,7 @@ test_that("wilcoxon() returns correct numbers for two-sample corrected test", {
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -610,8 +576,6 @@ test_that("wilcoxon() returns correct numbers for two-sample corrected test", {
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -626,7 +590,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -635,8 +599,6 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -651,7 +613,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -660,8 +622,6 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -715,7 +675,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
                round(wil2$p.value, digits = 4))
@@ -724,8 +684,6 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -740,7 +698,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
                round(wil2$p.value, digits = 4))
@@ -749,8 +707,6 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -765,7 +721,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
                round(wil2$p.value, digits = 4))
@@ -774,8 +730,6 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -817,7 +771,7 @@ test_that("wilcoxon() returns correct numbers for two-sample uncorrected test, n
   expect_equal(wil1$statistic, wil2$statistic)
   expect_equal(wil1$p.value, wil2$p.value)
   expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
+  expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1:2,2]), digits = 4), 
                round(rep(wil2$p.value, 2), digits = 4))
@@ -826,6 +780,4 @@ test_that("wilcoxon() returns correct numbers for two-sample uncorrected test, n
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$method, wil2$method)
-  #expect_equal(wil1$data.name, wil2$data.name)
 })
