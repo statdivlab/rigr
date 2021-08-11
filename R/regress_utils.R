@@ -2,8 +2,13 @@
 #' Takes in formula, potentially with nested F-tests
 #' 
 #' @param form the formula to parse
-#' @param modelframe the model frame which will become the model matrix
-#' @param mat the matrix of logicals to run on
+#' @param modelframe the model frame which will become the model matrix. this ends up
+#' being what is returned from match.call(), and so it looks like 
+#' regress(fnctl = "", formula = "", data = "", ...)
+#' @param mat a vector containing the indices for matches between modelframe inputs and
+#' c("formula", "data", "subset", "weights", "na.action", "offset") for lms, and
+#' c("formula", "data", "subset", "weights", "na.action", "etastart", "mustart", "offset")
+#' for glms
 #' @param data the data frame
 #' 
 #' @return a list of lists of tests to perform (and overall formula)
@@ -1310,9 +1315,9 @@ getn <- function(vec, n){
 #' Inserts a column into a matrix
 #' Used to be inside of regress()
 #' 
-#' @param x
-#' @param indx
-#' @param col
+#' @param x matrix
+#' @param indx index for which column \code{col} should be inserted into
+#' @param col the column to insert
 #' 
 #' @return 
 #' 
@@ -1414,7 +1419,7 @@ print.uRegress <- function (x,...,augmented=TRUE,digits=max(3,getOption("digits"
   
   if (!is.null(dim(x$model))) {
     tmp <- dimnames(x$model)[[1]]
-    tmp <- indentNames(tmp, x$coefNums, x$levels)
+    tmp <- indentNames(tmp, x$coefNums, x$levels) 
     tmp <- attachNums(tmp, x$coefNums)
     dimnames(x$model)[[1]] <- tmp
     if(!is.na(x$transformed)[1]){
@@ -1477,6 +1482,7 @@ indentNames <- function(nms, coefNums, levels){
   newNms <- apply(nmMat, 1, addSpaces)
   return(newNms)
 }
+
 ## A helper function for regress()
 ## Gets the levels to properly indent the coefficients matrix
 ## Args: nms      - the names of the matrix of interest
@@ -1485,7 +1491,6 @@ indentNames <- function(nms, coefNums, levels){
 ##       level    - the current level of the function
 ## Returns: a vector with the indendation structure
 ## Version: 2015 05 25
-
 getLevels <- function(nms, coefNums, termnms, term.lbls, level){
   ## initialize all levels to level
   levels <- rep(level, length(nms))

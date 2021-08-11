@@ -104,10 +104,17 @@
 #' @export regress
 regress <- function(fnctl, formula, data,                     
                     intercept = TRUE, 
-                    weights = rep(1,n), id = 1:n, subset = rep(TRUE,n),
+                    weights = rep(1,nrow(data)), id = 1:nrow(data), subset = rep(TRUE,nrow(data)),
                     robustSE = TRUE, conf.level = 0.95, exponentiate = fnctl != "mean",
                     replaceZeroes, useFdstn = TRUE, suppress = FALSE, na.action, method = "qr", model.f = TRUE, model.x = FALSE, model.y = FALSE, qr = TRUE,
                     singular.ok = TRUE, contrasts = NULL, offset,control = list(...), init, ...) {
+  
+  # define n
+  n <- nrow(data)
+  
+  # throw errors if weights or subset are not the correct length
+  if (length(weights) != n) stop("Response variable and weights must be of same length")
+  if (length(subset) != n) stop("Response variable and subsetting variable must be of same length")
   
   cl <- match.call()
   fit <- NULL
@@ -159,7 +166,6 @@ regress <- function(fnctl, formula, data,
   }
   
   # Set up the model matrix and formula
-  
   cl <- match.call()
   
   # set up the model frame (mf), which will become the model matrix
@@ -171,12 +177,11 @@ regress <- function(fnctl, formula, data,
                  "etastart", "mustart", "offset"), names(mf), 0L) # what are etastart and mustart?
   }
   
-  
   # Get the correct formula and any multiple-partial F-tests
   testlst <- testList(formula, mf, m, data)
   formula <- testlst$formula
   
-  # length of tmplist is zero if no tests
+  # length of tmplist is zero if no multiple-partial F-tests
   tmplist <- testlst$testList
   
   # get the terms lists
@@ -193,7 +198,6 @@ regress <- function(fnctl, formula, data,
   id <- model.extract(mfGee, id)    
   
   # Evaluate the formula and get the correct returns
-  
   
   ret.x <- model.x
   ret.y <- model.y
@@ -248,7 +252,9 @@ regress <- function(fnctl, formula, data,
       }
     }
     y <- model.response(mf, "numeric")
-    # checking response variable y  
+    
+    # checking response variable y, and replacing zeroes if needed/desired for
+    # geometric mean fnctl
     if (fnctl == "geometric mean") {
       
       if (missing(replaceZeroes)) {
@@ -277,21 +283,22 @@ regress <- function(fnctl, formula, data,
     
     n <- length(y)
     msng <- FALSE
-    if (length(weights) != n) stop("Response variable and weights must be of same length")
-    if (length(subset) != n) stop("Response variable and subsetting variable must be of same length")
     
+    # if weights is not numeric, throw an error
     w <- as.vector(model.weights(mf))
     if (!is.null(w) && !is.numeric(w)) {
       stop("'weights' must be a numeric vector")
     }
     
     offset <- as.vector(model.offset(mf))
+    
     if (!is.null(offset)) {
       if (length(offset) != NROW(y)) {
         stop(gettextf("number of offsets is %d, should equal %d (number of observations)", 
                       length(offset), NROW(y)), domain = NA)
       }
     }
+    
     if (is.empty.model(mt)) {
       x <- NULL
       z <- list(coefficients = if (is.matrix(y)) matrix(, 0, 
@@ -392,8 +399,7 @@ regress <- function(fnctl, formula, data,
     else matrix(, NROW(y), 0L)
     n <- NROW(y)
     msng <- FALSE
-    if (length(weights) != NROW(y)) stop("Response variable and weights must be of same length")
-    if (length(subset) != NROW(y)) stop("Response variable and subsetting variable must be of same length")
+
     w <- as.vector(model.weights(mf))
     if (!is.null(w) && !is.numeric(w)) 
       stop("'weights' must be a numeric vector")
@@ -756,7 +762,7 @@ regress <- function(fnctl, formula, data,
   ## Add in blanks for dummy labels etc
   p <- length(zzs$coefNums)
   if(p > 2 & any(is.na(zzs$augCoefficients[,1]))){
-    coefNums <- matrix(zzs$coefNums%*%insertCol(diag(p), which(is.na(zzs$augCoefficients[,1]) | duplicated(dimnames(zzs$augCoefficients)[[1]])), rep(NA, p)), ncol=1)
+    coefNums <- matrix(zzs$coefNums %*% insertCol(diag(p), which(is.na(zzs$augCoefficients[,1])), rep(NA, p)), ncol=1)
     zzs$coefNums <- coefNums
   } 
   ## get levels for printing
