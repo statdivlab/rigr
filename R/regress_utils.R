@@ -11,11 +11,12 @@
 #' for glms
 #' @param data the data frame
 #' 
-#' @return a list of lists of tests to perform (and overall formula)
+#' @return a list of lists of tests to perform, the first of which will be the full model, named "overall"
 #' 
 #' @keywords internal
 #' @noRd
 testList <- function(form, modelframe, mat, data){
+  # form[[3]] is the right-hand side of the formula
   tmplist <- parsePartials(form[[3]], modelframe, mat)
   charForm <- parseParseFormula(parseFormula(form[[3]], modelframe, mat))
   charForm <- paste(deparse(form[[2]]), deparse(form[[1]]),paste(charForm, collapse=""), sep="")
@@ -441,7 +442,7 @@ getnm <- function(strmat, indx){
 
 #' Takes a formula, returns a list of models for multiple partial tests
 #' 
-#' @param form the third item in the formula list to parse
+#' @param form the right-hand side of a formula
 #' @param modelframe the model frame which will become the model matrix. this ends up
 #' being what is returned from match.call(), and so it looks like 
 #' regress(fnctl = "", formula = "", data = "", ...)
@@ -455,13 +456,27 @@ getnm <- function(strmat, indx){
 #' @keywords internal
 #' @noRd
 parsePartials <- function(form, modelframe, mat){
+  # separates the formula into a list of three
+  # the first item is '+', the second is the first p-1 coefficients, the third is the last p'th coefficient
   f1 <- as.list(form)
-  if(length(f1)==1){
+  
+  # length(f1 == 1), this means there's only coefficient on the right-hand side of the formula
+  if (length(f1) == 1) {
+    
     return(NULL)
-  } else if(length(f1)==2) {
+    
+  } else if (length(f1) == 2 & (as.character(f1[[1]]) == "U")) {
+  #} else if (length(f1) == 2) {
+    
+    # length(f1) == 2 if a formula looks something like fev ~ as.integer(sex), or fev ~ U(sex),
+    # where the only coefficient listed is inside parentheses
+    
     tmplistOne <- NULL
-    if(sum(grepl("U", f1)) > 1){
-      ## if more than one U, need to evaluate nested U and then evaluate overall U
+    
+    # if more than one U, need to evaluate nested U and then evaluate overall U
+    # Note from Taylor - I'm not convinced this is doing what we want it do when there
+    # is more than one U and also additional variables in the model outside of the U's
+    if (sum(grepl("U", f1)) > 1) {
       tmplistOne <- parsePartials(f1[[2]][[2]], modelframe, mat)
       tmp <- LinearizeNestedList(tmplistOne)
       tmplistOne <- parseList(tmp)
@@ -485,7 +500,8 @@ parsePartials <- function(form, modelframe, mat){
       }
       form[[2]] <- f1[[2]]
     } 
-    if(sum(grepl("U", f1))==1){
+    # if only one U is specified...
+    if (sum(grepl("U", f1)) == 1) {
       ## try to evaluate the formula
       tmp <- tryCatch({eval(form, parent.frame())}, error=function(e){NULL})
       if(!is.null(tmp)){

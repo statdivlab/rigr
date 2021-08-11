@@ -52,7 +52,6 @@ regress(
   contrasts = NULL,
   offset,
   control = list(...),
-  init,
   ...
 )
 }
@@ -113,11 +112,14 @@ with only the exponentiated coefficients and confidence interval is
 returned. Otherwise, two tables are returned - one with the original
 unexponentiated coefficients, and one with the exponentiated coefficients.}
 
-\item{na.action, method, model.f, model.x, model.y, qr, singular.ok, offset, contrasts, control}{optional arguments that are passed to the functionality of \code{lm} or
+\item{na.action, model.f, model.x, model.y, qr, singular.ok, offset, contrasts, control}{optional arguments that are passed to the functionality of \code{lm} or
 \code{glm}.}
 
-\item{init}{optional argument that are passed to the functionality of
-\code{coxph}.}
+\item{method}{the method to be used in fitting the model. The default value for
+\code{fnctl = "mean"} and \code{fnctl = "geometric mean"} is \code{"qr"}, and the default value for
+\code{fnctl = "odds"} and \code{fnctl = "rate"} is \code{"glm.fit"}. This argument is passed into the
+lm() or glm() function, respectively. You may optionally specify \code{method = "model.frame"}, which
+returns the model frame and does no fitting.}
 }
 \value{
 An object of class uRegress is
