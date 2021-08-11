@@ -13,7 +13,7 @@ wilcoxon(
   alternative = "two.sided",
   mu = 0,
   paired = FALSE,
-  exact = NULL,
+  exact = FALSE,
   correct = FALSE,
   conf.int = FALSE,
   conf.level = 0.95

@@ -441,9 +441,14 @@ getnm <- function(strmat, indx){
 
 #' Takes a formula, returns a list of models for multiple partial tests
 #' 
-#' @param form the formula
-#' @param modelframe
-#' @param mat
+#' @param form the third item in the formula list to parse
+#' @param modelframe the model frame which will become the model matrix. this ends up
+#' being what is returned from match.call(), and so it looks like 
+#' regress(fnctl = "", formula = "", data = "", ...)
+#' @param mat a vector containing the indices for matches between modelframe inputs and
+#' c("formula", "data", "subset", "weights", "na.action", "offset") for lms, and
+#' c("formula", "data", "subset", "weights", "na.action", "etastart", "mustart", "offset")
+#' for glms
 #' 
 #' @return the list
 #' 
