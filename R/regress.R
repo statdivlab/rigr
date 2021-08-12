@@ -64,12 +64,15 @@
 #' with only the exponentiated coefficients and confidence interval is
 #' returned. Otherwise, two tables are returned - one with the original
 #' unexponentiated coefficients, and one with the exponentiated coefficients.
+#' @param method the method to be used in fitting the model. The default value for
+#' \code{fnctl = "mean"} and \code{fnctl = "geometric mean"} is \code{"qr"}, and the default value for
+#' \code{fnctl = "odds"} and \code{fnctl = "rate"} is \code{"glm.fit"}. This argument is passed into the
+#' lm() or glm() function, respectively. You may optionally specify \code{method = "model.frame"}, which
+#' returns the model frame and does no fitting.
 #' @param
-#' na.action,method,model.f,model.x,model.y,qr,singular.ok,offset,contrasts,control
+#' na.action,model.f,model.x,model.y,qr,singular.ok,offset,contrasts,control
 #' optional arguments that are passed to the functionality of \code{lm} or
 #' \code{glm}.
-#' @param init optional argument that are passed to the functionality of
-#' \code{coxph}.
 #' @return An object of class uRegress is
 #' returned. Parameter estimates, confidence intervals, and p values are
 #' contained in a matrix $augCoefficients. 
@@ -104,10 +107,17 @@
 #' @export regress
 regress <- function(fnctl, formula, data,                     
                     intercept = TRUE, 
-                    weights = rep(1,n), id = 1:n, subset = rep(TRUE,n),
+                    weights = rep(1,nrow(data)), id = 1:nrow(data), subset = rep(TRUE,nrow(data)),
                     robustSE = TRUE, conf.level = 0.95, exponentiate = fnctl != "mean",
                     replaceZeroes, useFdstn = TRUE, suppress = FALSE, na.action, method = "qr", model.f = TRUE, model.x = FALSE, model.y = FALSE, qr = TRUE,
-                    singular.ok = TRUE, contrasts = NULL, offset,control = list(...), init, ...) {
+                    singular.ok = TRUE, contrasts = NULL, offset,control = list(...), ...) {
+  
+  # define n
+  n <- nrow(data)
+  
+  # throw errors if weights or subset are not the correct length
+  if (length(weights) != n) stop("Response variable and weights must be of same length")
+  if (length(subset) != n) stop("Response variable and subsetting variable must be of same length")
   
   cl <- match.call()
   fit <- NULL
@@ -159,11 +169,12 @@ regress <- function(fnctl, formula, data,
   }
   
   # Set up the model matrix and formula
-  
   cl <- match.call()
   
   # set up the model frame (mf), which will become the model matrix
   mf <- match.call(expand.dots = FALSE)
+  
+  # get indices for which parameters in mf correspond to the parameters in the vectors below
   m <- match(c("formula", "data", "subset", "weights", "na.action", 
                "offset"), names(mf), 0L)
   if (glm) {
@@ -171,18 +182,25 @@ regress <- function(fnctl, formula, data,
                  "etastart", "mustart", "offset"), names(mf), 0L) # what are etastart and mustart?
   }
   
-  
   # Get the correct formula and any multiple-partial F-tests
   testlst <- testList(formula, mf, m, data)
   formula <- testlst$formula
   
-  # length of tmplist is zero if no tests
+  # tmplist is NULL if there are no multiple-partial F-tests specific in a U function
+  # otherwise, tmplist is a named list containing dataframes with the variables listed inside 
+  # each U function specified
   tmplist <- testlst$testList
   
-  # get the terms lists
+  # get the terms list
+  # a list containing all of the models we need to fit
+  # if no multiple-partial F-tests are specified in a U function, this will be a named list of length 1
+  # containing only the "overall" model
   termlst <- testlst$termList
+  
+  # change formula in mf so that U() no longer surrounds any variables
   mf$formula <- formula
   
+  # Note from Taylor - I believe this is GEE stuff we can remove, but not 100% yet
   mftmp <- mf
   mfGee <- mf
   mG <- match(c("formula", "data", "subset", "weights", "na.action", 
@@ -194,38 +212,81 @@ regress <- function(fnctl, formula, data,
   
   # Evaluate the formula and get the correct returns
   
-  
+  # model.x and model.y are FALSE by default
   ret.x <- model.x
   ret.y <- model.y
-  if (any(m)>0) {
-    mf <- mf[c(1L, m)]
-    mf$drop.unused.levels <- TRUE
-    mf[[1L]] <- quote(stats::model.frame)
-    mf <- eval(mf, parent.frame())
-  }
+  
+  # m contains the indices corresponding to which parameters in mf correspond to:
+  # c("formula", "data", "subset", "weights", "na.action", "offset")
+  # here we reorder the input parameters according to the order of the vector above and remove
+  # parameters not included in the vector above
+  mf <- mf[c(1L, m)]
+
+  # remove missing rows from our dataframe
+  mf$drop.unused.levels <- TRUE
+  
+  # obtain mf, a dataframe containing only the necessary variables for our overall model
+  mf[[1L]] <- quote(stats::model.frame)
+  mf <- eval(mf, parent.frame())
+  
+  # if method == "model.frame", return the model frame, just as lm or glm would do
   if (method == "model.frame") {
+    
     return(mf)
+    
   } else if (!glm) {
     
+    # if we're fitting a linear model, the method must be "qr". Throw a warning if other method specified 
     if (method != "qr") {
       warning(gettextf("method = '%s' is not supported. Using 'qr'", 
                        method), domain = NA)
     }
     
+    # get terms from model frame
     mt <- attr(mf, "terms")
+
     factorMat <- NULL
     term.labels <- NULL
+    
+    # if anything in the formula argument was specified in a U function, length(tmplist)>0
     if (length(tmplist)>0) {
+      
+      # get factors and term labels from the model terms object
+      # factorMat is a (p+1) x p matrix, where p is the number of predictors in the overall
+      # model, and the first row of factorMat is for the outcome variable. This should be
+      # equivalent to rbind(0, diag(p))
+      # term.labels is a vector containing strings for each predictor in the overall model, length p
       factorMat <- attr(mt, "factors")
       term.labels <- attr(mt, "term.labels")
+      
+      # for each multiple-partial F-test...
       for (i in 1:length(tmplist)) {
+        
+        # tmpFactors is an identity matrix, with names according to the predictors for this
+        # multiple-partial F-test
         tmpFactors <- attr(attr(tmplist[[i]], "terms"), "factors")
+
+        # tmpVec is actually a matrix of 1s with one column and number of rows equal to 
+        # the number of predictors for this multiple-partial F-test
         tmpVec <- as.matrix(apply(tmpFactors, 1, sum))
+        
+        # tmpCol is a 1x(p+1) matrix of 0s and 1s, where a 1 indicates that the variable
+        # in factorMat is involved in the multiple-partial F-test
         tmpCol <- matrix(rep(0, dim(factorMat)[1]))
         tmpCol[match(dimnames(tmpVec)[[1]], dimnames(factorMat)[[1]]),] <- tmpVec
         dimnames(tmpCol) <- list(dimnames(factorMat)[[1]], names(tmplist)[[i]])
+        
+        # add tmpCol into factorMat
         factorMat <- cbind(factorMat, tmpCol)
+        
+        # get term labels for this multiple-partial F-test
+        # this is the same as rownames(tmpFactors) or colnames(tmpFactors)
+        # i+1 because the first item in termlst is the overall model
         ter <- attr(termlst[[i+1]], "term.labels")
+        
+        # Note from Taylor - I believe this if statement goes through if someone specified 
+        # something like U(~a + U(~b + c))
+        # but need to double check
         hasU <- grepl("U", ter)
         if (any(hasU)) {
           tmpter <- ter[hasU] 
@@ -242,13 +303,21 @@ regress <- function(fnctl, formula, data,
           tmpter[grepl("=", tmpter, fixed=TRUE)] <- pasteTwo(tmpEqter)
           ter[hasU] <- tmpter
         }
+        
+        # if there are any new variables specified inside of this U() specification, add them into term.labels
         term.labels <- c(term.labels, ter)
         term.labels <- unique(term.labels)
-        dimnames(tmplist[[i]])[[2]] <- paste(names(tmplist)[[i]], dimnames(tmplist[[i]])[[2]],sep=".")
+        
+        # change column names of the dataframe for thus U() specification to include the U() specification
+        # before the variable names
+        dimnames(tmplist[[i]])[[2]] <- paste(names(tmplist)[[i]], dimnames(tmplist[[i]])[[2]], sep=".")
       }
     }
+
     y <- model.response(mf, "numeric")
-    # checking response variable y  
+    
+    # checking response variable y, and replacing zeroes if needed/desired for
+    # geometric mean fnctl
     if (fnctl == "geometric mean") {
       
       if (missing(replaceZeroes)) {
@@ -275,23 +344,26 @@ regress <- function(fnctl, formula, data,
       replaceZeroes <- NA
     }
     
+    # reassign n, now that missing values have been removed
     n <- length(y)
     msng <- FALSE
-    if (length(weights) != n) stop("Response variable and weights must be of same length")
-    if (length(subset) != n) stop("Response variable and subsetting variable must be of same length")
     
+    # if weights is not numeric, throw an error
     w <- as.vector(model.weights(mf))
     if (!is.null(w) && !is.numeric(w)) {
       stop("'weights' must be a numeric vector")
     }
     
+    # Note from Taylor: this error message should happen earlier, and also y doesn't have rows
     offset <- as.vector(model.offset(mf))
     if (!is.null(offset)) {
-      if (length(offset) != NROW(y)) {
+      if (length(offset) != nrow(y)) {
         stop(gettextf("number of offsets is %d, should equal %d (number of observations)", 
-                      length(offset), NROW(y)), domain = NA)
+                      length(offset), nrow(y)), domain = NA)
       }
     }
+    
+    # Note from Taylor: not sure when the model would be empty, is this needed?
     if (is.empty.model(mt)) {
       x <- NULL
       z <- list(coefficients = if (is.matrix(y)) matrix(, 0, 
@@ -302,15 +374,22 @@ regress <- function(fnctl, formula, data,
         z$fitted.values <- offset
         z$residuals <- y - offset
       }
+      
     } else {
+      # get model matrix 
+      # Note to Taylor: figure out what contrasts actually does
       x <- model.matrix(mt, mf, contrasts)
       
-      z <- if (is.null(w)) 
-        lm.fit(x, y, offset = offset, singular.ok = singular.ok, 
-               ...)
-      else lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, 
-                   ...)
+      # fit the overall linear model, weighted if weights are specified
+      if (is.null(w)) {
+        z <- lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...)
+      } else {
+        z <- lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, ...)
+      }
+      
     }
+    
+    # add class, various attributes, and other values to the regression object
     class(z) <- c(if (is.matrix(y)) "mlm", "lm")
     z$na.action <- attr(mf, "na.action")
     z$offset <- offset
@@ -326,18 +405,18 @@ regress <- function(fnctl, formula, data,
       z$y <- y
     if (!qr) 
       z$qr <- NULL
-    model <- x
+    
+    # assign regression output to fit object
     fit <- z
+    
+    # If we're fitting a glm...
   } else {
+    
+    # set replaceZeroes = NA, since we only use this parameter when fnctl = "geometric mean"
     replaceZeroes <- NA
-    if (is.character(family)) 
-      family <- get(family, mode = "function", envir = parent.frame())
-    if (is.function(family)) 
-      family <- family()
-    if (is.null(family$family)) {
-      print(family)
-      stop("'family' not recognized")
-    }
+
+    family <- get(family, mode = "function", envir = parent.frame())
+
     if (!is.character(method) && !is.function(method)) {
       stop("invalid 'method' argument")
     }
@@ -345,6 +424,7 @@ regress <- function(fnctl, formula, data,
     if (missing(control)) {
       control <- glm.control(...)
     }
+    
     if (identical(method, "glm.fit")) {
       control <- do.call("glm.control", control)
     }
@@ -392,8 +472,7 @@ regress <- function(fnctl, formula, data,
     else matrix(, NROW(y), 0L)
     n <- NROW(y)
     msng <- FALSE
-    if (length(weights) != NROW(y)) stop("Response variable and weights must be of same length")
-    if (length(subset) != NROW(y)) stop("Response variable and subsetting variable must be of same length")
+    
     w <- as.vector(model.weights(mf))
     if (!is.null(w) && !is.numeric(w)) 
       stop("'weights' must be a numeric vector")
@@ -436,82 +515,97 @@ regress <- function(fnctl, formula, data,
                                                                                mf)))
     class(fit) <- c(fit$class, c("glm", "lm"))
   }
+  
+  # model contains the X matrix (intercept + covariates) for the overall model
   model <- x
   
-  
-  
-  ## Now we have the fit and the model
-  ## First check to see if there are any repeated ids;
-  ## then we use geeglm or coxph with clusters
+  # Now we have fit (regression output) and model (dataframe of predictors, X matrix)
+  # First check to see if there are any repeated ids;
+  # then we use geeglm or coxph with clusters
+  # Note from Taylor: a lot of this can likely be removed because gee's no longer supported
   if(is.null(id)){
     id <- 1:n
   }
-  anyRepeated <- any(table(id[!is.na(id)]) > 1)
-  if(anyRepeated | !is.null(attr(formula, "specials")$cluster)){
-    if (fnctl %in% c("mean", "geometric mean")) {
-      if (fnctl=="geometric mean") {
-        newy <- deparse(formula[[2]])
-        newy <- paste("log(", newy, ")", sep="")
-        form <- deparse(formula)
-        form <- unlist(strsplit(form, "~", fixed=TRUE))[2]
-        form <- paste(newy,"~", form, sep="")
-        formula <- as.formula(form, env=.GlobalEnv)
-      } 
-      fit <- if(!is.null(w)) geepack::geeglm(formula, weights=w, family="gaussian",id=id, data=data,...) else geepack::geeglm(formula, family="gaussian",id=id, data=data,...)
-    } else if (fnctl=="odds") {
-      fit <- if(!is.null(w)) geepack::geeglm(formula, weights=w, family="binomial",id=id, data=data,...) else geepack::geeglm(formula, family="binomial",id=id, data=data,...)
-    } else {
-      fit <- if(!is.null(w)) geepack::geeglm(formula, weights=w, family="poisson",id=id, data=data,...) else geepack::geeglm(formula, family="poisson",id=id, data=data,...)
-    }
-  }
+  anyRepeated <- FALSE
   
-  # Now I want to build the augmented coefficients matrix
-  # First I need to get the order of the predictors, using getn() helper function
+  # Now we build the augmented coefficients matrix
+  # This is different from the regular coefficients matrix if there are multiple-partial f-tests done
+  # or if there are categorical variables with more than 2 levels present in the predictors
   
-  ## Formatting the terms and getting the correct ordering for the augmented Coefficients matrix
-  z <- list(call=cl, terms=NULL,firstPred=NULL,lastPred=NULL,preds=NULL,X=NULL)
+  # Format terms and get the correct ordering for the augmented Coefficients matrix
+  # z is overwritten here, since earlier we assigned z to the "fit" object
+  z <- list(call=cl, terms=NULL, firstPred=NULL, lastPred=NULL, preds=NULL, X=NULL)
   terms <- attr(fit$terms, "term.labels")
   
+  # Note from Taylor: I believe model is already model.matrix(fit), so this may be able to be deleted
   model <- model.matrix(fit)
   
+  # get predictor variables (includes intercept if there is one)
   preds <- dimnames(model)[[2]]
   preds1 <- preds
+  
+  # get names of all variables in the model frame
   hyperpreds <- dimnames(mf)[[2]]
   
+  # do any of the variables have parentheses in them? will be true for (Intercept)
+  # but also, of note, factor(varname) or as.integer(varname)
   parens <- grepl(")", preds, fixed=TRUE)
+  
+  # are any of the variables interactions?
   interact <- grepl(":", preds, fixed=TRUE)
   
+  # create a list of length 2, containing preds (should be the same preds as before) and args
+  # preds is a vector of strings, containing all predictor variables in the overall model
+  # args is a list of length(hyperpreds), and each element in the list is simply one of the hyperpreds
+  # Note from Taylor: based on reFormatReg(), this may be more complex if any variables are
+  # specified using lspline(), dummy(), or polynomial(). this is currently untested.
   prList <- reFormatReg(preds, hyperpreds, mf)
   preds <- prList$preds
   args <- prList$args
   
+  # reassign column names to model matrix, unclear why this is necessary
   dimnames(model)[[2]] <- preds
   
+  # get column names for model matrix
   cols <- matrix(preds1, nrow=1)
   cols <- apply(cols, 2, createCols, terms)
-  if(intercept) cols[1] <- "(Intercept)"
+  if(intercept) {
+    cols[1] <- "(Intercept)"
+  }
   
   names(fit$coefficients) <- preds
   
+  # get number of predictors in overall model
   p <- length(terms)
+  
+  # process terms and get correct order for partial F-tests
+  # unclear exactly what this does
   for (i in 1:p) {
-    z <- processTerm (z, model[,cols==terms[i]], terms[i])
+    z <- processTerm(z, model[, cols == terms[i]], terms[i])
   }
+  
+  # unclear what this does, must do something if as.factor(varname) is included as a predictor?
   tmp <- sapply(strsplit(z$preds, ".", fixed=TRUE), getn, n=2)
   if(is.list(tmp)){
     tmp <- lapply(tmp, paste, collapse=".")
-  } else if (is.matrix(tmp)) {
+  } 
+  if (is.matrix(tmp)) {
     tmp <- apply(tmp, 2, paste, collapse=".")
-  } else {
-    
-  }
+  } 
+  
+  # reassign predictor names to z
   z$preds <- unlist(tmp)    
+  
+  # if any predictor names (other than the intercept) have parenthesis, add a space before the predictor name
+  # this may be related to the issue Jim noticed with as.integer(sex)
   z$preds[parens[-1]] <- paste(" ", z$preds[parens[-1]], sep="")
   
   z$X <- model
-  model <- c(z, list(y=y,strata=rep(1,n),weights=weights,id=id,subset=subset))
-  z <- c(model,list(fnctl=fnctl, intercept=intercept, exponentiate=exponentiate, replaceZeroes=replaceZeroes, 
-                    conf.level=conf.level, useFdstn=useFdstn, original=model))
+  model <- c(z, list(y = y, strata = rep(1,n), weights = weights, id = id, subset = subset))
+  z <- c(model, 
+         list(fnctl=fnctl, intercept=intercept, exponentiate=exponentiate, 
+              replaceZeroes=replaceZeroes, conf.level=conf.level, 
+              useFdstn=useFdstn, original=model))
   
   ## Getting the names and setting up the augmented coefficients matrix
   nms <- c(z$terms[z$firstPred!=z$lastPred],z$preds)
@@ -533,7 +627,7 @@ regress <- function(fnctl, formula, data,
     cinames <- cinames2
     secol <- 1+robustSE
   }
-  augCoefficients <- matrix(0,sum(z$firstPred!=z$lastPred)+length(z$pred)+intercept,length(cinames))
+  augCoefficients <- matrix(0, sum(z$firstPred!=z$lastPred)+length(z$pred)+intercept, length(cinames))
   dimnames(augCoefficients) <- list(nms,cinames)
   
   ## Getting the correct coefficients, robustSE standard errors, and f-statistics if needed
@@ -555,7 +649,7 @@ regress <- function(fnctl, formula, data,
     zzs$naiveCov <- zzs$cov.scaled
     n <- zzs$df.null + intercept
   }
-  if(!anyRepeated){
+  if(!anyRepeated) {
     if (robustSE) {
       m <- sandwich::sandwich(fit,adjust=T)
       zzs$coefficients <- cbind(zzs$coefficients[,1:2,drop=F],sqrt(diag(m)),zzs$coefficients[,-(1:2),drop=F])
@@ -583,9 +677,11 @@ regress <- function(fnctl, formula, data,
       LRStat <- c(LRStat,1-pf(LRStat,p-intercept,n-p),p-intercept,n-p)
       if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pf(scoreStat,p-intercept,n-p),p-intercept,n-p)
       zzs$coefficients[,secol+2] <- 2 * pt(- abs(zzs$coefficients[,secol+1]),df=n-p)
+      
       # change label for p-value from Pr(>|z|) to Pr(>|t|), and "z value" to "t value"
       colnames(zzs$coefficients)[secol+1] <- "t value"
       colnames(zzs$coefficients)[secol+2] <- "Pr(>|t|)"
+      
     } else {
       waldStat <- c(waldStat,1-pchisq(waldStat,p-intercept),p-intercept)
       LRStat <- c(LRStat,1-pchisq(LRStat,p-intercept),p-intercept)
@@ -622,8 +718,10 @@ regress <- function(fnctl, formula, data,
   zzs$coefficients <- cbind(zzs$coefficients[,1:secol,drop=F],ci,zzs$coefficients[,-(1:secol),drop=F])
   
   
-  u <- fst==lst
-  u[u] <- !droppedPred
+  u <- fst == lst
+  u[u] <- !droppedPred # warning message for factor issue from Jim
+  
+  # first time augmented coefficients matrix is defined
   zzs$augCoefficients[u,] <- zzs$coefficients
   ncol <- dim(zzs$augCoefficients)[2]
   zzs$augCoefficients[!u,-1] <- NA
@@ -644,7 +742,7 @@ regress <- function(fnctl, formula, data,
     }
   }
   dfs <- NULL
-  if(length(tmplist)>0){
+  if (length(tmplist) > 0) {
     termsNew <- term.labels
     j <- dim(zzs$augCoefficients)[1]+1
     oldLen <- dim(zzs$augCoefficients)[1]
@@ -684,9 +782,9 @@ regress <- function(fnctl, formula, data,
       j <- j+1
     }
     miss <- apply(sapply(term.labels, grepl, dimnames(zzs$augCoefficients)[[1]], fixed=TRUE), 2, sum)
-    if(any(miss==0)){
+    if (any(miss==0) ){
       nm <- names(miss)[miss==0]
-      for(i in 1:length(nm)){
+      for (i in 1:length(nm)) {
         tmpNum <- sapply(names(tmplist), grepl, nm[i], fixed=TRUE)
         curNms <- names(tmplist[[which(tmpNum)]])
         tmp <- sapply(strsplit(curNms, ".", fixed=TRUE), getn, n=2)
@@ -714,8 +812,8 @@ regress <- function(fnctl, formula, data,
   j <- dim(zzs$augCoefficients)[2]
   zzs$augCoefficients <- suppressWarnings(cbind(zzs$augCoefficients[,-j,drop=F],df=lst-fst+1,zzs$augCoefficients[,j,drop=F]))
   zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1] <- ifelse(is.na(zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-2]), NA, zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1])
-  if(length(tmplist)>0 & !is.null(dfs)){
-    for(i in 1:length(dfs)){
+  if (length(tmplist)>0 & !is.null(dfs)) {
+    for (i in 1:length(dfs)) {
       zzs$augCoefficients[dim(zzs$augCoefficients)[1]-round(i/2),"df"] <- tail(dfs, n=1)
       dfs <- dfs[-length(dfs)]
     }
@@ -756,7 +854,7 @@ regress <- function(fnctl, formula, data,
   ## Add in blanks for dummy labels etc
   p <- length(zzs$coefNums)
   if(p > 2 & any(is.na(zzs$augCoefficients[,1]))){
-    coefNums <- matrix(zzs$coefNums%*%insertCol(diag(p), which(is.na(zzs$augCoefficients[,1]) | duplicated(dimnames(zzs$augCoefficients)[[1]])), rep(NA, p)), ncol=1)
+    coefNums <- matrix(zzs$coefNums %*% insertCol(diag(p), which(is.na(zzs$augCoefficients[,1])), rep(NA, p)), ncol=1)
     zzs$coefNums <- coefNums
   } 
   ## get levels for printing

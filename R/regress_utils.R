@@ -2,15 +2,21 @@
 #' Takes in formula, potentially with nested F-tests
 #' 
 #' @param form the formula to parse
-#' @param modelframe the model frame which will become the model matrix
-#' @param mat the matrix of logicals to run on
+#' @param modelframe the model frame which will become the model matrix. this ends up
+#' being what is returned from match.call(), and so it looks like 
+#' regress(fnctl = "", formula = "", data = "", ...)
+#' @param mat a vector containing the indices for matches between modelframe inputs and
+#' c("formula", "data", "subset", "weights", "na.action", "offset") for lms, and
+#' c("formula", "data", "subset", "weights", "na.action", "etastart", "mustart", "offset")
+#' for glms
 #' @param data the data frame
 #' 
-#' @return a list of lists of tests to perform (and overall formula)
+#' @return a list of lists of tests to perform, the first of which will be the full model, named "overall"
 #' 
 #' @keywords internal
 #' @noRd
 testList <- function(form, modelframe, mat, data){
+  # form[[3]] is the right-hand side of the formula
   tmplist <- parsePartials(form[[3]], modelframe, mat)
   charForm <- parseParseFormula(parseFormula(form[[3]], modelframe, mat))
   charForm <- paste(deparse(form[[2]]), deparse(form[[1]]),paste(charForm, collapse=""), sep="")
@@ -436,22 +442,41 @@ getnm <- function(strmat, indx){
 
 #' Takes a formula, returns a list of models for multiple partial tests
 #' 
-#' @param form the formula
-#' @param modelframe
-#' @param mat
+#' @param form the right-hand side of a formula
+#' @param modelframe the model frame which will become the model matrix. this ends up
+#' being what is returned from match.call(), and so it looks like 
+#' regress(fnctl = "", formula = "", data = "", ...)
+#' @param mat a vector containing the indices for matches between modelframe inputs and
+#' c("formula", "data", "subset", "weights", "na.action", "offset") for lms, and
+#' c("formula", "data", "subset", "weights", "na.action", "etastart", "mustart", "offset")
+#' for glms
 #' 
 #' @return the list
 #' 
 #' @keywords internal
 #' @noRd
 parsePartials <- function(form, modelframe, mat){
+  # separates the formula into a list of three
+  # the first item is '+', the second is the first p-1 coefficients, the third is the last p'th coefficient
   f1 <- as.list(form)
-  if(length(f1)==1){
+  
+  # length(f1 == 1), this means there's only coefficient on the right-hand side of the formula
+  if (length(f1) == 1) {
+    
     return(NULL)
-  } else if(length(f1)==2) {
+    
+  } else if (length(f1) == 2 & (as.character(f1[[1]]) == "U")) {
+  #} else if (length(f1) == 2) {
+    
+    # length(f1) == 2 if a formula looks something like fev ~ as.integer(sex), or fev ~ U(sex),
+    # where the only coefficient listed is inside parentheses
+    
     tmplistOne <- NULL
-    if(sum(grepl("U", f1)) > 1){
-      ## if more than one U, need to evaluate nested U and then evaluate overall U
+    
+    # if more than one U, need to evaluate nested U and then evaluate overall U
+    # Note from Taylor - I'm not convinced this is doing what we want it do when there
+    # is more than one U and also additional variables in the model outside of the U's
+    if (sum(grepl("U", f1)) > 1) {
       tmplistOne <- parsePartials(f1[[2]][[2]], modelframe, mat)
       tmp <- LinearizeNestedList(tmplistOne)
       tmplistOne <- parseList(tmp)
@@ -475,7 +500,8 @@ parsePartials <- function(form, modelframe, mat){
       }
       form[[2]] <- f1[[2]]
     } 
-    if(sum(grepl("U", f1))==1){
+    # if only one U is specified...
+    if (sum(grepl("U", f1)) == 1) {
       ## try to evaluate the formula
       tmp <- tryCatch({eval(form, parent.frame())}, error=function(e){NULL})
       if(!is.null(tmp)){
@@ -1310,9 +1336,9 @@ getn <- function(vec, n){
 #' Inserts a column into a matrix
 #' Used to be inside of regress()
 #' 
-#' @param x
-#' @param indx
-#' @param col
+#' @param x matrix
+#' @param indx index for which column \code{col} should be inserted into
+#' @param col the column to insert
 #' 
 #' @return 
 #' 
@@ -1414,7 +1440,7 @@ print.uRegress <- function (x,...,augmented=TRUE,digits=max(3,getOption("digits"
   
   if (!is.null(dim(x$model))) {
     tmp <- dimnames(x$model)[[1]]
-    tmp <- indentNames(tmp, x$coefNums, x$levels)
+    tmp <- indentNames(tmp, x$coefNums, x$levels) 
     tmp <- attachNums(tmp, x$coefNums)
     dimnames(x$model)[[1]] <- tmp
     if(!is.na(x$transformed)[1]){
@@ -1477,6 +1503,7 @@ indentNames <- function(nms, coefNums, levels){
   newNms <- apply(nmMat, 1, addSpaces)
   return(newNms)
 }
+
 ## A helper function for regress()
 ## Gets the levels to properly indent the coefficients matrix
 ## Args: nms      - the names of the matrix of interest
@@ -1485,7 +1512,6 @@ indentNames <- function(nms, coefNums, levels){
 ##       level    - the current level of the function
 ## Returns: a vector with the indendation structure
 ## Version: 2015 05 25
-
 getLevels <- function(nms, coefNums, termnms, term.lbls, level){
   ## initialize all levels to level
   levels <- rep(level, length(nms))
