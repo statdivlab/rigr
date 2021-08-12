@@ -2,7 +2,7 @@
 % Please edit documentation in R/lincom.R
 \name{lincom}
 \alias{lincom}
-\title{%% ~~function to do ... ~~ Tests of Linear Combinations of Regression
+\title{Tests of Linear Combinations of Regression
 Coefficients}
 \usage{
 lincom(
@@ -18,12 +18,13 @@ lincom(
 \item{reg}{an object of class \code{uRegress}.}
 
 \item{comb}{a vector or matrix containing the values of the constants which
-create the linear combination of the form \deqn{c_0 + c_1\beta_1 + \dots}.}
+create the linear combination of the form \deqn{c_0 + c_1\beta_1 + \dots}.
+need to give zeroes if coefficients aren't going to be included}
 
 \item{hyp}{the null hypothesis to compare the linear combination of
 coefficients against. The default value is \code{0}. An error will be thrown
 if the number of columns of this matrix are not equal to the number of
-coefficients in the model.}
+coefficients in the model. a matrix (or single) hypothesis}
 
 \item{conf.level}{a number between 0 and 1, indicating the desired
 confidence level for intervals.}
@@ -37,12 +38,11 @@ estimated coefficient. By default this is performed based on the type of
 regression used.}
 }
 \value{
-%% ~Describe the value returned Prints a matrix with the point
+Prints a matrix with the point
 estimate of the linear combination of coefficients, a p-value, and
 confidence interval.
 }
 \description{
-%% ~~ A concise (1-5 lines) description of what the function does. ~~
 Produces point estimates, interval estimates, and p values for linear
 combinations of regression coefficients using a \code{ uRegress} object.
 }
@@ -65,7 +65,7 @@ lincom(testReg, testC)
 
 }
 \author{
-%% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
+Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
 Brian D. Williamson
 }
 \keyword{~kwd1}

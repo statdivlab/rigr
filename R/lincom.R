@@ -1,24 +1,6 @@
-## Equivalent function to "lincom" in STATA
-## Designed to find relationships in linear combinations of estimators following regress() call
-## Created 20141216 by Brian Williamson
-
-## Args:    reg - a "uRegress" object
-##         comb - a vector of constants (can be positive or negative) to construct linear combination
-##             need to give zeroes if coefficients aren't going to be included
-##          hyp - a matrix (or single) hypothesis
-##   conf.level - confidence level (between 0 and 1, default is .95)
-##     robustSE - logical, indicating if robust standard errors are to be used
-##        eform - logical, whether to return exponentiated coefficients or not
-## Returns: estimate of the linear combination of coefficients, specified by the comb vector
-## Version: 20150604
-
-
-
-
-#' %% ~~function to do ... ~~ Tests of Linear Combinations of Regression
+#' Tests of Linear Combinations of Regression
 #' Coefficients
 #' 
-#' %% ~~ A concise (1-5 lines) description of what the function does. ~~
 #' Produces point estimates, interval estimates, and p values for linear
 #' combinations of regression coefficients using a \code{ uRegress} object.
 #' 
@@ -26,10 +8,11 @@
 #' @param reg an object of class \code{uRegress}.
 #' @param comb a vector or matrix containing the values of the constants which
 #' create the linear combination of the form \deqn{c_0 + c_1\beta_1 + \dots}.
+#' need to give zeroes if coefficients aren't going to be included
 #' @param hyp the null hypothesis to compare the linear combination of
 #' coefficients against. The default value is \code{0}. An error will be thrown
 #' if the number of columns of this matrix are not equal to the number of
-#' coefficients in the model.
+#' coefficients in the model. a matrix (or single) hypothesis
 #' @param conf.level a number between 0 and 1, indicating the desired
 #' confidence level for intervals.
 #' @param robustSE a logical value indicating whether or not to use robust
@@ -38,10 +21,10 @@
 #' @param eform a logical value indicating whether or not to exponentiate the
 #' estimated coefficient. By default this is performed based on the type of
 #' regression used.
-#' @return %% ~Describe the value returned Prints a matrix with the point
+#' @return Prints a matrix with the point
 #' estimate of the linear combination of coefficients, a p-value, and
 #' confidence interval.
-#' @author %% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
+#' @author Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
 #' Brian D. Williamson
 #' @keywords ~kwd1 ~kwd2
 #' @examples
@@ -64,7 +47,7 @@
 #' @export lincom
 lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$fnctl!="mean"){
   ## if conf.level is not between 0 and 1, throw error
-  if(conf.level < 0 | conf.level > 1){
+  if(conf.level < 0 || conf.level > 1){
     stop("Confidence Level must be between 0 and 1")
   }
   ## if reg is not a uRegress object, throw an error
@@ -75,7 +58,7 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
   if(is.vector(comb)){
     ## if the number of coefficients listed is different from number in model (can actually be one more)
     if(length(comb) != dim(reg$coefficients)[1]){
-      stop("Vector of constants must be equal to number of coefficients in model")
+      stop("Vector of constants must be equal to number of coefficients in model, including intercept if applicable")
     }
     if(any(comb==0)){
       mat <- comb[-(comb==0)]
