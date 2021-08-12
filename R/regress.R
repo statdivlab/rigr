@@ -414,8 +414,15 @@ regress <- function(fnctl, formula, data,
     
     # set replaceZeroes = NA, since we only use this parameter when fnctl = "geometric mean"
     replaceZeroes <- NA
-
-    family <- get(family, mode = "function", envir = parent.frame())
+    
+    if (is.character(family)) 
+      family <- get(family, mode = "function", envir = parent.frame())
+    if (is.function(family)) 
+      family <- family()
+    if (is.null(family$family)) {
+      print(family)
+      stop("'family' not recognized")
+    }
 
     if (!is.character(method) && !is.function(method)) {
       stop("invalid 'method' argument")
