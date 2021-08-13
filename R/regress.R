@@ -119,6 +119,11 @@ regress <- function(fnctl, formula, data,
   if (length(weights) != n) stop("Response variable and weights must be of same length")
   if (length(subset) != n) stop("Response variable and subsetting variable must be of same length")
   
+  # throw error if method is neither a character nor a function
+  if (!is.character(method) && !is.function(method)) {
+    stop("invalid 'method' argument")
+  }
+  
   cl <- match.call()
   fit <- NULL
   if (missing(formula)) {
@@ -353,6 +358,9 @@ regress <- function(fnctl, formula, data,
     if (!is.null(w) && !is.numeric(w)) {
       stop("'weights' must be a numeric vector")
     }
+    if (!is.null(w) && any(w < 0)) {
+      stop("negative weights not allowed")
+    }
     
     # Note from Taylor: this error message should happen earlier, and also y doesn't have rows
     offset <- as.vector(model.offset(mf))
@@ -415,6 +423,7 @@ regress <- function(fnctl, formula, data,
     # set replaceZeroes = NA, since we only use this parameter when fnctl = "geometric mean"
     replaceZeroes <- NA
     
+    # get family 
     if (is.character(family)) 
       family <- get(family, mode = "function", envir = parent.frame())
     if (is.function(family)) 
@@ -423,38 +432,69 @@ regress <- function(fnctl, formula, data,
       print(family)
       stop("'family' not recognized")
     }
-
-    if (!is.character(method) && !is.function(method)) {
-      stop("invalid 'method' argument")
-    }
     
+    # set control parameter not specified, set it to glm.control(...)
     if (missing(control)) {
       control <- glm.control(...)
     }
     
+    # if method is "glm.fit", then set control to glm.control(...)
     if (identical(method, "glm.fit")) {
       control <- do.call("glm.control", control)
     }
     
+    # get terms from model frame
     mt <- attr(mf, "terms")
+    
     factorMat <- NULL
     term.labels <- NULL
+    
+    # if anything in the formula argument was specified in a U function, length(tmplist)>0
     if (length(tmplist)>0) {
+      
+      # get factors and term labels from the model terms object
+      # factorMat is a (p+1) x p matrix, where p is the number of predictors in the overall
+      # model, and the first row of factorMat is for the outcome variable. This should be
+      # equivalent to rbind(0, diag(p))
+      # term.labels is a vector containing strings for each predictor in the overall model, length p
       factorMat <- attr(mt, "factors")
       term.labels <- attr(mt, "term.labels")
+      
+      # for each multiple-partial F-test...
       for (i in 1:length(tmplist)) {
+        
+        # tmpFactors is an identity matrix, with names according to the predictors for this
+        # multiple-partial F-test
         tmpFactors <- attr(attr(tmplist[[i]], "terms"), "factors")
+        
+        # tmpVec is actually a matrix of 1s with one column and number of rows equal to 
+        # the number of predictors for this multiple-partial F-test
         tmpVec <- as.matrix(apply(tmpFactors, 1, sum))
+        
+        # tmpCol is a 1x(p+1) matrix of 0s and 1s, where a 1 indicates that the variable
+        # in factorMat is involved in the multiple-partial F-test
         tmpCol <- matrix(rep(0, dim(factorMat)[1]))
         tmpCol[match(dimnames(tmpVec)[[1]], dimnames(factorMat)[[1]]),] <- tmpVec
         dimnames(tmpCol) <- list(dimnames(factorMat)[[1]], names(tmplist)[[i]])
+        
+        # add tmpCol into factorMat
         factorMat <- cbind(factorMat, tmpCol)
+        
+        # get term labels for this multiple-partial F-test
+        # this is the same as rownames(tmpFactors) or colnames(tmpFactors)
+        # i+1 because the first item in termlst is the overall model
         ter <- attr(termlst[[i+1]], "term.labels")
+        
+        # Note from Taylor - I believe this if statement goes through if someone specified 
+        # something like U(~a + U(~b + c))
+        # but need to double check
         hasU <- grepl("U", ter)
         if (any(hasU)) {
           tmpter <- ter[hasU] 
           tmpEqter <- tmpter[grepl("=", tmpter, fixed=TRUE)]
           tmpEqter <- unlist(strsplit(tmpEqter, "U", fixed=TRUE))
+          # Note from Taylor: this is slightly different than how this is handled in an lm() call,
+          # there's an additional if statement right here for lm's
           tmpEqter <- as.matrix(tmpEqter)
           tmpEqter <- apply(tmpEqter, 1, splitOnParen)
           tmpEqter <- unlist(lapply(strsplit(tmpEqter, "=", fixed=TRUE), function(x) return(x[1])))
@@ -462,53 +502,87 @@ regress <- function(fnctl, formula, data,
           tmpter[grepl("=", tmpter, fixed=TRUE)] <- pasteTwo(tmpEqter)
           ter[hasU] <- tmpter
         }
+        
+        # if there are any new variables specified inside of this U() specification, add them into term.labels
         term.labels <- c(term.labels, ter)
         term.labels <- unique(term.labels)
+        
+        # change column names of the dataframe for thus U() specification to include the U() specification
+        # before the variable names
         dimnames(tmplist[[i]])[[2]] <- paste(names(tmplist)[[i]], dimnames(tmplist[[i]])[[2]],sep=".")
       }
     }
+    
+    # Note that y here is different than in the lm call, where here we don't need the model.response to be
+    # numeric
     y <- model.response(mf, "any")
+    
+    # Note from Taylor: I think this can be deleted, I'm not sure when length(dim(y)) would ever be 1
     if (length(dim(y)) == 1L) {
       nm <- rownames(y)
       dim(y) <- NULL
       if (!is.null(nm)) 
         names(y) <- nm
     }
-    x <- if (!is.empty.model(mt)) 
-      model.matrix(mt, mf, contrasts)
-    else matrix(, NROW(y), 0L)
-    n <- NROW(y)
+    
+    # assign to x, again not sure when mt would ever be an empty model
+    if (!is.empty.model(mt)) {
+      x <- model.matrix(mt, mf, contrasts)
+    } else {
+      x <- matrix(, nrow(y), 0L)
+    }
+    
+    # reassign n, now that missing values have been removed
+    n <- length(y)
     msng <- FALSE
     
+    # if weights is not numeric, throw an error
+    # Note from Taylor: can move this to beginning of function
     w <- as.vector(model.weights(mf))
-    if (!is.null(w) && !is.numeric(w)) 
+    if (!is.null(w) && !is.numeric(w)) {
       stop("'weights' must be a numeric vector")
-    if (!is.null(w) && any(w < 0)) 
+    }
+    if (!is.null(w) && any(w < 0)) {
       stop("negative weights not allowed")
+    }
+      
+    # Note from Taylor: this error message should happen earlier, and also y doesn't have rows
     offset <- as.vector(model.offset(mf))
     if (!is.null(offset)) {
       if (length(offset) != NROW(y)) 
         stop(gettextf("number of offsets is %d should equal %d (number of observations)", 
                       length(offset), NROW(y)), domain = NA)
     }
+    
+    # get starting values for glm fit
     start <- model.extract(mf, "start")
     mustart <- model.extract(mf, "mustart")
     etastart <- model.extract(mf, "etastart")
     
+    # fit the overall glm
     fit <- eval(call(if (is.function(method)) "method" else method, 
                      x = x, y = y, weights = w, start = start, etastart = etastart, 
                      mustart = mustart, offset = offset, family = family, 
-                     control = control, intercept = attr(mt, "intercept") > 
-                       0L))
+                     control = control, intercept = attr(mt, "intercept") > 0L))
+    
+    # if there is an offset and intercept in the model, refit the glm
     if (length(offset) && attr(mt, "intercept") > 0L) {
       fit2 <- eval(call(if (is.function(method)) "method" else method, 
                         x = x[, "(Intercept)", drop = FALSE], y = y, weights = w, 
                         offset = offset, family = family, control = control, 
                         intercept = TRUE))
-      if (!fit2$converged) 
+      
+      # if the model didn't converge, throw a warning
+      # Note from Taylor - not sure how best to make a unit test for this warning message
+      if (!fit2$converged) {
         warning("fitting to calculate the null deviance did not converge -- increase 'maxit'?")
+      }
+       
+      # assign the deviance from this model to the original model fit 
       fit$null.deviance <- fit2$deviance
     }
+    
+    # add class, various attributes, and other values to the regression object
     if (model.f) 
       fit$model <- mf
     fit$na.action <- attr(mf, "na.action")
@@ -518,8 +592,7 @@ regress <- function(fnctl, formula, data,
       fit$y <- NULL
     fit <- c(fit, list(call = call, formula = formula, terms = mt, 
                        data = data, offset = offset, control = control, method = method, 
-                       contrasts = attr(x, "contrasts"), xlevels = .getXlevels(mt, 
-                                                                               mf)))
+                       contrasts = attr(x, "contrasts"), xlevels = .getXlevels(mt, mf)))
     class(fit) <- c(fit$class, c("glm", "lm"))
   }
   
@@ -540,7 +613,8 @@ regress <- function(fnctl, formula, data,
   # or if there are categorical variables with more than 2 levels present in the predictors
   
   # Format terms and get the correct ordering for the augmented Coefficients matrix
-  # z is overwritten here, since earlier we assigned z to the "fit" object
+  # z is overwritten here if fnctl = "mean" or "geometric mean", 
+  # since earlier we assigned z to the "fit" object in the lm chunk of code
   z <- list(call=cl, terms=NULL, firstPred=NULL, lastPred=NULL, preds=NULL, X=NULL)
   terms <- attr(fit$terms, "term.labels")
   
