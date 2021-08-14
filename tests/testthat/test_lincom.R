@@ -33,3 +33,26 @@ test_that("lincom() throws error if comb matrix has incorrect number of columns"
   expect_error(lincom(reg, matrix(c(1,1, 2, 2, 3, 3), nrow = 2), robustSE = FALSE),
                "Matrix of constants must have columns equal to the number of coefficients")
 })
+
+test_that("lincom() throws error if hyp is wrong dimension or not numeric", {
+  expect_error(lincom(reg, c(1,1), robustSE = FALSE, hyp = "a"),
+               "Null hypothesis must a scalar.")
+  expect_error(lincom(reg, c(1,1), robustSE = FALSE, hyp = c(1,2)),
+               "Null hypothesis must a scalar.")
+  expect_error(lincom(reg, comb = matrix(c(1,1,2,2, 3, 3), nrow = 3), 
+                      robustSE = FALSE, hyp = matrix(c(0, 0, "a"), nrow = 3)),
+               "Null hypothesis must numeric and of the same dimension as the number of combinations being tested.")
+  expect_error(lincom(reg, comb = matrix(c(1,1,2,2, 3, "a"), nrow = 3), 
+                      robustSE = FALSE, hyp = matrix(c(0, 0, "a"), nrow = 3)),
+               "Null hypothesis must numeric and of the same dimension as the number of combinations being tested.")
+})
+
+test_that("lincom() throws error if eform not logical", {
+  expect_error(lincom(reg, c(1,1), robustSE = FALSE, eform = 2),
+               "Argument eform must be a logical.")
+})
+
+### single test
+
+dat <- data.frame(y = rnorm(100), x = rnorm(100))
+reg <- regress("mean", y ~ x, data = dat, robustSE = FALSE)

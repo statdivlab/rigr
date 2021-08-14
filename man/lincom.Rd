@@ -46,6 +46,9 @@ confidence interval.
 Produces point estimates, interval estimates, and p values for linear
 combinations of regression coefficients using a \code{ uRegress} object.
 }
+\details{
+#' @aliases lincom lincom.do print.lincom
+}
 \examples{
 
 # Loading required libraries

@@ -4,6 +4,7 @@
 #' Produces point estimates, interval estimates, and p values for linear
 #' combinations of regression coefficients using a \code{ uRegress} object.
 #' 
+#' #' @aliases lincom lincom.do print.lincom
 #' 
 #' @param reg an object of class \code{uRegress}.
 #' @param comb a vector or matrix containing the values of the constants which
@@ -54,12 +55,13 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
   if(!("uRegress" %in% class(reg))){
     stop("uRegress object must be entered")
   }
+  ## throw error if eform not logical
+  if (!(is.logical(eform))){
+    stop("Argument eform must be a logical.")
+  }
   
-  if(is.vector(comb)){
-    ## if the number of coefficients listed is different from number in model (can actually be one more)
-    if(length(comb) != dim(reg$coefficients)[1]){
-      stop("Vector of constants must be equal to number of coefficients in model, including intercept if applicable")
-    }
+  lincom.do <- function(reg, comb, hyp, conf.level, robustSE, eform){
+
     if(any(comb==0)){
       mat <- comb[-(comb==0)]
     } else {
@@ -71,12 +73,6 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     nms <- paste(mat[mat>0], nms, sep="*")
     if(length(nms)>1){
       nms <- paste(nms, collapse="+")
-    }
-    ## if robustSE requested but was not in regress(), throw error
-    if(is.null(reg$robustCov)){
-      if(robustSE){
-        stop("uRegress object must be created with robust standard errors")
-      }
     }
     
     ## create new coefficient 
@@ -90,7 +86,6 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     if(dim(SE)[2]>1){
       SE <- matrix(apply(SE, 1, function(x) x[!is.na(x)]), nrow=dim(SE)[2])
     }
-    
     
     tStat <- (newCoef-hyp)/SE
     pval <- 2*pt(-abs(tStat), reg$df[2]) ## return two sided tes
@@ -112,13 +107,33 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
                                        paste("e(", paste(format(100*conf.level),"%",c("L","H"),sep=""), ")",sep=""),
                                        "T", "Pr(T > |t|)"))
     }
-    ## print
-    for(i in 1:dim(printMat)[1]){
-      cat("\nH0:", nms[i], "  = ", hyp, "\n")
-      cat("Ha:", nms[i], " != ", hyp, "\n")
-      printCoefmat(t(printMat[i,]), digits = 4, 
-                   has.Pvalue = TRUE)
+    
+    lincom.obj <- list(printMat = printMat, nms = nms, hyp = hyp)
+    invisible(lincom.obj)
+  }
+  
+  if(is.vector(comb)){
+    ## if the number of coefficients listed is different from number in model (can actually be one more)
+    if(length(comb) != dim(reg$coefficients)[1]){
+      stop("Vector of constants must be equal to number of coefficients in model, including intercept if applicable")
     }
+    ## throw error if hyp is not a scalar
+    if (!(is.numeric(hyp)) || length(hyp) > 1){
+      stop("Null hypothesis must a scalar.")
+    }
+    ## if robustSE requested but was not in regress(), throw error
+    if(is.null(reg$robustCov)){
+      if(robustSE){
+        stop("uRegress object must be created with robust standard errors")
+      }
+    }
+    lincom.obj <- lincom.do(reg = reg, 
+                            comb = comb, 
+                            hyp = hyp, 
+                            conf.level = conf.level, 
+                            robustSE = robustSE, 
+                            eform = eform)
+    names(lincom.obj) <- c("comb1")
     
   } else { ## it is a matrix
     if(dim(comb)[2]!=dim(reg$coefficients)[1]){
@@ -127,13 +142,24 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     if(is.vector(hyp)){
       hyp <- matrix(hyp, nrow=dim(comb)[1])
     }
+    ## throw error if hyp has wrong dimension
+    if (!(is.numeric(hyp)) || dim(hyp)[1] != dim(comb)[1] || dim(hyp)[2] != 1){
+      stop("Null hypothesis must numeric and of the same dimension as the number of combinations being tested.")
+    }
+    lincom.obj <- vector(mode = "list", length = dim(comb)[1])
     ## apply to a vector for each
     for(i in 1:dim(comb)[1]){
-      lincom(reg, comb[i,], hyp[i,], conf.level, robustSE, eform)
+      lincom.obj.partial <- lincom.do(reg, comb[i,], hyp[i,], conf.level, robustSE, eform)
+      lincom.obj[[i]] <- lincom.obj.partial
+      names(lincom.obj)[[i]] <- paste0("comb", i)
     }
     ## Do overall test
-    overall <- apply(comb, 2, sum)
-    cat("\n Overall Test \n")
-    lincom(reg, overall, 0, conf.level, robustSE, eform)
+    #overall <- apply(comb, 2, sum)
+    #cat("\n Overall Test \n")
+    #lincom(reg, overall, 0, conf.level, robustSE, eform)
   }
+  lincom.obj$call <- match.call()
+  class(lincom.obj) <- "lincom"
+  return(lincom.obj)
+  
 }
