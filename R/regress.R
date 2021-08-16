@@ -647,7 +647,7 @@ regress <- function(fnctl, formula, data,
   
   # reassign column names to model matrix, unclear why this is necessary
   dimnames(model)[[2]] <- preds
-  
+
   # get column names for model matrix
   cols <- matrix(preds1, nrow=1)
   cols <- apply(cols, 2, createCols, terms)
@@ -667,14 +667,8 @@ regress <- function(fnctl, formula, data,
   }
   
   # unclear what this does, must do something if as.factor(varname) is included as a predictor?
-  tmp <- sapply(strsplit(z$preds, ".", fixed=TRUE), getn, n=2)
-  if(is.list(tmp)){
-    tmp <- lapply(tmp, paste, collapse=".")
-  } 
-  if (is.matrix(tmp)) {
-    tmp <- apply(tmp, 2, paste, collapse=".")
-  } 
-  
+  tmp <- gsub("as.","",z$preds)
+
   # reassign predictor names to z
   z$preds <- unlist(tmp)    
   
