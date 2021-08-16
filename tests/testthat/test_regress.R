@@ -1,6 +1,7 @@
 ### error handling
 
 data(mri)
+mri$sex_bin <- ifelse(mri$sex == "Male",1,0)
 
 test_that("regress() throws error if formula is not specified", {
   expect_error(regress("mean", data = mri), 
@@ -21,6 +22,36 @@ test_that("regress() throws error if fnctl = 'geometric mean', replaceZeroes = F
                "replaceZeroes cannot be false if fnctl = 'geometric mean' and y contains any zeroes")
 })
 
+test_that("regress() throws error if weights are not numeric", {
+  expect_error(regress("mean", atrophy~age, data = mri, weights = as.character(1:nrow(mri))), 
+               "'weights' must be a numeric vector")
+  expect_error(regress("odds", sex_bin~age, data = mri, weights = as.character(1:nrow(mri))), 
+               "'weights' must be a numeric vector")
+})
+
+test_that("regress() throws error if weights are negative", {
+  expect_error(regress("mean", atrophy~age, data = mri, weights = -(1:nrow(mri))), 
+               "negative weights not allowed")
+  expect_error(regress("odds", sex_bin~age, data = mri, weights = -(1:nrow(mri))), 
+               "negative weights not allowed")
+})
+
+test_that("regress() throws error if weights is not the same length as nrow(data)", {
+  expect_error(regress("mean", atrophy~age, data = mri, weights = 1), 
+               "Response variable and weights must be of same length")
+})
+
+test_that("regress() throws error if subset is not the same length as nrow(data)", {
+  expect_error(regress("mean", atrophy~age, data = mri, subset = 1), 
+               "Response variable and subsetting variable must be of same length")
+})
+
+test_that("regress() throws error if method is neither a function nor string", {
+  expect_error(regress("mean", atrophy~age, data = mri, method = 1), 
+               "invalid 'method' argument")
+})
+
+
 ### warning handling
 
 test_that("regress() gives warning if fnctl != 'geometric mean' and replaceZeroes != FALSE", {
@@ -28,6 +59,13 @@ test_that("regress() gives warning if fnctl != 'geometric mean' and replaceZeroe
                "replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
   expect_warning(regress("mean", packyrs ~ age, data = mri, replaceZeroes = 7), 
                  "replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
+})
+
+test_that("regress() gives method warnings", {
+  expect_warning(regress("mean", packyrs ~ age, data = mri, method = "glm.fit"), 
+                 "method = 'glm.fit' is not supported. Using 'qr'")
+  # expect_warning(regress("rate", packyrs ~ age, data = mri, method = "blah"), 
+  #                "")
 })
 
 
@@ -66,7 +104,6 @@ test_that("regress() returns same output as lm()", {
 
 ### logistic regression output, useFdstn = FALSE
 
-mri$sex_bin <- ifelse(mri$sex == "Male",1,0)
 mod_rigr <- regress("odds", sex_bin ~ age, data = mri, useFdstn = FALSE)
 mod_glm <- glm(data = mri, sex_bin ~ age, family = binomial(link = "logit"))
 mod_glm_robust_se <- sqrt(diag(sandwich::sandwich(mod_glm, adjust = TRUE)))
@@ -245,9 +282,9 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean'", 
                mod_lm_robust_p)
 })
 
-### various regress arguments
+### utilization of U
 
-# conf.level not 0.95
+### various regress arguments
 
 # replaceZeroes = TRUE, fnctl = 'geometric mean'
 
@@ -294,7 +331,6 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean', r
 
 mod_rigr <- regress("geometric mean", packyrs ~ age, data = mri, replaceZeroes = 7)
 replace_val <- 7
-#replace_val <- TRUE
 mri_temp <- mri
 mri_temp$packyrs <- log(ifelse(mri_temp$packyrs == 0, replace_val, mri_temp$packyrs))
 mod_lm <- lm(data = mri_temp, packyrs ~ age)
@@ -332,6 +368,31 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean', r
 })
 
 # utilization of U for F-tests
+
+# categorical predictor with > 2 levels
+
+# interaction term without using U function
+
+# conf.level not 0.95
+
+# can specify factors in different ways
+
+# these three models should return the same coefficients
+fev_df <- read.table("http://www.emersonstatistics.com/datasets/fev.txt",header=TRUE)
+mod1 <- regress("mean", fev ~ height+factor(sex),data=fev_df) 
+mod2 <- regress("mean", fev ~ height+sex, data=fev_df %>% mutate(sex = factor(sex))) 
+mod3 <- lm(fev ~ height + factor(sex), data = fev_df)
+
+test_that("can input factor variables into regress in multiple ways", {
+  # Both rigr models should be the same
+  expect_equal(unname(mod1$coefficients[,1]),
+               unname(mod2$coefficients[,1]))
+  # Both rigr models should be the same as an lm call
+  expect_equal(unname(mod1$coefficients[,1]),
+               unname(mod3$coefficients))
+})
+
+
 
 
 

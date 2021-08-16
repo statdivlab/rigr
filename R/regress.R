@@ -616,7 +616,8 @@ regress <- function(fnctl, formula, data,
   # z is overwritten here if fnctl = "mean" or "geometric mean", 
   # since earlier we assigned z to the "fit" object in the lm chunk of code
   z <- list(call=cl, terms=NULL, firstPred=NULL, lastPred=NULL, preds=NULL, X=NULL)
-  terms <- attr(fit$terms, "term.labels")
+  terms <- names(fit$coefficients) 
+  terms <- terms[terms != "(Intercept)"]
   
   # Note from Taylor: I believe model is already model.matrix(fit), so this may be able to be deleted
   model <- model.matrix(fit)
@@ -708,6 +709,7 @@ regress <- function(fnctl, formula, data,
     cinames <- cinames2
     secol <- 1+robustSE
   }
+  
   augCoefficients <- matrix(0, sum(z$firstPred!=z$lastPred)+length(z$pred)+intercept, length(cinames))
   dimnames(augCoefficients) <- list(nms,cinames)
   
