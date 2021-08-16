@@ -619,6 +619,14 @@ regress <- function(fnctl, formula, data,
   terms <- names(fit$coefficients) 
   terms <- terms[terms != "(Intercept)"]
   
+  # determine if any variables are categorical with more than two categories
+  # if the coefficient names and term.labels are of different lengths, then this is the case
+  terms_fromlabels <- attr(fit$terms, "term.labels")
+  if (length(terms) != length(terms_fromlabels)) {
+    terms_names <- terms
+    terms <- terms_fromlabels
+  }
+  
   # Note from Taylor: I believe model is already model.matrix(fit), so this may be able to be deleted
   model <- model.matrix(fit)
   
@@ -662,8 +670,35 @@ regress <- function(fnctl, formula, data,
     z <- processTerm(z, model[, cols == terms[i]], terms[i])
   }
   
-  # unclear what this does, must do something if as.factor(varname) is included as a predictor?
+  # remove "as." from before variables, if any are specified as as.integeter(variable) or
+  # as.factor(variable), etc.
   tmp <- gsub("as.","",z$preds)
+  
+  # for categorical variables with multiple levels, tmp will look like variable.NA
+  # rather than variable.level
+  # fix this here
+  tmp_noparens <- gsub("\\)", "", gsub("\\(", "", tmp))
+  terms_noparens <- gsub("\\)", "", gsub("\\(", "", terms))
+  preds1_noparens <- gsub("\\)", "", gsub("\\(", "", preds1))
+  
+  for (i in 1:length(terms)) {
+    
+    # for each term, find the preds that correspond to it
+    which_preds <- grep(terms_noparens[i], preds1_noparens)
+    
+    # get which values in tmp correspond to these preds as well
+    which_tmp <- grep(terms_noparens[i], tmp_noparens)
+    
+    # get the level for this variable
+    pred_levels <- gsub(terms[i], "", preds1[which_preds])
+    
+    # replace ".NA" with pred_levels in tmp
+    for (j in 1:length(pred_levels)) {
+      tmp[which_tmp][j] <- gsub("NA", pred_levels[j], tmp[which_tmp][j])
+    }
+    
+  }
+  preds[preds != "(Intercept)"]
 
   # reassign predictor names to z
   z$preds <- unlist(tmp)    
