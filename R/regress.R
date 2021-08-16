@@ -759,6 +759,8 @@ regress <- function(fnctl, formula, data,
       waldStat <- c(waldStat,1-pf(waldStat,p-intercept,n-p),p-intercept,n-p)
       LRStat <- c(LRStat,1-pf(LRStat,p-intercept,n-p),p-intercept,n-p)
       if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pf(scoreStat,p-intercept,n-p),p-intercept,n-p)
+      
+      # change p-value to robust p-value
       zzs$coefficients[,secol+2] <- 2 * pt(- abs(zzs$coefficients[,secol+1]),df=n-p)
       
       # change label for p-value from Pr(>|z|) to Pr(>|t|), and "z value" to "t value"
@@ -769,6 +771,8 @@ regress <- function(fnctl, formula, data,
       waldStat <- c(waldStat,1-pchisq(waldStat,p-intercept),p-intercept)
       LRStat <- c(LRStat,1-pchisq(LRStat,p-intercept),p-intercept)
       if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pchisq(waldStat,p-intercept),p-intercept)
+      
+      # change p-value to robust p-value
       zzs$coefficients[,secol+2] <- 2 * pnorm(- abs(zzs$coefficients[,secol+1]))
     }
   } 
@@ -802,12 +806,16 @@ regress <- function(fnctl, formula, data,
   
   
   u <- fst == lst
-  u[u] <- !droppedPred # warning message for factor issue from Jim
+  u[u] <- !droppedPred 
   
   # first time augmented coefficients matrix is defined
   zzs$augCoefficients[u,] <- zzs$coefficients
+  
+  # Note from Taylor: bad practice to assign something to a base function name
   ncol <- dim(zzs$augCoefficients)[2]
-  zzs$augCoefficients[!u,-1] <- NA
+  zzs$augCoefficients[!u,-1] <- NA # Note from Taylor: I don't think this line of code actually does anything
+  
+  # compute f-stat as t-stat^2
   zzs$augCoefficients[,ncol-1] <- zzs$augCoefficients[,ncol-1,drop=F]^2
   zzs$augCoefficients[fst!=lst,] <- NA
   

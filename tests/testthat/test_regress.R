@@ -282,6 +282,39 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean'", 
                mod_lm_robust_p)
 })
 
+### interaction terms in lms
+fev_df <- read.table("http://www.emersonstatistics.com/datasets/fev.txt",header=TRUE)
+mod_rigr <- regress("mean",fev~height*sex, fev_df)
+mod_lm <- lm(fev ~ height * sex, fev_df)
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(fev_df) - 4) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(fev_df) - 4) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(fev_df) - 4, lower.tail = FALSE)
+
+test_that("regress() returns same output as lm() for when interaction terms included", {
+  # Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
+               mod_lm$coefficients)
+  # Naive SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"],
+               summary(mod_lm)$coefficients[,2])
+  # Robust SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"],
+               mod_lm_robust_se)
+  # z value (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"],
+               mod_lm$coefficients/ mod_lm_robust_se)
+  # 95%L (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"],
+               mod_lm_robust_ci_lower)
+  # 95%H (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"],
+               mod_lm_robust_ci_higher)
+  # p-value
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"],
+               mod_lm_robust_p)
+})
+
 ### utilization of U
 
 ### various regress arguments
@@ -378,9 +411,9 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean', r
 # can specify factors in different ways
 
 # these three models should return the same coefficients
-fev_df <- read.table("http://www.emersonstatistics.com/datasets/fev.txt",header=TRUE)
 mod1 <- regress("mean", fev ~ height+factor(sex),data=fev_df) 
-mod2 <- regress("mean", fev ~ height+sex, data=fev_df %>% mutate(sex = factor(sex))) 
+fev_df$fsex <- factor(fev_df$sex)
+mod2 <- regress("mean", fev ~ height+fsex, data=fev_df) 
 mod3 <- lm(fev ~ height + factor(sex), data = fev_df)
 
 test_that("can input factor variables into regress in multiple ways", {
