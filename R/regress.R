@@ -629,10 +629,6 @@ regress <- function(fnctl, formula, data,
   # get names of all variables in the model frame
   hyperpreds <- dimnames(mf)[[2]]
   
-  # do any of the variables have parentheses in them? will be true for (Intercept)
-  # but also, of note, factor(varname) or as.integer(varname)
-  parens <- grepl(")", preds, fixed=TRUE)
-  
   # are any of the variables interactions?
   interact <- grepl(":", preds, fixed=TRUE)
   
@@ -671,10 +667,6 @@ regress <- function(fnctl, formula, data,
 
   # reassign predictor names to z
   z$preds <- unlist(tmp)    
-  
-  # if any predictor names (other than the intercept) have parenthesis, add a space before the predictor name
-  # this may be related to the issue Jim noticed with as.integer(sex)
-  z$preds[parens[-1]] <- paste(" ", z$preds[parens[-1]], sep="")
   
   z$X <- model
   model <- c(z, list(y = y, strata = rep(1,n), weights = weights, id = id, subset = subset))

@@ -1439,8 +1439,7 @@ print.uRegress <- function (x,...,augmented=TRUE,digits=max(3,getOption("digits"
   suppress <- x$suppress
   
   if (!is.null(dim(x$model))) {
-    # tmp <- dimnames(x$model)[[1]]
-    tmp <- rownames(x$augCoefficients) # TAYLOR changed
+    tmp <- rownames(x$augCoefficients) 
     tmp <- indentNames(tmp, x$coefNums, x$levels) 
     tmp <- attachNums(tmp, x$coefNums)
     dimnames(x$model)[[1]] <- tmp
