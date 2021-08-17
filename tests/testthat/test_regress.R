@@ -283,6 +283,7 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean'", 
 })
 
 ### interaction terms in lms
+
 fev_df <- read.table("http://www.emersonstatistics.com/datasets/fev.txt",header=TRUE)
 mod_rigr <- regress("mean",fev~height*sex, fev_df)
 mod_lm <- lm(fev ~ height * sex, fev_df)
@@ -318,7 +319,6 @@ test_that("regress() returns same output as lm() for when interaction terms incl
 ### utilization of U
 
 mod_rigr <- regress("mean", atrophy ~ age + U(smoke = ~packyrs + yrsquit), data = mri)
-mod_lm_small <- lm(atrophy ~ age, data = mri[!is.na(mri$packyrs),])
 mod_lm <- lm(atrophy ~ age + packyrs + yrsquit, data = mri)
 mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
 mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 5) * mod_lm_robust_se
@@ -364,9 +364,7 @@ test_that("regress() returns same output as lm() when doing F-test using U() fun
                smoke_p)
 })
 
-### various regress arguments
-
-# replaceZeroes = TRUE, fnctl = 'geometric mean'
+### replaceZeroes = TRUE, fnctl = 'geometric mean'
 
 mod_rigr <- regress("geometric mean", packyrs ~ age, data = mri, replaceZeroes = TRUE)
 replace_val <- sort(unique(mri$packyrs))[2]/2
@@ -407,7 +405,7 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean', r
                mod_lm_robust_p)
 })
 
-# replaceZeroes = value, fnctl = 'geometric mean'
+### replaceZeroes = value, fnctl = 'geometric mean'
 
 mod_rigr <- regress("geometric mean", packyrs ~ age, data = mri, replaceZeroes = 7)
 replace_val <- 7
@@ -447,11 +445,64 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean', r
                mod_lm_robust_p)
 })
 
-# categorical predictor with > 2 levels - coefficient labels
+### categorical predictor with > 2 levels - coefficient labels
 
-# conf.level not 0.95
+# also ensure that the F-test is done correctly
+mod_rigr <- regress("mean", atrophy ~ race + age, data=mri)
+mod_lm <- lm(atrophy ~ race + age, data = mri)
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 5) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 5) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 5, lower.tail = FALSE)
 
-# can specify factors in different ways
+R <- matrix(c(0,1,0,0,0,
+              0,0,1,0,0,
+              0,0,0,1,0), nrow = 3, byrow = TRUE)
+theta_hat <- mod_lm$coefficients
+n <- 3
+V_hat <- sandwich::sandwich(mod_lm, adjust = TRUE)
+race_F <- as.vector(t(R %*% theta_hat) %*% solve(R %*% (V_hat) %*% t(R)) %*% (R %*% theta_hat) / n)
+race_p <- 1 - pf(race_F, 3, nrow(mri) - 5)
+
+test_that("regress() F-test and coefficient labels are correct for multi-level categorical variables", {
+  # Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
+               mod_lm$coefficients)
+  # Naive SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"],
+               summary(mod_lm)$coefficients[,2])
+  # Robust SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"],
+               mod_lm_robust_se)
+  # z value (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"],
+               mod_lm$coefficients/ mod_lm_robust_se)
+  # 95%L (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"],
+               mod_lm_robust_ci_lower)
+  # 95%H (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"],
+               mod_lm_robust_ci_higher)
+  # p-value
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"],
+               mod_lm_robust_p)
+  # F-stat for smoke
+  expect_equal(mod_rigr$augCoefficients["race","F stat"],
+               race_F)
+  # p-value for smoke
+  expect_equal(mod_rigr$augCoefficients["race","Pr(>F)"],
+               race_p)
+  # ensure coefficient names are appropriately indented
+  expect_equal(rownames(mod_rigr$augCoefficients),
+               c("Intercept","race"," Black"," Subject did not identify White, Black or Asian",
+                 " White","age"))
+})
+
+### multiple multi-level categorical predictors
+
+### conf.level not 0.95
+
+### can specify factors in different ways
 
 mod1 <- regress("mean", fev ~ height+factor(sex),data=fev_df) 
 fev_df$fsex <- factor(fev_df$sex)
@@ -467,7 +518,7 @@ test_that("can input factor variables into regress in multiple ways", {
                unname(mod3$coefficients))
 })
 
-# intercept = FALSE removes intercept from model
+### intercept = FALSE removes intercept from model
 
 mod_rigr <- regress("mean", atrophy ~ age, data = mri, intercept = FALSE)
 mod_lm <- lm(data = mri, atrophy ~ age - 1)
@@ -502,7 +553,8 @@ test_that("intercept = FALSE argument removes intercept from model", {
                unname(mod_lm_robust_p))
 })
 
-# if method = "model.frame", the model frame is returned
+### if method = "model.frame", the model frame is returned
+
 mod_rigr <- regress("mean", atrophy ~ age, data = mri, method = "model.frame")
 mod_lm <- lm(data = mri, atrophy ~ age, method = "model.frame")
 
