@@ -147,22 +147,20 @@ follow them).
 }
 \examples{
 
-# Loading required libraries
-library(sandwich)
 
-# Reading in a dataset
-mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt",header=TRUE)
+# Loading dataset
+data(mri)
 
 # Linear regression of atrophy on age
-regress("mean", atrophy~age, data=mri)
+regress("mean", atrophy ~ age, data = mri)
 
-## Linear regression of atrophy on male and race and their interaction, 
-## with a multiple-partial F-test on the race-age interaction
-regress("mean", atrophy~ male + U(ra=~race*age), data=mri)
+# Linear regression of atrophy on sex and height and their interaction, 
+# with a multiple-partial F-test on the height-sex interaction
+regress("mean", atrophy ~ height + sex + U(hs=~height:sex), data = mri)
 
-## Linear regression of atrophy on age, male, race (as a dummy variable), chf,
-## and diabetes. There are two multiple partial F-tests and both are named
-regress("mean", atrophy~age+male+U(rc=~dummy(race)+chf)+U(md=~male+diabetes), data=mri)
+# Logistic regression of sex on atrophy
+mri$sex_bin <- ifelse(mri$sex == "Female", 1, 0)
+regress("odds", sex_bin ~ atrophy, data = mri)
 
 
 }
