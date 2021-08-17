@@ -1403,7 +1403,25 @@ processTerm <- function (z, Term, TermName) {
       predNms <- paste("V",1:(dim(Term)[2]),sep="")
     } else {
       # first strip TermName from colnames(Term)
-      predNms <- gsub(TermName, "", dimnames(Term)[[2]])
+      # split on ":" in case this TermName is an interaction
+      TermName_split <- unlist(strsplit(TermName,":"))
+      
+      if (length(TermName_split) == 1) {
+        predNms <- gsub(TermName, "", dimnames(Term)[[2]])
+      } else {
+        dimnames_Term_split <- strsplit(dimnames(Term)[[2]], ":")
+        
+        for (i in 1:length(TermName_split)) {
+          # if the term name is exactly equal to the dimname, don't replace it
+          if (TermName_split[i] != dimnames_Term_split[[1]][i]) {
+            dimnames_Term_split <- lapply(dimnames_Term_split, function(x) {c(gsub(TermName_split[i], "", x[i]), x[-i])})
+          }
+          
+        }
+        # recombine dimnames with a colon to make predNms
+        predNms <- unlist(lapply(dimnames_Term_split, paste, collapse = ":"))
+      }
+      
     }
     if (!is.null(z$X)) {
       if (dim(Term)[1]!=dim(z$X)[1]) stop("all terms must have same number of cases")

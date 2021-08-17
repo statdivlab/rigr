@@ -500,6 +500,45 @@ test_that("regress() F-test and coefficient labels are correct for multi-level c
 
 ### multiple multi-level categorical predictors
 
+mri_temp <- mri
+mri_temp$var1 <- sample(c("a","b","c"), nrow(mri), replace = TRUE)
+mod_rigr <- regress("mean", atrophy ~ race + var1, data=mri_temp)
+
+test_that("coefficient names appropriately indented in regress() for multiple, multi-level categorical variables", {
+  # ensure coefficient names are appropriately indented
+  expect_equal(rownames(mod_rigr$augCoefficients),
+               c("Intercept","race"," Black"," Subject did not identify White, Black or Asian",
+                 " White","var1"," b"," c"))
+})
+
+### interaction between multi-level categorical variable & quantitative variable
+
+mod_rigr <- regress("mean", atrophy ~ race*age, data=mri)
+
+test_that("coefficient names appropriately indented in regress() for interaction between multi-level categorical var and quantitative var", {
+  # ensure coefficient names are appropriately indented
+  expect_equal(rownames(mod_rigr$augCoefficients),
+               c("Intercept","race",
+                 " Black"," Subject did not identify White, Black or Asian"," White",
+                 "age","race:age",
+                 " Black:age"," Subject did not identify White, Black or Asian:age"," White:age"))
+})
+
+### between two multi-level categorical variables
+
+mod_rigr <- regress("mean", atrophy ~ race*var1, data=mri_temp)
+
+test_that("coefficient names appropriately indented in regress() for interaction between two multi-level categorical vars", {
+  # ensure coefficient names are appropriately indented
+  expect_equal(rownames(mod_rigr$augCoefficients),
+               c("Intercept","race",
+                 " Black"," Subject did not identify White, Black or Asian"," White",
+                 "var1"," b"," c", "race:var1",
+                 " b:Black"," b:Subject did not identify White, Black or Asian",
+                 " b:White", " c:Black",
+                 " c:Subject did not identify White, Black or Asian", " c:White"))
+})
+
 ### conf.level not 0.95
 
 ### can specify factors in different ways

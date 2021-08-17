@@ -674,12 +674,49 @@ regress <- function(fnctl, formula, data,
     # which columns does this term correspond to
     which_cols <- grep(terms_noparens[i], colnames_model_noparens)
     
-    # if this term isn't an interaction, don't pick up the colnames(model) with a ":" in them
-    if (!grepl(":", terms_noparens[i])) {
-      which_inter <- grep(":", colnames_model_noparens)
-      which_cols <- which_cols[!(which_cols %in% which_inter)]
-    } 
-    
+    # if length(which_cols) == 0, this means the model is looking for an interaction between two
+    # variables, at least one of which is a multi-level categorical variable
+    if (length(which_cols) == 0) {
+      which_cols <- c()
+      
+      # split terms_noparens[i] on the colon to get which terms are interacting
+      terms_temp <- unlist(strsplit(terms_noparens[i],":"))
+      
+      # find which columns contain all of the elements in terms_temp (and no additional elements)
+      colnames_split <- strsplit(colnames_model_noparens,":")
+      colnames_split_length <- unlist(lapply(colnames_split, length))
+      
+      # fill in which_cols accordingly
+      for (j in 1:length(colnames_split)) {
+        
+        # only consider colnames with the same number of terms as length(terms_temp)
+        if (length(terms_temp) == colnames_split_length[j]) {
+          
+          # check if each element of terms_temp is present in colnames_split[[j]]
+          elements_present <- rep(0, length(terms_temp))
+          for (k in 1:length(terms_temp)) {
+            elements_present[k] <- grep(terms_temp[k], colnames_split[[j]])
+          }
+          
+          # if elements_present is 1:length(terms_temp), then add j to which_cols
+          if (all(elements_present %in% 1:length(terms_temp))) {
+            which_cols <- c(which_cols, j)
+          }
+          
+        }
+        
+      }
+      
+    } else {
+      
+      # if this term isn't an interaction, don't pick up the colnames(model) with a ":" in them
+      if (!grepl(":", terms_noparens[i])) {
+        which_inter <- grep(":", colnames_model_noparens)
+        which_cols <- which_cols[!(which_cols %in% which_inter)]
+      } 
+      
+    }
+
     z <- processTerm(z, model[, which_cols], terms[i])
   }
   
