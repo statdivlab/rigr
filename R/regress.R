@@ -829,7 +829,7 @@ regress <- function(fnctl, formula, data,
   u <- fst == lst
   u[u] <- !droppedPred 
   
-  # first time augmented coefficients matrix is defined
+  # assign all of coefficients matrix to relevant rows of augCoefficients
   zzs$augCoefficients[u,] <- zzs$coefficients
   
   # Note from Taylor: bad practice to assign something to a base function name

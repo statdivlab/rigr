@@ -317,6 +317,53 @@ test_that("regress() returns same output as lm() for when interaction terms incl
 
 ### utilization of U
 
+mod_rigr <- regress("mean", atrophy ~ age + U(smoke = ~packyrs + yrsquit), data = mri)
+mod_lm_small <- lm(atrophy ~ age, data = mri[!is.na(mri$packyrs),])
+mod_lm <- lm(atrophy ~ age + packyrs + yrsquit, data = mri)
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 5) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 5) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 5, lower.tail = FALSE)
+
+R <- matrix(c(0,0,1,0,
+              0,0,0,1), nrow = 2, byrow = TRUE)
+theta_hat <- mod_lm$coefficients
+n <- 2
+V_hat <- sandwich::sandwich(mod_lm, adjust = TRUE)
+smoke_F <- as.vector(t(R %*% theta_hat) %*% solve(R %*% (V_hat) %*% t(R)) %*% (R %*% theta_hat) / n)
+smoke_p <- 1 - pf(smoke_F, 2, nrow(mri) - 5)
+
+
+test_that("regress() returns same output as lm() when doing F-test using U() function", {
+  # Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
+               mod_lm$coefficients)
+  # Naive SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"],
+               summary(mod_lm)$coefficients[,2])
+  # Robust SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"],
+               mod_lm_robust_se)
+  # z value (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"],
+               mod_lm$coefficients/ mod_lm_robust_se)
+  # 95%L (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"],
+               mod_lm_robust_ci_lower)
+  # 95%H (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"],
+               mod_lm_robust_ci_higher)
+  # p-value
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"],
+               mod_lm_robust_p)
+  # F-stat for smoke
+  expect_equal(mod_rigr$augCoefficients["smoke","F stat"],
+               smoke_F)
+  # p-value for smoke
+  expect_equal(mod_rigr$augCoefficients["smoke","Pr(>F)"],
+               smoke_p)
+})
+
 ### various regress arguments
 
 # replaceZeroes = TRUE, fnctl = 'geometric mean'
@@ -400,17 +447,12 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean', r
                mod_lm_robust_p)
 })
 
-# utilization of U for F-tests
-
-# categorical predictor with > 2 levels
-
-# interaction term without using U function
+# categorical predictor with > 2 levels - coefficient labels
 
 # conf.level not 0.95
 
 # can specify factors in different ways
 
-# these three models should return the same coefficients
 mod1 <- regress("mean", fev ~ height+factor(sex),data=fev_df) 
 fev_df$fsex <- factor(fev_df$sex)
 mod2 <- regress("mean", fev ~ height+fsex, data=fev_df) 
@@ -425,7 +467,51 @@ test_that("can input factor variables into regress in multiple ways", {
                unname(mod3$coefficients))
 })
 
+# intercept = FALSE removes intercept from model
 
+mod_rigr <- regress("mean", atrophy ~ age, data = mri, intercept = FALSE)
+mod_lm <- lm(data = mri, atrophy ~ age - 1)
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 1) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 1) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 1, lower.tail = FALSE)
 
+test_that("intercept = FALSE argument removes intercept from model", {
+  # "Intercept" is not in coefficient names
+  expect_true(!("Intercept" %in% rownames(mod_rigr$coefficients)))
+  # Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
+               unname(mod_lm$coefficients))
+  # Naive SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"],
+               summary(mod_lm)$coefficients[,2])
+  # Robust SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"],
+               unname(mod_lm_robust_se))
+  # 95%L (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"],
+               unname(mod_lm_robust_ci_lower))
+  # 95%H (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"],
+               unname(mod_lm_robust_ci_higher))
+  # t value (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"],
+               unname(mod_lm$coefficients/ mod_lm_robust_se))
+  # p-value
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"],
+               unname(mod_lm_robust_p))
+})
 
+# if method = "model.frame", the model frame is returned
+mod_rigr <- regress("mean", atrophy ~ age, data = mri, method = "model.frame")
+mod_lm <- lm(data = mri, atrophy ~ age, method = "model.frame")
 
+test_that("method = 'model.frame' returns the same model frame as lm() call", {
+  # dimensions of model frame from mod_rigr is the same as mod_lm
+  expect_equal(dim(mod_rigr), dim(mod_lm))
+  # colnames are the same
+  expect_equal(colnames(mod_rigr), colnames(mod_lm))
+  # each column is the same
+  expect_equal(mod_rigr$atrophy, mod_lm$atrophy)
+  expect_equal(mod_rigr$age, mod_lm$age)
+})
