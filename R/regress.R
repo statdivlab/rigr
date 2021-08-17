@@ -615,6 +615,7 @@ regress <- function(fnctl, formula, data,
   # Format terms and get the correct ordering for the augmented Coefficients matrix
   # z is overwritten here if fnctl = "mean" or "geometric mean", 
   # since earlier we assigned z to the "fit" object in the lm chunk of code
+  
   z <- list(call=cl, terms=NULL, firstPred=NULL, lastPred=NULL, preds=NULL, X=NULL)
   terms <- names(fit$coefficients) 
   terms <- terms[terms != "(Intercept)"]
@@ -658,47 +659,33 @@ regress <- function(fnctl, formula, data,
   if(intercept) {
     cols[1] <- "(Intercept)"
   }
-  
   names(fit$coefficients) <- preds
   
   # get number of predictors in overall model
   p <- length(terms)
-  
+
   # process terms and get correct order for partial F-tests
-  # unclear exactly what this does
+
+  # need versions of terms and colnames(model) without parentheses for grep
+  terms_noparens <- gsub("\\)", "", gsub("\\(", "", terms))
+  colnames_model_noparens <- gsub("\\)", "", gsub("\\(", "", colnames(model)))
+  
   for (i in 1:p) {
-    z <- processTerm(z, model[, cols == terms[i]], terms[i])
+    # which columns does this term correspond to
+    which_cols <- grep(terms_noparens[i], colnames_model_noparens)
+    
+    # if this term isn't an interaction, don't pick up the colnames(model) with a ":" in them
+    if (!grepl(":", terms_noparens[i])) {
+      which_inter <- grep(":", colnames_model_noparens)
+      which_cols <- which_cols[!(which_cols %in% which_inter)]
+    } 
+    
+    z <- processTerm(z, model[, which_cols], terms[i])
   }
   
   # remove "as." from before variables, if any are specified as as.integeter(variable) or
   # as.factor(variable), etc.
   tmp <- gsub("as.","",z$preds)
-  
-  # for categorical variables with multiple levels, tmp will look like variable.NA
-  # rather than variable.level
-  # fix this here
-  tmp_noparens <- gsub("\\)", "", gsub("\\(", "", tmp))
-  terms_noparens <- gsub("\\)", "", gsub("\\(", "", terms))
-  preds1_noparens <- gsub("\\)", "", gsub("\\(", "", preds1))
-  
-  for (i in 1:length(terms)) {
-    
-    # for each term, find the preds that correspond to it
-    which_preds <- grep(terms_noparens[i], preds1_noparens)
-    
-    # get which values in tmp correspond to these preds as well
-    which_tmp <- grep(terms_noparens[i], tmp_noparens)
-    
-    # get the level for this variable
-    pred_levels <- gsub(terms[i], "", preds1[which_preds])
-    
-    # replace ".NA" with pred_levels in tmp
-    for (j in 1:length(pred_levels)) {
-      tmp[which_tmp][j] <- gsub("NA", pred_levels[j], tmp[which_tmp][j])
-    }
-    
-  }
-  preds[preds != "(Intercept)"]
 
   # reassign predictor names to z
   z$preds <- unlist(tmp)    
@@ -828,7 +815,7 @@ regress <- function(fnctl, formula, data,
   
   u <- fst == lst
   u[u] <- !droppedPred 
-  
+ 
   # assign all of coefficients matrix to relevant rows of augCoefficients
   zzs$augCoefficients[u,] <- zzs$coefficients
   

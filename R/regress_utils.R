@@ -1370,11 +1370,22 @@ insertCol <- function(x, indx, col){
 ##          list of predictors, and order
 ## Version: 2015 04 29
 processTerm <- function (z, Term, TermName) {
+  # add this term into z$terms
   z$terms <- c(z$terms,TermName)
+  
+  # get how many terms are currently in model object
   nTerm <- length(z$terms)
+  
+  # get how many preds are currently in model object
   nPred <- length(z$preds)
+  
+  # assign firstPred and lastPred for this term (these are different numbers if we have a categorical
+  # variable with multiple levels)
+  # lastPred will be updated at the end of the function
   z$firstPred <- c(z$firstPred,nPred+1)
   z$lastPred <- c(z$lastPred,nPred+1)
+  
+  # not sure when Term would be a list... maybe splines?
   if (is.list(Term)) {
     p <- length(Term)
     if (is.null(names(Term))) {
@@ -1383,16 +1394,26 @@ processTerm <- function (z, Term, TermName) {
     for (i in 1:p) {
       z <- processTerm (z, Term[[i]], paste(ifelse(p==1,""," "),TermName,".",names(Term)[i],sep=""))
     }
+    
+  # Term is a matrix if we're dealing with a categorical variable with multiple levels
   } else if (is.matrix(Term)) {
+    
+    # if no column names are specified for this variable, make them V1, V2, ...
     if (is.null(dimnames(Term)[[2]])) {
       predNms <- paste("V",1:(dim(Term)[2]),sep="")
-    } else predNms <- dimnames(Term)[[2]]
+    } else {
+      # first strip TermName from colnames(Term)
+      predNms <- gsub(TermName, "", dimnames(Term)[[2]])
+    }
     if (!is.null(z$X)) {
       if (dim(Term)[1]!=dim(z$X)[1]) stop("all terms must have same number of cases")
     }
     mode(Term) <- "numeric"
     z$X <- cbind(z$X,Term)
-    z$preds <- c(z$preds,paste(ifelse(dim(Term)[2]==1,""," "),TermName,".",predNms,sep=""))
+    #z$preds <- c(z$preds,paste(ifelse(dim(Term)[2]==1,""," "),TermName,".",predNms,sep=""))
+    z$preds <- c(z$preds,paste(ifelse(dim(Term)[2]==1,""," "), predNms, sep=""))
+    
+  # here Term is just a vector
   } else {
     if (!is.null(z$X)) {
       if (length(Term)!=dim(z$X)[1]) stop("all terms must have same number of cases")
