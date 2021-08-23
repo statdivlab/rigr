@@ -619,7 +619,14 @@ test_that("regress() does not add an extra row for an f-test when it doesn't nee
   expect_equal(unname(mod_rigr$augCoefficients[,"df"]), rep(1,4))
 })
 
+### U() with only a single variable returns the exact same thing as without the U() specification
+mod_rigr1 <- regress("mean", atrophy ~ race + age + U(~race:age), data = mri)
+mod_rigr2 <- regress("mean", atrophy ~ race + age + race:age, data = mri)
 
-
+test_that("regress() functions when U() specification only has a single variable", {
+  # there should only be four coefficients, not five
+  expect_equal(mod_rigr1$augCoefficients, 
+               mod_rigr2$augCoefficients)
+})
 
 
