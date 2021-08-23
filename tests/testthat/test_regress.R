@@ -629,4 +629,13 @@ test_that("regress() functions when U() specification only has a single variable
                mod_rigr2$augCoefficients)
 })
 
+### U() with only a single variable and no other predictors does not throw an error
+mod_rigr1 <- regress("mean", atrophy ~ U(~race), data = mri)
+mod_rigr2 <- regress("mean", atrophy ~ race, data = mri)
+
+test_that("regress() functions when U() specification only has a single variable and no other predictors", {
+  # there should only be four coefficients, not five
+  expect_equal(mod_rigr1$augCoefficients, 
+               mod_rigr2$augCoefficients)
+})
 

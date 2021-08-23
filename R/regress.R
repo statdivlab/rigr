@@ -208,12 +208,12 @@ regress <- function(fnctl, formula, data,
   # Note from Taylor - I believe this is GEE stuff we can remove, but not 100% yet
   mftmp <- mf
   mfGee <- mf
-  mG <- match(c("formula", "data", "subset", "weights", "na.action", 
+  mG <- match(c("formula", "data", "subset", "weights", "na.action",
                 "offset", "id"), names(mfGee), 0L)
   mfGee <- mfGee[c(1L, mG)]
   mfGee[[1]] <- as.name("model.frame")
   mfGee <- eval(mfGee, parent.frame())
-  id <- model.extract(mfGee, id)    
+  id <- model.extract(mfGee, id)
   
   # Evaluate the formula and get the correct returns
   

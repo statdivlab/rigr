@@ -17,9 +17,16 @@
 #' @noRd
 testList <- function(form, modelframe, mat, data){
   # form[[3]] is the right-hand side of the formula
-  tmplist <- parsePartials(form[[3]], modelframe, mat)
+  # tmplist should be null when only one predictor is present, unless specified inside a U() function
+  tmplist <- parsePartials(form[[3]], modelframe, mat) # should be null when only one predictor
   charForm <- parseParseFormula(parseFormula(form[[3]], modelframe, mat))
-  charForm <- paste(deparse(form[[2]]), deparse(form[[1]]),paste(charForm, collapse=""), sep="")
+  
+  # get unique variable names, and remove any "+"s  since we'll add them in collapse below
+  charForm <- unique(charForm)
+  charForm <- charForm[charForm!= "+"]
+  
+  charForm <- paste(deparse(form[[2]]), deparse(form[[1]]),paste(charForm, collapse="+"), sep="")
+  
   tmplist2 <- LinearizeNestedList(tmplist)
   tmplist <- parseList(tmplist2)
   forms <- getTerms(form, form[[2]])
@@ -106,10 +113,10 @@ getTerms <- function(form, y){
 #' @noRd
 parseFormula <- function(form, modelframe, mat){
   f1 <- as.list(form)
-  if(length(f1)==1){
+  if (length(f1) == 1) {
     return(form)
-  } else if(length(f1)==2) {
-    if(sum(grepl("U", f1)) > 1){
+  } else if (length(f1) == 2) {
+    if (sum(grepl("U", f1)) > 1) {
       ## if more than one U, need to evaluate nested U and then evaluate overall U
       tmplistOne <- parsePartials(f1[[2]][[2]], modelframe, mat)
       indx <- which(grepl("U", f1[[2]][[2]]))
@@ -132,10 +139,10 @@ parseFormula <- function(form, modelframe, mat){
       }
       form[[2]] <- f1[[2]]
     } 
-    if(sum(grepl("U", f1))==1){
+    if (sum(grepl("U", f1)) == 1) {
       ## try to evaluate the formula
       tmp <- tryCatch({eval(form, parent.frame())}, error=function(e){NULL})
-      if(!is.null(tmp)){
+      if (!is.null(tmp)) {
         tmpForList <- modelframe
         tmpForList <-  tmpForList[c(1L, mat)]
         tmpForList$drop.unused.levels <- TRUE
@@ -466,7 +473,11 @@ parsePartials <- function(form, modelframe, mat){
     return(NULL)
     
   } else if (length(f1) == 2 & (as.character(f1[[1]]) == "U")) {
-  #} else if (length(f1) == 2) {
+
+    # if only a single variable is specified inside of U, return NULL
+    # if (length(unlist(strsplit(deparse(f1[[2]]), "\\+"))) == 1) {
+    #   return(NULL)
+    # }
     
     # length(f1) == 2 if a formula looks something like fev ~ as.integer(sex), or fev ~ U(sex),
     # where the only coefficient listed is inside parentheses
@@ -504,7 +515,7 @@ parsePartials <- function(form, modelframe, mat){
     if (sum(grepl("U", f1)) == 1) {
       ## try to evaluate the formula
       tmp <- tryCatch({eval(form, parent.frame())}, error=function(e){NULL})
-      if(!is.null(tmp)){
+      if (!is.null(tmp)) {
         tmpForList <- modelframe
         tmpForList <-  tmpForList[c(1L, mat)]
         tmpForList$drop.unused.levels <- TRUE
