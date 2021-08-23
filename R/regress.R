@@ -37,8 +37,6 @@
 #' functionals.
 #' @param weights vector indicating
 #' optional weights for weighted regression.
-#' @param id vector with ids for the variables.
-#' If any ids are repeated, runs a clustered regression.
 #' @param subset vector indicating a subset
 #' to be used for all inference.
 #' @param robustSE a logical indicator
@@ -107,7 +105,7 @@
 #' @export regress
 regress <- function(fnctl, formula, data,                     
                     intercept = TRUE, 
-                    weights = rep(1,nrow(data)), id = 1:nrow(data), subset = rep(TRUE,nrow(data)),
+                    weights = rep(1,nrow(data)), subset = rep(TRUE,nrow(data)),
                     robustSE = TRUE, conf.level = 0.95, exponentiate = fnctl != "mean",
                     replaceZeroes, useFdstn = TRUE, suppress = FALSE, na.action, method = "qr", model.f = TRUE, model.x = FALSE, model.y = FALSE, qr = TRUE,
                     singular.ok = TRUE, contrasts = NULL, offset,control = list(...), ...) {
@@ -204,16 +202,6 @@ regress <- function(fnctl, formula, data,
   
   # change formula in mf so that U() no longer surrounds any variables
   mf$formula <- formula
-  
-  # Note from Taylor - I believe this is GEE stuff we can remove, but not 100% yet
-  mftmp <- mf
-  mfGee <- mf
-  mG <- match(c("formula", "data", "subset", "weights", "na.action",
-                "offset", "id"), names(mfGee), 0L)
-  mfGee <- mfGee[c(1L, mG)]
-  mfGee[[1]] <- as.name("model.frame")
-  mfGee <- eval(mfGee, parent.frame())
-  id <- model.extract(mfGee, id)
   
   # Evaluate the formula and get the correct returns
   
@@ -599,15 +587,6 @@ regress <- function(fnctl, formula, data,
   # model contains the X matrix (intercept + covariates) for the overall model
   model <- x
   
-  # Now we have fit (regression output) and model (dataframe of predictors, X matrix)
-  # First check to see if there are any repeated ids;
-  # then we use geeglm or coxph with clusters
-  # Note from Taylor: a lot of this can likely be removed because gee's no longer supported
-  if(is.null(id)){
-    id <- 1:n
-  }
-  anyRepeated <- FALSE
-  
   # Now we build the augmented coefficients matrix
   # This is different from the regular coefficients matrix if there are multiple-partial f-tests done
   # or if there are categorical variables with more than 2 levels present in the predictors
@@ -728,7 +707,7 @@ regress <- function(fnctl, formula, data,
   z$preds <- unlist(tmp)    
   
   z$X <- model
-  model <- c(z, list(y = y, strata = rep(1,n), weights = weights, id = id, subset = subset))
+  model <- c(z, list(y = y, strata = rep(1,n), weights = weights, subset = subset))
   z <- c(model, 
          list(fnctl=fnctl, intercept=intercept, exponentiate=exponentiate, 
               replaceZeroes=replaceZeroes, conf.level=conf.level, 
@@ -747,26 +726,13 @@ regress <- function(fnctl, formula, data,
   cinames <- c("Estimate",ifelse1(robustSE,c("Naive SE","Robust SE"),"Std Err"),cinames,
                ifelse1(useFdstn,c("F stat","Pr(>F)"),c("Chi2 stat","Pr(>Chi2)")))
   secol <- 2 + robustSE
-  if(anyRepeated){
-    cinames2 <- paste(format(100*conf.level),"%",c("L","H"),sep="")
-    if (exponentiate) cinames2 <- paste("e(",c("Est",cinames2),")",sep="")
-    cinames2 <- c("Estimate", "Std Err",cinames2,"Wald", "Pr(>|W|)")
-    cinames <- cinames2
-    secol <- 1+robustSE
-  }
   
   augCoefficients <- matrix(0, sum(z$firstPred!=z$lastPred)+length(z$pred)+intercept, length(cinames))
   dimnames(augCoefficients) <- list(nms,cinames)
   
   ## Getting the correct coefficients, robustSE standard errors, and f-statistics if needed
   
-  if(anyRepeated){
-    zzs <- summary(fit)
-    converge <- T
-    zzs$naiveCov <- NA
-    zzs$robustCov <- zzs$cov.unscaled
-    n <- sum(zzs$df[1:2])
-  } else if (fnctl %in% c("mean","geometric mean")) {
+  if (fnctl %in% c("mean","geometric mean")) {
     zzs <- summary(fit)
     converge <- T
     zzs$naiveCov <-zzs$sigma^2 * zzs$cov.unscaled
@@ -777,14 +743,14 @@ regress <- function(fnctl, formula, data,
     zzs$naiveCov <- zzs$cov.scaled
     n <- zzs$df.null + intercept
   }
-  if(!anyRepeated) {
+  
     if (robustSE) {
       m <- sandwich::sandwich(fit,adjust=T)
       zzs$coefficients <- cbind(zzs$coefficients[,1:2,drop=F],sqrt(diag(m)),zzs$coefficients[,-(1:2),drop=F])
       dimnames(zzs$coefficients)[[2]][2:3] <- c("Naive SE","Robust SE")
       zzs$robustCov <- m
     }
-  }
+  
   p <- dim(zzs$coefficients)[1]
   if (robustSE) m <- zzs$robustCov else m <- zzs$naiveCov
   zzs$coefficients[,secol+1] <- zzs$coefficients[,1] / zzs$coefficients[,secol]
@@ -799,7 +765,7 @@ regress <- function(fnctl, formula, data,
   
   p <- dim(zzs$coefficients)[1]
   
-  if (!anyRepeated) {
+  
     if (useFdstn) {
       waldStat <- c(waldStat,1-pf(waldStat,p-intercept,n-p),p-intercept,n-p)
       LRStat <- c(LRStat,1-pf(LRStat,p-intercept,n-p),p-intercept,n-p)
@@ -820,12 +786,10 @@ regress <- function(fnctl, formula, data,
       # change p-value to robust p-value
       zzs$coefficients[,secol+2] <- 2 * pnorm(- abs(zzs$coefficients[,secol+1]))
     }
-  } 
+  
   
   droppedPred <- is.na(fit$coefficients)
-  if (anyRepeated) {
-    zzs$coefficients <- as.matrix(zzs$coefficients)
-  }
+
   linearPredictor <- z$X[, !droppedPred] %*% zzs$coefficients[,1,drop=F]
   
   ## Creating the final uRegress object
@@ -989,12 +953,7 @@ regress <- function(fnctl, formula, data,
     zzs$transformed <- NA
   }
   
-  if (anyRepeated) {
-    if(fnctl !="mean"){
-      zzs$model <- coefs[,c(1, 2, 6, 7, 8), drop=FALSE]
-      zzs$transformed <- coefs[,c(3:8), drop=FALSE]
-    }
-  }
+
   zzs$suppress <- suppress
   zzs$coefNums <- matrix(1:length(fit$coefficients), nrow=1)
   
@@ -1022,6 +981,6 @@ regress <- function(fnctl, formula, data,
     
   }
   zzs$args <- args
-  zzs$anyRepeated <- anyRepeated | !is.null(attr(fit$terms, "specials")$cluster)
+  zzs$anyRepeated <- FALSE
   return(zzs)
 }

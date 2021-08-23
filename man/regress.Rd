@@ -34,7 +34,6 @@ regress(
   data,
   intercept = TRUE,
   weights = rep(1, nrow(data)),
-  id = 1:nrow(data),
   subset = rep(TRUE, nrow(data)),
   robustSE = TRUE,
   conf.level = 0.95,
@@ -73,9 +72,6 @@ functionals.}
 
 \item{weights}{vector indicating
 optional weights for weighted regression.}
-
-\item{id}{vector with ids for the variables.
-If any ids are repeated, runs a clustered regression.}
 
 \item{subset}{vector indicating a subset
 to be used for all inference.}
