@@ -8,13 +8,16 @@
 #' 
 #' Regression models include linear regression (for the ``mean'' functional), logistic
 #' regression (for the ``odds'' functional), Poisson regression (for the
-#' ``rate'' functional).  Proportional hazards regression is currently not
+#' ``rate'' functional), and a linear regression of a logged outcome on covariates
+#' (for the ``geometric mean'' functional). Proportional hazards regression is currently not
 #' supported in the \code{regress} function. Objects created using the
 #' \code{\link[uwIntroStats]{U}} function can also be passed in. If the
 #' \code{\link[uwIntroStats]{U}} call involves a partial formula of the form
 #' \code{~ var1 + var2}, then \code{regress} will return a multiple-partial
-#' F-test involving \code{var1} and \code{var2}. The multiple partial tests
-#' must be the last terms specified in the model (i.e. no other predictors can
+#' F-test involving \code{var1} and \code{var2}. If an F-statistic will already be 
+#' calculated regardless of the \code{\link[uwIntroStats]{U}} specification,
+#' then any naming convention specified via \code{name ~ var1} will be ignored.
+#' The multiple partial tests must be the last terms specified in the model (i.e. no other predictors can
 #' follow them).
 #' 
 #' @aliases regress fitted.uRegress print.augCoefficients print.uRegress
@@ -223,7 +226,7 @@ regress <- function(fnctl, formula, data,
   # here we reorder the input parameters according to the order of the vector above and remove
   # parameters not included in the vector above
   mf <- mf[c(1L, m)]
-
+  
   # remove missing rows from our dataframe
   mf$drop.unused.levels <- TRUE
   
@@ -246,7 +249,7 @@ regress <- function(fnctl, formula, data,
     
     # get terms from model frame
     mt <- attr(mf, "terms")
-
+    
     factorMat <- NULL
     term.labels <- NULL
     
@@ -267,7 +270,7 @@ regress <- function(fnctl, formula, data,
         # tmpFactors is an identity matrix, with names according to the predictors for this
         # multiple-partial F-test
         tmpFactors <- attr(attr(tmplist[[i]], "terms"), "factors")
-
+        
         # tmpVec is actually a matrix of 1s with one column and number of rows equal to 
         # the number of predictors for this multiple-partial F-test
         tmpVec <- as.matrix(apply(tmpFactors, 1, sum))
@@ -315,7 +318,7 @@ regress <- function(fnctl, formula, data,
         dimnames(tmplist[[i]])[[2]] <- paste(names(tmplist)[[i]], dimnames(tmplist[[i]])[[2]], sep=".")
       }
     }
-
+    
     y <- model.response(mf, "numeric")
     
     # checking response variable y, and replacing zeroes if needed/desired for
@@ -542,7 +545,7 @@ regress <- function(fnctl, formula, data,
     if (!is.null(w) && any(w < 0)) {
       stop("negative weights not allowed")
     }
-      
+    
     # Note from Taylor: this error message should happen earlier, and also y doesn't have rows
     offset <- as.vector(model.offset(mf))
     if (!is.null(offset)) {
@@ -574,7 +577,7 @@ regress <- function(fnctl, formula, data,
       if (!fit2$converged) {
         warning("fitting to calculate the null deviance did not converge -- increase 'maxit'?")
       }
-       
+      
       # assign the deviance from this model to the original model fit 
       fit$null.deviance <- fit2$deviance
     }
@@ -649,7 +652,7 @@ regress <- function(fnctl, formula, data,
   
   # reassign column names to model matrix, unclear why this is necessary
   dimnames(model)[[2]] <- preds
-
+  
   # get column names for model matrix
   cols <- matrix(preds1, nrow=1)
   cols <- apply(cols, 2, createCols, terms)
@@ -660,9 +663,9 @@ regress <- function(fnctl, formula, data,
   
   # get number of predictors in overall model
   p <- length(terms)
-
+  
   # process terms and get correct order for partial F-tests
-
+  
   # need versions of terms and colnames(model) without parentheses for grep
   terms_noparens <- gsub("\\)", "", gsub("\\(", "", terms))
   colnames_model_noparens <- gsub("\\)", "", gsub("\\(", "", colnames(model)))
@@ -713,14 +716,14 @@ regress <- function(fnctl, formula, data,
       } 
       
     }
-
+    
     z <- processTerm(z, model[, which_cols], terms[i])
   }
   
   # remove "as." from before variables, if any are specified as as.integeter(variable) or
   # as.factor(variable), etc.
   tmp <- gsub("as.","",z$preds)
-
+  
   # reassign predictor names to z
   z$preds <- unlist(tmp)    
   
@@ -849,13 +852,13 @@ regress <- function(fnctl, formula, data,
   
   u <- fst == lst
   u[u] <- !droppedPred 
- 
+  
   # assign all of coefficients matrix to relevant rows of augCoefficients
   zzs$augCoefficients[u,] <- zzs$coefficients
   
   # Note from Taylor: bad practice to assign something to a base function name
   ncol <- dim(zzs$augCoefficients)[2]
-  zzs$augCoefficients[!u,-1] <- NA # Note from Taylor: I don't think this line of code actually does anything
+  zzs$augCoefficients[!u,-1] <- NA 
   
   # compute f-stat as t-stat^2
   zzs$augCoefficients[,ncol-1] <- zzs$augCoefficients[,ncol-1,drop=F]^2
@@ -863,7 +866,7 @@ regress <- function(fnctl, formula, data,
   
   zzs$useFdstn <- useFdstn
   
-  ## perform partial f-tests
+  # perform partial f-tests for multi-level categorical variables
   for (j in 1:length(nms)) {
     if (fst[j]!=lst[j]) {
       r <- lst[j] - fst[j] + 1
@@ -874,48 +877,57 @@ regress <- function(fnctl, formula, data,
       zzs$augCoefficients[j,ncol - (1:0)] <- uWaldtest (zzs, cntrst)[1:2]
     }
   }
+  
+  # perform partial f-tests for anything specified in U()
   dfs <- NULL
   if (length(tmplist) > 0) {
     termsNew <- term.labels
     j <- dim(zzs$augCoefficients)[1]+1
     oldLen <- dim(zzs$augCoefficients)[1]
-    for(i in 1:length(tmplist)){
+    
+    for (i in 1:length(tmplist)) {
       name <- dimnames(tmplist[[i]])[[2]]
       ter <- attr(termlst[[i+1]], "term.labels")
-      tmp <- sapply(strsplit(name, ".", fixed=TRUE), getn, n=2)
-      ## if interaction with u terms, need to add
-      terInter <- grepl(":", ter, fixed=TRUE)
-      if(any(terInter)){
-        tertmp <- ter[terInter]
-        first <- unlist(strsplit(tertmp, ":", fixed=TRUE))[1]
-        ## get interact the first one with all of the others
-        which.first <- sapply(tmp, grepl, first, fixed=TRUE)
-        collapseInter <- function(x,y){
-          return(paste(x, y, sep=":"))
-        }
-        newTerms <- apply(matrix(tmp[!which.first]), 1, collapseInter, x=tmp[which.first])
-        tmp <- c(tmp, newTerms)
+      
+      # if length(ter) == 1, then ter is already in the augmented coefficients matrix,
+      # skip all of this since we don't need to do another F-test
+      if (length(ter) > 1) {
+        tmp <- sapply(strsplit(name, ".", fixed=TRUE), getn, n=2)
         
+        ## if interaction with u terms, need to add
+        terInter <- grepl(":", ter, fixed=TRUE)
+        if (any(terInter)) {
+          tertmp <- ter[terInter]
+          first <- unlist(strsplit(tertmp, ":", fixed=TRUE))[1]
+          ## get interact the first one with all of the others
+          which.first <- sapply(tmp, grepl, first, fixed=TRUE)
+          collapseInter <- function(x,y){
+            return(paste(x, y, sep=":"))
+          }
+          newTerms <- apply(matrix(tmp[!which.first]), 1, collapseInter, x=tmp[which.first])
+          tmp <- c(tmp, newTerms)
+          
+        }
+        
+        indx <- apply(matrix(tmp, nrow=1), 2, function(x) x == cols)
+        indx <- apply(indx, 1, sum)
+        
+        indx <- ifelse(indx==0, FALSE, TRUE)
+        r <- sum(indx)
+        cntrst <- matrix(0,r,dim(z$X)[2])
+        cntrst[1:r, indx] <- diag(r)
+        cntrst <- cntrst[,!droppedPred,drop=F]
+        cntrst <- cntrst[apply(cntrst!=0,1,any),,drop=F]
+        zzs$augCoefficients <- rbind(zzs$augCoefficients, rep(NA, dim(zzs$augCoefficients)[2]))
+        dimnames(zzs$augCoefficients)[[1]][j] <- names(tmplist)[i]
+        zzs$augCoefficients[j,ncol - (1:0)] <- uWaldtest (zzs, cntrst)[1:2]
+        dfs <- c(dfs, r)
+        j <- j+1
       }
       
-      indx2 <- grepl(" ", preds)
-      indx <- apply(matrix(tmp, nrow=1), 2, function(x) x==cols)
-      indx <- apply(indx, 1, sum)
-      
-      indx <- ifelse(indx==0, FALSE, TRUE)
-      r <- sum(indx)
-      cntrst <- matrix(0,r,dim(z$X)[2])
-      cntrst[1:r, indx] <- diag(r)
-      cntrst <- cntrst[,!droppedPred,drop=F]
-      cntrst <- cntrst[apply(cntrst!=0,1,any),,drop=F]
-      zzs$augCoefficients <- rbind(zzs$augCoefficients, rep(NA, dim(zzs$augCoefficients)[2]))
-      dimnames(zzs$augCoefficients)[[1]][j] <- names(tmplist)[i]
-      zzs$augCoefficients[j,ncol - (1:0)] <- uWaldtest (zzs, cntrst)[1:2]
-      dfs <- c(dfs, r)
-      j <- j+1
     }
     miss <- apply(sapply(term.labels, grepl, dimnames(zzs$augCoefficients)[[1]], fixed=TRUE), 2, sum)
-    if (any(miss==0) ){
+    if (any(miss==0)) {
       nm <- names(miss)[miss==0]
       for (i in 1:length(nm)) {
         tmpNum <- sapply(names(tmplist), grepl, nm[i], fixed=TRUE)
@@ -923,7 +935,6 @@ regress <- function(fnctl, formula, data,
         tmp <- sapply(strsplit(curNms, ".", fixed=TRUE), getn, n=2)
         tmp <- c(first, apply(matrix(tmp), 1, collapseInter, x=first))
         
-        indx2 <- grepl(" ", preds)
         indx <- apply(matrix(tmp, nrow=1), 2, function(x) x==cols)
         indx <- apply(indx, 1, sum)
         ## check to make sure that we have the correct nested things
@@ -942,6 +953,7 @@ regress <- function(fnctl, formula, data,
       }
     }
   }
+
   j <- dim(zzs$augCoefficients)[2]
   zzs$augCoefficients <- suppressWarnings(cbind(zzs$augCoefficients[,-j,drop=F],df=lst-fst+1,zzs$augCoefficients[,j,drop=F]))
   zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1] <- ifelse(is.na(zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-2]), NA, zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1])
@@ -953,10 +965,12 @@ regress <- function(fnctl, formula, data,
   }
   
   ## get the multiple partial tests in the correct order
-  if(length(tmplist)>0){
-    tmp <- zzs$augCoefficients
-    test <- termTraverse(termlst, tmp, 1:dim(zzs$augCoefficients)[1])
-    zzs$augCoefficients <- test$mat
+  if (length(tmplist)>0) {
+    if (length(ter) > 1) {
+      tmp <- zzs$augCoefficients
+      test <- termTraverse(termlst, tmp, 1:dim(zzs$augCoefficients)[1])
+      zzs$augCoefficients <- test$mat
+    }
   }
   class(zzs$augCoefficients) <- "augCoefficients"
   

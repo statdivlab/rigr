@@ -606,3 +606,20 @@ test_that("method = 'model.frame' returns the same model frame as lm() call", {
   expect_equal(mod_rigr$atrophy, mod_lm$atrophy)
   expect_equal(mod_rigr$age, mod_lm$age)
 })
+
+### U() with only a single variable does not do an additional pointless f-test
+
+mod_rigr <- regress("mean", atrophy ~ height + age + U(ha = ~height:age), data = mri)
+
+test_that("regress() does not add an extra row for an f-test when it doesn't need to", {
+  # there should only be four coefficients, not five
+  expect_equal(rownames(mod_rigr$augCoefficients), 
+               c("Intercept","height","age","height:age"))
+  # degrees of freedom should all be 1
+  expect_equal(unname(mod_rigr$augCoefficients[,"df"]), rep(1,4))
+})
+
+
+
+
+
