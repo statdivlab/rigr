@@ -240,7 +240,7 @@ regress <- function(fnctl, formula, data,
     
     factorMat <- NULL
     term.labels <- NULL
-    
+
     # if anything in the formula argument was specified in a U function, length(tmplist)>0
     if (length(tmplist)>0) {
       
@@ -436,7 +436,7 @@ regress <- function(fnctl, formula, data,
     
     factorMat <- NULL
     term.labels <- NULL
-    
+
     # if anything in the formula argument was specified in a U function, length(tmplist)>0
     if (length(tmplist)>0) {
       
@@ -850,34 +850,59 @@ regress <- function(fnctl, formula, data,
     oldLen <- dim(zzs$augCoefficients)[1]
     
     for (i in 1:length(tmplist)) {
+      # TAYLOR - bug is here. 
+      # We should have U(race:age + weight).race:age and U(race:age + weight).weight, I think
       name <- dimnames(tmplist[[i]])[[2]]
       ter <- attr(termlst[[i+1]], "term.labels")
       
       # if length(ter) == 1, then ter is already in the augmented coefficients matrix,
       # skip all of this since we don't need to do another F-test
       if (length(ter) > 1) {
+        
         tmp <- sapply(strsplit(name, ".", fixed = TRUE), getn, n=2)
         
-        ## if interaction with u terms, need to add
+        # figure out which rownames(zzs$coefficients) correspond to ter
+        # we need a vector of length(rownames(zzs$coefficients)) of TRUE/FALSE 
+        
+        # identify if a value in ter is an interaction
         terInter <- grepl(":", ter, fixed=TRUE)
-        if (any(terInter)) {
-          tertmp <- ter[terInter]
-          first <- unlist(strsplit(tertmp, ":", fixed=TRUE))[1]
-          ## get interact the first one with all of the others
-          which.first <- sapply(tmp, grepl, first, fixed=TRUE)
-          collapseInter <- function(x,y){
-            return(paste(x, y, sep=":"))
-          }
-          newTerms <- apply(matrix(tmp[!which.first]), 1, collapseInter, x=tmp[which.first])
-          tmp <- c(tmp, newTerms)
+        
+        if (any(terInter)){
+          # set up indx vec
+          indx <- rep(FALSE, length(rownames(zzs$coefficients)))
           
+          for (k in 1:length(ter)) {
+            # if we're not dealing with an interaction, find which coef name corresponds to ter
+            if (!terInter[k]) {
+              indx[which(grepl(ter[k], rownames(zzs$coefficients)))] <- TRUE
+              
+            # if we are dealing with an interaction, find which coef name corresponds to ter
+            } else {
+              ter_split <- unlist(strsplit(ter[k],"\\:"))
+              
+              # which coefficients correspond to this particular interaction
+              # Note: code currently only works for two-way interactions
+              which_inter <- grepl("\\:", rownames(zzs$coefficients))
+              
+              which_var <- rep(FALSE, length(rownames(zzs$coefficients)))
+              for (l in 1:length(ter_split)) {
+                which_var <- which_var + grepl(ter_split[l], rownames(zzs$coefficients))
+              }
+              
+              # which variables contain all the terms we need
+              which_var <- which_var == length(ter_split)
+              
+              indx[which_inter & which_var] <- TRUE
+            }
+          }
+        } else {
+          indx <- apply(matrix(tmp, nrow=1), 2, function(x) grepl(x, rownames(zzs$coefficients)))
+          # indx <- apply(matrix(tmp, nrow=1), 2, function(x) x == cols)
+          indx <- apply(indx, 1, sum)
+          
+          indx <- ifelse(indx==0, FALSE, TRUE)
         }
         
-        indx <- apply(matrix(tmp, nrow=1), 2, function(x) grepl(x, rownames(zzs$coefficients)))
-        # indx <- apply(matrix(tmp, nrow=1), 2, function(x) x == cols)
-        indx <- apply(indx, 1, sum)
-        
-        indx <- ifelse(indx==0, FALSE, TRUE)
         r <- sum(indx)
         cntrst <- matrix(0,r,dim(z$X)[2])
         cntrst[1:r, indx] <- diag(r)
@@ -918,6 +943,8 @@ regress <- function(fnctl, formula, data,
       }
     }
   }
+  
+  # browser()
   
   j <- dim(zzs$augCoefficients)[2]
   zzs$augCoefficients <- suppressWarnings(cbind(zzs$augCoefficients[,-j,drop=F],df=lst-fst+1,zzs$augCoefficients[,j,drop=F]))
