@@ -2,6 +2,8 @@
 % Please edit documentation in R/lincom.R
 \name{lincom}
 \alias{lincom}
+\alias{lincom.do}
+\alias{print.lincom}
 \title{Tests of Linear Combinations of Regression
 Coefficients}
 \usage{
@@ -45,9 +47,6 @@ confidence interval.
 \description{
 Produces point estimates, interval estimates, and p values for linear
 combinations of regression coefficients using a \code{ uRegress} object.
-}
-\details{
-#' @aliases lincom lincom.do print.lincom
 }
 \examples{
 

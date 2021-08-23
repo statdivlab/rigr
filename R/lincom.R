@@ -4,7 +4,7 @@
 #' Produces point estimates, interval estimates, and p values for linear
 #' combinations of regression coefficients using a \code{ uRegress} object.
 #' 
-#' #' @aliases lincom lincom.do print.lincom
+#' @aliases lincom lincom.do print.lincom
 #' 
 #' @param reg an object of class \code{uRegress}.
 #' @param comb a vector or matrix containing the values of the constants which
@@ -70,9 +70,15 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     comb <- matrix(comb, nrow=1)
     getNms <- ifelse(comb==0, FALSE, TRUE)
     nms <- dimnames(reg$coefficients)[[1]][getNms]
-    nms <- paste(mat[mat>0], nms, sep="*")
+    # this had >0 previously and a hard-coded + sign in the names - why??
+    nms <- paste(mat[mat!=0], nms, sep="*")
     if(length(nms)>1){
-      nms <- paste(nms, collapse="+")
+      for (i in 2:length(nms)){
+        if (getNms[i] && comb[1,i] > 0){
+          nms[i] <- paste0("+", nms[i])
+        }
+      }
+      nms <- paste(nms, collapse="")
     }
     
     ## create new coefficient 
@@ -88,7 +94,7 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     }
     
     tStat <- (newCoef-hyp)/SE
-    pval <- 2*pt(-abs(tStat), reg$df[2]) ## return two sided tes
+    pval <- 2*pt(-abs(tStat), reg$df[2]) ## return two sided test
     CIL <- newCoef - abs(qt((1-conf.level)/2,df=reg$df[2])*SE)
     CIU <- newCoef + abs(qt((1-conf.level)/2,df=reg$df[2])*SE)
     
@@ -127,13 +133,14 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
         stop("uRegress object must be created with robust standard errors")
       }
     }
-    lincom.obj <- lincom.do(reg = reg, 
+    lincom.obj <- vector(mode = "list", length = 1)
+    lincom.obj[[1]] <- lincom.do(reg = reg, 
                             comb = comb, 
                             hyp = hyp, 
                             conf.level = conf.level, 
                             robustSE = robustSE, 
                             eform = eform)
-    names(lincom.obj) <- c("comb1")
+    names(lincom.obj)[1] <- c("comb1")
     
   } else { ## it is a matrix
     if(dim(comb)[2]!=dim(reg$coefficients)[1]){
@@ -153,10 +160,6 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
       lincom.obj[[i]] <- lincom.obj.partial
       names(lincom.obj)[[i]] <- paste0("comb", i)
     }
-    ## Do overall test
-    #overall <- apply(comb, 2, sum)
-    #cat("\n Overall Test \n")
-    #lincom(reg, overall, 0, conf.level, robustSE, eform)
   }
   lincom.obj$call <- match.call()
   class(lincom.obj) <- "lincom"
