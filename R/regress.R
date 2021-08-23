@@ -744,12 +744,12 @@ regress <- function(fnctl, formula, data,
     n <- zzs$df.null + intercept
   }
   
-    if (robustSE) {
-      m <- sandwich::sandwich(fit,adjust=T)
-      zzs$coefficients <- cbind(zzs$coefficients[,1:2,drop=F],sqrt(diag(m)),zzs$coefficients[,-(1:2),drop=F])
-      dimnames(zzs$coefficients)[[2]][2:3] <- c("Naive SE","Robust SE")
-      zzs$robustCov <- m
-    }
+  if (robustSE) {
+    m <- sandwich::sandwich(fit,adjust=T)
+    zzs$coefficients <- cbind(zzs$coefficients[,1:2,drop=F],sqrt(diag(m)),zzs$coefficients[,-(1:2),drop=F])
+    dimnames(zzs$coefficients)[[2]][2:3] <- c("Naive SE","Robust SE")
+    zzs$robustCov <- m
+  }
   
   p <- dim(zzs$coefficients)[1]
   if (robustSE) m <- zzs$robustCov else m <- zzs$naiveCov
@@ -766,30 +766,30 @@ regress <- function(fnctl, formula, data,
   p <- dim(zzs$coefficients)[1]
   
   
-    if (useFdstn) {
-      waldStat <- c(waldStat,1-pf(waldStat,p-intercept,n-p),p-intercept,n-p)
-      LRStat <- c(LRStat,1-pf(LRStat,p-intercept,n-p),p-intercept,n-p)
-      if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pf(scoreStat,p-intercept,n-p),p-intercept,n-p)
-      
-      # change p-value to robust p-value
-      zzs$coefficients[,secol+2] <- 2 * pt(- abs(zzs$coefficients[,secol+1]),df=n-p)
-      
-      # change label for p-value from Pr(>|z|) to Pr(>|t|), and "z value" to "t value"
-      colnames(zzs$coefficients)[secol+1] <- "t value"
-      colnames(zzs$coefficients)[secol+2] <- "Pr(>|t|)"
-      
-    } else {
-      waldStat <- c(waldStat,1-pchisq(waldStat,p-intercept),p-intercept)
-      LRStat <- c(LRStat,1-pchisq(LRStat,p-intercept),p-intercept)
-      if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pchisq(waldStat,p-intercept),p-intercept)
-      
-      # change p-value to robust p-value
-      zzs$coefficients[,secol+2] <- 2 * pnorm(- abs(zzs$coefficients[,secol+1]))
-    }
+  if (useFdstn) {
+    waldStat <- c(waldStat,1-pf(waldStat,p-intercept,n-p),p-intercept,n-p)
+    LRStat <- c(LRStat,1-pf(LRStat,p-intercept,n-p),p-intercept,n-p)
+    if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pf(scoreStat,p-intercept,n-p),p-intercept,n-p)
+    
+    # change p-value to robust p-value
+    zzs$coefficients[,secol+2] <- 2 * pt(- abs(zzs$coefficients[,secol+1]),df=n-p)
+    
+    # change label for p-value from Pr(>|z|) to Pr(>|t|), and "z value" to "t value"
+    colnames(zzs$coefficients)[secol+1] <- "t value"
+    colnames(zzs$coefficients)[secol+2] <- "Pr(>|t|)"
+    
+  } else {
+    waldStat <- c(waldStat,1-pchisq(waldStat,p-intercept),p-intercept)
+    LRStat <- c(LRStat,1-pchisq(LRStat,p-intercept),p-intercept)
+    if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pchisq(waldStat,p-intercept),p-intercept)
+    
+    # change p-value to robust p-value
+    zzs$coefficients[,secol+2] <- 2 * pnorm(- abs(zzs$coefficients[,secol+1]))
+  }
   
   
   droppedPred <- is.na(fit$coefficients)
-
+  
   linearPredictor <- z$X[, !droppedPred] %*% zzs$coefficients[,1,drop=F]
   
   ## Creating the final uRegress object
@@ -856,7 +856,7 @@ regress <- function(fnctl, formula, data,
       # if length(ter) == 1, then ter is already in the augmented coefficients matrix,
       # skip all of this since we don't need to do another F-test
       if (length(ter) > 1) {
-        tmp <- sapply(strsplit(name, ".", fixed=TRUE), getn, n=2)
+        tmp <- sapply(strsplit(name, ".", fixed = TRUE), getn, n=2)
         
         ## if interaction with u terms, need to add
         terInter <- grepl(":", ter, fixed=TRUE)
@@ -873,7 +873,8 @@ regress <- function(fnctl, formula, data,
           
         }
         
-        indx <- apply(matrix(tmp, nrow=1), 2, function(x) x == cols)
+        indx <- apply(matrix(tmp, nrow=1), 2, function(x) grepl(x, rownames(zzs$coefficients)))
+        # indx <- apply(matrix(tmp, nrow=1), 2, function(x) x == cols)
         indx <- apply(indx, 1, sum)
         
         indx <- ifelse(indx==0, FALSE, TRUE)
@@ -917,7 +918,7 @@ regress <- function(fnctl, formula, data,
       }
     }
   }
-
+  
   j <- dim(zzs$augCoefficients)[2]
   zzs$augCoefficients <- suppressWarnings(cbind(zzs$augCoefficients[,-j,drop=F],df=lst-fst+1,zzs$augCoefficients[,j,drop=F]))
   zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1] <- ifelse(is.na(zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-2]), NA, zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1])
@@ -953,7 +954,6 @@ regress <- function(fnctl, formula, data,
     zzs$transformed <- NA
   }
   
-
   zzs$suppress <- suppress
   zzs$coefNums <- matrix(1:length(fit$coefficients), nrow=1)
   

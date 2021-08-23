@@ -639,3 +639,56 @@ test_that("regress() functions when U() specification only has a single variable
                mod_rigr2$augCoefficients)
 })
 
+### U() works with two variables specified, one of which is multi-level categorical
+mod_rigr <- regress("mean", atrophy ~ age + U(~race + weight), data = mri)
+mod_lm <- lm(atrophy ~ age + race + weight, data = mri)
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 6) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 6) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 6, lower.tail = FALSE)
+
+R <- matrix(c(0,0,1,0,0,0,
+              0,0,0,1,0,0,
+              0,0,0,0,1,0,
+              0,0,0,0,0,1), nrow = 4, byrow = TRUE)
+theta_hat <- mod_lm$coefficients
+n <- 4
+V_hat <- sandwich::sandwich(mod_lm, adjust = TRUE)
+smoke_F <- as.vector(t(R %*% theta_hat) %*% solve(R %*% (V_hat) %*% t(R)) %*% (R %*% theta_hat) / n)
+smoke_p <- 1 - pf(smoke_F, 4, nrow(mri) - 6)
+
+
+test_that("regress() returns same output as lm() when doing F-test using U() function, multi-level categorical variable included", {
+  # Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
+               mod_lm$coefficients)
+  # Naive SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"],
+               summary(mod_lm)$coefficients[,2])
+  # Robust SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"],
+               mod_lm_robust_se)
+  # z value (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"],
+               mod_lm$coefficients/ mod_lm_robust_se)
+  # 95%L (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"],
+               mod_lm_robust_ci_lower)
+  # 95%H (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"],
+               mod_lm_robust_ci_higher)
+  # p-value
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"],
+               mod_lm_robust_p)
+  # F-stat for smoke
+  expect_equal(mod_rigr$augCoefficients["U(race + weight)","F stat"],
+               smoke_F)
+  # p-value for smoke
+  expect_equal(mod_rigr$augCoefficients["U(race + weight)","Pr(>F)"],
+               smoke_p)
+})
+
+
+
+
+
