@@ -55,7 +55,8 @@ explode <- function(str){
 #' Takes a formula, returns a list of terms
 #' 
 #' @param form the formula
-#' @param y
+#' @param y the dependent variable in a regression call, on the left hand side of the formula. This
+#' is literally form[[2]] if it's from the same formula as what is entered into the \code{form} argument
 #' 
 #' @return the list of terms
 #' 
@@ -104,8 +105,8 @@ getTerms <- function(form, y){
 #' Takes a formula, returns a viable formula
 #' 
 #' @param form the formula
-#' @param modelframe
-#' @param mat
+#' @param modelframe the modelframe
+#' @param mat get indices for which parameters in mf correspond to certain parameters inside of \code{form}
 #' 
 #' @return the list 
 #' 
@@ -191,9 +192,9 @@ parseParseFormula <- function(lst){
 
 #' Inserts a vector into another vector
 #' 
-#' @param x1
-#' @param x2
-#' @param indx
+#' @param x1 the original vector, which \code{x2} gets inserted into
+#' @param x2 the new vector, which is inserted into \code{x1}
+#' @param indx the index for where \code{x2} should be inserted into \code{x1}
 #' 
 #' @return 
 #' 
@@ -250,10 +251,10 @@ insertVec <- function(x1, x2, indx){
 #' indicate the position of an element at the nth-level trunk as well as all
 #' preceding trunk numbers.
 #' 
-#' @param NList
-#' @param LinearizeDataFrames
-#' @param NameSep
-#' @param ForceNames
+#' @param NList to do
+#' @param LinearizeDataFrames to do
+#' @param NameSep to do
+#' @param ForceNames to do
 #' 
 #' @return LinearList: Named list
 #' 
@@ -685,7 +686,7 @@ U <- function(..., type=NULL, subset=rep(T,length(x)), knots=NULL, degree=2, ref
 #' 
 #' @param termlist the list with terms
 #' @param mat the matrix to correct
-#' @param ind
+#' @param ind a vector from 1:p, where p is the number of predictors in your model including the intercept
 #' 
 #' @return A list with the updated augmented coefficients matrix and the current indices
 #' 
@@ -855,17 +856,17 @@ pasteTwo <- function(vec){
 #' Function to add the correct args onto a polynomial, dummy, or lspline term
 #' Used to live in pasting_args.R
 #' 
-#' @param varname
-#' @param var
-#' @param type
+#' @param varname the variable name
+#' @param var the variable itself
+#' @param type a string, corresponding to either "polynomial", "lspline", or "dummy"
 #' 
 #' @return 
 #' 
 #' @keywords internal
 #' @noRd
 addArgs <- function(varname, var, type){
-  findx <- pmatch(type, c("polynomial", "lspline", "dummy"))
-  type <- c("polynomial", "lspline", "dummy")[findx]
+  findx <- pmatch(type, c("polynomial", "dummy"))
+  type <- c("polynomial", "dummy")[findx]
   
   att <- attributes(var)
   args <- att$transformation
@@ -875,7 +876,7 @@ addArgs <- function(varname, var, type){
     varname <- unlist(strsplit(varname, ")", fixed=TRUE))[1]
     varname <- unlist(strsplit(varname, ",", fixed=TRUE))[1]
     varnames <- rev(pasteOn(rep(varname, args$degree), "^", args$degree))
-  } else if(type=="dummy"){
+  } else {
     args <-list(transformation=args, reference=min(att$reference), num=length(att$reference)-1, nm=att$prnm, param=att$transformation)
     varname <- unlist(strsplit(varname, "(", fixed=TRUE))[2]
     varname <- unlist(strsplit(varname, ")", fixed=TRUE))[1]
@@ -885,27 +886,16 @@ addArgs <- function(varname, var, type){
     } else {
       varnames <- paste0(varname, ".", att$groups)
     }
-  } else {
-    varname <- unlist(strsplit(varname, "(", fixed=TRUE))[2]
-    mini <- any(grepl("min", att$dimnames[[2]], fixed=TRUE))
-    if(mini){
-      att$knots <- c("min", att$knots)
-    }
-    args <- list(transformation=args, knots=att$knots, num=length(att$knots), nm=att$prnm, param=att$param)
-    varname <- unlist(strsplit(varname, ")", fixed=TRUE))[1]
-    varname <- unlist(strsplit(varname, ",", fixed=TRUE))[1]
-    
-    varnames <- pasteOnSpline(rep(varname, length(att$knots)), att$knots)
-  }
+  } 
   return(list(varnames, args))
 }
 
 #' Function to paste on degree
 #' Used to live in pasting_args.R
 #' 
-#' @param x
-#' @param str
-#' @param num
+#' @param x the original vector
+#' @param str what to paste onto the original vector (after)
+#' @param num the numbers to add to the end of the original vector
 #' 
 #' @return 
 #' 
@@ -917,26 +907,6 @@ pasteOn <- function(x, str, num){
   } else{
     ret <- paste(x[1], str, num, sep="")
     ret2 <- pasteOn(x[-1], str, num-1)
-    return(c(ret, ret2))
-  }
-}
-
-#' Helper function for lspline
-#' Used to live in pasting_args.R
-#' 
-#' @param x
-#' @param nums
-#' 
-#' @return 
-#' 
-#' @keywords internal
-#' @noRd
-pasteOnSpline <- function(x, nums){
-  if(length(x)==1){
-    return(paste(x, ".K(", nums, ")", sep=""))
-  } else{
-    ret <- paste(x[1], ".K(", nums[1], ")", sep="")
-    ret2 <- pasteOnSpline(x[-1], nums[-1])
     return(c(ret, ret2))
   }
 }
@@ -963,7 +933,7 @@ pastePair <- function(vec){
 #' Function that sums across a logical vector, returns the current value at each point
 #' Used to live in pasting_args.R
 #' 
-#' @param vec
+#' @param vec a vector of integers
 #' 
 #' @return 
 #' 
@@ -983,8 +953,8 @@ movingSum <- function(vec){
 
 #' Used to live in pasting_args.R
 #' 
-#' @param num
-#' @param vec
+#' @param num an index
+#' @param vec a vector of integers (indices)
 #' 
 #' @return 
 #' 
@@ -1214,8 +1184,8 @@ createCols <- function(pds, tms){
 
 #' Used to live in pasting_args.R
 #' 
-#' @param col
-#' @param nested 
+#' @param col a column vector
+#' @param nested a vector of booleans (I think...)
 #' 
 #' @return 
 #' 
@@ -1262,40 +1232,6 @@ splitOnParen <- function(x){
   }
 }
 
-#' likelihood ratio test
-#' Used to live in uLRtest.R
-#' 
-#' @param full
-#' @param reduced
-#' 
-#' @return 
-#' 
-#' @keywords internal
-#' @noRd
-uLRtest <- function (full, reduced) {
-  
-  if (dimnames(full$coefficients)[[2]][2]=="Robust SE")
-    stop("uLRtest inappropriate with robust SE")
-  if (dimnames(reduced$coefficients)[[2]][2]=="Robust SE") 
-    stop("uLRtest inappropriate with robust SE")
-  if (!all(dimnames(reduced$coefficients)[[1]] %in% dimnames(reduced$coefficients)[[1]])) 
-    stop("uLRtest only appropriate with hierarchical models")
-  if (dim(reduced$lmobj$model)[1] != dim(full$lmobj$model)[1]) 
-    stop("full and reduced models must be based on same data")
-  if (any(dimnames(reduced$lmobj$model)[[1]] != dimnames(full$lmobj$model)[[1]])) 
-    stop("full and reduced models must be based on same data")
-  
-  df.full <- full$df[2]
-  df.redu <- reduced$df[2]
-  RSSH <- reduced$sigma^2 * df.redu
-  RSS <- full$sigma^2 * df.full
-  Fstat <- (RSSH - RSS) / (df.redu - df.full) / (full$sigma^2)
-  pval <- 1-pf(Fstat,df.redu-df.full,df.full)
-  rslt <- c(Fstat, pval,df.redu-df.full,df.full)
-  names(rslt) <- c("F stat","p value","num df","den df")
-  rslt
-}
-
 #' Function to perform a Wald Test on data
 #' Used to live in uWaldtest.R
 #' 
@@ -1336,10 +1272,10 @@ uWaldtest <- function (full, contrasts=c(0,rep(1,p-1)), hypothesis=matrix(0,r,1)
 #' Function to get the order of predictors 
 #' Used in regress, used to be inside of regress()
 #' 
-#' @param vec
-#' @param n 
+#' @param vec a vector
+#' @param n index for which we'll take all values of \code{vec} after \code{n}
 #' 
-#' @return a wald test on the given coefficients
+#' @return 
 #' 
 #' @keywords internal
 #' @noRd
