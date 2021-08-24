@@ -1994,7 +1994,7 @@ fitted.uRegress <-
 #' # 95% Prediction Interval for age 50
 #' predict(testReg)
 #' 
-#' @export predict.uRegress
+#' @export
 predict.uRegress <- function(object, interval="prediction",level=0.95,...){
   
   ## if reg is not a uRegress object, throw an error
