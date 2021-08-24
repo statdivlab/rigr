@@ -382,7 +382,7 @@ regress <- function(fnctl, formula, data,
       } else {
         z <- lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, ...)
       }
-      
+
     }
     
     # add class, various attributes, and other values to the regression object
@@ -609,7 +609,7 @@ regress <- function(fnctl, formula, data,
   
   # Note from Taylor: I believe model is already model.matrix(fit), so this may be able to be deleted
   model <- model.matrix(fit)
-  
+
   # get predictor variables (includes intercept if there is one)
   preds <- dimnames(model)[[2]]
   preds1 <- preds
@@ -625,6 +625,8 @@ regress <- function(fnctl, formula, data,
   # args is a list of length(hyperpreds), and each element in the list is simply one of the hyperpreds
   # Note from Taylor: based on reFormatReg(), this may be more complex if any variables are
   # specified using lspline(), dummy(), or polynomial(). this is currently untested.
+  
+  # TAYLOR: preds should be "dummy(sex)Female vs Male" not dummy(sex)
   prList <- reFormatReg(preds, hyperpreds, mf)
   preds <- prList$preds
   args <- prList$args
@@ -655,35 +657,44 @@ regress <- function(fnctl, formula, data,
     
     # if length(which_cols) == 0, this means the model is looking for an interaction between two
     # variables, at least one of which is a multi-level categorical variable
+    # OR a variable was specified with dummy(variable_name)
     if (length(which_cols) == 0) {
-      which_cols <- c()
-      
-      # split terms_noparens[i] on the colon to get which terms are interacting
-      terms_temp <- unlist(strsplit(terms_noparens[i],":"))
-      
-      # find which columns contain all of the elements in terms_temp (and no additional elements)
-      colnames_split <- strsplit(colnames_model_noparens,":")
-      colnames_split_length <- unlist(lapply(colnames_split, length))
-      
-      # fill in which_cols accordingly
-      for (j in 1:length(colnames_split)) {
+      # is this a dummy variable?
+      if (grepl("dummy", terms_noparens[i])) {
         
-        # only consider colnames with the same number of terms as length(terms_temp)
-        if (length(terms_temp) == colnames_split_length[j]) {
+        term_nodummy <- gsub("dummy", "", terms_noparens[i])
+        which_cols <- which(grepl(term_nodummy, colnames_model_noparens))
+    
+      } else {
+        which_cols <- c()
+        
+        # split terms_noparens[i] on the colon to get which terms are interacting
+        terms_temp <- unlist(strsplit(terms_noparens[i],":"))
+        
+        # find which columns contain all of the elements in terms_temp (and no additional elements)
+        colnames_split <- strsplit(colnames_model_noparens,":")
+        colnames_split_length <- unlist(lapply(colnames_split, length))
+        
+        # fill in which_cols accordingly
+        for (j in 1:length(colnames_split)) {
           
-          # check if each element of terms_temp is present in colnames_split[[j]]
-          elements_present <- rep(0, length(terms_temp))
-          for (k in 1:length(terms_temp)) {
-            elements_present[k] <- grep(terms_temp[k], colnames_split[[j]])
-          }
-          
-          # if elements_present is 1:length(terms_temp), then add j to which_cols
-          if (all(elements_present %in% 1:length(terms_temp))) {
-            which_cols <- c(which_cols, j)
+          # only consider colnames with the same number of terms as length(terms_temp)
+          if (length(terms_temp) == colnames_split_length[j]) {
+            
+            # check if each element of terms_temp is present in colnames_split[[j]]
+            elements_present <- rep(0, length(terms_temp))
+            for (k in 1:length(terms_temp)) {
+              elements_present[k] <- grep(terms_temp[k], colnames_split[[j]])
+            }
+            
+            # if elements_present is 1:length(terms_temp), then add j to which_cols
+            if (all(elements_present %in% 1:length(terms_temp))) {
+              which_cols <- c(which_cols, j)
+            }
+            
           }
           
         }
-        
       }
       
     } else {
@@ -698,7 +709,7 @@ regress <- function(fnctl, formula, data,
     
     z <- processTerm(z, model[, which_cols], terms[i])
   }
-  
+
   # remove "as." from before variables, if any are specified as as.integeter(variable) or
   # as.factor(variable), etc.
   tmp <- gsub("as.","",z$preds)
@@ -943,8 +954,6 @@ regress <- function(fnctl, formula, data,
       }
     }
   }
-  
-  # browser()
   
   j <- dim(zzs$augCoefficients)[2]
   zzs$augCoefficients <- suppressWarnings(cbind(zzs$augCoefficients[,-j,drop=F],df=lst-fst+1,zzs$augCoefficients[,j,drop=F]))
