@@ -629,7 +629,7 @@ regress <- function(fnctl, formula, data,
   # preds is a vector of strings, containing all predictor variables in the overall model
   # args is a list of length(hyperpreds), and each element in the list is simply one of the hyperpreds
   # Note from Taylor: based on reFormatReg(), this may be more complex if any variables are
-  # specified using lspline(), dummy(), or polynomial(). this is currently untested.
+  # specified using dummy(), or polynomial(). this is currently untested.
   
   # TAYLOR: preds should be "dummy(sex)Female vs Male" not dummy(sex)
   prList <- reFormatReg(preds, hyperpreds, mf)
