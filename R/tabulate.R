@@ -75,7 +75,6 @@
 #' @seealso \code{\link[Exact]{exact.test}}, \code{\link[stats]{fisher.test}},
 #' \code{\link[plyr]{aaply}}, \code{\link[uwIntroStats]{descrip}},
 #' \code{\link[uwIntroStats]{tableStat}}
-#' @keywords ~kwd1 ~kwd2
 #' @examples
 #' 
 #' ## load the necessary libraries

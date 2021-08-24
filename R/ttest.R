@@ -39,7 +39,6 @@
 #' @param more.digits a numeric value
 #' specifying whether or not to display more or fewer digits in the output.
 #' Non-integers are automatically rounded down. 
-#' @param \dots only used in the generic S3 class.
 #' 
 #' @return Prints a summary of the data and the
 #' corresponding t-test. \item{Variable}{the variable

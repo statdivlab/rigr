@@ -29,7 +29,6 @@
 #' semi-parametric test on medians, and is non-robust) and point estimate.
 #' @param conf.level confidence level for the
 #' interval.
-#' @param \dots only used in the generic S3 class.
 #' 
 #' @return A list of class \code{wilcoxon}
 #' is returned. The print method lays out the information in an easy-to-read

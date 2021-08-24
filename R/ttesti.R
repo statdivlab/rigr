@@ -76,10 +76,24 @@ ttesti <- function(obs,
                         obs2, mean2, sd2,
                         null.hypoth, conf.level,
                         alternative, var.eq, more.digits, ...) {
-    if(is.na(obs2) && (!is.na(mean2) | !is.na(sd2))) {
+    if (length(obs) > 1 || length(obs2) > 1 || 
+        length(mean) > 1 || length(mean2) > 1 ||
+        length(sd) > 1 || length(sd2) > 1){
+      stop("'obs', 'mean', and 'sd' must be variables of length 1.")
+    } 
+    if (!(obs%%1 == 0) || obs<= 0 || (!is.na(obs2) && (!(obs2%%1 == 0) || obs2 <= 0))){
+      stop("Number of observations must be a positive integer.")
+    }
+    if (!is.scalar(mean) || (!is.na(mean2) && !is.scalar(mean2))){
+      stop("Mean must be scalar.")
+    }
+    if (!is.scalar(sd) || (!is.na(sd2) && !is.scalar(sd2))){
+      stop("SD must be scalar.")
+    }
+    if(is.na(obs2) && (!is.na(mean2) || !is.na(sd2))) {
       stop("A second number of observations must be entered for two sample test")
     }
-    if(!is.na(obs2) && (is.na(mean2) | is.na(sd2))){
+    if(!is.na(obs2) && (is.na(mean2) || is.na(sd2))){
       stop("SD and mean for the second sample must be entered for two sample test")
     }
     # check that alternative is one of "less", "two.sided", or "greater"
@@ -94,15 +108,7 @@ ttesti <- function(obs,
     if (!is.scalar(more.digits)) {
       stop("Argument 'more.digits' must be numeric")
     }
-    if (!(obs%%1 == 0) || obs<= 0 || (!is.na(obs2) && (!(obs2%%1 == 0) || obs2 <= 0))){
-      stop("Number of observations must be a positive integer.")
-    }
-    if (!is.scalar(mean) || (!is.na(mean2) && !is.scalar(mean2))){
-      stop("Mean must be scalar.")
-    }
-    if (!is.scalar(sd) || (!is.na(sd2) && !is.scalar(sd2))){
-      stop("SD must be scalar.")
-    }
+
     if (!is.scalar(null.hypoth)){
     #if (!is.numeric(null.hypoth) ||  length(null.hypoth) > 1 || !is.finite(null.hypoth)){
       stop("Null must be a scalar.")

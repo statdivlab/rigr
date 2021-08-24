@@ -57,8 +57,6 @@ two-sample t-test are matched. Variables must be of equal length.}
 \item{more.digits}{a numeric value
 specifying whether or not to display more or fewer digits in the output.
 Non-integers are automatically rounded down.}
-
-\item{\dots}{only used in the generic S3 class.}
 }
 \value{
 Prints a summary of the data and the

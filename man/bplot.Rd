@@ -108,7 +108,7 @@ data(mri)
 attach(mri)
 
 #- Produce box plot with jittered data, sample mean, and sd -#
-bplot(y=atrophy, x=male, xlab="Sex", ylab="Atrophy")
+bplot(y=atrophy, x=sex, xlab="Sex", ylab="Atrophy")
 
 }
 \seealso{

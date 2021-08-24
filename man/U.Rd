@@ -62,7 +62,7 @@ U(mri$age, type="log")
 
 # Create a partial formula
 # Note that the following example must be specified inside of a \code{regress} 
-call where data can be accessed
+# call where data can be accessed
 U(ma=~male+age)
 
 

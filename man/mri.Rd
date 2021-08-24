@@ -8,14 +8,15 @@
 A data frame with 735 rows and 30 variables:
 \describe{
 
+\item{ptid}{participant identification number.}
+
 \item{mridate}{the date on which the participant underwent MRI scan
 in MMDDYY format.} 
 
 \item{age}{participant age at time of MRI, in
 years.} 
 
-\item{male}{indicator of whether participant is male
-(0=female, 1=male).} 
+\item{sex}{participant sex (male or female).} 
 
 \item{race}{indicator of participant's race
 (1=white, 2=black, 3=Asian, 4=other).} 
@@ -101,7 +102,7 @@ of infarcts.}
 \item{volinf}{a measure of the total volume of
 infarct-like lesions found on MRI scan (cubic cm).}
 
-\item{obstim}{the total time (in days) that the participant was
+\item{obstime}{the total time (in days) that the participant was
 observed on study between the date of MRI and death or September 16, 1997,
 whichever came first.} 
 

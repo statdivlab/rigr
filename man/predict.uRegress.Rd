@@ -33,11 +33,10 @@ library(survival)
 library(sandwich)
 
 # Reading in a dataset
-mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt",header=TRUE)
-attach(mri)
+data(mri)
 
 # Linear regression of LDL on age (with robust SE by default)
-testReg <- regress ("mean", ldl~age)
+testReg <- regress ("mean", ldl~age, data = mri)
 
 # 95\% Prediction Interval for age 50
 predict(testReg)

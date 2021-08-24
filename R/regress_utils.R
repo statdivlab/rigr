@@ -590,7 +590,7 @@ parsePartials <- function(form, modelframe, mat){
 #' 
 #' # Create a partial formula
 #' # Note that the following example must be specified inside of a \code{regress} 
-#' call where data can be accessed
+#' # call where data can be accessed
 #' U(ma=~male+age)
 #' 
 #' 
@@ -1828,11 +1828,10 @@ fitted.uRegress <-
 #' library(sandwich)
 #' 
 #' # Reading in a dataset
-#' mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt",header=TRUE)
-#' attach(mri)
+#' data(mri)
 #' 
 #' # Linear regression of LDL on age (with robust SE by default)
-#' testReg <- regress ("mean", ldl~age)
+#' testReg <- regress ("mean", ldl~age, data = mri)
 #' 
 #' # 95% Prediction Interval for age 50
 #' predict(testReg)

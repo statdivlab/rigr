@@ -135,5 +135,3 @@ tabulate(diabetes, male, race, dispRatios=TRUE, tests=c("lrchisq", "mh"))
 %% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
 Brian D. Williamson, Travis Y. Hee Wai, and Solomon Lim
 }
-\keyword{~kwd1}
-\keyword{~kwd2}

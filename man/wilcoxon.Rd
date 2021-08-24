@@ -49,8 +49,6 @@ semi-parametric test on medians, and is non-robust) and point estimate.}
 
 \item{conf.level}{confidence level for the
 interval.}
-
-\item{\dots}{only used in the generic S3 class.}
 }
 \value{
 A list of class \code{wilcoxon}

@@ -51,11 +51,11 @@ test_that("ttesti() throws error if summary stats are not of correct type", {
   expect_error(ttesti(length(x1), "10", sd(x1)),
                "Mean must be scalar.")
   expect_error(ttesti(length(x1), mean(x1), sd(x1), length(x2), c(1,2), sd(x2)),
-               "Mean must be scalar.")
+               "'obs', 'mean', and 'sd' must be variables of length 1.")
   expect_error(ttesti(length(x1), mean(x1), "1"),
                "SD must be scalar.")
   expect_error(ttesti(length(x1), mean(x1), sd(x1), length(x2), mean(x2), c(1,2)),
-               "SD must be scalar.")
+               "'obs', 'mean', and 'sd' must be variables of length 1.")
 })
 
 # test_that("ttest() throws error for non-numeric data", {
