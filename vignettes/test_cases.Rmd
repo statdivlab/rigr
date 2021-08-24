@@ -153,7 +153,8 @@ tabulate(mri$age, mri$diabetes)$rslt
 By default, `tabulate()` gives us the count in each combination of the strata, and gives us the overall $\chi^2$ test statistic, degrees of freedom, and p-value. We can add in other arguments as well. Let's say that we are interested in an odds ratio or a risk ratio - `tabulate()` can supply these, if we set `dispRatios = TRUE`. This is where our use of the `Exact` package comes in, because this package contains some very useful functions for calculating these ratios. However, we supply both the odds ratio and the risk ratio, even though in some cases only one is appropriate. Thus it is up to the user to know which they can use. To display these ratios for `male` versus `chf` (an indicator variable of whether the patient had been diagnosed with congestive heart failure prior to MRI), we type
 
 ```{r}
-tabulate(mri$male, mri$chf, dispRatios = TRUE)
+# Note from Taylor: this throws an error as tabulate is not currently debugged
+# tabulate(mri$male, mri$chf, dispRatios = TRUE)
 ```
 
 Now we are given a point estimate and a 95% confidence interval for both the odds and risk ratio, in addition to the $\chi^2$ estimate. 
@@ -226,21 +227,6 @@ head(dummy.race, n = 10)
 
 Thus the set of dummy variables for race created above has: an indicator of whether the patient is black or white, an indicator of whether the patient is Asian or white, and an indicator of whether the patient is listed as ``other'' or white. These variables would allow us, in a regression, to compare each of the races against the white reference group.
 
-## Linear Splines
-
-Linear splines create a piecewise linear fit between user specified "knot" points; these are the points in the variable that we allow the slope of the line to change. There are two major ways to parameterize linear splines, and we have implemented both in this package. The first is based on the absolute slope between knots - that is, if we had a variable (like `ldl` in the `mri` dataset) that took on values between 11 and 247 and we placed knots at 70 and 150, we would see three columns: the first would show the minimum of 70 and the value of `ldl`; the second would show the minimum of `ldl` - 70 and 80; and the last column would show the remaining part of `ldl`. For example, if `ldl` = 71 for one patient, we would see `70 1 0`. If \texttt{ldl} = 247, we would see `70 80 97`.
-
-The second parameterization is denoted by us as "change". This uses the change between knots to specify the slopes. Under this parameterization, we would see, for a value of 115, `115 45 0`, which corresponds to: 115 units between the minimum and the value, 45 units between knot 1 (at 70) and the value, and zero units between knot 2 (at 150) and the value. We do not show negative units.
-
-These two parameterizations can be accessed via
-
-```{r}
-lspline.ldl <- lspline(mri$ldl, knots = c(70, 150))
-head(lspline.ldl, n = 10)
-lsplineD.ldl <- lsplineD(mri$ldl, knots = c(70, 150))
-head(lsplineD.ldl, n = 10)
-```
-
 ## Polynomials
 
 Last we come to polynomials. This function creates a polynomial of the specified degree simply by multiplying the variable by itself the correct number of times. If we wanted to create a parabola in `age`, we type
@@ -262,6 +248,7 @@ While correlation is not an excellent source of inference, since it is inherentl
 
 ```{r}
 ## Base R - returns only one number!
+mri$male <- ifelse(mri$sex == "Male", 1, 0)
 cor(mri$male, mri$diabetes)
 
 ## rigr version
@@ -397,7 +384,7 @@ As mentioned above, part of the motivation for the `regress()` function was to h
 If we enter a functional other than the mean, there is usually a transformation that needs to be applied to the data within the `regress()` function. In all of the cases listed in `r  I(pasteLabel("Table", tableCount, "fnctl"))`, the transformation is the logarithm. For example, sometimes the logistic regression model is taught as having a "log link", or the poisson regression model is taught as having the "logit link". These both refer to the function of the parameter having logarithms, so that the model is linear in the coefficients on the predictors. Therefore, in each case, we back-transform - by using the `exp(x)` function, which is equivalent to $e^x$ - the output of the regression by default, but also display the output that has not been back-transformed. This allows the user to easily see the results in the correct units, while also retaining the ability to compare with other software or handle the un-exponentiated results. If we want to examine the association between LDL and age, but want to use the geometric mean, we get
 
 ```{r}
-regress("geom", ldl ~ age, data = mri)
+regress("geometric mean", ldl ~ age, data = mri)
 ```
 
 In the transformed table, we do not display the standard error estimates, since they do not scale appropriately with the transformation. We could compare this to the base R function by log-transforming the `ldl` variable, running `lm()`, and back-transforming the results ourselves:
