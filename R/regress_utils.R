@@ -1067,33 +1067,19 @@ reFormatReg <- function(p, h, mf){
 #' @noRd
 createCols <- function(pds, tms){
   interact <- grepl(":", pds, fixed=TRUE)
-  lspline <- grepl("lspline", pds, fixed=TRUE)
-  if(lspline){
-    char <- explode(pds)
-    if(sum(grepl(":", char, fixed=TRUE))==1){
-      interact <- rep(FALSE, length(interact))
-    }
-  }
+
   if(!interact){
     ## split on )
     pds <- unlist(strsplit(pds, ")"))[1]
     t <- tms[grepl(pds, tms, fixed=TRUE)][1]
-    if(sum(grepl(pds, tms, fixed=TRUE))>2 & any(grepl("lspline", tms))){
-      t <- tms[grepl(pds, tms, fixed=TRUE)][2]
-    }
   } else {
     vec <- unlist(strsplit(pds, ":"))
-    if(lspline){
-      vec <- vec[-2]
-    }
     t <- NULL
     for(i in 1:length(vec)){
       pds <- unlist(strsplit(vec[i], ")"))[1]
-      if(sum(grepl(pds, tms, fixed=TRUE))>2 & lspline){
-        t <- c(t,tms[grepl(pds, tms, fixed=TRUE)][2])
-      } else {
-        t <- c(t, tms[grepl(pds, tms, fixed=TRUE)][1])
-      }
+
+      t <- c(t, tms[grepl(pds, tms, fixed=TRUE)][1])
+      
     }
     t <- paste(t, collapse=":")
   }
@@ -1434,7 +1420,7 @@ getLevels <- function(nms, coefNums, termnms, term.lbls, level){
   u <- grepl("U", nms)
   nested[u] <- FALSE
   
-  ## is a lspline or dummy
+  ## is a dummy
   tmp <- NULL
   tmp2 <- NULL
   if(any(dot)){
