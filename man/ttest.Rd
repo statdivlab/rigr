@@ -3,7 +3,6 @@
 \name{ttest}
 \alias{ttest}
 \alias{ttest.do}
-\alias{plot.ttest}
 \alias{print.ttest}
 \alias{ttest.default}
 \title{T-test with Improved Layout}
@@ -57,9 +56,7 @@ two-sample t-test are matched. Variables must be of equal length.}
 
 \item{more.digits}{a numeric value
 specifying whether or not to display more or fewer digits in the output.
-Non-integers are automatically rounded down. Any call to \code{ttest()} will
-run \code{ttest.default()}, with user specified values in place of the
-appropriate defaults.}
+Non-integers are automatically rounded down.}
 
 \item{\dots}{only used in the generic S3 class.}
 }

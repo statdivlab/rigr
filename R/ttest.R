@@ -10,7 +10,7 @@
 #' call to \code{ttest()} is run by \code{ttest.default()}, with user specified
 #' values in place of defaults in the appropriate places.
 #' 
-#' @aliases ttest ttest.do plot.ttest print.ttest ttest.default
+#' @aliases ttest ttest.do print.ttest ttest.default
 #' 
 #' @param var1 a (non-empty) numeric vector of
 #' data values.
@@ -38,9 +38,7 @@
 #' two-sample t-test are matched. Variables must be of equal length.
 #' @param more.digits a numeric value
 #' specifying whether or not to display more or fewer digits in the output.
-#' Non-integers are automatically rounded down. Any call to \code{ttest()} will
-#' run \code{ttest.default()}, with user specified values in place of the
-#' appropriate defaults.
+#' Non-integers are automatically rounded down. 
 #' @param \dots only used in the generic S3 class.
 #' 
 #' @return Prints a summary of the data and the
@@ -77,6 +75,7 @@
 #' corresponding hypothesis test.}
 #' 
 #' @seealso \code{\link[stats]{t.test}}
+#' 
 #' @examples
 #' 
 #' #- Read in data set -#
@@ -131,6 +130,13 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
     if (!is.logical(var.eq)) {
       stop("Please specify a logical value for variable 'var.eq'")
     }
+    if (!is.numeric(null.hypoth) ||  length(null.hypoth) > 1 || !is.finite(null.hypoth)){
+      stop("Null must be a scalar.")
+    }
+    if (!((length(conf.level) == 1L) && is.finite(conf.level) && 
+          (conf.level > 0) && (conf.level < 1))){
+      stop("'conf.level' must be a single number between 0 and 1")
+    } 
     # get length of stratafication variable (byt)
     byt <- sort(unique(by),decreasing=FALSE)
     byt <- byt[!is.na(byt)]

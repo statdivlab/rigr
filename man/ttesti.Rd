@@ -2,8 +2,10 @@
 % Please edit documentation in R/ttesti.R
 \name{ttesti}
 \alias{ttesti}
-\title{%% ~~function to do ... ~~ T-test Given Descriptive Statistics with Improved
-Layout}
+\alias{ttesti.do}
+\alias{print.ttesti}
+\alias{ttesti.default}
+\title{T-test Given Descriptive Statistics with Improved Layout}
 \usage{
 ttesti(
   obs,
@@ -12,22 +14,21 @@ ttesti(
   obs2 = NA,
   mean2 = NA,
   sd2 = NA,
-  null.hyp = 0,
-  level = 0.95,
+  null.hypoth = 0,
+  conf.level = 0.95,
   alternative = "two.sided",
   var.eq = FALSE,
-  prop = FALSE,
-  exact = FALSE
+  more.digits = 0
 )
 }
 \arguments{
-\item{obs}{%% ~~Describe \code{var1} here~~ number of observations for the
+\item{obs}{number of observations for the
 first sample.}
 
-\item{mean}{%% ~~Describe \code{var1} here~~ the sample mean of the first
+\item{mean}{the sample mean of the first
 sample.}
 
-\item{sd}{%% ~~Describe \code{var1} here~~ the sample standard deviation of
+\item{sd}{the sample standard deviation of
 the first sample.}
 
 \item{obs2}{number of observations for the second sample (this is optional).}
@@ -38,28 +39,24 @@ sample must be supplied.}
 \item{sd2}{if \code{obs2} is supplied, then sample standard deviation of the
 second sample must be supplied.}
 
-\item{null.hyp}{%% ~~Describe \code{var1} here~~ a number specifying the
+\item{null.hypoth}{a number specifying the
 null hypothesis for the mean (or difference in means if performing a
 two-sample test). Defaults to zero.}
 
-\item{level}{%% ~~Describe \code{var1} here~~ confidence level of the test.
+\item{conf.level}{confidence level of the test.
 Defaults to 95/100.}
 
-\item{alternative}{%% ~~Describe \code{var1} here~~ a string: one of
+\item{alternative}{a string: one of
 \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
 of the test. Defaults to a two-sided test.}
 
-\item{var.eq}{%% ~~Describe \code{var1} here~~ a logical value, either
+\item{var.eq}{a logical value, either
 \code{TRUE} or \code{FALSE} (default), specifying whether or not equal
-variances should be presumed in a two-sample t-test. Also controls robust
-standard errors.}
+variances should be presumed in a two-sample t-test.}
 
-\item{prop}{if \code{TRUE}, performs a test of equality of proportions with
-Wald based confidence intervals.}
-
-\item{exact}{must be \code{FALSE} if \code{prop=FALSE}. If true, performs a
-test of equality of proportions with Exact Binomial based confidence
-intervals.}
+\item{more.digits}{a numeric value
+specifying whether or not to display more or fewer digits in the output.
+Non-integers are automatically rounded down.}
 }
 \value{
 Prints a summary of the data and the
@@ -72,8 +69,7 @@ sample mean; also, the estimated difference in means in a two-sample test.}
 difference in the two-sample test.} \item{Std.Dev.}{standard deviation
 estimates.} \item{CI}{a confidence interval for the means, and for the
 difference in the two-sample test. This is at the confidence level specified
-in the argument. If \code{prop} and/or \code{exact} are specified, also
-returns the appropriate Wald or Exact Binomial based confidence interval.}
+in the argument.}
 \item{Null hypothesis}{a statement of the null hypothesis.}
 \item{Alternative hypothesis}{a statement of the alternative hypothesis.}
 \item{t}{value of the t-statistic.} \item{df}{the degrees of freedom for the
@@ -81,17 +77,12 @@ test.} \item{Pr}{a p-value for inference on the corresponding hypothesis
 test.}
 }
 \description{
-%% ~~ A concise (1-5 lines) description of what the function does. ~~
 Produces table of relevant descriptive statistics and inference for either
 one- or two-sample t-test. In the two-sample case, the user can specify
-whether or not equal variances should be presumed. Can also perform a test
-of equality of proportions, with the appropriate Wald or exact binomial
-based confidence intervals.
+whether or not equal variances should be presumed.
 }
 \details{
-%% ~~ If necessary, more details than the description above ~~ Values must
-be placed in the specified spaces, in place of the defaults. If \code{obs2},
-\code{mean2}, or \code{sd2} is specified, then all three must be specified
+If \code{obs2}, \code{mean2}, or \code{sd2} is specified, then all three must be specified
 and a two-sample t-test is run.
 }
 \examples{
@@ -101,6 +92,5 @@ ttesti(24, 175, 35, null.hyp=230)
 
 #- Two-sample test -#
 ttesti(10, -1.6, 1.5, 30, -.7, 2.1)
-
 
 }
