@@ -125,7 +125,32 @@
 #' \url{http://www.emersonstatistics.com/datasets/salary.doc}.
 #' 
 #'
-#' @format A data frame with 19792 rows and 11 variables.
+#' @format A data frame with 19792 rows and 11 variables:
+#' \describe{
+#' 
+#' \item{case}{case number}
+#' 
+#' \item{id}{identification number for the faculty member}
+#' 
+#' \item{sex}{M (male) or F (female)}
+#' 
+#' \item{deg}{highest degree attained: PhD, Prof (professional degree, eg, medicine or law), or Other (Master's or Bachelor's degree)}
+#' 
+#' \item{yrdeg}{year highest degree attained}
+#' 
+#' \item{field}{Arts (Arts and Humanities), Prof (professional school, ie, Business, Law, Engineering or Public Affairs), or Other}
+#' 
+#' \item{startyr}{year in which the faculty member was hired (2 digits)}
+#' 
+#' \item{year}{year (2 digits)}
+#' 
+#' \item{rank}{rank of the faculty member in this year: Assist (Assistant), Assoc (Associate), or Full (Full)}
+#' 
+#' \item{admin}{indicator of whether the faculty member had administrative duties (eg, department chair) in this year: 1 (yes), or 0 (no)}
+#' 
+#' \item{salary}{monthly salary of the faculty member in this year in dollars}
+#' 
+#' }
 #' 
 #' @source \url{http://www.emersonstatistics.com/datasets/salary.txt}
 "salary"
@@ -138,7 +163,28 @@
 #' \url{http://www.emersonstatistics.com/datasets/PSA.doc}.
 #' 
 #'
-#' @format A data frame with 50 rows and 9 variables.
+#' @format A data frame with 50 rows and 9 variables:
+#' \describe{
+#' 
+#' \item{ptid}{patient identifier}
+#' 
+#' \item{nadirpsa}{lowest PSA value attained post therapy (ng/ml)}
+#' 
+#' \item{pretxpsa}{PSA value prior to therapy (ng/ml)}
+#' 
+#' \item{ps}{performance status (0= worst, 100= best)}
+#' 
+#' \item{bss}{bone scan score (1= least disease, 3= most)}
+#' 
+#' \item{grade}{tumor grade (1= least aggressive, 3= most)}
+#' 
+#' \item{age}{patient's age (years)}
+#' 
+#' \item{obstime}{time observed in remission (months)}
+#' 
+#' \item{inrem}{indicator whether patient still in remission at last follow-up (“yes” or “no”)}
+#' 
+#' }
 #' 
 #' @source \url{http://www.emersonstatistics.com/datasets/psa.txt}
 "psa"
@@ -152,7 +198,23 @@
 #' \url{http://www.emersonstatistics.com/datasets/fev.doc}.
 #' 
 #'
-#' @format A data frame with 654 rows and 7 variables.
+#' @format A data frame with 654 rows and 7 variables:
+#' \describe{
+#' 
+#' \item{seqnbr}{case number (the numbers 1 to 654)}
+#' 
+#' \item{subjid}{subject identification number (unique for each different child)}
+#' 
+#' \item{age}{subject age at time of measurement (years)}
+#' 
+#' \item{fev}{measured FEV (liters per second)}
+#' 
+#' \item{height}{subject height at time of measurement (inches)}
+#' 
+#' \item{sex}{subject sex (1 = male, 2 = female)}
+#' 
+#' \item{smoke}{smoking habits (1 = yes, 2 = no)}
+#' } 
 #' 
 #' @source \url{http://www.emersonstatistics.com/datasets/fev.txt}
 "fev"

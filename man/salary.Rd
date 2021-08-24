@@ -5,7 +5,32 @@
 \alias{salary}
 \title{Salary dataset}
 \format{
-A data frame with 19792 rows and 11 variables.
+A data frame with 19792 rows and 11 variables:
+\describe{
+
+\item{case}{case number}
+
+\item{id}{identification number for the faculty member}
+
+\item{sex}{M (male) or F (female)}
+
+\item{deg}{highest degree attained: PhD, Prof (professional degree, eg, medicine or law), or Other (Master's or Bachelor's degree)}
+
+\item{yrdeg}{year highest degree attained}
+
+\item{field}{Arts (Arts and Humanities), Prof (professional school, ie, Business, Law, Engineering or Public Affairs), or Other}
+
+\item{startyr}{year in which the faculty member was hired (2 digits)}
+
+\item{year}{year (2 digits)}
+
+\item{rank}{rank of the faculty member in this year: Assist (Assistant), Assoc (Associate), or Full (Full)}
+
+\item{admin}{indicator of whether the faculty member had administrative duties (eg, department chair) in this year: 1 (yes), or 0 (no)}
+
+\item{salary}{monthly salary of the faculty member in this year in dollars}
+
+}
 }
 \source{
 \url{http://www.emersonstatistics.com/datasets/salary.txt}

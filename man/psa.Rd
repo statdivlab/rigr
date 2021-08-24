@@ -5,7 +5,28 @@
 \alias{psa}
 \title{PSA dataset}
 \format{
-A data frame with 50 rows and 9 variables.
+A data frame with 50 rows and 9 variables:
+\describe{
+
+\item{ptid}{patient identifier}
+
+\item{nadirpsa}{lowest PSA value attained post therapy (ng/ml)}
+
+\item{pretxpsa}{PSA value prior to therapy (ng/ml)}
+
+\item{ps}{performance status (0= worst, 100= best)}
+
+\item{bss}{bone scan score (1= least disease, 3= most)}
+
+\item{grade}{tumor grade (1= least aggressive, 3= most)}
+
+\item{age}{patient's age (years)}
+
+\item{obstime}{time observed in remission (months)}
+
+\item{inrem}{indicator whether patient still in remission at last follow-up (“yes” or “no”)}
+
+}
 }
 \source{
 \url{http://www.emersonstatistics.com/datasets/psa.txt}

@@ -5,7 +5,23 @@
 \alias{fev}
 \title{FEV dataset}
 \format{
-A data frame with 654 rows and 7 variables.
+A data frame with 654 rows and 7 variables:
+\describe{
+
+\item{seqnbr}{case number (the numbers 1 to 654)}
+
+\item{subjid}{subject identification number (unique for each different child)}
+
+\item{age}{subject age at time of measurement (years)}
+
+\item{fev}{measured FEV (liters per second)}
+
+\item{height}{subject height at time of measurement (inches)}
+
+\item{sex}{subject sex (1 = male, 2 = female)}
+
+\item{smoke}{smoking habits (1 = yes, 2 = no)}
+}
 }
 \source{
 \url{http://www.emersonstatistics.com/datasets/fev.txt}
