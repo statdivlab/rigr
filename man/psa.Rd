@@ -24,7 +24,7 @@ A data frame with 50 rows and 9 variables:
 
 \item{obstime}{time observed in remission (months)}
 
-\item{inrem}{indicator whether patient still in remission at last follow-up (“yes” or “no”)}
+\item{inrem}{indicator whether patient still in remission at last follow-up (yes or no)}
 
 }
 }

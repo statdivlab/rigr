@@ -27,7 +27,6 @@
 #' confidence interval.
 #' @author Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
 #' Brian D. Williamson
-#' @keywords ~kwd1 ~kwd2
 #' @examples
 #' 
 #' # Loading required libraries
@@ -36,10 +35,9 @@
 #' 
 #' # Reading in a dataset
 #' data(mri)
-#' attach(mri)
 #' 
 #' # Linear regression of LDL on age (with robust SE by default)
-#' testReg <- regress ("mean", ldl~age+stroke)
+#' testReg <- regress ("mean", ldl~age+stroke, data = mri)
 #' 
 #' # Testing coefficient created by .5*age - stroke (the first 1 comes from including the intercept)
 #' testC <- c(1, .5, -1)

@@ -56,10 +56,9 @@ library(sandwich)
 
 # Reading in a dataset
 data(mri)
-attach(mri)
 
 # Linear regression of LDL on age (with robust SE by default)
-testReg <- regress ("mean", ldl~age+stroke)
+testReg <- regress ("mean", ldl~age+stroke, data = mri)
 
 # Testing coefficient created by .5*age - stroke (the first 1 comes from including the intercept)
 testC <- c(1, .5, -1)
@@ -70,5 +69,3 @@ lincom(testReg, testC)
 Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
 Brian D. Williamson
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
