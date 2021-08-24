@@ -71,7 +71,7 @@
 #' lm() or glm() function, respectively. You may optionally specify \code{method = "model.frame"}, which
 #' returns the model frame and does no fitting.
 #' @param
-#' na.action,model.f,model.x,model.y,qr,singular.ok,offset,contrasts,control
+#' na.action,qr,singular.ok,offset,contrasts,control
 #' optional arguments that are passed to the functionality of \code{lm} or
 #' \code{glm}.
 #' @param ... additional arguments to be passed to the \code{\link[stats]{lm}} function call
@@ -108,7 +108,7 @@ regress <- function(fnctl, formula, data,
                     intercept = TRUE, 
                     weights = rep(1,nrow(data)), subset = rep(TRUE,nrow(data)),
                     robustSE = TRUE, conf.level = 0.95, exponentiate = fnctl != "mean",
-                    replaceZeroes, useFdstn = TRUE, suppress = FALSE, na.action, method = "qr", model.f = TRUE, model.x = FALSE, model.y = FALSE, qr = TRUE,
+                    replaceZeroes, useFdstn = TRUE, suppress = FALSE, na.action, method = "qr", qr = TRUE,
                     singular.ok = TRUE, contrasts = NULL, offset, control = list(...), ...) {
   
   # define n
@@ -206,10 +206,6 @@ regress <- function(fnctl, formula, data,
   mf$formula <- formula
   
   # Evaluate the formula and get the correct returns
-  
-  # model.x and model.y are FALSE by default
-  ret.x <- model.x
-  ret.y <- model.y
   
   # m contains the indices corresponding to which parameters in mf correspond to:
   # c("formula", "data", "subset", "weights", "na.action", "offset")
@@ -376,12 +372,7 @@ regress <- function(fnctl, formula, data,
     z$xlevels <- .getXlevels(mt, mf)
     z$call <- cl
     z$terms <- mt
-    if (model.f) 
-      z$model <- mf
-    if (ret.x) 
-      z$x <- x
-    if (ret.y) 
-      z$y <- y
+    z$model <- mf
     if (!qr) 
       z$qr <- NULL
     
@@ -543,13 +534,9 @@ regress <- function(fnctl, formula, data,
     }
     
     # add class, various attributes, and other values to the regression object
-    if (model.f) 
-      fit$model <- mf
+    fit$model <- mf
     fit$na.action <- attr(mf, "na.action")
-    if (model.x) 
-      fit$x <- x
-    if (!model.y) 
-      fit$y <- NULL
+    fit$y <- NULL
     fit <- c(fit, list(call = call, formula = formula, terms = mt, 
                        data = data, offset = offset, control = control, method = method, 
                        contrasts = attr(x, "contrasts"), xlevels = .getXlevels(mt, mf)))
