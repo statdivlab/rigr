@@ -9,7 +9,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-Many times in an analysis, multiple variables in the data will be measuring the same quantity. For example, in the `mri` data available at [Scott Emerson's website](http://www.emersonstatistics.com/datasets/mri.txt) and documented [on the same page](http://www.emersonstatistics.com/datasets/mri.pdf), both the `yrsquit` and `packyrs` variables measure the amount of smoking that a person does. 
+Many times in an analysis, multiple variables in the data will be measuring the same quantity. For example, in the `mri` data (see documentation by running `?mri`) both the `yrsquit` and `packyrs` variables measure the amount of smoking that a person does. 
 
 To fully analyze these variables, we need to run multiple-partial F-tests. Prior to the `rigr` package, the process to perform these tests involved more code than was necessary. First the user had to create a linear model (or perhaps multiple linear models), and then run an ANOVA test. 
 

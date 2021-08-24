@@ -38,7 +38,7 @@ The *data* argument is exactly the same as that in `lm()` or any of the other re
 Last, *id* allows the user to fit a generalized estimating equations (GEE) model while using the same syntax as any of the functionals to `regress()`. The GEE framework is a useful way to model correlated data, which often comes in the form of repeated measurements.
 
 # Linear Regression
-As a first example, we run a linear regression analysis of atrophy on age and male, from the `mri` data. This dataset is included in the `rigr` package, and its documentation can be found on Scott Emerson's website [here](http://www.emersonstatistics.com/datasets/mri.pdf).
+As a first example, we run a linear regression analysis of atrophy on age and male, from the `mri` data. This dataset is included in the `rigr` package; see its documentation by running `?mri`.
 
 ```{r}
 ## Preparing our R session
@@ -85,12 +85,12 @@ Proportional hazards regression is no longer supported.
 
 A common way to account for correlated data - for example longitudinal data, where we have multiple measurements on the same subjects over time - is to use the Generalized Estimating Equations (GEE) framework. We chose to use this framework in our `regress()` function because it gives flexibility and uses common conventions. To make use of this functionality, as we mentioned above, you simply need to specify the `id` argument in `regress()`. 
 
-For an example, we turn to the `salary` data, again hosted at Scott Emerson's [website](http://www.emersonstatistics.com/datasets/salary.txt). More information can be found in the [documentation](http://www.emersonstatistics.com/datasets/salary.doc), but these data essentially deal with university level faculty. In 1995, a survey was run asking the faculty to recall their salaries from the past. Each faculty member had records dating either to their starting year at the university or 1976, whichever was more recent. Thus we have repeated measurements on these individuals, and the variable of interest (salary) is highly correlated across measurements. 
+For an example, we turn to the `salary` data. Full documentation can be seen by running `?salary`, but these data essentially deal with university level faculty. In 1995, a survey was run asking the faculty to recall their salaries from the past. Each faculty member had records dating either to their starting year at the university or 1976, whichever was more recent. Thus we have repeated measurements on these individuals, and the variable of interest (salary) is highly correlated across measurements. 
 
 One interesting question to ask of these data involves discrimination based on sex. We will not model these data in the most sophisticated way (we leave that to the enterprising reader), but we can regress salary on sex and year, and involve their interaction. 
 
 ```{r}
-salary <- read.table("http://www.emersonstatistics.com/datasets/salary.txt", header = TRUE, stringsAsFactors = FALSE)
+data(salary)
 
 ## create an indicator variable
 salary$female <- ifelse(salary$sex == "F", 1, 0)

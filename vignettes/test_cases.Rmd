@@ -61,7 +61,7 @@ library(survival)
 library(rigr)
 ```
 
-Don't worry about the warning message for now; that will be covered in section 3.2. Last, we load the data, `mri` that we will be using throughout this document. Information about the dataset can be found at [mri.pdf](http://www.emersonstatistics.com/datasets/mri.pdf). Since the data is part of the package, we can load it via
+Don't worry about the warning message for now; that will be covered in section 3.2. Last, we load the data, `mri` that we will be using throughout this document. Information about the dataset can be found by running `?mri`. Since the data is part of the package, we can load it via
 
 ```{r}
 data(mri)
@@ -409,12 +409,12 @@ First, this is much more work, and requires thought for how to calculate the con
 
 ## Correlated data regression
 
-This section does not serve as a primer for when to account for correlated data in your regression model; rather, if you know that you have correlated data, it gives you a method to accounting for it. We will not use the `mri` data for this example. Instead, we will use the `salary` data, available as a text file ["salary.txt"](http://www.emersonstatistics.com/datasets/salary.txt). The documentation for this file is at ["salary.doc"](http://www.emersonstatistics.com/datasets/salary.doc). These data deal with salaries at the University of Washington, and have multiple records on most participants. In fact, for any current faculty member in 1995 who had been employed by the university for more than one year, there were yearly records dating back to when the faculty member was hired. Thus by nature these data are correlated - in the simplest sense, we expect that the salary for a single faculty member will rise (or at least stay constant) each year. Therefore, we need to use the correlated data apparatus built into `regress()`. This functionality uses the `geeglm()` function from the package `geepack`, but frames the output consistently with the rest of the `regress()` options and uses the same syntax.
+This section does not serve as a primer for when to account for correlated data in your regression model; rather, if you know that you have correlated data, it gives you a method to accounting for it. We will not use the `mri` data for this example. Instead, we will use the `salary` data (see documentation by running `?salary`). These data deal with salaries at the University of Washington, and have multiple records on most participants. In fact, for any current faculty member in 1995 who had been employed by the university for more than one year, there were yearly records dating back to when the faculty member was hired. Thus by nature these data are correlated - in the simplest sense, we expect that the salary for a single faculty member will rise (or at least stay constant) each year. Therefore, we need to use the correlated data apparatus built into `regress()`. This functionality uses the `geeglm()` function from the package `geepack`, but frames the output consistently with the rest of the `regress()` options and uses the same syntax.
 
 First, let's create the data:
 
 ```{r}
-salary <- read.table("http://www.emersonstatistics.com/datasets/salary.txt", header = TRUE, stringsAsFactors = FALSE)
+data(salary)
 salary$female <- ifelse(salary$sex == "F", 1, 0)
 ```
 
