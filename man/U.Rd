@@ -8,14 +8,10 @@ U(
   ...,
   type = NULL,
   subset = rep(T, length(x)),
-  knots = NULL,
   degree = 2,
   reference = sort(unique(x[!is.na(x)])),
-  lbl = NULL,
   center = mean(x, na.rm = T),
-  includeAll = FALSE,
-  parameterization = "absolute",
-  vrsn = FALSE
+  includeAll = FALSE
 )
 }
 \arguments{
@@ -29,30 +25,17 @@ unique is needed.}
 \item{subset}{used in creating dummy variables. Only used if \code{type ==
 "dummy"}.}
 
-\item{knots}{%% ~~Describe \code{cluster} here~~ vector of knots to create
-the splines. Only used if \code{type=="lspline"}.}
-
 \item{degree}{the degree of the polynomial to be returned. Only used if
 \code{type=="polynomial"}.}
 
 \item{reference}{the reference vector for levels of the dummy variable. Only
 used if \code{type=="dummy"}.}
 
-\item{lbl}{a label for the splines. Only used if \code{type=="lspline"}}
-
 \item{center}{the center of the returned polynomial. Only used if
 \code{type=="polynomial"}.}
 
 \item{includeAll}{a logical value to use all values even in the presense of
 a subset. Only used if \code{type=="dummy"}.}
-
-\item{parameterization}{defaults to\code{"absolute"}, and provides splines
-based on the absolute slope between knots. If \code{"change"}, provides
-splines based on the change from knot to knot. If \code{lsplineD} is called,
-\code{"change"} is entered by default. Only used if \code{type=="lspline"}.}
-
-\item{vrsn}{if \code{TRUE}, returns the version of the function and nothing
-else.}
 }
 \value{
 A matrix or vector containing the
@@ -72,19 +55,14 @@ by adding an equals sign before the tilde.
 \examples{
 
 # Reading in a dataset
-mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header=TRUE)
-attach(mri)
-# Create a spline based on absolute
-U(ldl, type="lspline", knots=c(70, 100, 130, 160))
-U(ldl, type="ls", knots=c(70,100,130,160))
-
-# Create a spline based on change
-U(ldl, type="ls", knots=c(70, 100, 130, 160), parameterization="change")
+data(mri)
 
 # Create a log transformed variable
-U(age, type="log")
+U(mri$age, type="log")
 
-## Create a partial formula
+# Create a partial formula
+# Note that the following example must be specified inside of a \code{regress} 
+call where data can be accessed
 U(ma=~male+age)
 
 
