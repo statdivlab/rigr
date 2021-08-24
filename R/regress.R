@@ -74,6 +74,7 @@
 #' na.action,model.f,model.x,model.y,qr,singular.ok,offset,contrasts,control
 #' optional arguments that are passed to the functionality of \code{lm} or
 #' \code{glm}.
+#' @param ... additional arguments to be passed to the \code{\link[stats]{lm}} function call
 #' @return An object of class uRegress is
 #' returned. Parameter estimates, confidence intervals, and p values are
 #' contained in a matrix $augCoefficients. 

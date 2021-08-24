@@ -116,6 +116,8 @@ unexponentiated coefficients, and one with the exponentiated coefficients.}
 \code{fnctl = "odds"} and \code{fnctl = "rate"} is \code{"glm.fit"}. This argument is passed into the
 lm() or glm() function, respectively. You may optionally specify \code{method = "model.frame"}, which
 returns the model frame and does no fitting.}
+
+\item{...}{additional arguments to be passed to the \code{\link[stats]{lm}} function call}
 }
 \value{
 An object of class uRegress is
