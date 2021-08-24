@@ -73,7 +73,7 @@ days between that participant's MRI and September 16, 1997.} }
 mri
 }
 \description{
-Data from an observational study of observe the incidence of cardiovascular disease 
+Data from an observational study of the incidence of cardiovascular disease 
 (especially heart attacks and congestive heart failure) and cerebrovascular disease 
 (especially strokes) in the U.S. elderly. More information, including a coding key,
  is available at
