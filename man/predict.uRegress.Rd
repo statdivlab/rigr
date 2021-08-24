@@ -43,5 +43,5 @@ predict(testReg)
 
 }
 \seealso{
-\code{\link[uwIntroStats]{regress}}
+\code{\link[rigr]{regress}}
 }

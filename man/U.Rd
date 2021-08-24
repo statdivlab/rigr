@@ -68,5 +68,5 @@ U(ma=~male+age)
 
 }
 \seealso{
-\code{\link[uwIntroStats]{regress}}
+\code{\link[rigr]{regress}}
 }

@@ -1,31 +1,9 @@
-## Function to create a table of descriptive statistics
-## Args: variable            - the variable to make the table on
-##       ...                 - arbitrary list of other variables
-##       stat                - the statistic to calculate
-##       printer             - print or not?
-##       na.rm               - how to deal with NAs
-##       subset              - subset the variable?
-##       probs               - probabilities to display
-##       replaceZeroes       - replace zeroes? with what?
-##       restriction         - restrict?
-##       above,below,labove  - put in an interval
-##       rbelow,lbetween,
-##       rbetween
-##       interval,linterval, - put in an interval
-##       rinterval,lrinterval
-##       version             - return only the version number?
-## Returns: a table of descriptive statistics
-## Version: 2015 05 25
-
-
-
-
 #' Table of Stratified Descriptive Statistics
 #' 
 #' Produces a table of stratified descriptive statistics for a single variable
 #' of class \code{integer}, \code{numeric}, \code{Surv}, \code{Date}, or
 #' \code{factor}. Descriptive statistics are those that can be estimated using
-#' the \code{\link[uwIntroStats]{descrip}} function.
+#' the \code{\link[rigr]{descrip}} function.
 #' 
 #' This function
 #' uses \code{descrip()} to compute the descriptive statistics. In addition to

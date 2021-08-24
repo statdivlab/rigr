@@ -154,7 +154,7 @@ specified in \code{stat}.
 Produces a table of stratified descriptive statistics for a single variable
 of class \code{integer}, \code{numeric}, \code{Surv}, \code{Date}, or
 \code{factor}. Descriptive statistics are those that can be estimated using
-the \code{\link[uwIntroStats]{descrip}} function.
+the \code{\link[rigr]{descrip}} function.
 }
 \details{
 This function

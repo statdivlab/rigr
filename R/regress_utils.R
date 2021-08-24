@@ -579,7 +579,7 @@ parsePartials <- function(form, modelframe, mat){
 #' variable (usually \code{numeric}). The type of transformation performed is
 #' encoded as one of the attributes of the returned value, along with the
 #' original data. 
-#' @seealso \code{\link[uwIntroStats]{regress}}
+#' @seealso \code{\link[rigr]{regress}}
 #' @examples
 #' 
 #' # Reading in a dataset
@@ -1820,7 +1820,7 @@ fitted.uRegress <-
 #' more details. 
 #' @return %% ~Describe the value returned Returns a matrix with the fitted
 #' value and prediction interval for the entered X. 
-#' @seealso \code{\link[uwIntroStats]{regress}}
+#' @seealso \code{\link[rigr]{regress}}
 #' @examples
 #' 
 #' # Loading required libraries

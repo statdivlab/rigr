@@ -10,7 +10,7 @@
 #' externally studentized residuals.
 #' 
 #' @param object an object of class \code{uRegress}, as returned by
-#' \link[uwIntroStats]{regress}.
+#' \link[rigr]{regress}.
 #' @param type denotes the type of residuals to return. Default value is
 #' \code{""}, which returns unstandardized residuals. \code{"standardized"},
 #' \code{"studentized"}, and \code{"jackknife"} return the expected type of
@@ -20,7 +20,7 @@
 #' performed.
 #' @return Returns the type of residuals
 #' requested. 
-#' @seealso \code{\link[uwIntroStats]{regress}}, \code{\link[stats]{rstudent}},
+#' @seealso \code{\link[rigr]{regress}}, \code{\link[stats]{rstudent}},
 #' \code{\link[stats]{rstandard}}
 #' @examples
 #' 

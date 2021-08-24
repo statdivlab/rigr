@@ -4,18 +4,18 @@
 #' functional (mean, geometric mean, proportion, odds) of a
 #' variable of class \code{integer}, \code{numeric}, \code{Surv}, when
 #' regressed on an arbitrary number of covariates. Multiple Partial F-tests can
-#' be specified using the \code{\link[uwIntroStats]{U}} function.
+#' be specified using the \code{\link[rigr]{U}} function.
 #' 
 #' Regression models include linear regression (for the ``mean'' functional), logistic
 #' regression (for the ``odds'' functional), Poisson regression (for the
 #' ``rate'' functional), and a linear regression of a logged outcome on covariates
 #' (for the ``geometric mean'' functional). Proportional hazards regression is currently not
 #' supported in the \code{regress} function. Objects created using the
-#' \code{\link[uwIntroStats]{U}} function can also be passed in. If the
-#' \code{\link[uwIntroStats]{U}} call involves a partial formula of the form
+#' \code{\link[rigr]{U}} function can also be passed in. If the
+#' \code{\link[rigr]{U}} call involves a partial formula of the form
 #' \code{~ var1 + var2}, then \code{regress} will return a multiple-partial
 #' F-test involving \code{var1} and \code{var2}. If an F-statistic will already be 
-#' calculated regardless of the \code{\link[uwIntroStats]{U}} specification,
+#' calculated regardless of the \code{\link[rigr]{U}} specification,
 #' then any naming convention specified via \code{name ~ var1} will be ignored.
 #' The multiple partial tests must be the last terms specified in the model (i.e. no other predictors can
 #' follow them).
@@ -82,7 +82,7 @@
 #' Brian D. Williamson, Travis Hee Wai
 #' @seealso Functions for fitting linear models (\code{\link[stats]{lm}}), and
 #' generalized linear models (\code{\link[stats]{glm}}). Also see the function to specify
-#' multiple-partial F-tests, \code{\link[uwIntroStats]{U}}.
+#' multiple-partial F-tests, \code{\link[rigr]{U}}.
 #' @import sandwich
 #' @import stats
 #' @examples

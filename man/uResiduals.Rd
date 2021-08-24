@@ -8,7 +8,7 @@ uResiduals(object, type = "", version = FALSE)
 }
 \arguments{
 \item{object}{an object of class \code{uRegress}, as returned by
-\link[uwIntroStats]{regress}.}
+\link[rigr]{regress}.}
 
 \item{type}{denotes the type of residuals to return. Default value is
 \code{""}, which returns unstandardized residuals. \code{"standardized"},
@@ -50,6 +50,6 @@ uResiduals(ldlReg, "jackknife")
 
 }
 \seealso{
-\code{\link[uwIntroStats]{regress}}, \code{\link[stats]{rstudent}},
+\code{\link[rigr]{regress}}, \code{\link[stats]{rstudent}},
 \code{\link[stats]{rstandard}}
 }

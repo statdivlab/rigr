@@ -105,7 +105,7 @@ library(Exact)
 library(plyr)
 
 ## read in the mri dataset 
-mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt",header=TRUE)
+data(mri)
 
 ## attach the mri dataset
 attach(mri)
@@ -128,8 +128,8 @@ tabulate(diabetes, male, race, dispRatios=TRUE, tests=c("lrchisq", "mh"))
 }
 \seealso{
 \code{\link[Exact]{exact.test}}, \code{\link[stats]{fisher.test}},
-\code{\link[plyr]{aaply}}, \code{\link[uwIntroStats]{descrip}},
-\code{\link[uwIntroStats]{tableStat}}
+\code{\link[plyr]{aaply}}, \code{\link[rigr]{descrip}},
+\code{\link[rigr]{tableStat}}
 }
 \author{
 %% ~~who you are~~ Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
