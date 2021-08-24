@@ -3,7 +3,7 @@
 \docType{data}
 \name{mri}
 \alias{mri}
-\title{MRI Dataset}
+\title{MRI dataset}
 \format{
 A data frame with 735 rows and 30 variables.
 
@@ -77,7 +77,7 @@ Data from an observational study of observe the incidence of cardiovascular dise
 (especially heart attacks and congestive heart failure) and cerebrovascular disease 
 (especially strokes) in the U.S. elderly. More information, including a coding key,
  is available at
-\url{http://www.emersonstatistics.com/datasets/mri.pdf}.
+\url{http://www.emersonstatistics.com/datasets/mri.doc}.
 
 %% ~~ A concise (1-5 lines) description of the dataset. ~~ An MRI data set
 hosted on Scott Emerson's webpage. More detailed description is hosted
