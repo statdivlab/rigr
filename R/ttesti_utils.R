@@ -1,4 +1,4 @@
-# Print method for class "ttesti"
+#' Print method for class "ttesti"
 #' @noRd
 #' @export
 print.ttesti <- function(x, ...) {

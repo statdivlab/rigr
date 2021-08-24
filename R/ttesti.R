@@ -76,10 +76,10 @@ ttesti <- function(obs,
                         obs2, mean2, sd2,
                         null.hypoth, conf.level,
                         alternative, var.eq, more.digits, ...) {
-    if(is.na(obs2) & (!is.na(mean2) | !is.na(sd2))) {
+    if(is.na(obs2) && (!is.na(mean2) | !is.na(sd2))) {
       stop("A second number of observations must be entered for two sample test")
     }
-    if(!is.na(obs2) & (is.na(mean2) | is.na(sd2))){
+    if(!is.na(obs2) && (is.na(mean2) | is.na(sd2))){
       stop("SD and mean for the second sample must be entered for two sample test")
     }
     # check that alternative is one of "less", "two.sided", or "greater"
@@ -91,23 +91,23 @@ ttesti <- function(obs,
       stop("Please specify a logical value for variable 'var.eq'")
     }
     # check to make sure additional digit request is numeric
-    if (!is.numeric(more.digits)) {
+    if (!is.scalar(more.digits)) {
       stop("Argument 'more.digits' must be numeric")
     }
     if (!(obs%%1 == 0) || obs<= 0 || (!is.na(obs2) && (!(obs2%%1 == 0) || obs2 <= 0))){
       stop("Number of observations must be a positive integer.")
     }
-    if (!is.numeric(mean) || (!is.na(mean2) && !is.numeric(mean2))){
-      stop("Mean must be numeric.")
+    if (!is.scalar(mean) || (!is.na(mean2) && !is.scalar(mean2))){
+      stop("Mean must be scalar.")
     }
-    if (!is.numeric(sd) || (!is.na(sd2) && !is.numeric(sd2))){
-      stop("SD must be numeric.")
+    if (!is.scalar(sd) || (!is.na(sd2) && !is.scalar(sd2))){
+      stop("SD must be scalar.")
     }
-    if (!is.numeric(null.hypoth) ||  length(null.hypoth) > 1 || !is.finite(null.hypoth)){
+    if (!is.scalar(null.hypoth)){
+    #if (!is.numeric(null.hypoth) ||  length(null.hypoth) > 1 || !is.finite(null.hypoth)){
       stop("Null must be a scalar.")
     }
-    if (!((length(conf.level) == 1L) && is.finite(conf.level) && 
-          (conf.level > 0) && (conf.level < 1))){
+    if (!(is.scalar(conf.level) && (conf.level > 0) && (conf.level < 1))){
       stop("'conf.level' must be a single number between 0 and 1")
     } 
     more.digits <- max(floor(more.digits), 0)

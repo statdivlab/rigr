@@ -1,5 +1,71 @@
 ### error handling
 
+x1 <- rnorm(100)
+x2 <- rnorm(100)
+
+test_that("ttesti() throws error if alternative is not 'two.sided', 'less', or 'greater", {
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), 
+                      length(x2), mean(x2), sd(x2), alternative = "blah"), 
+               "'alternative' must be either 'less', 'two.sided', or 'greater'")
+})
+
+test_that("ttesti() throws error if var.eq is not logical", {
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), 
+                      length(x2), mean(x2), sd(x2), var.eq = 2), 
+               "Please specify a logical value for variable 'var.eq'")
+})
+
+test_that("ttesti() throws error for non-numeric more.digits argument", {
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), more.digits = TRUE), 
+               "Argument 'more.digits' must be numeric")
+})
+
+test_that("ttesti() throws error for invalid conf.level", {
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), conf.level = 1.1),
+               "'conf.level' must be a single number between 0 and 1")
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), conf.level = "blah"),
+               "'conf.level' must be a single number between 0 and 1")
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), conf.level = TRUE),
+               "'conf.level' must be a single number between 0 and 1")
+})
+
+test_that("ttesti() throws error if all three arguments for var2 aren't given", {
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), length(x2), mean(x2)),
+               "SD and mean for the second sample must be entered for two sample test")
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), mean2 = mean(x2), sd2 = sd(x2)),
+               "A second number of observations must be entered for two sample test")
+})
+
+test_that("ttesti() throws error for non-scalar null", {
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), null.hypoth = c(1,2)),
+               "Null must be a scalar.")
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), null.hypoth = "1"),
+               "Null must be a scalar.")
+})
+
+test_that("ttesti() throws error if summary stats are not of correct type", {
+  expect_error(ttesti(10.1, mean(x1), sd(x1)),
+               "Number of observations must be a positive integer.")
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), 10.1, mean(x2), sd(x2)),
+               "Number of observations must be a positive integer.")
+  expect_error(ttesti(length(x1), "10", sd(x1)),
+               "Mean must be scalar.")
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), length(x2), c(1,2), sd(x2)),
+               "Mean must be scalar.")
+  expect_error(ttesti(length(x1), mean(x1), "1"),
+               "SD must be scalar.")
+  expect_error(ttesti(length(x1), mean(x1), sd(x1), length(x2), mean(x2), c(1,2)),
+               "SD must be scalar.")
+})
+
+# test_that("ttest() throws error for non-numeric data", {
+#   expect_error(ttest(c("a", "B", "c")), 
+#                "Cannot perform t-test on non-numeric data")
+# })
+
+
+
+
 
 ### one-sample test (or two-sample paired test)
 
