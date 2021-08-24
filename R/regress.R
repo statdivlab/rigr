@@ -170,7 +170,7 @@ regress <- function(fnctl, formula, data,
     form <- deparse(formula)
     
     if (length(form) > 1) {
-      form <- paste(form, collapse = "")
+      form <- paste(form, collapse = "") # unit test coverage
     }
     
     form <- paste(form, "-1")
@@ -246,7 +246,7 @@ regress <- function(fnctl, formula, data,
     
     factorMat <- NULL
     term.labels <- NULL
-
+    
     # if anything in the formula argument was specified in a U function, length(tmplist)>0
     if (length(tmplist)>0) {
       
@@ -334,7 +334,7 @@ regress <- function(fnctl, formula, data,
       # if replaceZeroes is either TRUE or a numeric value, give a warning that it will do nothing
       if (!missing(replaceZeroes)) {
         if (!replaceZeroes) {
-          replaceZeroes <- NA
+          replaceZeroes <- NA # unit test coverage
         } else {
           warning("replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
           replaceZeroes <- NA
@@ -359,37 +359,25 @@ regress <- function(fnctl, formula, data,
     # Note from Taylor: this error message should happen earlier, and also y doesn't have rows
     offset <- as.vector(model.offset(mf))
     if (!is.null(offset)) {
-      if (length(offset) != nrow(y)) {
+      if (length(offset) != nrow(y)) { # unit test coverage
         stop(gettextf("number of offsets is %d, should equal %d (number of observations)", 
                       length(offset), nrow(y)), domain = NA)
       }
     }
     
-    # Note from Taylor: not sure when the model would be empty, is this needed?
-    if (is.empty.model(mt)) {
-      x <- NULL
-      z <- list(coefficients = if (is.matrix(y)) matrix(, 0, 
-                                                        3) else numeric(), residuals = y, fitted.values = 0 * 
-                  y, weights = w, rank = 0L, df.residual = if (!is.null(w)) sum(w != 
-                                                                                  0) else if (is.matrix(y)) nrow(y) else length(y))
-      if (!is.null(offset)) {
-        z$fitted.values <- offset
-        z$residuals <- y - offset
-      }
-      
+    
+    # get model matrix 
+    # Note to Taylor: figure out what contrasts actually does
+    x <- model.matrix(mt, mf, contrasts)
+    
+    # fit the overall linear model, weighted if weights are specified
+    if (is.null(w)) {
+      z <- lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...)
     } else {
-      # get model matrix 
-      # Note to Taylor: figure out what contrasts actually does
-      x <- model.matrix(mt, mf, contrasts)
-      
-      # fit the overall linear model, weighted if weights are specified
-      if (is.null(w)) {
-        z <- lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...)
-      } else {
-        z <- lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, ...)
-      }
-
+      z <- lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, ...)
     }
+    
+    
     
     # add class, various attributes, and other values to the regression object
     class(z) <- c(if (is.matrix(y)) "mlm", "lm")
@@ -442,7 +430,7 @@ regress <- function(fnctl, formula, data,
     
     factorMat <- NULL
     term.labels <- NULL
-
+    
     # if anything in the formula argument was specified in a U function, length(tmplist)>0
     if (length(tmplist)>0) {
       
@@ -511,20 +499,9 @@ regress <- function(fnctl, formula, data,
     # numeric
     y <- model.response(mf, "any")
     
-    # Note from Taylor: I think this can be deleted, I'm not sure when length(dim(y)) would ever be 1
-    if (length(dim(y)) == 1L) {
-      nm <- rownames(y)
-      dim(y) <- NULL
-      if (!is.null(nm)) 
-        names(y) <- nm
-    }
-    
-    # assign to x, again not sure when mt would ever be an empty model
-    if (!is.empty.model(mt)) {
-      x <- model.matrix(mt, mf, contrasts)
-    } else {
-      x <- matrix(, nrow(y), 0L)
-    }
+    # assign to x
+    x <- model.matrix(mt, mf, contrasts)
+
     
     # reassign n, now that missing values have been removed
     n <- length(y)
@@ -615,7 +592,7 @@ regress <- function(fnctl, formula, data,
   
   # Note from Taylor: I believe model is already model.matrix(fit), so this may be able to be deleted
   model <- model.matrix(fit)
-
+  
   # get predictor variables (includes intercept if there is one)
   preds <- dimnames(model)[[2]]
   preds1 <- preds
@@ -670,7 +647,7 @@ regress <- function(fnctl, formula, data,
         
         term_nodummy <- gsub("dummy", "", terms_noparens[i])
         which_cols <- which(grepl(term_nodummy, colnames_model_noparens))
-    
+        
       } else {
         which_cols <- c()
         
@@ -715,7 +692,7 @@ regress <- function(fnctl, formula, data,
     
     z <- processTerm(z, model[, which_cols], terms[i])
   }
-
+  
   # remove "as." from before variables, if any are specified as as.integeter(variable) or
   # as.factor(variable), etc.
   tmp <- gsub("as.","",z$preds)
@@ -893,7 +870,7 @@ regress <- function(fnctl, formula, data,
             if (!terInter[k]) {
               indx[which(grepl(ter[k], rownames(zzs$coefficients)))] <- TRUE
               
-            # if we are dealing with an interaction, find which coef name corresponds to ter
+              # if we are dealing with an interaction, find which coef name corresponds to ter
             } else {
               ter_split <- unlist(strsplit(ter[k],"\\:"))
               
