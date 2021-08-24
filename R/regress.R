@@ -169,10 +169,6 @@ regress <- function(fnctl, formula, data,
     
     form <- deparse(formula)
     
-    if (length(form) > 1) {
-      form <- paste(form, collapse = "") # unit test coverage
-    }
-    
     form <- paste(form, "-1")
     formula <- as.formula(form, env=.GlobalEnv)
   }
@@ -334,7 +330,7 @@ regress <- function(fnctl, formula, data,
       # if replaceZeroes is either TRUE or a numeric value, give a warning that it will do nothing
       if (!missing(replaceZeroes)) {
         if (!replaceZeroes) {
-          replaceZeroes <- NA # unit test coverage
+          replaceZeroes <- NA 
         } else {
           warning("replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
           replaceZeroes <- NA

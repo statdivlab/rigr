@@ -450,6 +450,17 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean', r
                mod_lm_robust_p)
 })
 
+### replaceZeroes = FALSE, fnctl != 'geometric mean'
+
+mod_rigr1 <- regress("mean", atrophy ~ age, data = mri, replaceZeroes = FALSE)
+mod_rigr2 <- regress("mean", atrophy ~ age, data = mri)
+
+test_that("regress() returns same output for replaceZeroes = FALSE and non-specified replaceZeroes for fnctl != 'geometric mean'", {
+  # Estimate
+  expect_equal(mod_rigr1$augCoefficients,
+               mod_rigr2$augCoefficients)
+})
+
 ### categorical predictor with > 2 levels - coefficient labels
 
 # also ensure that the F-test is done correctly
