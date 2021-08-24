@@ -109,7 +109,7 @@ regress <- function(fnctl, formula, data,
                     weights = rep(1,nrow(data)), subset = rep(TRUE,nrow(data)),
                     robustSE = TRUE, conf.level = 0.95, exponentiate = fnctl != "mean",
                     replaceZeroes, useFdstn = TRUE, suppress = FALSE, na.action, method = "qr", model.f = TRUE, model.x = FALSE, model.y = FALSE, qr = TRUE,
-                    singular.ok = TRUE, contrasts = NULL, offset,control = list(...), ...) {
+                    singular.ok = TRUE, contrasts = NULL, offset, control = list(...), ...) {
   
   # define n
   n <- nrow(data)
@@ -354,13 +354,6 @@ regress <- function(fnctl, formula, data,
     
     # Note from Taylor: this error message should happen earlier, and also y doesn't have rows
     offset <- as.vector(model.offset(mf))
-    if (!is.null(offset)) {
-      if (length(offset) != nrow(y)) { # unit test coverage
-        stop(gettextf("number of offsets is %d, should equal %d (number of observations)", 
-                      length(offset), nrow(y)), domain = NA)
-      }
-    }
-    
     
     # get model matrix 
     # Note to Taylor: figure out what contrasts actually does

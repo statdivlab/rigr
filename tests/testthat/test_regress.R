@@ -56,7 +56,6 @@ test_that("regress() throws error if formula includes 'lspline'", {
                "'lspline' functionality no longer supported")
 })
 
-
 ### warning handling
 
 test_that("regress() gives warning if fnctl != 'geometric mean' and replaceZeroes != FALSE", {
