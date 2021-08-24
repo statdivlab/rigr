@@ -8,8 +8,7 @@ dummy(
   x,
   subset = rep(T, length(x)),
   reference = sort(unique(x[!is.na(x)])),
-  includeAll = F,
-  version = F
+  includeAll = F
 )
 }
 \arguments{
@@ -23,9 +22,6 @@ desired.}
 
 \item{includeAll}{logical value indicating whether all of the dummy
 variables should be returned (including the reference).}
-
-\item{version}{if \code{TRUE}, returns the version of the function and
-nothing else.}
 }
 \value{
 A matrix containing the dummy

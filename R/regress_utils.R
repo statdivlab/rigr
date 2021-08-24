@@ -880,7 +880,11 @@ addArgs <- function(varname, var, type){
     varname <- unlist(strsplit(varname, "(", fixed=TRUE))[2]
     varname <- unlist(strsplit(varname, ")", fixed=TRUE))[1]
     varname <- unlist(strsplit(varname, ",", fixed=TRUE))[1]
-    varnames <- rev(pasteOn(rep(varname, att$dim[2]), ".", att$dim[2]+args$reference))
+    if (is.numeric(args$reference)) {
+      varnames <- rev(pasteOn(rep(varname, att$dim[2]), ".", att$dim[2]+args$reference))
+    } else {
+      varnames <- paste0(varname, ".", att$groups)
+    }
   } else {
     varname <- unlist(strsplit(varname, "(", fixed=TRUE))[2]
     mini <- any(grepl("min", att$dimnames[[2]], fixed=TRUE))
@@ -998,9 +1002,9 @@ myNext <- function(num, vec){
 #' Function to tack on args and return appropriate names for printing
 #' Used to live in pasting_args.R
 #' 
-#' @param p
-#' @param h
-#' @param mf
+#' @param p preds
+#' @param h hyperpreds
+#' @param mf model frame
 #' 
 #' @return 
 #' 
@@ -1018,6 +1022,7 @@ reFormatReg <- function(p, h, mf){
   indices <- movingSum(indices)
   indices <- indices[indices>0]
   indx <- indices[1]
+  
   #cols <- preds ## fix cols in loops
   if(any(lspline)){
     tmp <- h[lspline]
@@ -1116,7 +1121,7 @@ reFormatReg <- function(p, h, mf){
   if(any(dummy)){
     tmp <- h[dummy]
     for(i in 1:length(tmp)){
-      tmp2 <- addArgs(tmp[i], mf[,tmp[i]], type="dum")
+      tmp2 <- addArgs(tmp[i], mf[,tmp[i]], type="dum") 
       args[[indx]] <- tmp2[[2]]
       nms <- tmp2[[1]]
       ## get the correct naming
@@ -1141,7 +1146,9 @@ reFormatReg <- function(p, h, mf){
           repsplit <- c(repsplit, rep(nms[j], len))
         }
       }
-      split[grepl(tmp[i], split, fixed=TRUE)] <- repsplit
+      # Note from Taylor: this throws a warning, but the results seem to end up okay
+      # This is a temporary fix, and should be addressed in the future
+      suppressWarnings(split[grepl(tmp[i], split, fixed=TRUE)] <- repsplit) 
       ## paste back in, if interactions
       if(!bool){
         split[(args[[indx]]$num+1):length(split)] <- pastePair(split[(args[[indx]]$num+1):length(split)])
