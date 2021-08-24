@@ -109,7 +109,7 @@ values in place of defaults in the appropriate places.
 \examples{
 
 #- Read in data set -#
-psa <- read.table("http://www.emersonstatistics.com/datasets/psa.txt", header=TRUE)
+data(psa)
 attach(psa)
 
 #- Perform t-test -#

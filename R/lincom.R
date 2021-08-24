@@ -35,7 +35,7 @@
 #' library(sandwich)
 #' 
 #' # Reading in a dataset
-#' mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt",header=TRUE)
+#' data(mri)
 #' attach(mri)
 #' 
 #' # Linear regression of LDL on age (with robust SE by default)

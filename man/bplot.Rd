@@ -104,7 +104,7 @@ function also supports stratification.
 \examples{
 
 #- Read in and attach the data -#
-mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header=TRUE)
+data(mri)
 attach(mri)
 
 #- Produce box plot with jittered data, sample mean, and sd -#
