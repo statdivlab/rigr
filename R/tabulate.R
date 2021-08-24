@@ -101,7 +101,7 @@
 #' 
 #' ## for diabetes vs male by race, perform chi-squared test, display 
 #' ## odds ratio/risk ratio, mantel-haenzsel, likelihood ratio chi-squared
-#' tabulate(diabetes, male, race, dispRatios=TRUE, tests=c("lrchisq", "mh"))
+#' tabulate(diabetes, sex, race, dispRatios=TRUE, tests=c("lrchisq", "mh"))
 #' 
 #' @export tabulate
 tabulate <- function(..., dispRatios=FALSE, stratified=TRUE, tests=NULL, stat="count", na.rm=TRUE,

@@ -123,7 +123,7 @@ tabulate(stroke, race, tests=c("lrchisq", "fisher"))
 
 ## for diabetes vs male by race, perform chi-squared test, display 
 ## odds ratio/risk ratio, mantel-haenzsel, likelihood ratio chi-squared
-tabulate(diabetes, male, race, dispRatios=TRUE, tests=c("lrchisq", "mh"))
+tabulate(diabetes, sex, race, dispRatios=TRUE, tests=c("lrchisq", "mh"))
 
 }
 \seealso{
