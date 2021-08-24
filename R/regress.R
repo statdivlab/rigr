@@ -497,13 +497,7 @@ regress <- function(fnctl, formula, data,
       stop("negative weights not allowed")
     }
     
-    # Note from Taylor: this error message should happen earlier, and also y doesn't have rows
     offset <- as.vector(model.offset(mf))
-    if (!is.null(offset)) {
-      if (length(offset) != NROW(y)) 
-        stop(gettextf("number of offsets is %d should equal %d (number of observations)", 
-                      length(offset), NROW(y)), domain = NA)
-    }
     
     # get starting values for glm fit
     start <- model.extract(mf, "start")
