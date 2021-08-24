@@ -133,7 +133,7 @@ ttesti <- function(obs,
       } else if (alternative == "less"){
         p <- pt(tstat, obs - 1)
       } else {
-        p <- 1-pt(abs(tstat), obs-1)
+        p <- 1-pt(tstat, obs-1)
       }
     } else{
       if(var.eq){
@@ -175,7 +175,7 @@ ttesti <- function(obs,
         } else if (alternative == "less"){
           p <- pt(tstat, obs + obs2 - 2)
         } else {
-          p <- 1-pt(abs(tstat), obs+obs2-2)
+          p <- 1-pt(tstat, obs+obs2-2)
         }
       } else {
         stdErr1 <- sd/sqrt(obs)
@@ -215,7 +215,7 @@ ttesti <- function(obs,
         } else if (alternative == "less"){
           p <- pt(tstat, df)
         } else {
-          p <- 1-pt(abs(tstat), df)
+          p <- 1-pt(tstat, df)
         }
       }
     }

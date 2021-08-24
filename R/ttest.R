@@ -130,7 +130,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
     if (!is.logical(var.eq)) {
       stop("Please specify a logical value for variable 'var.eq'")
     }
-    if (!is.numeric(null.hypoth) ||  length(null.hypoth) > 1 || !is.finite(null.hypoth)){
+    if (!(is.scalar(null.hypoth))){
       stop("Null must be a scalar.")
     }
     if (!((length(conf.level) == 1L) && is.finite(conf.level) && 
