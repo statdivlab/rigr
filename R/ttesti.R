@@ -119,18 +119,19 @@ ttesti <- function(obs,
       CIupper <- mean+qt(conf.level+(1-conf.level)/2, obs-1)*stdErr
       tstat <- (mean-null.hypoth)/(stdErr)
       printMat <- matrix(c(obs, 
-                           round(mean,digits), 
-                           round(stdErr, digits), 
-                           round(sd, digits), 
-                           paste("[",round(CIlower, digits),", ", round(CIupper, digits), "]", sep="")), nrow=1)
+                           format(mean, digits = digits), 
+                           format(stdErr, digits = digits), 
+                           format(sd, digits = digits), 
+                           paste("[",format(CIlower, digits = digits),", ", 
+                                 format(CIupper, digits=digits), "]", sep="")), nrow=1)
       colnames(printMat) <- c("Obs", "Mean", "Std. Error", "Std. Dev.", paste0(conf.level*100, "% CI"))
-      rownames(printMat) <- "x"
+      rownames(printMat) <- "var1"
       
       df <- obs - 1
       if(alternative == "two.sided"){
         p <- 2*pt(-abs(tstat), obs-1)
       } else if (alternative == "less"){
-        p <- pt(-abs(tstat), obs - 1)
+        p <- pt(tstat, obs - 1)
       } else {
         p <- 1-pt(abs(tstat), obs-1)
       }
@@ -148,22 +149,24 @@ ttesti <- function(obs,
         CIupperDiff <- (mean-mean2)+qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
         
         printMat <- matrix(c(obs, 
-                             round(mean,digits), 
-                             round(stdErr1, digits), 
-                             round(sd, digits), 
-                             paste("[",round(CIlower1, digits),", ", round(CIupper1, digits), "]", sep="")), nrow=1)
+                             format(mean,digits = digits), 
+                             format(stdErr1, digits = digits), 
+                             format(sd, digits = digits), 
+                             paste("[",format(CIlower1, digits = digits),", ", 
+                                   format(CIupper1, digits=digits), "]", sep="")), nrow=1)
         colnames(printMat) <- c("Obs", "Mean", "Std. Error", "Std. Dev.", paste0(conf.level*100, "% CI"))
         printMat <- rbind(printMat, c(obs2, 
-                                      round(mean2,digits), 
-                                      round(stdErr2, digits), 
-                                      round(sd2, digits), 
-                                      paste("[",round(CIlower2, digits),", ", round(CIupper2, digits), "]", sep="")))
+                                      format(mean2,digits = digits), 
+                                      format(stdErr2, digits = digits), 
+                                      format(sd2, digits = digits), 
+                                      paste("[",format(CIlower2, digits = digits),", ", 
+                                            format(CIupper2, digits = digits), "]", sep="")))
         printMat <- rbind(printMat, c(obs+obs2, 
-                                      round(mean-mean2,digits), 
-                                      round(stdErrDiff, digits), "<NA>", 
-                                      paste("[",round(CIlowerDiff, digits),", ", 
-                                            round(CIupperDiff, digits), "]", sep="")))
-        rownames(printMat) <- c("x", "y", "diff")
+                                      format(mean-mean2,digits = digits), 
+                                      format(stdErrDiff, digits = digits), "<NA>", 
+                                      paste("[",format(CIlowerDiff, digits = digits),", ", 
+                                            format(CIupperDiff, digits = digits), "]", sep="")))
+        rownames(printMat) <- c("var1", "var2", "diff")
         
         df <- obs+obs2-2
 
@@ -188,20 +191,24 @@ ttesti <- function(obs,
         CIupperDiff <- (mean-mean2)+qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
         
         printMat <- matrix(c(obs, 
-                             round(mean, digits), 
-                             round(stdErr1, digits), 
-                             round(sd, digits), 
-                             paste("[",round(CIlower1, digits),", ", round(CIupper1, digits), "]", sep="")), nrow=1)
+                             format(mean, digits =digits), 
+                             format(stdErr1, digits =digits), 
+                             format(sd, digits =digits), 
+                             paste("[",format(CIlower1, digits =digits),", ", 
+                                   format(CIupper1, digits =digits), "]", sep="")), nrow=1)
         colnames(printMat) <- c("Obs", "Mean", "Std. Error", "Std. Dev.", paste0(conf.level*100, "% CI"))
         printMat <- rbind(printMat,c(obs2, 
-                                     round(mean2, digits), 
-                                     round(stdErr2, digits), 
-                                     round(sd2, digits), 
-                                     paste("[",round(CIlower2, 2),", ", round(CIupper2, digits), "]", sep="")))
+                                     format(mean2, digits =digits), 
+                                     format(stdErr2, digits =digits), 
+                                     format(sd2, digits =digits), 
+                                     paste("[",format(CIlower2, digits = digits),", ", 
+                                           format(CIupper2, digits =digits), "]", sep="")))
         printMat <- rbind(printMat,
-                          c(obs+obs2, round(mean-mean2, digits), round(stdErrDiff, digits), "<NA>", 
-                            paste("[",round(CIlowerDiff, digits),", ", round(CIupperDiff, digits), "]", sep="")))
-        rownames(printMat) <- c("x", "y", "diff")
+                          c(obs+obs2, format(mean-mean2, digits =digits), 
+                            format(stdErrDiff, digits =digits), "<NA>", 
+                            paste("[",format(CIlowerDiff, digits =digits),", ", 
+                                  format(CIupperDiff, digits =digits), "]", sep="")))
+        rownames(printMat) <- c("var1", "var2", "diff")
 
         if(alternative == "two.sided"){
           p <- 2*pt(-abs(tstat), df)
