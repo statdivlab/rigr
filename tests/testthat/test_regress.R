@@ -51,6 +51,11 @@ test_that("regress() throws error if method is neither a function nor string", {
                "invalid 'method' argument")
 })
 
+test_that("regress() throws error if formula includes 'lspline'", {
+  expect_error(regress("mean", atrophy~age + lspline(sex), data = mri), 
+               "'lspline' functionality no longer supported")
+})
+
 
 ### warning handling
 

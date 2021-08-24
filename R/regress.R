@@ -128,6 +128,11 @@ regress <- function(fnctl, formula, data,
     stop("You must enter a formula")
   }
   
+  # throw error if "lspline" is present in the formula, no longer supported
+  if (any(grepl("lspline", as.character(formula)))) {
+    stop("'lspline' functionality no longer supported")
+  }
+  
   # ensure fnctl is one of the ones supported
   if (!(fnctl %in% c("mean", "geometric mean", "odds", "rate"))) {
     stop("unsupported functional")
