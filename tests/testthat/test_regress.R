@@ -368,6 +368,53 @@ test_that("regress() returns same output as lm() when doing F-test using U() fun
                smoke_p)
 })
 
+### Utilization of U() in a glm
+
+mod_rigr <- regress("odds", sex_bin ~ age + U(smoke = ~packyrs + yrsquit), data = mri, useFdstn = FALSE)
+mod_glm <- glm(data = mri, sex_bin ~ age + packyrs + yrsquit, family = binomial(link = "logit"))
+mod_glm_robust_se <- sqrt(diag(sandwich::sandwich(mod_glm, adjust = TRUE)))
+mod_glm_robust_ci_lower <- mod_glm$coefficients + qnorm((1 - 0.95)/2) * mod_glm_robust_se
+mod_glm_robust_ci_higher <- mod_glm$coefficients - qnorm((1 - 0.95)/2) * mod_glm_robust_se
+mod_glm_robust_p <- 2 * pnorm(abs(mod_glm$coefficients/ mod_glm_robust_se), lower.tail = FALSE)
+
+R <- matrix(c(0,0,1,0,
+              0,0,0,1), nrow = 2, byrow = TRUE)
+theta_hat <- mod_glm$coefficients
+n <- 2
+V_hat <- sandwich::sandwich(mod_glm, adjust = TRUE)
+smoke_F <- as.vector(t(R %*% theta_hat) %*% solve(R %*% (V_hat) %*% t(R)) %*% (R %*% theta_hat) / n)
+smoke_p <- 1 - pchisq(smoke_F, 2)
+
+test_that("regress() returns same output as lm() when doing F-test using U() function", {
+  # Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
+               mod_glm$coefficients)
+  # Naive SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"],
+               summary(mod_glm)$coefficients[,2])
+  # Robust SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"],
+               mod_glm_robust_se)
+  # z value (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "z value"],
+               mod_glm$coefficients/ mod_glm_robust_se)
+  # 95%L (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "e(95%L)"],
+               exp(mod_glm_robust_ci_lower))
+  # 95%H (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "e(95%H)"],
+               exp(mod_glm_robust_ci_higher))
+  # p-value
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|z|)"],
+               mod_glm_robust_p)
+  # F-stat for smoke
+  expect_equal(mod_rigr$augCoefficients["smoke","Chi2 stat"],
+               smoke_F)
+  # p-value for smoke
+  expect_equal(mod_rigr$augCoefficients["smoke","Pr(>Chi2)"],
+               smoke_p)
+})
+
 ### replaceZeroes = TRUE, fnctl = 'geometric mean'
 
 mod_rigr <- regress("geometric mean", packyrs ~ age, data = mri, replaceZeroes = TRUE)
@@ -866,5 +913,39 @@ test_that("dummy() returns all columns when includeAll = TRUE", {
   expect_equal(fem_ref[,1],
                my_dum[,2])
 })
+
+### weights work as expected
+
+mod_rigr <- regress("mean", atrophy ~ age, data = mri, weights = as.numeric(1:nrow(mri)))
+mod_lm <- lm(data = mri, atrophy ~ age, weights = as.numeric(1:nrow(mri)))
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 2) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 2) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 2, lower.tail = FALSE)
+
+test_that("regress() returns same output as lm() when weights included", {
+  # Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
+               mod_lm$coefficients)
+  # Naive SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"],
+               summary(mod_lm)$coefficients[,2])
+  # Robust SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"],
+               mod_lm_robust_se)
+  # 95%L (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"],
+               mod_lm_robust_ci_lower)
+  # 95%H (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"],
+               mod_lm_robust_ci_higher)
+  # t value (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"],
+               mod_lm$coefficients/ mod_lm_robust_se)
+  # p-value
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"],
+               mod_lm_robust_p)
+})
+
 
 

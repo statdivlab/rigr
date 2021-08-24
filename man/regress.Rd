@@ -43,9 +43,6 @@ regress(
   suppress = FALSE,
   na.action,
   method = "qr",
-  model.f = TRUE,
-  model.x = FALSE,
-  model.y = FALSE,
   qr = TRUE,
   singular.ok = TRUE,
   contrasts = NULL,
@@ -108,7 +105,7 @@ with only the exponentiated coefficients and confidence interval is
 returned. Otherwise, two tables are returned - one with the original
 unexponentiated coefficients, and one with the exponentiated coefficients.}
 
-\item{na.action, model.f, model.x, model.y, qr, singular.ok, offset, contrasts, control}{optional arguments that are passed to the functionality of \code{lm} or
+\item{na.action, qr, singular.ok, offset, contrasts, control}{optional arguments that are passed to the functionality of \code{lm} or
 \code{glm}.}
 
 \item{method}{the method to be used in fitting the model. The default value for
