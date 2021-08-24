@@ -12,12 +12,13 @@
 #' variables.
 #' @examples
 #' 
-#'   data(mri)
-#'   # Create a dummy variable for chd
-#'   dummy(mri$chd)
+#' data(mri)
+#' 
+#' # Create a dummy variable for chd
+#' dummy(mri$chd)
 #' 
 #' @export dummy
-dummy <- function(x,subset=rep(T,length(x)),reference=sort(unique(x[!is.na(x)])),includeAll=F) {
+dummy <- function(x, subset=rep(T,length(x)), reference=sort(unique(x[!is.na(x)])),includeAll=FALSE) {
 	cl <- match.call()
 	nm <- deparse(cl[[2]])
 	
@@ -39,11 +40,10 @@ dummy <- function(x,subset=rep(T,length(x)),reference=sort(unique(x[!is.na(x)]))
 	  dimnames(X) <- list(NULL,reference)
 	} else if (length(reference) > 2) {
 		dimnames(X) <- list(NULL,paste(reference[-1]," vs ",reference[1],sep=""))
-	} else if (length(reference) == 2) {
-	  dimnames(X) <- list(NULL,paste("dummy(", nm, ")." ,reference[-1]," vs ",reference[1],sep=""))
 	} else {
-	  dimnames(X) <- list(NULL,paste(reference[-1]," vs ",reference[1],sep=""))
-	}
+	  dimnames(X) <- list(NULL,paste("dummy(", nm, ")." ,reference[-1]," vs ",reference[1],sep=""))
+	} 
+	
 	attr(X,"transformation") <- "dummy"
 	attr(X,"reference") <- reference
   attr(X, "name") <- paste("dummy(", nm, ")", sep="")

@@ -827,3 +827,34 @@ test_that("regress() works with binary dummy variables", {
                mod_lm_robust_p)
 })
 
+### a few unit tests for dummy
+
+rigr_dum <- dummy(mri$sex, includeAll = TRUE)
+my_dum <- cbind(Female = ifelse(mri$sex == "Female", 1, 0),
+                 Male = ifelse(mri$sex == "Male", 1, 0))
+
+test_that("dummy() returns all columns when includeAll = TRUE", {
+  # vectors are the same
+  expect_equal(rigr_dum[,1],
+               my_dum[,1])
+  expect_equal(rigr_dum[,2],
+               my_dum[,2])
+  # dimnames are returned currently
+  expect_equal(dimnames(rigr_dum)[[2]],
+               c("Female","Male"))
+
+})
+
+# check that reference works appropriately
+male_ref <- dummy(mri$sex, reference = "Male") 
+fem_ref <- dummy(mri$sex, reference = "Female") 
+
+test_that("dummy() returns all columns when includeAll = TRUE", {
+  # vectors are the same
+  expect_equal(male_ref[,1],
+               my_dum[,1])
+  expect_equal(fem_ref[,1],
+               my_dum[,2])
+})
+
+

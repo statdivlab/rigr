@@ -8,7 +8,7 @@ dummy(
   x,
   subset = rep(T, length(x)),
   reference = sort(unique(x[!is.na(x)])),
-  includeAll = F
+  includeAll = FALSE
 )
 }
 \arguments{
@@ -32,8 +32,9 @@ Create Dummy Variables
 }
 \examples{
 
-  data(mri)
-  # Create a dummy variable for chd
-  dummy(mri$chd)
+data(mri)
+
+# Create a dummy variable for chd
+dummy(mri$chd)
 
 }
