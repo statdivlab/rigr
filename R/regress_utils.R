@@ -583,19 +583,14 @@ parsePartials <- function(form, modelframe, mat){
 #' @examples
 #' 
 #' # Reading in a dataset
-#' mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header=TRUE)
-#' attach(mri)
-#' # Create a spline based on absolute
-#' U(ldl, type="lspline", knots=c(70, 100, 130, 160))
-#' U(ldl, type="ls", knots=c(70,100,130,160))
-#' 
-#' # Create a spline based on change
-#' U(ldl, type="ls", knots=c(70, 100, 130, 160), parameterization="change")
+#' data(mri)
 #' 
 #' # Create a log transformed variable
-#' U(age, type="log")
+#' U(mri$age, type="log")
 #' 
-#' ## Create a partial formula
+#' # Create a partial formula
+#' # Note that the following example must be specified inside of a \code{regress} 
+#' call where data can be accessed
 #' U(ma=~male+age)
 #' 
 #' 
@@ -830,12 +825,12 @@ pasteTwo <- function(vec){
   }
 }
 
-#' Function to add the correct args onto a polynomial, dummy, or lspline term
+#' Function to add the correct args onto a polynomial or dummy term
 #' Used to live in pasting_args.R
 #' 
 #' @param varname the variable name
 #' @param var the variable itself
-#' @param type a string, corresponding to either "polynomial", "lspline", or "dummy"
+#' @param type a string, corresponding to either "polynomial" or "dummy"
 #' 
 #' @return 
 #' 
@@ -958,72 +953,18 @@ myNext <- function(num, vec){
 #' @keywords internal
 #' @noRd
 reFormatReg <- function(p, h, mf){
-  lspline <- grepl("lspline", h)
   polynomial <- grepl("polynomial", h)
   dummy <- grepl("dummy", h)
   args <- as.list(h)
   
   parens <- grepl(")", p, fixed=TRUE)
   interact <- grepl(":", p, fixed=TRUE)
-  indices <- lspline | dummy | polynomial
+  indices <- dummy | polynomial
   indices <- movingSum(indices)
   indices <- indices[indices>0]
   indx <- indices[1]
   
   #cols <- preds ## fix cols in loops
-  if(any(lspline)){
-    tmp <- h[lspline]
-    for(i in 1:length(tmp)){
-      tmp2 <- addArgs(tmp[i], mf[,tmp[i]], type="ls")
-      args[[indx]] <- tmp2[[2]]
-      nms <- tmp2[[1]]
-      ## get the correct naming
-      current <- p[grepl(tmp[i], p, fixed=TRUE)]
-      split <- unlist(strsplit(current, ":", fixed=TRUE))
-      ## remove the extraneous "min", 85, etc
-      if(any(split=="min")){
-        split <- split[split!="min"]
-      }
-      if(any(split=="max")){
-        split <- split[split!="max"]
-      }
-      args[[indx]]$num <- args[[indx]]$num
-      numSplit <- suppressWarnings(as.numeric(split))
-      if(any(!is.na(numSplit))){
-        split <- split[is.na(numSplit)]
-      }
-      bool <- length(current)==length(split)
-      repsplit <- split[grepl(tmp[i], split, fixed=TRUE)]
-      even <- FALSE
-      if(length(grepl(tmp[i], split, fixed=TRUE))>=3){
-        if(grepl(tmp[i], split, fixed=TRUE)[3]){
-          even <- FALSE
-        } else {
-          even <- TRUE
-        }
-      }
-      if(!even){
-        repsplit <- rep(nms, length(repsplit)/(args[[indx]]$num))
-      } else {
-        len <- length(repsplit)/(args[[indx]]$num)-1
-        repsplit <- rep(nms, 1)
-        for(j in 1:length(nms)){
-          repsplit <- c(repsplit, rep(nms[j], len))
-        }
-      }
-      split[grepl(tmp[i], split, fixed=TRUE)] <- repsplit
-      ## paste back in, if interactions
-      if(!bool){
-        split[(args[[indx]]$num+1):length(split)] <- pastePair(split[(args[[indx]]$num+1):length(split)])
-        split <- unique(split)
-        current <- split
-      } else {
-        current <- split
-      }
-      p[grepl(tmp[i], p, fixed=TRUE)] <- current
-      indx <- myNext(indx, indices)
-    }
-  }
   if(any(polynomial)){
     tmp <- h[polynomial]
     for(i in 1:length(tmp)){
@@ -1126,33 +1067,19 @@ reFormatReg <- function(p, h, mf){
 #' @noRd
 createCols <- function(pds, tms){
   interact <- grepl(":", pds, fixed=TRUE)
-  lspline <- grepl("lspline", pds, fixed=TRUE)
-  if(lspline){
-    char <- explode(pds)
-    if(sum(grepl(":", char, fixed=TRUE))==1){
-      interact <- rep(FALSE, length(interact))
-    }
-  }
+
   if(!interact){
     ## split on )
     pds <- unlist(strsplit(pds, ")"))[1]
     t <- tms[grepl(pds, tms, fixed=TRUE)][1]
-    if(sum(grepl(pds, tms, fixed=TRUE))>2 & any(grepl("lspline", tms))){
-      t <- tms[grepl(pds, tms, fixed=TRUE)][2]
-    }
   } else {
     vec <- unlist(strsplit(pds, ":"))
-    if(lspline){
-      vec <- vec[-2]
-    }
     t <- NULL
     for(i in 1:length(vec)){
       pds <- unlist(strsplit(vec[i], ")"))[1]
-      if(sum(grepl(pds, tms, fixed=TRUE))>2 & lspline){
-        t <- c(t,tms[grepl(pds, tms, fixed=TRUE)][2])
-      } else {
-        t <- c(t, tms[grepl(pds, tms, fixed=TRUE)][1])
-      }
+
+      t <- c(t, tms[grepl(pds, tms, fixed=TRUE)][1])
+      
     }
     t <- paste(t, collapse=":")
   }
@@ -1493,7 +1420,7 @@ getLevels <- function(nms, coefNums, termnms, term.lbls, level){
   u <- grepl("U", nms)
   nested[u] <- FALSE
   
-  ## is a lspline or dummy
+  ## is a dummy
   tmp <- NULL
   tmp2 <- NULL
   if(any(dot)){

@@ -55,19 +55,14 @@ by adding an equals sign before the tilde.
 \examples{
 
 # Reading in a dataset
-mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header=TRUE)
-attach(mri)
-# Create a spline based on absolute
-U(ldl, type="lspline", knots=c(70, 100, 130, 160))
-U(ldl, type="ls", knots=c(70,100,130,160))
-
-# Create a spline based on change
-U(ldl, type="ls", knots=c(70, 100, 130, 160), parameterization="change")
+data(mri)
 
 # Create a log transformed variable
-U(age, type="log")
+U(mri$age, type="log")
 
-## Create a partial formula
+# Create a partial formula
+# Note that the following example must be specified inside of a \code{regress} 
+call where data can be accessed
 U(ma=~male+age)
 
 
