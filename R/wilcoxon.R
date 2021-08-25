@@ -302,7 +302,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       expectedX <- n.x*(n.y + n.x + 1)/2#(rankSumX+rankSumY)/2
       # if (is.null(exact)) 
       #   exact <- (n.y < 50) && (n.x < 50)
-      STATISTIC <- c(W = sum(r[seq_along(y)]) - n.y * (n.y + 
+      STATISTIC <- c(V = sum(r[seq_along(y)]) - n.y * (n.y + 
                                                          1)/2)
       TIES <- (length(r) != length(unique(r)))
       if (exact && !TIES) { #no need for correction
