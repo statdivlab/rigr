@@ -800,8 +800,8 @@ regress <- function(fnctl, formula, data,
       r <- lst[j] - fst[j] + 1
       cntrst <- matrix(0,r,dim(z$X)[2])
       cntrst[1:r,fst[j]:lst[j]] <- diag(r)
-      cntrst <- cntrst[,!droppedPred,drop=F]
-      cntrst <- cntrst[apply(cntrst!=0,1,any),,drop=F]
+      cntrst <- cntrst[,!droppedPred,drop=FALSE]
+      cntrst <- cntrst[apply(cntrst!=0,1,any),,drop=FALSE]
       zzs$augCoefficients[j,ncol - (1:0)] <- uWaldtest (zzs, cntrst)[1:2]
     }
   }
@@ -870,8 +870,8 @@ regress <- function(fnctl, formula, data,
         r <- sum(indx)
         cntrst <- matrix(0,r,dim(z$X)[2])
         cntrst[1:r, indx] <- diag(r)
-        cntrst <- cntrst[,!droppedPred,drop=F]
-        cntrst <- cntrst[apply(cntrst!=0,1,any),,drop=F]
+        cntrst <- cntrst[,!droppedPred,drop=FALSE]
+        cntrst <- cntrst[apply(cntrst!=0,1,any),,drop=FALSE]
         zzs$augCoefficients <- rbind(zzs$augCoefficients, rep(NA, dim(zzs$augCoefficients)[2]))
         dimnames(zzs$augCoefficients)[[1]][j] <- names(tmplist)[i]
         zzs$augCoefficients[j,ncol - (1:0)] <- uWaldtest (zzs, cntrst)[1:2]
@@ -897,8 +897,8 @@ regress <- function(fnctl, formula, data,
         r <- sum(indx)
         cntrst <- matrix(0,r,dim(z$X)[2])
         cntrst[1:r, indx] <- diag(r)
-        cntrst <- cntrst[,!droppedPred,drop=F]
-        cntrst <- cntrst[apply(cntrst!=0,1,any),,drop=F]
+        cntrst <- cntrst[,!droppedPred,drop=FALSE]
+        cntrst <- cntrst[apply(cntrst!=0,1,any),,drop=FALSE]
         zzs$augCoefficients <- rbind(zzs$augCoefficients, rep(NA, dim(zzs$augCoefficients)[2]))
         dimnames(zzs$augCoefficients)[[1]][j] <- nm[i]
         zzs$augCoefficients[j,ncol - (1:0)] <- uWaldtest (zzs, cntrst)[1:2]
@@ -909,7 +909,7 @@ regress <- function(fnctl, formula, data,
   }
   
   j <- dim(zzs$augCoefficients)[2]
-  zzs$augCoefficients <- suppressWarnings(cbind(zzs$augCoefficients[,-j,drop=F],df=lst-fst+1,zzs$augCoefficients[,j,drop=F]))
+  zzs$augCoefficients <- suppressWarnings(cbind(zzs$augCoefficients[,-j,drop=FALSE],df=lst-fst+1,zzs$augCoefficients[,j,drop=FALSE]))
   zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1] <- ifelse(is.na(zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-2]), NA, zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1])
   if (length(tmplist)>0 & !is.null(dfs)) {
     for (i in 1:length(dfs)) {

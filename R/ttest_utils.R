@@ -65,8 +65,8 @@ print.ttest <-
         inferencet <- paste("t = ", tstat, sep = "")
         inferencedf <- paste("df = ",dfr, sep = "")
         inferencep <- paste(par1[3],pval)
-        if (matched == F) {cat("\nTwo-sample t-test", par2, ":\n", collapse = "\n")}
-        if (matched == T) {cat("\nTwo-sample (matched) t-test", par2, ":\n", collapse = "\n")}
+        if (!matched) {cat("\nTwo-sample t-test", par2, ":\n", collapse = "\n")}
+        if (matched) {cat("\nTwo-sample (matched) t-test", par2, ":\n", collapse = "\n")}
         if (!geom) {
           cat("Summary:\n")
           print(main)
@@ -86,8 +86,8 @@ print.ttest <-
         inferencet <- paste("t = ", tstat, sep = "")
         inferencedf <- paste("df = ",dfr, sep = "")
         inferencep <- paste(par1[3],pval)
-        if (matched == F) {cat("\nTwo-sample t-test", par2, ":\n", collapse = "\n")}
-        if (matched == T) {cat("\nTwo-sample (matched) t-test", par2, ":\n", collapse = "\n")}
+        if (!matched) {cat("\nTwo-sample t-test", par2, ":\n", collapse = "\n")}
+        if (matched) {cat("\nTwo-sample (matched) t-test", par2, ":\n", collapse = "\n")}
         if (!geom) {
           cat("Summary:\n")
           print(main)

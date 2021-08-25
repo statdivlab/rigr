@@ -649,7 +649,7 @@ print.uDescriptives <- function (x, ..., sigfigs=max(3,getOption("digits")-3),wi
     # centers all but df and P value, which is right justified
     
     cmptRoundDigits <- function (x, sf) {
-        y <- max(abs(x),na.rm=T)
+        y <- max(abs(x),na.rm=TRUE)
         if (y==0) {
             sf
         } else {
@@ -682,9 +682,9 @@ print.uDescriptives <- function (x, ..., sigfigs=max(3,getOption("digits")-3),wi
     mincol <- (1:ncol)[dimnames(x)[[2]]==" Min"]
     maxcol <- (1:ncol)[dimnames(x)[[2]]==" Max"]
     censMin <- x[,"firstEvent"] > x[,mincol]
-    censMin[is.na(censMin)] <- F
+    censMin[is.na(censMin)] <- FALSE
     censMax <- x[,"lastEvent"] < x[,maxcol]
-    censMax[is.na(censMax)] <- F
+    censMax[is.na(censMax)] <- FALSE
     if (!any(censMax)) {
         restriction <- NULL
     } else {
@@ -693,7 +693,7 @@ print.uDescriptives <- function (x, ..., sigfigs=max(3,getOption("digits")-3),wi
         restriction[!censMax] <- ""
         restriction <- format(restriction, justify="left")
     }
-    frmtCoefficients <- format(x[,1:(ncol-4),drop=F])
+    frmtCoefficients <- format(x[,1:(ncol-4),drop=FALSE])
     for (j in 1:2) frmtCoefficients[,j] <- format (x[,j],justify="right",width=5)
     frmtCoefficients[,mincol] <- frmtCol (x[,mincol],sigfigs,nonsci.limit,width,ifelse(censMin,"+",""))
     for (j in 3:5) frmtCoefficients[,j] <- frmtCol (x[,j],sigfigs,nonsci.limit,width,ifelse(censMax,"+",""))
@@ -722,7 +722,7 @@ print.uDescriptives <- function (x, ..., sigfigs=max(3,getOption("digits")-3),wi
     }
     if (!is.null(restriction)) frmtCoefficients <- cbind(frmtCoefficients[,1:2,drop=F],
                                                          "Restrict"=restriction,frmtCoefficients[,-(1:2),drop=F])
-    if(print.it) print(frmtCoefficients,quote=F)
+    if(print.it) print(frmtCoefficients,quote=FALSE)
     invisible(frmtCoefficients)
 }
 
