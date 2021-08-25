@@ -452,38 +452,40 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
                           "adjustment for ties", 
                           "adjustment for zeroes", 
                           "adjusted variance")
-      ## format z and pvalue
+      ## format test stat and pvalue
       if(conf.int){
-        inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), 
-                        paste("[", cint[1],", ", cint[2],"]", sep=""), ESTIMATE), nrow=1)
         # if exact test, do not calculate z-score or corresponding p
         if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
-          inf <- rbind(inf, 
-                       matrix(c(format(z, digits=5), 
-                                format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
-                                              two.sided=2*min(pnorm(z),1-pnorm(z))), digits = 5),
-                                " ", " "), 
-                              nrow=1))
+          inf <-  matrix(c(format(z, digits=5), 
+                           format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
+                                          two.sided=2*min(pnorm(z),1-pnorm(z))), digits = 5),
+                           paste("[", format(cint[1], digits = 5),", ", 
+                                 format(cint[2], digits = 5),"]", sep=""), format(ESTIMATE, digits = 5)), 
+                              nrow=1)
+        } else{
+          inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), 
+                          paste("[", format(cint[1], digits = 5),", ", 
+                                format(cint[2], digits = 5),"]", sep=""), format(ESTIMATE, digits = 5)), nrow=1)
         }
         colnames(inf) <- c("Test Statistic", "p-value", "CI", "Point Estimate")
       } else {
-        inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
         if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
-          inf <- rbind(inf, 
-                       matrix(c(format(z, digits=5), 
+          inf <-  matrix(c(format(z, digits=5), 
                                 format(switch(alternative,
                                               less=pnorm(z), 
                                               greater=1-pnorm(z), 
                                               two.sided=2*min(pnorm(z),1-pnorm(z))), 
                                        digits = 5)), 
-                              nrow=1))
+                              nrow=1)
+        } else{
+          inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
         }
         colnames(inf) <- c("Test Statistic", "p-value")
       }
       if ("exact" %in% strsplit(METHOD, " ")[[1]]){
         rownames(inf) <- c(names(STATISTIC))
       } else{
-        rownames(inf) <- c(names(STATISTIC), "Z")
+        rownames(inf) <- c("Z")
       }
       hyps <- matrix(c(mu, alternative),nrow=1)
       colnames(hyps) <- c("H0", "Ha")
@@ -500,37 +502,42 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       rownames(vars) <- c("unadjusted variance", "adjustment for ties", "adjusted variance")
       ## format z and pvalue
       if(conf.int){
-        inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), 
-                        paste("[", cint[1],", ", cint[2],"]", sep=""), ESTIMATE), nrow=1)
         if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
-          inf <- rbind(inf, 
-                       matrix(c(format(z, digits=5),
+          inf <- matrix(c(format(z, digits=5),
                                 format(switch(alternative,
                                               less=pnorm(z), 
                                               greater=1-pnorm(z), 
                                               two.sided=2*min(pnorm(z),1-pnorm(z))), 
-                                       digits=5), " ", " "), 
-                              nrow=1))
+                                       digits=5), paste("[", 
+                                                        format(cint[1], digits = 5),", ", 
+                                                        format(cint[2], digits = 5),"]", sep=""), 
+                          format(ESTIMATE, digits = 5)), 
+                              nrow=1)
+        } else{
+          inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5), 
+                          paste("[", format(cint[1], digits = 5),", ", 
+                                format(cint[2], digits = 5),"]", sep=""), 
+                          format(ESTIMATE, digits = 5)), nrow=1)
         }
         colnames(inf) <- c("Test Statistic", "p-value", "CI", "Point Estimate")
       } else {
-        inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
         if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
-          inf <- rbind(inf, 
-                       matrix(c(format(z, digits=5), 
+          inf <- matrix(c(format(z, digits=5), 
                                 format(switch(alternative,
                                               less=pnorm(z), 
                                               greater=1-pnorm(z), 
                                               two.sided=2*min(pnorm(z),1-pnorm(z))), 
                                        digits = 5)), 
-                              nrow=1))
+                              nrow=1)
+        } else{
+          inf <- matrix(c(STATISTIC, format(as.numeric(PVAL), digits=5)), nrow=1)
         }
         colnames(inf) <- c("Test Statistic", "p-value")
       }
       if ("exact" %in% strsplit(METHOD, " ")[[1]]){
         rownames(inf) <- c(names(STATISTIC))
       } else{
-        rownames(inf) <- c(names(STATISTIC), "Z")
+        rownames(inf) <- c("Z")
       }
       hyps <- matrix(c(mu, alternative),nrow=1)
       colnames(hyps) <- c("H0", "Ha")
