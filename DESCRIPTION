@@ -19,11 +19,9 @@ Depends:
     R (>= 3.5.0)
 Imports: 
     Exact,
-    geepack,
     plyr,
     sandwich,
-    tibble,
-    survival
+    tibble
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
