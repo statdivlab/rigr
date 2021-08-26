@@ -38,8 +38,8 @@ print.ttest <-
     if (geom) {partest = c("geometric")}
     if (geom) {partest2 <- "ratio of"}
     
-    if (length(var2) > 1 & !is.na(var2[1]) & matched == F) {
-      par2 <- "presuming equal variances"; if (robust == T) {par2 <- "allowing for unequal variances"}
+    if (length(var2) > 1 & !is.na(var2[1]) & matched == FALSE) {
+      par2 <- "presuming equal variances"; if (robust == TRUE) {par2 <- "allowing for unequal variances"}
     }
     if (length(by) == 1 & is.na(by[1])) { #If not given a strata variable
       if (length(var2) == 1 & is.na(var2[1])) { #If additionally not given second variable

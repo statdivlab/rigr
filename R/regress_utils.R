@@ -595,12 +595,12 @@ parsePartials <- function(form, modelframe, mat){
 #' 
 #' 
 #' @export U
-U <- function(..., type=NULL, subset=rep(T,length(x)), degree=2, reference=sort(unique(x[!is.na(x)])), 
-              center=mean(x,na.rm=T), includeAll=FALSE){
+U <- function(..., type=NULL, subset=rep(TRUE,length(x)), degree=2, reference=sort(unique(x[!is.na(x)])), 
+              center=mean(x,na.rm=TRUE), includeAll=FALSE){
   
   L <- list(...)
-  hypernames <- names(unlist(match.call(expand.dots=F)$...))
-  names(L) <- unlist(match.call(expand.dots=F)$...)
+  hypernames <- names(unlist(match.call(expand.dots=FALSE)$...))
+  names(L) <- unlist(match.call(expand.dots=FALSE)$...)
   if(!is.null(hypernames)){
     names(L) <- hypernames
   }
@@ -1787,7 +1787,7 @@ print.augCoefficients <-
     u <- is.na(x[,1])
     if (any(u)) frmtCoefficients[u,1:(Pvalcol-3)] <- ""
     dimnames(frmtCoefficients)[[1]] <- paste(dimnames(frmtCoefficients)[[1]],"  ")
-    print(frmtCoefficients,quote=F)
+    print(frmtCoefficients,quote=FALSE)
     invisible(frmtCoefficients)
   }
 

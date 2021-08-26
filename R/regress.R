@@ -775,7 +775,7 @@ regress <- function(fnctl, formula, data,
     ci <- exp(ci)
   }
   
-  zzs$coefficients <- cbind(zzs$coefficients[,1:secol,drop=F],ci,zzs$coefficients[,-(1:secol),drop=F])
+  zzs$coefficients <- cbind(zzs$coefficients[,1:secol,drop=FALSE],ci,zzs$coefficients[,-(1:secol),drop=FALSE])
   
   
   u <- fst == lst

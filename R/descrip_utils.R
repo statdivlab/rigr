@@ -372,9 +372,9 @@ describe_surv <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL,
                 for (j in 1:ntholds) {
                     rslt <- c(rslt, ifelse1(thresholds[j, 1] == 
                                                 0, sum_KM(z, thresholds[j, 2]), sum_KM(z, thresholds[j, 
-                                                                                               2], F)) - ifelse1(thresholds[j, 4] == Inf, 
+                                                                                               2], FALSE)) - ifelse1(thresholds[j, 4] == Inf, 
                                                                                                                  0, ifelse1(thresholds[j, 3] == 0, sum_KM(z, 
-                                                                                                                                                       thresholds[j, 4], F), sum_KM(z, thresholds[j, 
+                                                                                                                                                       thresholds[j, 4], FALSE), sum_KM(z, thresholds[j, 
                                                                                                                                                                                                4]))))
                 }
             }
@@ -720,8 +720,8 @@ print.uDescriptives <- function (x, ..., sigfigs=max(3,getOption("digits")-3),wi
             frmtCoefficients[x[,"isDate"]==1,xformCol] <- format(as.Date(x[x[,"isDate"]==1,xformCol],orgn))
         }
     }
-    if (!is.null(restriction)) frmtCoefficients <- cbind(frmtCoefficients[,1:2,drop=F],
-                                                         "Restrict"=restriction,frmtCoefficients[,-(1:2),drop=F])
+    if (!is.null(restriction)) frmtCoefficients <- cbind(frmtCoefficients[,1:2,drop=FALSE],
+                                                         "Restrict"=restriction,frmtCoefficients[,-(1:2),drop=FALSE])
     if(print.it) print(frmtCoefficients,quote=FALSE)
     invisible(frmtCoefficients)
 }
