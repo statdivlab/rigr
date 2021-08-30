@@ -1028,6 +1028,37 @@ test_that("regress() returns same output as lm() when polynomial included in pre
                smoke_p)
 })
 
+### three-way interaction terms
 
+mod_rigr <- regress("mean", atrophy ~ age*race*weight, data = mri)
+mod_lm <- lm(atrophy ~ age*race*weight, data = mri)
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 16) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 16) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 16, lower.tail = FALSE)
+
+test_that("regress() returns same output as lm() for three-way interaction", {
+  # Estimate
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"]),
+               unname(mod_lm$coefficients))
+  # Naive SE
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"]),
+               unname(summary(mod_lm)$coefficients[,2]))
+  # Robust SE
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"]),
+               unname(mod_lm_robust_se))
+  # z value (robust)
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"]),
+               unname(mod_lm$coefficients/ mod_lm_robust_se))
+  # 95%L (robust)
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"]),
+               unname(mod_lm_robust_ci_lower))
+  # 95%H (robust)
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"]),
+               unname(mod_lm_robust_ci_higher))
+  # p-value
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"]),
+               unname(mod_lm_robust_p))
+})
 
 
