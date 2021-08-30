@@ -779,7 +779,7 @@ addArgs <- function(varname, var, type){
     varname <- unlist(strsplit(varname, ",", fixed=TRUE))[1]
     varnames <- rev(pasteOn(rep(varname, args$degree), "^", args$degree))
   } else {
-    args <-list(transformation=args, reference=min(att$reference), num=length(att$reference)-1, nm=att$prnm, param=att$transformation)
+    args <-list(transformation=args, reference=att$reference_name, num=length(att$reference)-1, nm=att$prnm, param=att$transformation)
     varname <- unlist(strsplit(varname, "(", fixed=TRUE))[2]
     varname <- unlist(strsplit(varname, ")", fixed=TRUE))[1]
     varname <- unlist(strsplit(varname, ",", fixed=TRUE))[1]

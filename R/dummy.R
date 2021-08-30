@@ -22,6 +22,8 @@ dummy <- function(x, subset=rep(T,length(x)), reference=sort(unique(x[!is.na(x)]
 	cl <- match.call()
 	nm <- deparse(cl[[2]])
 	
+	reference_name <- reference
+	
 	if (length(reference)==1) {
 	  reference <- unique(c(reference,sort(unique(x[!is.na(x)]))))
 	}
@@ -51,5 +53,6 @@ dummy <- function(x, subset=rep(T,length(x)), reference=sort(unique(x[!is.na(x)]
 	attr(X,"original") <- x
 	attr(X, "groups") <- sort(unique(x))
 	attr(X, "labels") <- dimnames(X)
+	attr(X, "reference_name") <- reference_name
 	X
 }
