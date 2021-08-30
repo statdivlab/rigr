@@ -275,26 +275,6 @@ regress <- function(fnctl, formula, data,
         # i+1 because the first item in termlst is the overall model
         ter <- attr(termlst[[i+1]], "term.labels")
         
-        # Note from Taylor - I believe this if statement goes through if someone specified 
-        # something like U(~a + U(~b + c))
-        # but need to double check
-        hasU <- grepl("U", ter)
-        if (any(hasU)) {
-          tmpter <- ter[hasU] 
-          tmpEqter <- tmpter[grepl("=", tmpter, fixed=TRUE)]
-          tmpEqter <- unlist(strsplit(tmpEqter, "U", fixed=TRUE))
-          if (sum(grepl(")", tmpEqter, fixed=TRUE))!=length(tmpEqter)-1) {
-            tmpEqter <- tmpEqter[-which(grepl(")", tmpEqter, fixed=TRUE))]
-          }
-          tmpEqter <- as.matrix(tmpEqter)
-          tmpEqter <- apply(tmpEqter, 1, splitOnParen)
-          tmpEqter <- unlist(lapply(strsplit(tmpEqter, "=", fixed=TRUE), function(x) return(x[1])))
-          tmpEqter <- unlist(lapply(strsplit(tmpEqter, " ", fixed=TRUE), function(x) return(x[1])))
-          tmpEqter[is.na(tmpEqter)] <- ""
-          tmpter[grepl("=", tmpter, fixed=TRUE)] <- pasteTwo(tmpEqter)
-          ter[hasU] <- tmpter
-        }
-        
         # if there are any new variables specified inside of this U() specification, add them into term.labels
         term.labels <- c(term.labels, ter)
         term.labels <- unique(term.labels)
@@ -446,24 +426,6 @@ regress <- function(fnctl, formula, data,
         # this is the same as rownames(tmpFactors) or colnames(tmpFactors)
         # i+1 because the first item in termlst is the overall model
         ter <- attr(termlst[[i+1]], "term.labels")
-        
-        # Note from Taylor - I believe this if statement goes through if someone specified 
-        # something like U(~a + U(~b + c))
-        # but need to double check
-        hasU <- grepl("U", ter)
-        if (any(hasU)) {
-          tmpter <- ter[hasU] 
-          tmpEqter <- tmpter[grepl("=", tmpter, fixed=TRUE)]
-          tmpEqter <- unlist(strsplit(tmpEqter, "U", fixed=TRUE))
-          # Note from Taylor: this is slightly different than how this is handled in an lm() call,
-          # there's an additional if statement right here for lm's
-          tmpEqter <- as.matrix(tmpEqter)
-          tmpEqter <- apply(tmpEqter, 1, splitOnParen)
-          tmpEqter <- unlist(lapply(strsplit(tmpEqter, "=", fixed=TRUE), function(x) return(x[1])))
-          tmpEqter[is.na(tmpEqter)] <- ""
-          tmpter[grepl("=", tmpter, fixed=TRUE)] <- pasteTwo(tmpEqter)
-          ter[hasU] <- tmpter
-        }
         
         # if there are any new variables specified inside of this U() specification, add them into term.labels
         term.labels <- c(term.labels, ter)
