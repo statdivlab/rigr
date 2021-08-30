@@ -1156,7 +1156,6 @@ insertCol <- function(x, indx, col){
 ## TermName - the name of the given term
 ## Returns: a list with the current matrix (made with the term), 
 ##          list of predictors, and order
-## Version: 2015 04 29
 processTerm <- function (z, Term, TermName) {
   # add this term into z$terms
   z$terms <- c(z$terms,TermName)
@@ -1312,7 +1311,6 @@ print.uRegress <- function (x,...,augmented=TRUE,digits=max(3,getOption("digits"
 ## Args: nms      - the names of the matrix of interest
 ##       coefNums - the vector of coefficient numbers
 ## Returns: a vector with the indented names
-## Version: 2015 05 25
 indentNames <- function(nms, coefNums, levels){
   ## they come in with one space, we need 3 more to get to even with intercept
   nms[is.na(coefNums)] <- paste("   ", nms[is.na(coefNums)], sep="")
@@ -1338,7 +1336,6 @@ indentNames <- function(nms, coefNums, levels){
 ##       termnms  - the names of the nested calls
 ##       level    - the current level of the function
 ## Returns: a vector with the indendation structure
-## Version: 2015 05 25
 getLevels <- function(nms, coefNums, termnms, term.lbls, level){
   ## initialize all levels to level
   levels <- rep(level, length(nms))
@@ -1656,10 +1653,7 @@ printerGlm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.
 }
 
 print.augCoefficients <-
-  function (x,...,sigfigs=max(3,getOption("digits")-3),width=9,nonsci.limit=5,Psci=FALSE, version=FALSE) {
-    
-    vrsn <- "20110928"
-    if (version) return(vrsn)
+  function (x,...,sigfigs=max(3,getOption("digits")-3),width=9,nonsci.limit=5,Psci=FALSE) {
     
     
     #
@@ -1801,9 +1795,6 @@ predict.uRegress <- function(object, interval="prediction",level=0.95,...){
 #' \code{""}, which returns unstandardized residuals. \code{"standardized"},
 #' \code{"studentized"}, and \code{"jackknife"} return the expected type of
 #' residuals.
-#' @param version if \code{TRUE}, the
-#' version of the function will be returned. No other computations will be
-#' performed.
 #' @return Returns the type of residuals
 #' requested. 
 #' @seealso \code{\link[rigr]{regress}}, \code{\link[stats]{rstudent}},
@@ -1823,10 +1814,8 @@ predict.uRegress <- function(object, interval="prediction",level=0.95,...){
 #' uResiduals(ldlReg, "jackknife")
 #' 
 #' @export
-residuals.uRegress <- function(object, type="", version=FALSE){
-  if(version){
-    return("20150120")
-  }
+residuals.uRegress <- function(object, type=""){
+
   if(!("uRegress" %in% class(object))){
     stop("The first argument entered must be a uRegress object.")
   }
