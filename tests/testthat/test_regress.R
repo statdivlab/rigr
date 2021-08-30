@@ -1061,4 +1061,21 @@ test_that("regress() returns same output as lm() for three-way interaction", {
                unname(mod_lm_robust_p))
 })
 
+### intercept removal can be specified in multiple ways
+
+mod1 <- regress("mean", atrophy ~ -1 + age, data = mri, intercept = TRUE)
+mod2 <- regress("mean", atrophy ~ -1 + age, data = mri)
+mod3 <- regress("mean", atrophy ~ age, data = mri, intercept = FALSE)
+
+test_that("intercept removal can be done via a '-1' in formula", {
+  expect_equal(mod1$coefficients,
+               mod2$coefficients)
+  expect_equal(mod3$coefficients,
+               mod2$coefficients)
+})
+
+
+
+
+
 

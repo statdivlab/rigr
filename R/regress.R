@@ -34,7 +34,9 @@
 #' names to those entered in \code{formula}.
 #' @param intercept a logical value
 #' indicating whether a intercept exists or not. Default value is \code{TRUE} for all 
-#' functionals.
+#' functionals. Intercept may also be removed if a "-1" is present in \code{formula}. If "-1"
+#' is present in \code{formula} but \code{intercept = TRUE} is specified, the model will fit
+#' without an intercept.
 #' @param weights vector indicating
 #' optional weights for weighted regression.
 #' @param subset vector indicating a subset
@@ -162,6 +164,17 @@ regress <- function(fnctl, formula, data,
     # if fnctl = "mean" | fnctl = "geometric mean", then family = "gaussian
     family="gaussian"
     
+  }
+  
+  # if a "-1" is in the formula, remove it and set intercept = FALSE
+  form_temp <- deparse(formula[[3]])
+  form_temp <- unlist(strsplit(form_temp, "\\+"))
+  form_temp <- trimws(form_temp, "both")
+  remove_int <- grepl("-1", form_temp)
+  if (any(remove_int)) {
+    form_temp <- paste(form_temp[!remove_int], collapse = "+")
+    formula <- as.formula(paste(unlist(strsplit(deparse(formula),"~"))[1], "~", form_temp), env = .GlobalEnv)
+    intercept <- FALSE
   }
   
   # if intercept = FALSE, add a "-1" to the formula

@@ -65,7 +65,9 @@ names to those entered in \code{formula}.}
 
 \item{intercept}{a logical value
 indicating whether a intercept exists or not. Default value is \code{TRUE} for all 
-functionals.}
+functionals. Intercept may also be removed if a "-1" is present in \code{formula}. If "-1"
+is present in \code{formula} but \code{intercept = TRUE} is specified, the model will fit
+without an intercept.}
 
 \item{weights}{vector indicating
 optional weights for weighted regression.}
