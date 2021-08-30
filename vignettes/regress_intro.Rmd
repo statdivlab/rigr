@@ -1,6 +1,6 @@
 ---
 title: "Regression in rigr"
-author: "Brian D. Williamson"
+author: "Taylor Okonek and Brian D. Williamson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -11,16 +11,16 @@ vignette: >
 
 In the `rigr` package, we have set out to make regression and analysis easier by:
 
-* allowing the user to specify any type of regression from one function
+* allowing the user to specify different types of regression from one function
 * allowing the user to specify multiple-partial F-tests
 * displaying output in a more intuitive fashion than base R
+* automatically computing confidence intervals and p-values using robust standard errors
 
 This function is `regress()`. The basic arguments to this function, which unlock all of its potential, are
 
 * `fnctl` - the functional
 * `formula` - the formula for the linear model
 * `data` - the data to use for the model
-* `id` - the identification variable in data with repeated measurements
 
 We use the concept of a *functional* to handle our first goal. A functional takes a function as its argument and returns a number - hence the mean is a functional, because it takes a distribution as its argument and returns a single number. The allowed functionals to `regress()` are
 
@@ -31,14 +31,12 @@ We use the concept of a *functional* to handle our first goal. A functional take
 |`"odds"` | Logistic Regression | `glm(family = binomial)` (`stats` - base R) |
 |`"rate"` | Poisson Regression | `glm(family = poisson)` (`stats` - base R) |
 
-The *formula* to `regress()` is the same as a formula given to `lm()` or any of the other regression commands from base R, `survival`, or `geepack`, but with one small addition. To address our second goal of allowing the user to specify multiple-partial F-tests, we have added a special function - `U()` - which can be added to the formula. The `U()` function is documented more fully in ["User Specified Multiple-Partial F-tests in Regression"](u_intro.html). 
+The *formula* to `regress()` is the same as a formula given to `lm()` or any of the other regression commands from base R, but with one small addition. To address our second goal of allowing the user to specify multiple-partial F-tests, we have added a special function - `U()` - which can be added to the formula. `regress()` will compute an F statistic for all variables included inside the `U()` specification.
 
 The *data* argument is exactly the same as that in `lm()` or any of the other regression commands.
 
-Last, *id* allows the user to fit a generalized estimating equations (GEE) model while using the same syntax as any of the functionals to `regress()`. The GEE framework is a useful way to model correlated data, which often comes in the form of repeated measurements.
-
 # Linear Regression
-As a first example, we run a linear regression analysis of atrophy on age and male, from the `mri` data. This dataset is included in the `rigr` package; see its documentation by running `?mri`.
+As a first example, we run a linear regression analysis of atrophy on age and race, from the `mri` data. This dataset is included in the `rigr` package; see its documentation by running `?mri`.
 
 ```{r}
 ## Preparing our R session
@@ -47,71 +45,97 @@ data(mri)
 ```
 
 ```{r}
-regress("mean", atrophy ~ age + I(sex), data = mri)
+regress("mean", atrophy ~ age + race, data = mri)
 ```
 
 This call automatically prints the coefficients table. First, notice that by default robust standard error estimates (calculated using the `sandwich` package) are returned, in addition to the naive estimates. The robust estimates are also used to perform the inference - thus the confidence intervals, statistics, and p-values use these estimates of the standard error.
 
-If we did not use robust standard error estimates, then in the case of linear regression we would be assuming that all groups have the same variance. Then any inference we make could be on the fact that the variances are different, rather than just on the means - which is usually what we want in linear regression. 
-
-F-statistics are also displayed by default. This allows us to display multiple-partial F-tests within the coefficients table, and is more in line with teaching philosophy at the University of Washington.
-
-All of the usual inferential statements apply to our output. Thus we would say:
-
-> We analyzed the association between cerebral atrophy, age, and sex by running a linear regression of cerebral atrophy modeled as a continuous variable on age - modeled as a continuous variable - and sex - modeled as a binary variable. We allowed for unequal variances among groups by computing robust standard error estimates using the Huber-White procedure. We calculated 95% confidence intervals and p-values using these same robust standard error estimates. 
-
-> Based on this linear regression analysis, we estimate that for each one year increase in age, the mean cerebral atrophy score increases by 0.682 units. Based on a 95% confidence interval, the data suggest that this estimate is not unreasonable if the true coefficient for age was in the interval from 0.509 to 0.854. We also estimate that males have an average cerebral atrophy score of 5.96 units higher than females. Based on a 95% confidence interval, the data suggest that this estimate is not unreasonable if the true coefficient for sex was in the interval from 4.227 to 7.700. 
-
-However, in this case we did not adjust for multiple comparisons in calculating the individual p-values. If we wanted to make inferential claims using these, we would have to use a correction. We could also use a multiple-partial F-test to test both coefficients simultaneously.
+F-statistics are also displayed by default. This allows us to display multiple-partial F-tests within the coefficients table, such as the overall F test for the race variable in the regression above.
 
 ## Regression on the Geometric Mean
 
 In normal linear regression, we are comparing the mean of the response variable across groups defined by the predictors. However, if we were to log transform the response, we would be comparing the geometric mean across groups. In `regress()`, we simply have to use the `"geometric mean"` functional.
 
-# Generalized Linear Regression
-Using the same function, and the same syntax, we can also run generalized linear regression. For example, if we wanted to examine the odds of having diabetes between males and females, we would run a logistic regression.
+Consider doing regression on the geometric mean of the packyrs variable in the `mri` dataset. It should be noted that many of the packyrs observations are 0, which will cause problems when calculating the geometric mean. This is addressed using the `replaceZeroes` parameter in regress. By default for the geometric mean functional, zeroes in the outcome variable are replaced by a value equal to one-half the lowest nonzero value in the outcome variable. If the user wishes to specify a different value by which to replace zeroes, they may do say using the `replaceZeroes` argument.
 
 ```{r}
-regress("odds", diabetes ~ I(sex), data = mri)
+regress("geometric mean", packyrs ~ age, data = mri)
 ```
 
-In all of the generalized linear regression output (and in the output from regression on the geometric mean), by default we see two tables. The `Raw Model` table displays coefficients and standard errors for the model after we have transformed the response variable, but we have not transformed back. Recall that in most generalized linear regression cases, we need to back-transform our results to get them in the original units. This is due to using a link function to model the regression. If you want to suppress printing this table, set `suppress = TRUE`.
+```{r}
+regress("geometric mean", packyrs ~ age, data = mri, replaceZeroes = 4)
+```
+
+In the output from regress using the geometric mean functional, we see a table for the `Raw Model` and the `Transformed Model`. The `e(Est)`, `e(95%L)`, and `e(95%H)` columns in the `Transformed Model` table correspond to exponentiated values from the `Raw Model`.
+
+# Generalized Linear Regression
+
+## Logistic Regression
+Using the same function, and the same syntax, we can also run generalized linear regression. For example, if we wanted to examine the odds of having diabetes between binarized sexes (male and female), we would run a logistic regression.
+
+```{r}
+regress("odds", diabetes ~ sex, data = mri)
+```
+
+In all of the generalized linear regression output we see two tables, as we did when our functional was geometric mean. The `Raw Model` table displays coefficients and standard errors for the model after we have transformed the response variable, but we have not transformed back. Recall that in most generalized linear regression cases, we need to back-transform our results to get them in the original units. This is due to using a link function to model the regression. If you want to suppress printing the `Raw Model` table, set `suppress = TRUE` in your `regress` call.
 
 The `Transformed Model` table does the back-transform for you. It exponentiates all of the coefficients and the confidence intervals so that they are in the original units. 
 
-Proportional hazards regression and generalized estimating equations (GEE) are no longer supported.
+## Poisson Regression
+The final functional that `regress` supports is rate, which corresponds to Poisson regression. If we wanted to regress yrsquit on age, we would specify that as follows.
+
+```{r}
+regress("rate", yrsquit ~ age, data = mri)
+```
+
+Note that again we have two tables of output, denoted by `Raw Model` and `Transformed Model`.
 
 # Re-parameterizations of a Variable
 
-There are three special functions in `rigr` which allow us to re-parameterize variables:
+There are two special functions in `rigr` which allow us to re-parameterize variables:
 
 * `dummy` - create dummy variables
-* `lspline` - create linear splines
 * `polynomial` - create a polynomial
 
-Each of these three functions is used to great effect in `regress()`. Also, each will give a multiple-partial F-test of the entire variable. This allows you to determine if the variable should be included in the model, rather than having only the coefficient estimates.
+Both of these functions may be used in a `regress()` call, and will additionally give a multiple-partial F-test of the entire variable automatically.
 
-For example, we can model race as dummy variables to examine the differences in the odds of having diabetes between races. This allows us to better make comparisons, because modeling as dummy variables essentially creates indicator variables against a reference group.
+## Dummy
 
-TODO: fix! This is biological racism. Can use any other variable instead, e.g. stroke. 
+The `dummy` function is particularly useful in that the user may specify the reference group they wish to use in a call to `regress()`. Below we show an example of using the reference group "Female" vs. the reference group "Male" for binarized sex.
 
 ```{r}
-regress("odds", diabetes ~ dummy(stroke), data = mri)
+regress("mean", atrophy ~ dummy(sex, reference = "Male"), data = mri)
 ```
 
-First, notice that below the table `regress()` tells us how the dummy variables were calculated. In this case the reference was 1, corresponding to `white` in this data set. Next we see the multiple-partial F-test, which is on its own line for `dummy(race)`. The coefficient estimates are nested beneath this line to indicate that these coefficients all come from the same variable (`race`) but we have modeled them as three variables.
+```{r}
+regress("mean", atrophy ~ dummy(sex, reference = "Female"), data = mri)
+```
+
+Notice that below the coefficients table in the output, the reference category is reported.
+
+## Polynomial
+
+An example of how the `polynomial` function is used in a regress call can be found below.
+
+```{r}
+regress("mean", atrophy ~ polynomial(age, degree = 2), data = mri)
+```
+
+Note that all polynomials less than or equal to the degree specified are included in the model, and that the variables in the polynomial specification are mean centered by default. The user may change the centering using the `center` parameter in the polynomial function, an example of which is as follows.
+
+```{r}
+regress("mean", atrophy ~ polynomial(age, degree = 2, center = 50), data = mri)
+```
 
 # User-specified Multiple-partial F-tests
 
 As we mentioned above, the *formula* in `regress()` allows you to specify multiple-partial F-tests. This comes in handy if you want to test a subset of variables all at once in your regression. 
 
-For example, say that we are interested in the relationship between atrophy, age, sex, and race. However, we also want to include the sex-age interaction and the sex-race interaction. We also want to model race as dummy variables. Last, we want to determine if all of the variables involved in the sex-age interaction (`male`, `age`, and the interaction) should be in the model, and similar for the sex-race interaction. We use the `U()` function to accomplish this goal.
+Suppose you want to test whether both the variables packyrs and yrsquit together are statistically significantly associated with atrophy, in a linear regression model that already includes age as a predictor. This can be accomplished using the `U` function. In the following example, we name the group of variables packyrs and yrsquit "smoke".
 
 ```{r}
-# TODO
-# regress("mean", atrophy ~ U(ma = ~sex*age) + U(mr = ~sex*dummy(race)), data = mri)
+regress("mean", atrophy ~ age + U(smoke = ~packyrs + yrsquit), data = mri)
 ```
 
-We have also made use of functionality in `U()` which allows us to name the groups for the multiple-partial F-tests. Thus we can see that the F-statistic for simultaneously testing whether `male`, `age`, and the interaction `male:age` are equal to zero is 34.35, with the correct degrees of freedom for the test (3) and a small p-value. We would conclude (without adjusting for multiple comparisons) that (some of) these variables should be in the model. On the other hand, we see that the F-statistic for simultaneously testing whether `male`, `race`, and the interaction are equal to zero is 1.04. We would conclude (again without adjusting for multiple comparisons) that we cannot reject the null hypothesis that these are all equal to zero.
+The overall F statistic and p-value associated with the inclusion of these two "smoke" variables in the model are 4.37 and 0.0130, respectively.
 
-We also get individual coefficient estimates for each, where we have again nested the estimates within their corresponding groups defined by calls to `U()`. Note that we have repeated the line for `male` since it appears in both groups. Other than that, the coefficients table is the same as it would be if we had run the formula `atrophy ~ male*age + male*dummy(race)`. 
