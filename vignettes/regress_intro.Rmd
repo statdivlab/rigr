@@ -79,40 +79,7 @@ In all of the generalized linear regression output (and in the output from regre
 
 The `Transformed Model` table does the back-transform for you. It exponentiates all of the coefficients and the confidence intervals so that they are in the original units. 
 
-Proportional hazards regression is no longer supported.
-
-# Accounting for Correlated Data
-
-A common way to account for correlated data - for example longitudinal data, where we have multiple measurements on the same subjects over time - is to use the Generalized Estimating Equations (GEE) framework. We chose to use this framework in our `regress()` function because it gives flexibility and uses common conventions. To make use of this functionality, as we mentioned above, you simply need to specify the `id` argument in `regress()`. 
-
-For an example, we turn to the `salary` data. Full documentation can be seen by running `?salary`, but these data essentially deal with university level faculty. In 1995, a survey was run asking the faculty to recall their salaries from the past. Each faculty member had records dating either to their starting year at the university or 1976, whichever was more recent. Thus we have repeated measurements on these individuals, and the variable of interest (salary) is highly correlated across measurements. 
-
-One interesting question to ask of these data involves discrimination based on sex. We will not model these data in the most sophisticated way (we leave that to the enterprising reader), but we can regress salary on sex and year, and involve their interaction. 
-
-```{r}
-data(salary)
-
-## create an indicator variable
-salary$female <- ifelse(salary$sex == "F", 1, 0)
-```
-
-Now that the data is read in, we can run the regression. First we run a regular linear regression which does not properly account for the correlated data, and then we run the GEE based regression.
-
-```{r}
-## linear regression
-regress("mean", salary ~ female*year, data = salary)
-```
-
-From this call to regress, we would think that we had 19792 unique data points, which is quite a lot of faculty to have at a university. If we compare to the results from the GEE based regression, we will see how far off we are.
-```{r}
-## GEE
-# TODO fix
-# regress("mean", salary ~ female*year, id = id, data = salary)
-```
-
-Now `regress()` tells us that we only have 1597 faculty members, which is much more reasonable. Also, it tells us that the "maximum cluster size" - i.e. the largest number of observations on any one id - is 20. This makes sense due to the sampling scheme, where some faculty have been at the university for 20 years by the time the survey was taken. 
-
-While our estimates of the coefficients are the same between the two calls to `regress()`, it is our standard error estimates and inference which are drastically different. When we overestimate how many unique samples we have (in the naive linear regression), our standard error is much smaller than it should be, and thus we have much larger F statistics and smaller p-values. While in this case our inference would be the same, since the p-values are on the same order of magnitude in both cases, failing to account for the correlation in these data is still a mistake.
+Proportional hazards regression and generalized estimating equations (GEE) are no longer supported.
 
 # Re-parameterizations of a Variable
 
@@ -126,7 +93,7 @@ Each of these three functions is used to great effect in `regress()`. Also, each
 
 For example, we can model race as dummy variables to examine the differences in the odds of having diabetes between races. This allows us to better make comparisons, because modeling as dummy variables essentially creates indicator variables against a reference group.
 
-TODO: fix! This is biological racism. Can use any other variable instead, eg stroke. 
+TODO: fix! This is biological racism. Can use any other variable instead, e.g. stroke. 
 
 ```{r}
 regress("odds", diabetes ~ dummy(stroke), data = mri)

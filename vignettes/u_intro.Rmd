@@ -1,10 +1,10 @@
 ---
-title: "User Specified Multiple-Partial F-tests in Regression"
+title: "User-Specified Multiple-Partial F-tests in Regression"
 author: "Brian D. Williamson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Multiple-Partial F-tests in Regression}
+  %\VignetteIndexEntry{User-Specified Multiple-Partial F-tests in Regression}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---

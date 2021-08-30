@@ -54,10 +54,8 @@ Five other packages provide a few key functions that the `rigr` package uses or 
 
 ```{r}
 library(Exact)
-library(geepack)
 library(plyr)
 library(sandwich)
-library(survival)
 library(rigr)
 ```
 
@@ -100,119 +98,6 @@ descrip(mri$age, strata = mri$diabetes, subset = mri$age > 75)
 
 However, the `descrip()` function can only give us a fixed number of summaries (mean, count, etc). Oftentimes we need only a subset of these, or perhaps different summary measures. For this, we turn to more powerful functions.
 
-## `tableStat()` and `tabulate()`: Flexible Functions
-
-The main draw of `tableStat()` and `tabulate()` is their ability to supply only a subset of the summary measures from `descrip()`. These functions focus on display and flexibility. The user supplies the format for the summary statistics to be displayed in, which makes exporting results from a call to `tablestat()` or `tabulate()` even easier than it was for `descrip()`. Of the two, `tableStat()` is the base, and `tabulate()` adds some additional formatting and options. For example, let's say that we want the same summary statistics as we would get from `descrip()`, but we want to control the printout. For this, we use the `stat` argument to `tableStat()`. The options are presented in below.
-
-<a id="stattable"></a>
-
-|Name | Summary Measure | Name | Summary Measure
-|---|:---|---|:---|
-|`"count"` | Number of observations on a variable | `"sd"` | Standard Deviation |
-|`"missing"` | Number of missing observations | `"variance"` | Variance |
-|`"mean"` | Arithmetic mean | `"min"` | Minimum value |
-|`"geometric mean"` | Geometric mean | `"max"` | Maximum value |
-|`"median"` | 50th percentile | `"quantiles"` | Display quantiles |
-|`"probabilities"` | Display percentiles | `"mn(sd)"` | Display Mean (SD) format |
-|`"range"` | Maximum value - minimum value | `"iqr"` | Interquartile range (75th - 25th percentiles)|
-|`"all"` | Display all summary measures | `"row%"` | Display row percentages |
-|`"col%"` | Display column percentages | `"tot%"` | Display percentage of total|
-
-```{r echo = FALSE}
-tableCount <- incCount(tableCount, "stattable")
-```
-The following gets us close to results we could display in a table for a puplication. We want to have 
-$$
-N: \ n; \ Mean \ (SD): \ mn \ (sd); \ Range: \ max - min,
-$$
-which we get via:
-
-```{r}
-tableStat(mri$age, stat = "N: @count@; Mean (SD): @mean@ (@sd@); Range: @max@ - @min@")
-```
-
-Note that all of the values enclosed in \texttt{@} symbols are from Table \ref{stattable} and are run by \texttt{tableStat()}, while the other values in the string are used for formatting. This function can also take stratification variables; if we want to see the above stratified by sex, we use
-
-```{r}
-tableStat(mri$age, strata = mri$diabetes, stat = "N: @count@; Mean (SD): @mean@ (@sd@); Range: @min@ - @max@")
-```
-
-Now if we wanted to see this in table form, in perhaps a nicer layout, we could use the `tabulate()` function. When we loaded the `rigr` package at the beginning of this document, recall that we got a warning message from R saying
-```
-The following object is masked from ‘package:base’:
-
-    tabulate
-```
-
-This means that our function `tabulate()` overwrites the function called `tabulatte()` in the base R package, which takes a numeric vector and counts the number of times each integer occurs in it. Our function does a similar task, but on combinations of strata. The syntax is very similar to the syntax for `tableStat()`, but rather than explicitly telling `tabulate()` the strata, it creates the tables with each dimension corresponding to a variable in the order they are entered. For instance, if we want a table of `age` (in the rows) and `diabetes` (in the columns), we would write
-
-```{r}
-tabulate(mri$age, mri$diabetes)$rslt
-```
-
-By default, `tabulate()` gives us the count in each combination of the strata, and gives us the overall $\chi^2$ test statistic, degrees of freedom, and p-value. We can add in other arguments as well. Let's say that we are interested in an odds ratio or a risk ratio - `tabulate()` can supply these, if we set `dispRatios = TRUE`. This is where our use of the `Exact` package comes in, because this package contains some very useful functions for calculating these ratios. However, we supply both the odds ratio and the risk ratio, even though in some cases only one is appropriate. Thus it is up to the user to know which they can use. To display these ratios for `male` versus `chf` (an indicator variable of whether the patient had been diagnosed with congestive heart failure prior to MRI), we type
-
-```{r}
-# Note from Taylor: this throws an error as tabulate is not currently debugged
-# tabulate(mri$male, mri$chf, dispRatios = TRUE)
-```
-
-Now we are given a point estimate and a 95% confidence interval for both the odds and risk ratio, in addition to the $\chi^2$ estimate. 
-
-Last, similar to `tableStat()`, we can identify different statistics to display. The syntax is exactly the same, and the same statistics from `r  I(pasteLabel("Table", tableCount, "stattable"))` are valid in `tabulate()`.
-
-# Plotting
-
-Plots and descriptive statistics together lead to a much better understanding of the data. In our package, we have implemented two types of plots: boxplots and scatterplots. In doing so, we have attempted to address some concerns with both types of plots.
-
-## Boxplots
-Boxplots reduce the data down to four summary measures: minimum, maximum, median, and the interquartile range (25th to 75th quantile). They also show "outliers" in the data. We put this in quotes because the definition of "outlier" depends on the function you call, and the software you are running. Even in the base R version, `boxplot()`, the boxplots can be constructed so that no outliers are shown. 
-
-Much of the criticism of boxplots lies both in this determination of outliers and in the dramatic reduction of the data. In our version, `bplot()`, we have added jittered data onto the boxplots (jittering allows us to see the data, but randomly adds noise so that we can see individual points better), and we have added the mean and standard deviation onto the plot. We can also produce stratified boxplots. For our function, the variable on the y-axis comes first, followed by the variable on the x-axis. This convention, while at odds with base R, is an attempt to make our functions match up with the regression scheme of response followed by predictors.
-
-For our first example, let's create a boxplot showing the age distribution of the `diabetes` variable:
-
-```{r}
-## Base R boxplot
-boxplot(mri$age ~ mri$diabetes)
-```
-
-```{r}
-## Our version of boxplot
-bplot(mri$age, mri$diabetes)
-```
-
-In comparing the two, see that our plot displays the mean line and $\pm$ standard deviation box in blue and overlays the jittered data on top of the boxplots produced by the base R function. Now if we also wanted to stratify by race, we write
-
-```{r}
-bplot(mri$age, mri$diabetes, strata = mri$race)
-```
-
-This boxplot breaks down diabetes by race, again showing the mean and standard deviation bars. Note that like normal plots, we can define the axis labels and title by hand.
-
-## Scatterplots
-Scatterplots are a very common way to view data. They plot all of the data in one window, which allows the user to get a good overall view. However, many times the data is clumped together in some spots, and it is hard to see all of the points. Thus, similar to our approach in `bplot()`, our `scatter()` function jitters the data slightly by default. To illustrate this difference, we consider the distribution of cerebral atrophy by age group. In the base R scatterplot,
-
-```{r}
-plot(mri$age, mri$atrophy)
-```
-
-we see that a lot of the values sit on top of each other. In our version (which again uses the Y followed by X convention),
-
-```{r}
-scatter(mri$atrophy, mri$age)
-```
-
-the jittered data allows us to see where all of the points lie much better. Also notice that `scatter()` displayes a loess curve by default. We can also display a line of best fit calculated by least squares by adding `plotLSfit = TRUE`. Last, we can stratify, which is particularly useful if we want to see differences across a third variable, and `scatter()` will automatically color the data appropriately:
-
-<a id = "stratscatter"></a>
-```{r echo = FALSE}
-figCount <- incCount(figCount, "stratscatter")
-```
-```{r}
-scatter(mri$atrophy, mri$age, strata = mri$race)
-```
-
 # Transformations of a Variable
 
 In many cases (especially in regression, which we will cover in section 7), it is more useful to model a transformation of a variable than the raw data itself. We present three functions to easily transform a variable. In each case, the function returns a list of: a matrix with the new transformed variable, the type of transformation performed, a vector describing how the variable was created, the name of the created variable, and the original data.
@@ -241,24 +126,6 @@ The "(ctr)" after each term tells us that `polynomial()` has automatically cente
 # One and Two Sample Functions
 
 Many of our analyses boil down to one-sample or two-sample problems; What is the mean time to death? What is the median home price in Seattle? What is the difference in mean time to death between control and the treatment group? The list goes on. There are many methods of analyzing one-sample relationships, and in our package we have implemented three. 
-
-## Correlation
-
-While correlation is not an excellent source of inference, since it is inherently a feature of the dataset collected, sometimes it is important to know when variables are correlated. In the base R package, there are a few functions to calculate correlation: `cor()`, `var()`, `cov()`, and `cov2cor()`. Our function, `correlate()`, computes the correlation matrix between an arbitrary number of variables, and optionally also does this within a stratification variable. This is the real advantage of `correlate()`, since in base R we would have to manually subset the data into each stratum. If we want to examine the correlation between sex and diabetes, (and then stratify by race), we get
-
-```{r}
-## Base R - returns only one number!
-mri$male <- ifelse(mri$sex == "Male", 1, 0)
-cor(mri$male, mri$diabetes)
-
-## rigr version
-correlate(mri$male, mri$diabetes)
-
-## Stratify on race
-correlate(mri$male, mri$diabetes, strata = mri$race)
-```
-
-Our function takes the pain out of calculating multiple correlations within stratum variables. We also return a correlation matrix rather than a single number, which allows the user to go straight to a covariance matrix by squaring. We also allow calculation of Spearman or Pearson (default) correlation.
 
 ## Point Estimates and Inference
 
@@ -407,28 +274,6 @@ exp(mod.sum$coefficients[,1] + 1.96*mod.sum$coefficients[,2])
 
 First, this is much more work, and requires thought for how to calculate the confidence interval - should we use the convenient approximation of 1.96, or should we use the `qnorm()` function? Second, we again lose the option of using robust standard error estimates. To use these, we would have to manually code a few more lines, which would increase the likelihood of a small mistake in the code. Our `regress()` function pulls all of this together in a simple format, leading to much fewer mistakes.
 
-## Correlated data regression
-
-This section does not serve as a primer for when to account for correlated data in your regression model; rather, if you know that you have correlated data, it gives you a method to accounting for it. We will not use the `mri` data for this example. Instead, we will use the `salary` data (see documentation by running `?salary`). These data deal with salaries at the University of Washington, and have multiple records on most participants. In fact, for any current faculty member in 1995 who had been employed by the university for more than one year, there were yearly records dating back to when the faculty member was hired. Thus by nature these data are correlated - in the simplest sense, we expect that the salary for a single faculty member will rise (or at least stay constant) each year. Therefore, we need to use the correlated data apparatus built into `regress()`. This functionality uses the `geeglm()` function from the package `geepack`, but frames the output consistently with the rest of the `regress()` options and uses the same syntax.
-
-First, let's create the data:
-
-```{r}
-data(salary)
-salary$female <- ifelse(salary$sex == "F", 1, 0)
-```
-
-This code makes sure that the header in the text file is read as variable names, and that the string variables do not get converted to factor variables. We also create an indicator variable of whether the person is female or not. Next, suppose we are interested in the mean salary for females as opposed to males. Since raises are usually calculated as a percentage of current salary, and starting salaries can vary by year, we decide that the year in which a person started is important in determining their salary. For a more in-depth look at this thought process, see any document on determining potential confounding variables (for one, see parts of ["Organizing Your Approach to a Data Analysis"](http://www.emersonstatistics.com/GeneralMaterials/analysis.pdf)). By adding the `id` argument to `regress()`, we can account for the correlated data. In the `salary` dataset, the ID column is named `id`, and thus we have:
-
-```{r}
-## adjusting for correlated data
-regress("mean",salary ~ female*year, id = id, data = salary)
-## without adjusting
-regress("mean", salary ~ female*year, data = salary)
-```
-
-Notice that we get some extra information in the output where we adjusted - we see that there are 1597 unique faculty members in the data, and that the longest we have data for is 20 years. Therefore treating the data as independent, like we do in the second call to `regress()`, will lead to invalid standard error estimates and therefore invalid confidence intervals and inference. 
-
 ## Multiple-partial F-tests
 
 The major added functionality that `regress()` brings to the table is the ability to perform multiple-partial F-tests. Some of these are done automatically when certain dummy variables, polynomial variables, or linear splines are entered - if created in a manner similar to our functions above. Others must be specified by the user, using a special function called `U()`.
@@ -523,8 +368,8 @@ Besides the other tools we have already covered that can double as diagnostic to
 ```{r}
 ldlReg <- regress("mean", age ~ ldl, data = mri)
 
-student.resid <- uResiduals(ldlReg, "studentized")
-jack.resid <- uResiduals(ldlReg, "jackknife")
+student.resid <- residuals(ldlReg, "studentized")
+jack.resid <- residuals(ldlReg, "jackknife")
 
 head(student.resid, n = 5)
 head(jack.resid, n = 5)
