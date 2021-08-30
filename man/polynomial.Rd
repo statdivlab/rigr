@@ -4,7 +4,7 @@
 \alias{polynomial}
 \title{Create Polynomials}
 \usage{
-polynomial(x, degree = 2, center = mean(x, na.rm = T), version = F)
+polynomial(x, degree = 2, center = mean(x, na.rm = T))
 }
 \arguments{
 \item{x}{variable used to create the
@@ -15,23 +15,24 @@ polynomial to be returned. Polynomials of degree <= \code{degree} will be
 returned.}
 
 \item{center}{the value to center the polynomials at.}
-
-\item{version}{if \code{TRUE}, returns the version of the function and
-nothing else.}
 }
 \value{
 A matrix containing the linear
 splines.
 }
 \description{
-Creates polynomial variables.
+Creates polynomial variables, to be used in regression. Will create polynomials of degree less than
+or equal to the \code{degree} specified, and will mean center variables by default.
 }
 \examples{
 
-  # Reading in a dataset
-  data(mri)
-  attach(mri)
-  # Create a polynomial on ldl
-  polynomial(ldl, degree=3)
+# Reading in a dataset
+data(mri)
+
+# Create a polynomial on ldl
+polynomial(mri$ldl, degree=3)
+
+# Use a polynomial in regress
+regress("mean", atrophy ~ polynomial(age, degree = 2), data = mri)
 
 }

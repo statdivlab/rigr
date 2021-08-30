@@ -980,5 +980,54 @@ test_that("regress() returns same output as lm() when weights included", {
                mod_lm_robust_p)
 })
 
+### polynomial works as it's supposed to
+
+mod_rigr <- regress("mean", atrophy ~ polynomial(age, degree = 2), data = mri)
+mri$age_centered <- mri$age - mean(mri$age)
+mod_lm <- lm(atrophy ~ age_centered + I(age_centered^2), data = mri)
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 3) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 3) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 3, lower.tail = FALSE)
+
+R <- matrix(c(0,1,0,
+              0,0,1), nrow = 2, byrow = TRUE)
+theta_hat <- mod_lm$coefficients
+n <- 2
+V_hat <- sandwich::sandwich(mod_lm, adjust = TRUE)
+smoke_F <- as.vector(t(R %*% theta_hat) %*% solve(R %*% (V_hat) %*% t(R)) %*% (R %*% theta_hat) / n)
+smoke_p <- 1 - pf(smoke_F, 2, nrow(mri) - 3)
+
+test_that("regress() returns same output as lm() when polynomial included in predictors", {
+  # Estimate
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"]),
+               unname(mod_lm$coefficients))
+  # Naive SE
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"]),
+               unname(summary(mod_lm)$coefficients[,2]))
+  # Robust SE
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"]),
+               unname(mod_lm_robust_se))
+  # z value (robust)
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"]),
+               unname(mod_lm$coefficients/ mod_lm_robust_se))
+  # 95%L (robust)
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"]),
+               unname(mod_lm_robust_ci_lower))
+  # 95%H (robust)
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"]),
+               unname(mod_lm_robust_ci_higher))
+  # p-value
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"]),
+               unname(mod_lm_robust_p))
+  # F-stat for smoke
+  expect_equal(mod_rigr$augCoefficients["polynomial(age, degree = 2)","F stat"],
+               smoke_F)
+  # p-value for smoke
+  expect_equal(mod_rigr$augCoefficients["polynomial(age, degree = 2)","Pr(>F)"],
+               smoke_p)
+})
+
+
 
 

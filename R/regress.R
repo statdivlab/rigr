@@ -566,7 +566,18 @@ regress <- function(fnctl, formula, data,
   terms_noparens <- gsub("\\)", "", gsub("\\(", "", terms))
   colnames_model_noparens <- gsub("\\)", "", gsub("\\(", "", colnames(model)))
   
+  # browser()
+  
   for (i in 1:p) {
+    # check if this term was specified using polynomial()
+    is_polynomial <- grepl("polynomial",terms_noparens[i])
+    
+    if (is_polynomial) {
+      # subset terms_noparens to only include the variable name, first split by comma in case
+      # additional arguments specified in polynomial()
+      terms_noparens[i] <- gsub("polynomial","",unlist(strsplit(terms_noparens[i],","))[1])
+    }
+    
     # which columns does this term correspond to
     which_cols <- grep(terms_noparens[i], colnames_model_noparens)
     
