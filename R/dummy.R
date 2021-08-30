@@ -26,7 +26,7 @@ dummy <- function(x, subset=rep(T,length(x)), reference=sort(unique(x[!is.na(x)]
 	
 	if (length(reference)==1) {
 	  reference <- unique(c(reference,sort(unique(x[!is.na(x)]))))
-	}
+	} 
 	
 	X <- NULL
 	

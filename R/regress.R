@@ -554,11 +554,10 @@ regress <- function(fnctl, formula, data,
   # Note from Taylor: based on reFormatReg(), this may be more complex if any variables are
   # specified using dummy(), or polynomial(). this is currently untested.
   
-  # TAYLOR: preds should be "dummy(sex)Female vs Male" not dummy(sex)
   prList <- reFormatReg(preds, hyperpreds, mf)
   preds <- prList$preds
   args <- prList$args
-  
+
   # reassign column names to model matrix, unclear why this is necessary
   dimnames(model)[[2]] <- preds
   

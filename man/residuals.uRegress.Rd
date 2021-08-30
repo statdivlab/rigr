@@ -4,7 +4,7 @@
 \alias{residuals.uRegress}
 \title{Extract Residuals from uRegress objects}
 \usage{
-\method{residuals}{uRegress}(object, type = "", version = FALSE)
+\method{residuals}{uRegress}(object, type = "")
 }
 \arguments{
 \item{object}{an object of class \code{uRegress}, as returned by
@@ -14,10 +14,6 @@
 \code{""}, which returns unstandardized residuals. \code{"standardized"},
 \code{"studentized"}, and \code{"jackknife"} return the expected type of
 residuals.}
-
-\item{version}{if \code{TRUE}, the
-version of the function will be returned. No other computations will be
-performed.}
 }
 \value{
 Returns the type of residuals
