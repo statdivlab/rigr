@@ -106,6 +106,39 @@ test_that("regress() returns same output as lm()", {
                mod_lm_robust_p)
 })
 
+### variables can be logged
+
+mod_rigr <- regress("mean", atrophy ~ log(age), data = mri)
+mod_lm <- lm(data = mri, atrophy ~ log(age))
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 2) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 2) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 2, lower.tail = FALSE)
+
+test_that("regress() returns same output as lm()", {
+  # Estimate
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
+               mod_lm$coefficients)
+  # Naive SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"],
+               summary(mod_lm)$coefficients[,2])
+  # Robust SE
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"],
+               mod_lm_robust_se)
+  # 95%L (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"],
+               mod_lm_robust_ci_lower)
+  # 95%H (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"],
+               mod_lm_robust_ci_higher)
+  # t value (robust)
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"],
+               mod_lm$coefficients/ mod_lm_robust_se)
+  # p-value
+  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"],
+               mod_lm_robust_p)
+})
+
 ### logistic regression output, useFdstn = FALSE
 
 mod_rigr <- regress("odds", sex_bin ~ age, data = mri, useFdstn = FALSE)

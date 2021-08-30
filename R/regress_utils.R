@@ -549,107 +549,37 @@ parsePartials <- function(form, modelframe, mat){
   }
 }
 
-#' Create a Transformed Variable
+#' Create a Partial Formula
 #' 
-#' Creates a transformed variable using either the natural log, a dummy
-#' transformation, linear splines, or a polynomial. Mostly for use in
-#' regression. If a partial formula of the form \code{~var1 + var2} is entered,
-#' returns the formula for use in regression. The partial formula can be named
+#' Creates a partial formula of the form \code{~var1 + var2}. The partial formula can be named
 #' by adding an equals sign before the tilde.
 #' 
 #' 
-#' @param ...  variable(s) used to create the
-#' transformation.
-#' @param type a character string describing the transformation. Partial
-#' matching is used, so only enough of the string to make the transformation
-#' unique is needed.
-#' @param subset used in creating dummy variables. Only used if \code{type ==
-#' "dummy"}.
-#' @param degree the degree of the polynomial to be returned. Only used if
-#' \code{type=="polynomial"}.
-#' @param reference the reference vector for levels of the dummy variable. Only
-#' used if \code{type=="dummy"}.
-#' @param center the center of the returned polynomial. Only used if
-#' \code{type=="polynomial"}.
-#' @param includeAll a logical value to use all values even in the presense of
-#' a subset. Only used if \code{type=="dummy"}.
-#' @return A matrix or vector containing the
-#' transformations. The class of the returned value is
-#' \code{c("transformation", y)} where \code{y} is the class of the transformed
-#' variable (usually \code{numeric}). The type of transformation performed is
-#' encoded as one of the attributes of the returned value, along with the
-#' original data. 
+#' @param ...  partial formula of the form \code{~var1 + var2}.
+#' @return A partial formula  (potentially named) for use in \code{\link[rigr]{regress}}. 
+#' 
 #' @seealso \code{\link[rigr]{regress}}
 #' @examples
 #' 
 #' # Reading in a dataset
 #' data(mri)
 #' 
-#' # Create a log transformed variable
-#' U(mri$age, type="log")
-#' 
-#' # Create a partial formula
-#' # Note that the following example must be specified inside of a \code{regress} 
-#' # call where data can be accessed
+#' # Create a named partial formula
 #' U(ma=~male+age)
 #' 
+#' # Create an unnamed partial formula
+#' 
+#' U(~male+age)
 #' 
 #' @export U
-U <- function(..., type=NULL, subset=rep(TRUE,length(x)), degree=2, reference=sort(unique(x[!is.na(x)])), 
-              center=mean(x,na.rm=TRUE), includeAll=FALSE){
-  
+U <- function(...) {
   L <- list(...)
   hypernames <- names(unlist(match.call(expand.dots=FALSE)$...))
   names(L) <- unlist(match.call(expand.dots=FALSE)$...)
   if(!is.null(hypernames)){
     names(L) <- hypernames
   }
-  if(length(L)==1){
-    x <- unlist(L)
-  } else {
-    x <- as.data.frame(L)
-    dimnames(x)[[2]] <- names(L)
-  }
-  findx <- pmatch(type, c("log", "dummy", "polynomial"))
-  if(is.null(type)){
-    return(L)
-  }
-  if(is.na(findx)){
-    stop("Unsupported type or multiple matches with acceptable types")
-  }
-  type <- c("log", "dummy", "polynomial")[findx]
-  if(length(dim(x)[2])==0){
-    if(type=="log"){
-      X <- log(x)
-    } else if (type=="dummy"){
-      X <- dummy(x, subset=subset, reference=reference, includeAll=includeAll)
-    } else if (type=="polynomial"){
-      X <- polynomial(x, degree=degree, center=center)
-    } else {
-      if(!is.null(type)){
-        stop("Unsupported type")
-      }
-    }
-  } else {
-    if(type=="log"){
-      X <- apply(x, 2, log)
-    } else if (type=="dummy"){
-      X <- apply(x, 2, dummy, subset=subset, reference=reference, includeAll=includeAll)
-    } else if (type=="polynomial"){
-      X <- apply(x, 2, polynomial, degree=degree, center=center)
-    } else {
-      if(!is.null(type)){
-        stop("Unsupported type")
-      }
-    }
-  }
-  tmp <- class(X)
-  attr(X,"transformation") <- type
-  attr(X, "reference") <- reference
-  attr(X, "name") <- names(L)
-  attr(X, "original") <- x
-  class(X) <- c("transformation", tmp)
-  return(X)
+  return(L)
 }
 
 #' A function to traverse the termlist tree,
