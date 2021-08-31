@@ -1130,7 +1130,7 @@ pred_mod_lm <- predict(mod_lm, newdata = newdat)
 pred_mod_rigr_glm <- predict(mod_rigr_glm, newdata = newdat_glm)
 pred_mod_glm <- predict(mod_glm, newdata = newdat_glm)
 
-test_that("predict method works for lms, glms, and throws error for non-uRegress objects", {
+test_that("predict method works for lms, glms", {
   # lm
   expect_equal(pred_mod_rigr_lm,
                pred_mod_lm)
@@ -1141,7 +1141,20 @@ test_that("predict method works for lms, glms, and throws error for non-uRegress
 
 ### residuals method
 
+mod_rigr_lm <- regress("mean", atrophy ~ age, data = mri)
+sigmahat <- (sum(mod_rigr_lm$residuals^2))/(length(mod_rigr_lm$residuals)-mod_rigr_lm$df[1])
 
-
+test_that("residuals method works for all type arguments", {
+  expect_equal(residuals(mod_rigr_lm),
+               mod_rigr_lm$residuals)
+  expect_error(residuals(mod_rigr_lm, type = "blah"),
+               "The type of residual must either be not entered or must be standardized, studentized, or jackknife.")
+  expect_equal(residuals(mod_rigr_lm, type = "jackknife"),
+               rstudent(mod_rigr_lm$fit))
+  expect_equal(residuals(mod_rigr_lm, type = "studentized"),
+               rstandard(mod_rigr_lm$fit))
+  expect_equal(residuals(mod_rigr_lm, type = "standardized"),
+               (mod_rigr_lm$residuals)/sigmahat)
+})
 
 
