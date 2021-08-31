@@ -141,11 +141,11 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         adjVar <- unadjVar - zeroAdjVar
         PVAL <- switch(alternative, 
                        two.sided = {p <- if 
-                          (STATISTIC > (n * (n + 1)/4)) psignrank(STATISTIC - 
-                          1, n, lower.tail = FALSE) else psignrank(STATISTIC, n)
+                          (STATISTIC > (n * (n + 1)/4)) stats::psignrank(STATISTIC - 
+                          1, n, lower.tail = FALSE) else stats::psignrank(STATISTIC, n)
                           min(2 * p, 1)}, 
-                       greater = psignrank(STATISTIC - 1, n, lower.tail = FALSE), 
-                       less = psignrank(STATISTIC, n))
+                       greater = stats::psignrank(STATISTIC - 1, n, lower.tail = FALSE), 
+                       less = stats::psignrank(STATISTIC, n))
         z <- 2*(STATISTIC - ePos)/sqrt(n*(n+1)*(2*n+1)/6)
         # confidence interval
         if (conf.int) {
@@ -154,23 +154,23 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
           diffs <- outer(y, y, "+")
           diffs <- sort(diffs[!lower.tri(diffs)])/2
           cint <- switch(alternative, two.sided = {
-            qu <- qsignrank(alpha/2, n)
+            qu <- stats::qsignrank(alpha/2, n)
             if (qu == 0) qu <- 1
             ql <- n * (n + 1)/2 - qu
-            achieved.alpha <- 2 * psignrank(trunc(qu) - 
+            achieved.alpha <- 2 * stats::psignrank(trunc(qu) - 
                                               1, n)
             c(diffs[qu], diffs[ql + 1])
           }, greater = {
-            qu <- qsignrank(alpha, n)
+            qu <- stats::qsignrank(alpha, n)
             if (qu == 0) qu <- 1
-            achieved.alpha <- psignrank(trunc(qu) - 1, 
+            achieved.alpha <- stats::psignrank(trunc(qu) - 1, 
                                         n)
             c(diffs[qu], +Inf)
           }, less = {
-            qu <- qsignrank(alpha, n)
+            qu <- stats::qsignrank(alpha, n)
             if (qu == 0) qu <- 1
             ql <- n * (n + 1)/2 - qu
-            achieved.alpha <- psignrank(trunc(qu) - 1, 
+            achieved.alpha <- stats::psignrank(trunc(qu) - 1, 
                                         n)
             c(-Inf, diffs[ql + 1])
           })
@@ -179,7 +179,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
             conf.level <- 1 - signif(achieved.alpha, 2)
           }
           attr(cint, "conf.level") <- conf.level
-          ESTIMATE <- c(`(pseudo)median` = median(diffs))
+          ESTIMATE <- c(`(pseudo)median` = stats::median(diffs))
         }
       }
       else {# non-exact test and/or adjusting for ties
@@ -197,9 +197,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         z <- (z - CORRECTION)/SIGMA
         # normal approx for p-value
         PVAL <- switch(alternative, 
-                       less = pnorm(z), 
-                       greater = pnorm(z, lower.tail = FALSE), 
-                       two.sided = 2 * min(pnorm(z), pnorm(z, lower.tail = FALSE)))
+                       less = stats::pnorm(z), 
+                       greater = stats::pnorm(z, lower.tail = FALSE), 
+                       two.sided = 2 * min(stats::pnorm(z), stats::pnorm(z, lower.tail = FALSE)))
         if (conf.int) {# calculate confidence interval if requested
           y <- y + mu
           alpha <- 1 - conf.level
@@ -226,9 +226,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
           }
           cint <- switch(alternative, two.sided = {
             repeat {
-              mindiff <- wdiff(mumin, zq = qnorm(alpha/2, 
+              mindiff <- wdiff(mumin, zq = stats::qnorm(alpha/2, 
                                                  lower.tail = FALSE))
-              maxdiff <- wdiff(mumax, zq = qnorm(alpha/2))
+              maxdiff <- wdiff(mumax, zq = stats::qnorm(alpha/2))
               if (mindiff < 0 || maxdiff > 0) alpha <- alpha * 
                 2 else break
             }
@@ -237,13 +237,13 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
               warning("requested conf.level not achievable")
             }
             l <- uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
-                         zq = qnorm(alpha/2, lower.tail = FALSE))$root
+                         zq = stats::qnorm(alpha/2, lower.tail = FALSE))$root
             u <- uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
-                         zq = qnorm(alpha/2))$root
+                         zq = stats::qnorm(alpha/2))$root
             c(l, u)
           }, greater = {
             repeat {
-              mindiff <- wdiff(mumin, zq = qnorm(alpha, 
+              mindiff <- wdiff(mumin, zq = stats::qnorm(alpha, 
                                                  lower.tail = FALSE))
               if (mindiff < 0) alpha <- alpha * 2 else break
             }
@@ -252,11 +252,11 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
               warning("requested conf.level not achievable")
             }
             l <- uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
-                         zq = qnorm(alpha, lower.tail = FALSE))$root
+                         zq = stats::qnorm(alpha, lower.tail = FALSE))$root
             c(l, +Inf)
           }, less = {
             repeat {
-              maxdiff <- wdiff(mumax, zq = qnorm(alpha))
+              maxdiff <- wdiff(mumax, zq = stats::qnorm(alpha))
               if (maxdiff > 0) alpha <- alpha * 2 else break
             }
             if (1 - conf.level < alpha * 0.75) {
@@ -264,7 +264,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
               warning("requested conf.level not achievable")
             }
             u <- uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
-                         zq = qnorm(alpha))$root
+                         zq = stats::qnorm(alpha))$root
             c(-Inf, u)
           })
           attr(cint, "conf.level") <- conf.level
@@ -318,34 +318,34 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         z <- (z - CORRECTION)/sqrt(adjVar)
         
         PVAL <- switch(alternative, two.sided = {
-          p <- if (STATISTIC > (n.y * n.x/2)) pwilcox(STATISTIC - 
-                                                        1, n.y, n.x, lower.tail = FALSE) else pwilcox(STATISTIC, 
+          p <- if (STATISTIC > (n.y * n.x/2)) stats::pwilcox(STATISTIC - 
+                                                        1, n.y, n.x, lower.tail = FALSE) else stats::pwilcox(STATISTIC, 
                                                                                                       n.y, n.x)
           min(2 * p, 1)
         }, greater = {
-          pwilcox(STATISTIC - 1, n.y, n.x, lower.tail = FALSE)
-        }, less = pwilcox(STATISTIC, n.y, n.x))
+          stats::pwilcox(STATISTIC - 1, n.y, n.x, lower.tail = FALSE)
+        }, less = stats::pwilcox(STATISTIC, n.y, n.x))
         if (conf.int) {
           alpha <- 1 - conf.level
           diffs <- sort(outer(y, x, "-"))
           cint <- switch(alternative, two.sided = {
-            qu <- qwilcox(alpha/2, n.y, n.x)
+            qu <- stats::qwilcox(alpha/2, n.y, n.x)
             if (qu == 0) qu <- 1
             ql <- n.y * n.x - qu
-            achieved.alpha <- 2 * pwilcox(trunc(qu) - 1, 
+            achieved.alpha <- 2 * stats::pwilcox(trunc(qu) - 1, 
                                           n.y, n.x)
             c(diffs[qu], diffs[ql + 1])
           }, greater = {
-            qu <- qwilcox(alpha, n.y, n.x)
+            qu <- stats::qwilcox(alpha, n.y, n.x)
             if (qu == 0) qu <- 1
-            achieved.alpha <- pwilcox(trunc(qu) - 1, n.y, 
+            achieved.alpha <- stats::pwilcox(trunc(qu) - 1, n.y, 
                                       n.x)
             c(diffs[qu], +Inf)
           }, less = {
-            qu <- qwilcox(alpha, n.y, n.x)
+            qu <- stats::qwilcox(alpha, n.y, n.x)
             if (qu == 0) qu <- 1
             ql <- n.y * n.x - qu
-            achieved.alpha <- pwilcox(trunc(qu) - 1, n.y, 
+            achieved.alpha <- stats::pwilcox(trunc(qu) - 1, n.y, 
                                       n.x)
             c(-Inf, diffs[ql + 1])
           })
@@ -354,7 +354,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
             conf.level <- 1 - achieved.alpha
           }
           attr(cint, "conf.level") <- conf.level
-          ESTIMATE <- c(`difference in location` = median(diffs))
+          ESTIMATE <- c(`difference in location` = stats::median(diffs))
         }
       }
       else { #need to adjust for ties
@@ -372,9 +372,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         }
         z <- (z - CORRECTION)/SIGMA
         PVAL <- switch(alternative, 
-                       less = pnorm(z), 
-                       greater = pnorm(z, lower.tail = FALSE), 
-                       two.sided = 2 * min(pnorm(z), pnorm(z, lower.tail = FALSE)))
+                       less = stats::pnorm(z), 
+                       greater = stats::pnorm(z, lower.tail = FALSE), 
+                       two.sided = 2 * min(stats::pnorm(z), stats::pnorm(z, lower.tail = FALSE)))
         if (conf.int) {
           alpha <- 1 - conf.level
           mumin <- min(y) - max(x)
@@ -408,14 +408,14 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
                     f.upper = f.upper, tol = 1e-04, zq = zq)$root
           }
           cint <- switch(alternative, two.sided = {
-            l <- root(zq = qnorm(alpha/2, lower.tail = FALSE))
-            u <- root(zq = qnorm(alpha/2))
+            l <- root(zq = stats::qnorm(alpha/2, lower.tail = FALSE))
+            u <- root(zq = stats::qnorm(alpha/2))
             c(l, u)
           }, greater = {
-            l <- root(zq = qnorm(alpha, lower.tail = FALSE))
+            l <- root(zq = stats::qnorm(alpha, lower.tail = FALSE))
             c(l, +Inf)
           }, less = {
-            u <- root(zq = qnorm(alpha))
+            u <- root(zq = stats::qnorm(alpha))
             c(-Inf, u)
           })
           attr(cint, "conf.level") <- conf.level
@@ -457,8 +457,8 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         # if exact test, do not calculate z-score or corresponding p
         if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
           inf <-  matrix(c(format(z, digits=5), 
-                           format(switch(alternative,less=pnorm(z), greater=1-pnorm(z), 
-                                          two.sided=2*min(pnorm(z),1-pnorm(z))), digits = 5),
+                           format(switch(alternative,less=stats::pnorm(z), greater=1-stats::pnorm(z), 
+                                          two.sided=2*min(stats::pnorm(z),1-stats::pnorm(z))), digits = 5),
                            paste("[", format(cint[1], digits = 5),", ", 
                                  format(cint[2], digits = 5),"]", sep=""), format(ESTIMATE, digits = 5)), 
                               nrow=1)
@@ -472,9 +472,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
           inf <-  matrix(c(format(z, digits=5), 
                                 format(switch(alternative,
-                                              less=pnorm(z), 
-                                              greater=1-pnorm(z), 
-                                              two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                              less=stats::pnorm(z), 
+                                              greater=1-stats::pnorm(z), 
+                                              two.sided=2*min(stats::pnorm(z),1-stats::pnorm(z))), 
                                        digits = 5)), 
                               nrow=1)
         } else{
@@ -505,9 +505,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
           inf <- matrix(c(format(z, digits=5),
                                 format(switch(alternative,
-                                              less=pnorm(z), 
-                                              greater=1-pnorm(z), 
-                                              two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                              less=stats::pnorm(z), 
+                                              greater=1-stats::pnorm(z), 
+                                              two.sided=2*min(stats::pnorm(z),1-stats::pnorm(z))), 
                                        digits=5), paste("[", 
                                                         format(cint[1], digits = 5),", ", 
                                                         format(cint[2], digits = 5),"]", sep=""), 
@@ -524,9 +524,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         if (!("exact" %in% strsplit(METHOD, " ")[[1]])){
           inf <- matrix(c(format(z, digits=5), 
                                 format(switch(alternative,
-                                              less=pnorm(z), 
-                                              greater=1-pnorm(z), 
-                                              two.sided=2*min(pnorm(z),1-pnorm(z))), 
+                                              less=stats::pnorm(z), 
+                                              greater=1-stats::pnorm(z), 
+                                              two.sided=2*min(stats::pnorm(z),1-stats::pnorm(z))), 
                                        digits = 5)), 
                               nrow=1)
         } else{

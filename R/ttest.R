@@ -208,15 +208,15 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
       # var2 is not entered
       if (length(var2) == 1 & is.na(var2[1])) {
         # here we do one sample t test with var1 using built in t.test function
-        route <- t.test(var1, alternative = alternative, 
+        route <- stats::t.test(var1, alternative = alternative, 
                         var.equal = var.eq, conf.level = conf.level, 
                         mu = null.hypoth)
         mn <- route$estimate
-        stdev <- sd(var1, na.rm = TRUE)
+        stdev <- stats::sd(var1, na.rm = TRUE)
         dfr <- as.numeric(route$parameter[1])
         ster <- stdev/sqrt(dfr + 1)
         tstat <- route$statistic
-        talpha <- qt(cl, dfr)
+        talpha <- stats::qt(cl, dfr)
         # do two-sided CI, even if test is one-sided
         lci <- mn - talpha * ster
         hci <- mn + talpha * ster
@@ -250,7 +250,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         row.names(main2) <- c("")
       }
       if (length(var2) > 1) {
-        route <- t.test(var1, var2, alternative = alternative, 
+        route <- stats::t.test(var1, var2, alternative = alternative, 
                         var.equal = var.eq, conf.level = conf.level, 
                         paired = matched, mu = null.hypoth)
         mns <- c(mean(var1, na.rm = TRUE), mean(var2, 
@@ -258,10 +258,10 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         if (!matched) {
           mns[3] <- mns[3] - as.numeric(route$estimate[2])
         }
-        stdev <- c(sd(var1, na.rm = TRUE), sd(var2, na.rm = TRUE), 
+        stdev <- c(stats::sd(var1, na.rm = TRUE), stats::sd(var2, na.rm = TRUE), 
                    NA)
         if (matched) {
-          stdev[3] <- sd((var2 - var1), na.rm = TRUE)
+          stdev[3] <- stats::sd((var2 - var1), na.rm = TRUE)
         }
         ns <- c(length(var1), length(var2), length(var1))
         if (!matched) {
@@ -277,8 +277,8 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         ster[3] <- abs((mean(var2, na.rm = TRUE) - mean(var1, 
                                                         na.rm = TRUE))/route$statistic)
         tstat <- route$statistic
-        talpha <- c(qt(cl, dfr[1] - 1), qt(cl, dfr[2] - 
-                                             1), qt(cl, dfr[3]))
+        talpha <- c(stats::qt(cl, dfr[1] - 1), stats::qt(cl, dfr[2] - 
+                                             1), stats::qt(cl, dfr[3]))
         pval <- as.numeric(format(route$p.value, digits = max(digits, 
                                                               digits + 3)))
         tstat <- as.numeric(format(tstat, digits = max(digits + 
@@ -333,7 +333,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
     }
     if (length(by) > 1) {
       if (length(var2) > 1) {
-        route <- t.test(var1, var2, alternative = alternative, 
+        route <- stats::t.test(var1, var2, alternative = alternative, 
                         var.equal = var.eq, conf.level = conf.level, 
                         paired = matched, mu = null.hypoth)
         mns <- c(mean(var1, na.rm = TRUE), mean(var2, 
@@ -341,10 +341,10 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         if (!matched) {
           mns[3] <- mns[3] - as.numeric(route$estimate[2])
         }
-        stdev <- c(sd(var1, na.rm = TRUE), sd(var2, na.rm = TRUE), 
+        stdev <- c(stats::sd(var1, na.rm = TRUE), stats::sd(var2, na.rm = TRUE), 
                    NA)
         if (matched) {
-          stdev[3] <- sd((var2 - var1), na.rm = TRUE)
+          stdev[3] <- stats::sd((var2 - var1), na.rm = TRUE)
         }
         ns <- c(length(var1), length(var2), length(var1))
         if (!matched) {
@@ -360,8 +360,8 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         ster[3] <- abs((mean(var2, na.rm = TRUE) - mean(var1, 
                                                         na.rm = TRUE))/route$statistic)
         tstat <- route$statistic
-        talpha <- c(qt(cl, dfr[1] - 1), qt(cl, dfr[2] - 
-                                             1), qt(cl, dfr[3]))
+        talpha <- c(stats::qt(cl, dfr[1] - 1), stats::qt(cl, dfr[2] - 
+                                             1), stats::qt(cl, dfr[3]))
         pval <- as.numeric(format(route$p.value, digits = max(digits, 
                                                               digits + 3)))
         tstat <- as.numeric(format(tstat, digits = max(digits + 

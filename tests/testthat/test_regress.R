@@ -1127,7 +1127,7 @@ mod_lm <- lm(atrophy ~ age, data = mri)
 mod_glm <- glm(sex_bin ~ age, data = mri, family = binomial(link = "logit"))
 pred_mod_rigr_lm <- predict(mod_rigr_lm, newdata = newdat)[,1]
 pred_mod_lm <- predict(mod_lm, newdata = newdat)
-# pred_mod_rigr_glm <- predict(mod_rigr_glm, newdata = newdat_glm)
+#pred_mod_rigr_glm <- predict(mod_rigr_glm, newdata = newdat_glm)
 pred_mod_glm <- predict(mod_glm, newdata = newdat_glm)
 
 test_that("predict method works for lms, glms, and throws error for non-uRegress objects", {

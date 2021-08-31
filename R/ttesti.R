@@ -121,8 +121,8 @@ ttesti <- function(obs,
     cl <- conf.level+(1-conf.level)/2
     if(is.na(obs2)){
       stdErr <- sd/sqrt(obs)
-      CIlower <- mean-qt(conf.level+(1-conf.level)/2, obs-1)*stdErr
-      CIupper <- mean+qt(conf.level+(1-conf.level)/2, obs-1)*stdErr
+      CIlower <- mean-stats::qt(conf.level+(1-conf.level)/2, obs-1)*stdErr
+      CIupper <- mean+stats::qt(conf.level+(1-conf.level)/2, obs-1)*stdErr
       tstat <- (mean-null.hypoth)/(stdErr)
       printMat <- matrix(c(obs, 
                            format(mean, digits = digits), 
@@ -135,24 +135,24 @@ ttesti <- function(obs,
       
       df <- obs - 1
       if(alternative == "two.sided"){
-        p <- 2*pt(-abs(tstat), obs-1)
+        p <- 2*stats::pt(-abs(tstat), obs-1)
       } else if (alternative == "less"){
-        p <- pt(tstat, obs - 1)
+        p <- stats::pt(tstat, obs - 1)
       } else {
-        p <- 1-pt(tstat, obs-1)
+        p <- 1-stats::pt(tstat, obs-1)
       }
     } else{
       if(var.eq){
         stdErr1 <- sd/sqrt(obs)
         stdErr2 <- sd2/sqrt(obs2)
-        CIlower1 <- mean-qt(conf.level+(1-conf.level)/2, obs-1)*stdErr1
-        CIupper1 <- mean+qt(conf.level+(1-conf.level)/2, obs-1)*stdErr1
-        CIlower2 <- mean2-qt(conf.level+(1-conf.level)/2, obs2-1)*stdErr2
-        CIupper2 <- mean2+qt(conf.level+(1-conf.level)/2, obs2-1)*stdErr2
+        CIlower1 <- mean-stats::qt(conf.level+(1-conf.level)/2, obs-1)*stdErr1
+        CIupper1 <- mean+stats::qt(conf.level+(1-conf.level)/2, obs-1)*stdErr1
+        CIlower2 <- mean2-stats::qt(conf.level+(1-conf.level)/2, obs2-1)*stdErr2
+        CIupper2 <- mean2+stats::qt(conf.level+(1-conf.level)/2, obs2-1)*stdErr2
         stdErrDiff <- sqrt((sd^2*(obs-1)+sd2^2*(obs2-1))/(obs+obs2-2))*sqrt(1/obs+1/obs2)
         tstat <- (mean-mean2)/(stdErrDiff)
-        CIlowerDiff <- (mean-mean2)-qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
-        CIupperDiff <- (mean-mean2)+qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
+        CIlowerDiff <- (mean-mean2)-stats::qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
+        CIupperDiff <- (mean-mean2)+stats::qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
         
         printMat <- matrix(c(obs, 
                              format(mean,digits = digits), 
@@ -177,24 +177,24 @@ ttesti <- function(obs,
         df <- obs+obs2-2
 
         if(alternative == "two.sided"){
-          p <- 2*pt(-abs(tstat), obs+obs2-2)
+          p <- 2*stats::pt(-abs(tstat), obs+obs2-2)
         } else if (alternative == "less"){
-          p <- pt(tstat, obs + obs2 - 2)
+          p <- stats::pt(tstat, obs + obs2 - 2)
         } else {
-          p <- 1-pt(tstat, obs+obs2-2)
+          p <- 1-stats::pt(tstat, obs+obs2-2)
         }
       } else {
         stdErr1 <- sd/sqrt(obs)
         stdErr2 <- sd2/sqrt(obs2)
-        CIlower1 <- mean-qt(conf.level+(1-conf.level)/2, obs-1)*stdErr1
-        CIupper1 <- mean+qt(conf.level+(1-conf.level)/2, obs-1)*stdErr1
-        CIlower2 <- mean2-qt(conf.level+(1-conf.level)/2, obs2-1)*stdErr2
-        CIupper2 <- mean2+qt(conf.level+(1-conf.level)/2, obs2-1)*stdErr2
+        CIlower1 <- mean-stats::qt(conf.level+(1-conf.level)/2, obs-1)*stdErr1
+        CIupper1 <- mean+stats::qt(conf.level+(1-conf.level)/2, obs-1)*stdErr1
+        CIlower2 <- mean2-stats::qt(conf.level+(1-conf.level)/2, obs2-1)*stdErr2
+        CIupper2 <- mean2+stats::qt(conf.level+(1-conf.level)/2, obs2-1)*stdErr2
         stdErrDiff <- sqrt(sd^2/(obs)+sd2^2/(obs2))
         tstat <- (mean-mean2)/(stdErrDiff)
         df <- (sd^2/obs+sd2^2/obs2)^2/((sd^2/obs)^2/(obs-1)+(sd2^2/obs2)^2/(obs2-1))
-        CIlowerDiff <- (mean-mean2)-qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
-        CIupperDiff <- (mean-mean2)+qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
+        CIlowerDiff <- (mean-mean2)-stats::qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
+        CIupperDiff <- (mean-mean2)+stats::qt(conf.level+(1-conf.level)/2, obs+obs2-2)*stdErrDiff
         
         printMat <- matrix(c(obs, 
                              format(mean, digits =digits), 
@@ -217,11 +217,11 @@ ttesti <- function(obs,
         rownames(printMat) <- c("var1", "var2", "diff")
 
         if(alternative == "two.sided"){
-          p <- 2*pt(-abs(tstat), df)
+          p <- 2*stats::pt(-abs(tstat), df)
         } else if (alternative == "less"){
-          p <- pt(tstat, df)
+          p <- stats::pt(tstat, df)
         } else {
-          p <- 1-pt(tstat, df)
+          p <- 1-stats::pt(tstat, df)
         }
       }
     }

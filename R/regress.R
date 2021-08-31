@@ -85,8 +85,6 @@
 #' @seealso Functions for fitting linear models (\code{\link[stats]{lm}}), and
 #' generalized linear models (\code{\link[stats]{glm}}). Also see the function to specify
 #' multiple-partial F-tests, \code{\link[rigr]{U}}.
-#' @import sandwich
-#' @import stats
 #' @examples
 #' 
 #' 

@@ -128,7 +128,6 @@
 #'     \item{isDate:} { an indicator that the variable is a \code{Date} object.}
 #'   } 
 #' 
-#' @import survival
 #' @examples
 #' 
 #' #- Read in the data -#
