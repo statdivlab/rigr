@@ -13,6 +13,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+<!-- badges: start 
+[![CRAN status](https://www.r-pkg.org/badges/version/corncob)](https://CRAN.R-project.org/package=corncob)-->
+[![R-CMD-check](https://github.com/statdivlab/rigr/workflows/R-CMD-check/badge.svg)](https://github.com/statdivlab/rigr/actions)
+<!-- [![codecov](https://codecov.io/gh/statdivlab/rigr/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/CORNCOB)
+[![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)-->
+<!-- badges: end -->
+
 # `rigr`: Regression, Inference, and General Data Analysis Tools for R
 
 **Sorry, but this package is "under development" and is not ready to be used yet. If you would like to help get it ready, please contact the maintainer Prof.~Amy Willis.**

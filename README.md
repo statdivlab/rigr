@@ -1,10 +1,18 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start 
+[![CRAN status](https://www.r-pkg.org/badges/version/corncob)](https://CRAN.R-project.org/package=corncob)-->
+
+[![R-CMD-check](https://github.com/statdivlab/rigr/workflows/R-CMD-check/badge.svg)](https://github.com/statdivlab/rigr/actions)
+<!-- [![codecov](https://codecov.io/gh/statdivlab/rigr/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/CORNCOB)
+[![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)-->
+<!-- badges: end -->
 
 # `rigr`: Regression, Inference, and General Data Analysis Tools for R
 
 **Sorry, but this package is “under development” and is not ready to be
-used yet. We will update this note as developments occur.**
+used yet. If you would like to help get it ready, please contact the
+maintainer Prof.\~Amy Willis.**
 
 # Introduction
 
@@ -31,8 +39,7 @@ or, at least, you will in the future.
 [StatDivLab](http://statisticaldiversitylab.com/), but relies on
 community support to log issues and implement new featues. Is there a
 method you would like to have implemented? Please submit a pull request
-or start a
-[discussion](https://github.com/statdivlab/rigr/discussions)\!
+or start a [discussion](https://github.com/statdivlab/rigr/discussions)!
 
 ## Documentation
 
@@ -53,7 +60,7 @@ Solomon Lim.
 
 If you encounter any bugs, please [file an
 issue](https://github.com/statdivlab/rigr/issues). Better yet, [submit a
-pull request](https://github.com/statdivlab/rigr/pulls)\!
+pull request](https://github.com/statdivlab/rigr/pulls)!
 
 Do you have a question? Please check out the vignettes, then please post
 on the [Discussions](https://github.com/statdivlab/rigr/discussions).

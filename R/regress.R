@@ -870,31 +870,6 @@ regress <- function(fnctl, formula, data,
       
     }
     miss <- apply(sapply(term.labels, grepl, dimnames(zzs$augCoefficients)[[1]], fixed=TRUE), 2, sum)
-    if (any(miss==0)) {
-      nm <- names(miss)[miss==0]
-      for (i in 1:length(nm)) {
-        tmpNum <- sapply(names(tmplist), grepl, nm[i], fixed=TRUE)
-        curNms <- names(tmplist[[which(tmpNum)]])
-        tmp <- sapply(strsplit(curNms, ".", fixed=TRUE), getn, n=2)
-        tmp <- c(first, apply(matrix(tmp), 1, collapseInter, x=first))
-        
-        indx <- apply(matrix(tmp, nrow=1), 2, function(x) x==cols)
-        indx <- apply(indx, 1, sum)
-        ## check to make sure that we have the correct nested things
-        indx[1:max(which(indx==0))] <- 0
-        indx <- ifelse(indx==0, FALSE, TRUE)
-        r <- sum(indx)
-        cntrst <- matrix(0,r,dim(z$X)[2])
-        cntrst[1:r, indx] <- diag(r)
-        cntrst <- cntrst[,!droppedPred,drop=FALSE]
-        cntrst <- cntrst[apply(cntrst!=0,1,any),,drop=FALSE]
-        zzs$augCoefficients <- rbind(zzs$augCoefficients, rep(NA, dim(zzs$augCoefficients)[2]))
-        dimnames(zzs$augCoefficients)[[1]][j] <- nm[i]
-        zzs$augCoefficients[j,ncol - (1:0)] <- uWaldtest (zzs, cntrst)[1:2]
-        dfs <- c(dfs, r)
-        j <- j+1
-      }
-    }
   }
   
   j <- dim(zzs$augCoefficients)[2]
