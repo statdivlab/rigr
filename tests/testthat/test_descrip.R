@@ -338,6 +338,152 @@ test_that("descrip() handles Surv variables correctly", {
   expect_equal(unname(descrip_out[,13]), 0) # check isDate
 })
 
+### unnamed list adds .V# to end of variable name
+
+descrip_out <- descrip(list(c(1,2,3,4,5)))
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(rownames(descrip_out),
+               "list(c(1, 2, 3, 4, 5)).V1:  ")
+})
+
+### strata list
+
+a <- rnorm(10,0,1)
+d <- c(rep(1,6),rep(0,4))
+d2 <- c(rep(1,3), rep(0,7))
+df <- data.frame(a)
+descrip_out <- descrip(df, strata = list(d, d2))
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(nrow(descrip_out),
+               4)
+  expect_equal(unname(descrip_out[,"N"]),
+               c(10,4,3,3))
+})
+
+
+### factor variable
+descrip_out <- descrip(factor(mri$weight))
+a <- as.numeric(factor(mri$weight))
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Mean"],
+               mean(a))
+  expect_equal(descrip_out[," Min"],
+               min(a))
+  expect_equal(descrip_out[," Mdn"],
+               median(a))
+  expect_equal(descrip_out[," Max"],
+               max(a))
+})
+
+### above
+
+a <- mri$weight
+descrip_out <- descrip(a, above = 150)
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr>150"],
+               length(which(a>150))/length(a))
+})
+
+### below
+
+descrip_out <- descrip(a, below = 140)
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr<140"],
+               length(which(a<140))/length(a))
+})
+
+### labove
+
+descrip_out <- descrip(a, labove = 143)
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr>=143"],
+               length(which(a>=143))/length(a))
+})
+
+### rbelow
+
+descrip_out <- descrip(a, rbelow = 143)
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr<=143"],
+               length(which(a<=143))/length(a))
+})
+
+### lbetween
+
+descrip_out <- descrip(a, lbetween = c(100,150))
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr<100"],
+               length(which(a<100))/length(a))
+  expect_equal(descrip_out[,"Pr[100,150)"],
+               length(which(a>=100 & a<150))/length(a))
+  expect_equal(descrip_out[,"Pr>=150"],
+               length(which(a>=150))/length(a))
+})
+
+### rbetween
+
+descrip_out <- descrip(a, rbetween = c(100,150))
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr<=100"],
+               length(which(a<=100))/length(a))
+  expect_equal(descrip_out[,"Pr(100,150]"],
+               length(which(a>100 & a<=150))/length(a))
+  expect_equal(descrip_out[,"Pr>150"],
+               length(which(a>150))/length(a))
+})
+
+### interval
+
+descrip_out <- descrip(a, interval = matrix(c(80,90,100,150), nrow = 2, byrow = TRUE))
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr( 80, 90)"],
+               length(which(a<90 & a>80))/length(a))
+  expect_equal(descrip_out[,"Pr(100,150)"],
+               length(which(a>100 & a<150))/length(a))
+})
+
+### linterval
+
+descrip_out <- descrip(a, linterval = matrix(c(80,90,100,150), nrow = 2, byrow = TRUE))
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr[ 80, 90)"],
+               length(which(a<90 & a>=80))/length(a))
+  expect_equal(descrip_out[,"Pr[100,150)"],
+               length(which(a>=100 & a<150))/length(a))
+})
+
+### lrinterval
+
+descrip_out <- descrip(a, lrinterval = matrix(c(80,90,100,150), nrow = 2, byrow = TRUE))
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr[ 80, 90]"],
+               length(which(a<=90 & a>=80))/length(a))
+  expect_equal(descrip_out[,"Pr[100,150]"],
+               length(which(a>=100 & a<=150))/length(a))
+})
+
+### rinterval
+
+descrip_out <- descrip(a, rinterval = matrix(c(80,90,100,150), nrow = 2, byrow = TRUE))
+
+test_that("descrip() adds .V# to end of unnamed variables", {
+  expect_equal(descrip_out[,"Pr( 80, 90]"],
+               length(which(a<=90 & a>80))/length(a))
+  expect_equal(descrip_out[,"Pr(100,150]"],
+               length(which(a>100 & a<=150))/length(a))
+})
 
 
 
