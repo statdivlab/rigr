@@ -2,16 +2,17 @@ Package: rigr
 Title: Regression, Inference, and General Data Analysis Tools for R
 Version: 0.0.1
 Date: 2021-04-19
-Authors@R: as.person(c(
-    "Amy D Willis <adwillis@uw.edu> [aut, cre]",
-    "Scott S Emerson [aut]",
-    "Andrew J Spieker [aut]",
-    "Brian D Williamson [aut]",
-    "Travis Y Hee Wai [aut]",
-    "Solomon Lim [aut]",
-    "Terry M Therneu [ctb]",
-    "Thomas Lumley [ctb]"
-  ))
+Authors@R: c(person("Amy D", "Willis", email = "adwillis@uw.edu", role = c("aut", "cre")),
+             person("Taylor", "Okonek", role = "aut"),
+             person("Charles J", "Wolock", role = "aut"),
+             person("Brian D", "Williamson", role = "aut"),
+             person("Scott S", "Emerson", role = "aut"),
+             person("Andrew J", "Spieker", role = "aut"),
+             person("Travis Y Hee", "Wai", role = "aut"),
+             person("James P", "Hughes", role = "ctb"),
+             person("Solomon", "Lim", role = "aut"),
+             person("Terry M", "Therneu", role = "ctb"),
+             person("Thomas", "Lumley", role = "ctb"))
 Description: TODO A set of tools designed to facilitate easy adoption of R for students in introductory classes with little programming experience. Compiles output from existing routines together in an intuitive format, and adds functionality to existing functions. For instance, the regression function can perform linear models, generalized linear models, Cox models, or generalized estimating equations. The user can also specify multiple-partial F-tests to print out with the model coefficients. We also give many routines for descriptive statistics and plotting.
 License: MIT + file LICENSE
 BugReports: https://github.com/statdivlab/rigr/issues
