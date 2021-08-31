@@ -4,8 +4,8 @@
 [![CRAN status](https://www.r-pkg.org/badges/version/corncob)](https://CRAN.R-project.org/package=corncob)-->
 
 [![R-CMD-check](https://github.com/statdivlab/rigr/workflows/R-CMD-check/badge.svg)](https://github.com/statdivlab/rigr/actions)
-<!-- [![codecov](https://codecov.io/gh/statdivlab/rigr/branch/master/graph/badge.svg?token=GnLFG7QNsh)](https://codecov.io/gh/bryandmartin/CORNCOB)
-[![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)-->
+[![codecov](https://codecov.io/gh/statdivlab/rigr/branch/main/graph/badge.svg)](https://codecov.io/gh/statdivlab/rigr)
+<!-- [![Docker Repository on Quay](https://quay.io/repository/fhcrc-microbiome/corncob/status "Docker Repository on Quay")](https://quay.io/repository/fhcrc-microbiome/corncob)-->
 <!-- badges: end -->
 
 # `rigr`: Regression, Inference, and General Data Analysis Tools for R
