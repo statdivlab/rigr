@@ -1,6 +1,6 @@
 ### error handling
 
-mri <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header=TRUE)
+data(mri)
 
 test_that("descrip() throws error if strata are not the same lengths", {
   expect_error(descrip(mri, strata = list(a = "a", b = c("b", "c"))), 

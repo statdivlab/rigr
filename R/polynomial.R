@@ -34,7 +34,9 @@ polynomial <- function(x,degree=2,center=mean(x,na.rm=T)) {
     nms <- paste(c("Linear","Square","Cube"),ifelse1(center!=0,"(ctr)",""),sep="")[1:min(degree,3)]
     if (degree > 3) nms <- c(nms,paste(4:degree,"thPwr",ifelse1(center!=0,"(ctr)",""),sep=""))
     degree <- 1:degree
-  } else nms <- paste("^",format(degree),ifelse1(center!=0,"(ctr)",""),sep="")
+  } else {
+    stop("polynomial degree must be a single number")
+  }
   rslt <- NULL
   for (d in degree) rslt <- cbind(rslt,x^d)
   dimnames(rslt) <- list(NULL,nms)

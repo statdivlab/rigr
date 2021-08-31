@@ -56,6 +56,13 @@ test_that("regress() throws error if formula includes 'lspline'", {
                "'lspline' functionality no longer supported")
 })
 
+test_that("polynomial() throws errors if degree misspecified", {
+  expect_error(regress("mean", atrophy ~ polynomial(age, degree = 1), data = mri), 
+               "inappropriate degree of polynomial")
+  expect_error(regress("mean", atrophy ~ polynomial(age, degree = c(1,2)), data = mri), 
+               "polynomial degree must be a single number")
+})
+
 ### warning handling
 
 test_that("regress() gives warning if fnctl != 'geometric mean' and replaceZeroes != FALSE", {
@@ -1074,8 +1081,38 @@ test_that("intercept removal can be done via a '-1' in formula", {
                mod2$coefficients)
 })
 
+### polynomial error testing
 
+mod_rigr <- regress("mean", atrophy ~ polynomial(age, degree = 4), data = mri)
+mri$age_centered <- mri$age - mean(mri$age)
+mod_lm <- lm(atrophy ~ age_centered + I(age_centered^2) + I(age_centered^3) + I(age_centered^4), data = mri)
+mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
+mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 5) * mod_lm_robust_se
+mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 5) * mod_lm_robust_se
+mod_lm_robust_p <- 2 * pt(abs(mod_lm$coefficients/ mod_lm_robust_se), df = nrow(mri) - 5, lower.tail = FALSE)
 
-
+test_that("polynomial() works with degree > 3", {
+  # Estimate
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Estimate"]),
+               unname(mod_lm$coefficients))
+  # Naive SE
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Naive SE"]),
+               unname(summary(mod_lm)$coefficients[,2]))
+  # Robust SE
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Robust SE"]),
+               unname(mod_lm_robust_se))
+  # z value (robust)
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "t value"]),
+               unname(mod_lm$coefficients/ mod_lm_robust_se))
+  # 95%L (robust)
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%L"]),
+               unname(mod_lm_robust_ci_lower))
+  # 95%H (robust)
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "95%H"]),
+               unname(mod_lm_robust_ci_higher))
+  # p-value
+  expect_equal(unname(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"]),
+               unname(mod_lm_robust_p))
+})
 
 
