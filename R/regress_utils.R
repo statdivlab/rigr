@@ -1770,7 +1770,7 @@ predict.uRegress <- function(object, interval="prediction",level=0.95,...){
   if(class(object$fit)[1]=="lm"){
     ret <- predict.lm(object$fit,interval=interval,level=level, ...)
   } else {
-    ret <- predict.glm(object$fit,interval=interval,level=level, ...)
+    ret <- predict.glm(object$fit, ...)
   } 
   return(ret)
 }
