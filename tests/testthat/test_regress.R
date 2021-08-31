@@ -1115,4 +1115,30 @@ test_that("polynomial() works with degree > 3", {
                unname(mod_lm_robust_p))
 })
 
+### predict method
+
+mod_rigr_lm <- regress("mean", atrophy ~ age, data = mri)
+mod_rigr_glm <- regress("odds", sex_bin ~ age, data = mri, useFdstn = FALSE)
+mod_lm <- lm(atrophy ~ age, data = mri)
+mod_glm <- glm(sex_bin ~ age, data = mri, family = binomial(link = "logit"))
+suppressWarnings(pred_mod_rigr_lm <- predict(mod_rigr_lm)[,1])
+pred_mod_lm <- predict(mod_lm)
+pred_mod_rigr_glm <- predict(mod_rigr_glm)
+pred_mod_glm <- predict(mod_glm)
+
+test_that("predict method works for lms, glms, and throws error for non-uRegress objects", {
+  # lm
+  expect_equal(pred_mod_rigr_lm,
+               pred_mod_lm)
+  # glm
+  expect_equal(pred_mod_rigr_glm,
+               pred_mod_glm)
+})
+
+
+### residuals method
+
+
+
+
 
