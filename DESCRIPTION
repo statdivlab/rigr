@@ -1,7 +1,6 @@
 Package: rigr
 Title: Regression, Inference, and General Data Analysis Tools for R
 Version: 0.0.1
-Date: 2021-04-19
 Authors@R: c(person("Amy D", "Willis", email = "adwillis@uw.edu", role = c("aut", "cre")),
              person("Taylor", "Okonek", role = "aut"),
              person("Charles J", "Wolock", role = "aut"),
