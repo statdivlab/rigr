@@ -33,7 +33,7 @@ testList <- function(form, modelframe, mat, data){
   forms <- parseList(LinearizeNestedList(forms))
   names(forms) <- c("overall", names(tmplist))
   if(length(tmplist)!=0){
-    form <- as.formula(charForm, env=.GlobalEnv)
+    form <- stats::as.formula(charForm, env=.GlobalEnv)
   }
   return(list(formula=form, testList=tmplist, termList = forms))
 }
@@ -81,8 +81,8 @@ getTerms <- function(form, y){
         chars[length(chars)] <- paste(unlist(strsplit(chars[length(chars)], ")", fixed=TRUE)), collapse=")")
         chars <- paste(chars[-1], collapse="(")
         chars <- paste(deparse(y), chars, sep="")
-        form <- as.formula(chars, env=.GlobalEnv)
-        return(list(terms(form), getTerms(f1[[2]], y)))
+        form <- stats::as.formula(chars, env=.GlobalEnv)
+        return(list(stats::terms(form), getTerms(f1[[2]], y)))
       }
       return(getTerms(f1[[2]], y))
     }
@@ -94,7 +94,7 @@ getTerms <- function(form, y){
     }
   } else {
     if(grepl("~", form[[1]], fixed=TRUE)){
-      ret <- terms(form)
+      ret <- stats::terms(form)
     } else {
       ret <- NULL
     }
@@ -135,7 +135,7 @@ parseFormula <- function(form, modelframe, mat){
           char2 <- char2[!grepl("U", char2)]
         }
         char2 <- paste("(", char2, sep="")
-        f1tmp <- as.formula(paste("~", char2))
+        f1tmp <- stats::as.formula(paste("~", char2))
         f1[[2]][[2]][[i]] <- f1tmp[[2]]
       }
       form[[2]] <- f1[[2]]
@@ -507,7 +507,7 @@ parsePartials <- function(form, modelframe, mat){
           char2 <- char2[!grepl("U", char2)]
         }
         char2 <- paste("(", char2, sep="")
-        f1tmp <- as.formula(paste("~", char2))
+        f1tmp <- stats::as.formula(paste("~", char2))
         f1[[2]][[2]][[i]] <- f1tmp[[2]]
       }
       form[[2]] <- f1[[2]]
@@ -1092,11 +1092,11 @@ uWaldtest <- function (full, contrasts=c(0,rep(1,p-1)), hypothesis=matrix(0,r,1)
   Fstat <- t(contrasts %*% coefficients - hypothesis) %*% solve(covmtx) %*% (contrasts %*% coefficients - hypothesis) / r
   if (full$useFdstn) {
     df.den <- full$waldStat[4]
-    pval <- 1-pf(Fstat,r,df.den)
+    pval <- 1-stats::pf(Fstat,r,df.den)
     rslt <- c(Fstat, pval,r,df.den)
     names(rslt) <- c("F stat","p value","num df","den df")
   } else {
-    pval <- 1-pchisq(Fstat,r,)
+    pval <- 1-stats::pchisq(Fstat,r,)
     rslt <- c(Fstat, pval,r)
     names(rslt) <- c("Chi2 stat","p value","df")
   }
@@ -1442,10 +1442,10 @@ printerLm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.c
     if (rdf > 5L) {
       nam <- c("Min", "1Q", "Median", "3Q", "Max")
       rq <- if (length(dim(resid)) == 2L) 
-        structure(apply(t(resid), 1L, quantile), dimnames = list(nam, 
+        structure(apply(t(resid), 1L, stats::quantile), dimnames = list(nam, 
                                                                  dimnames(resid)[[2L]]))
       else {
-        zz <- zapsmall(quantile(resid), digits + 1L)
+        zz <- zapsmall(stats::quantile(resid), digits + 1L)
         structure(zz, names = nam)
       }
       print(rq, digits = digits, ...)
@@ -1482,18 +1482,18 @@ printerLm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.c
       }
     } else{
       if(is.na(x$transformed[1])){
-        printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
+        stats::printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
                      na.print = "NA", ...)
       } else if (suppress){
         cat("\n Transformed Model: \n")
-        printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
+        stats::printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
                      na.print = "NA", ...)
       } else {
         cat("\n Raw Model: \n")
-        printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
+        stats::printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
                      na.print = "NA", ...)
         cat("\n Transformed Model: \n")
-        printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
+        stats::printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
                      na.print = "NA", ...)
         
       }
@@ -1515,14 +1515,14 @@ printerLm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.c
     cat("\nResidual standard error:", format(signif(x$sigma, 
                                                     digits)), "on", rdf, "degrees of freedom")
     cat("\n")
-    if (nzchar(mess <- naprint(x$na.action))) 
+    if (nzchar(mess <- stats::naprint(x$na.action))) 
       cat("  (", mess, ")\n", sep = "")
     if (!is.null(x$fstatistic)) {
       cat("Multiple R-squared: ", formatC(x$r.squared, digits = digits))
       cat(",\tAdjusted R-squared: ", formatC(x$adj.r.squared, 
                                              digits = digits), "\nF-statistic:", formatC(x$fstatistic[1L], 
                                                                                          digits = digits), "on", x$fstatistic[2L], "and", 
-          x$fstatistic[3L], "DF,  p-value:", format.pval(pf(x$fstatistic[1L], 
+          x$fstatistic[3L], "DF,  p-value:", format.pval(stats::pf(x$fstatistic[1L], 
                                                             x$fstatistic[2L], x$fstatistic[3L], lower.tail = FALSE), 
                                                          digits = digits))
       cat("\n")
@@ -1533,7 +1533,7 @@ printerLm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.c
       if (p > 1L) {
         cat("\nCorrelation of Coefficients:\n")
         if (is.logical(symbolic.cor) && symbolic.cor) {
-          print(symnum(correl, abbr.colnames = NULL))
+          print(stats::symnum(correl, abbr.colnames = NULL))
         }
         else {
           correl <- format(round(correl, 2), nsmall = 2, 
@@ -1562,7 +1562,7 @@ printerGlm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.
       "\n\n", sep = "")
   cat("Deviance Residuals: \n")
   if (x$df.residual > 5) {
-    x$deviance.resid <- setNames(quantile(x$deviance.resid, 
+    x$deviance.resid <- stats::setNames(stats::quantile(x$deviance.resid, 
                                           na.rm = TRUE), c("Min", "1Q", "Median", "3Q", "Max"))
   }
   xx <- zapsmall(x$deviance.resid, digits + 1L)
@@ -1592,18 +1592,18 @@ printerGlm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.
       }
     } else{
       if(is.na(x$transformed[1])){
-        printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
+        stats::printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
                      na.print = "NA", ...)
       } else if (suppress){
         cat("\nTransformed Model:\n")
-        printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
+        stats::printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
                      na.print = "NA", ...)
       } else {
         cat("\nRaw Model:\n")
-        printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
+        stats::printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
                      na.print = "NA", ...)
         cat("\nTransformed Model:\n")
-        printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
+        stats::printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
                      na.print = "NA", ...)
         
       }
@@ -1627,7 +1627,7 @@ printerGlm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.
                                                                                                                                  "deviance")]), digits = max(5L, digits + 1L)), " on", 
                                                  format(unlist(x[c("df.null", "df.residual")])), " degrees of freedom\n"), 
                                            1L, paste, collapse = " "), sep = "")
-  if (nzchar(mess <- naprint(x$na.action))) 
+  if (nzchar(mess <- stats::naprint(x$na.action))) 
     cat("  (", mess, ")\n", sep = "")
   cat("AIC: ", format(x$aic, digits = max(4L, digits + 1L)), 
       "\n\n", "Number of Fisher Scoring iterations: ", x$iter, 
@@ -1638,7 +1638,7 @@ printerGlm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.
     if (p > 1) {
       cat("\nCorrelation of Coefficients:\n")
       if (is.logical(symbolic.cor) && symbolic.cor) {
-        print(symnum(correl, abbr.colnames = NULL))
+        print(stats::symnum(correl, abbr.colnames = NULL))
       }
       else {
         correl <- format(round(correl, 2L), nsmall = 2L, 
@@ -1768,9 +1768,9 @@ predict.uRegress <- function(object, interval="prediction",level=0.95,...){
     stop("uRegress object must be entered")
   }
   if(class(object$fit)[1]=="lm"){
-    ret <- predict.lm(object$fit,interval=interval,level=level, ...)
+    ret <- stats::predict.lm(object$fit,interval=interval,level=level, ...)
   } else {
-    ret <- predict.glm(object$fit, ...)
+    ret <- stats::predict.glm(object$fit, ...)
   } 
   return(ret)
 }
@@ -1828,10 +1828,10 @@ residuals.uRegress <- function(object, type="", ...){
     return(object$residuals)
   }
   if(type=="jackknife"){
-    return(rstudent(object$fit))
+    return(stats::rstudent(object$fit))
   }
   if(type=="studentized"){
-    return(rstandard(object$fit))
+    return(stats::rstandard(object$fit))
   }
   if(type=="standardized"){
     sigmahat <- (sum(object$residuals^2))/(length(object$residuals)-object$df[1])

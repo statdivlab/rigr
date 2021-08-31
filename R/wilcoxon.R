@@ -90,7 +90,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       if (paired) { # if paired, calculate differences
         if (length(y) != length(x)) 
           stop("'y' and 'x' must have the same length")
-        OK <- complete.cases(y, x)
+        OK <- stats::complete.cases(y, x)
         y <- y[OK] - x[OK]
         x <- NULL
       }
@@ -130,7 +130,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       # sum ranks of pos and neg obs
       sumPos <- sum(r[y>0])
       sumNeg <- sum(r[y<0])
-      STATISTIC <- setNames(sum(r[y > 0]), "V") # V statistic - sum ranks of pos obs
+      STATISTIC <- stats::setNames(sum(r[y > 0]), "V") # V statistic - sum ranks of pos obs
       TIES <- length(r) != length(unique(r))
       ePos <- n*(n+1)/4
       unadjVar <- (n*(n+1)*(2*n+1))/24
@@ -236,9 +236,9 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
               conf.level <- 1 - alpha
               warning("requested conf.level not achievable")
             }
-            l <- uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
+            l <- stats::uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
                          zq = stats::qnorm(alpha/2, lower.tail = FALSE))$root
-            u <- uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
+            u <- stats::uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
                          zq = stats::qnorm(alpha/2))$root
             c(l, u)
           }, greater = {
@@ -251,7 +251,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
               conf.level <- 1 - alpha
               warning("requested conf.level not achievable")
             }
-            l <- uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
+            l <- stats::uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
                          zq = stats::qnorm(alpha, lower.tail = FALSE))$root
             c(l, +Inf)
           }, less = {
@@ -263,13 +263,13 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
               conf.level <- 1 - alpha
               warning("requested conf.level not achievable")
             }
-            u <- uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
+            u <- stats::uniroot(wdiff, c(mumin, mumax), tol = 1e-04, 
                          zq = stats::qnorm(alpha))$root
             c(-Inf, u)
           })
           attr(cint, "conf.level") <- conf.level
           correct <- FALSE
-          ESTIMATE <- c(`(pseudo)median` = uniroot(wdiff, 
+          ESTIMATE <- c(`(pseudo)median` = stats::uniroot(wdiff, 
                                                    c(mumin, mumax), tol = 1e-04, zq = 0)$root)
         }
         if (exact && TIES) {
@@ -404,7 +404,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
             f.upper <- wdiff(mumax, zq)
             if (f.upper >= 0) 
               return(mumax)
-            uniroot(wdiff, c(mumin, mumax), f.lower = f.lower, 
+            stats::uniroot(wdiff, c(mumin, mumax), f.lower = f.lower, 
                     f.upper = f.upper, tol = 1e-04, zq = zq)$root
           }
           cint <- switch(alternative, two.sided = {
@@ -420,7 +420,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
           })
           attr(cint, "conf.level") <- conf.level
           correct <- FALSE
-          ESTIMATE <- c(`difference in location` = uniroot(wdiff, 
+          ESTIMATE <- c(`difference in location` = stats::uniroot(wdiff, 
                                                            c(mumin, mumax), tol = 1e-04, zq = 0)$root)
         }
         if (exact && TIES) {

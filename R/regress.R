@@ -171,7 +171,7 @@ regress <- function(fnctl, formula, data,
   remove_int <- grepl("-1", form_temp)
   if (any(remove_int)) {
     form_temp <- paste(form_temp[!remove_int], collapse = "+")
-    formula <- as.formula(paste(unlist(strsplit(deparse(formula),"~"))[1], "~", form_temp), env = .GlobalEnv)
+    formula <- stats::as.formula(paste(unlist(strsplit(deparse(formula),"~"))[1], "~", form_temp), env = .GlobalEnv)
     intercept <- FALSE
   }
   
@@ -181,7 +181,7 @@ regress <- function(fnctl, formula, data,
     form <- deparse(formula)
     
     form <- paste(form, "-1")
-    formula <- as.formula(form, env=.GlobalEnv)
+    formula <- stats::as.formula(form, env=.GlobalEnv)
   }
   
   # Set up the model matrix and formula
@@ -296,7 +296,7 @@ regress <- function(fnctl, formula, data,
       }
     }
     
-    y <- model.response(mf, "numeric")
+    y <- stats::model.response(mf, "numeric")
     
     # checking response variable y, and replacing zeroes if needed/desired for
     # geometric mean fnctl
@@ -331,7 +331,7 @@ regress <- function(fnctl, formula, data,
     msng <- FALSE
     
     # if weights is not numeric, throw an error
-    w <- as.vector(model.weights(mf))
+    w <- as.vector(stats::model.weights(mf))
     if (!is.null(w) && !is.numeric(w)) {
       stop("'weights' must be a numeric vector")
     }
@@ -340,17 +340,17 @@ regress <- function(fnctl, formula, data,
     }
     
     # Note from Taylor: this error message should happen earlier, and also y doesn't have rows
-    offset <- as.vector(model.offset(mf))
+    offset <- as.vector(stats::model.offset(mf))
     
     # get model matrix 
     # Note to Taylor: figure out what contrasts actually does
-    x <- model.matrix(mt, mf, contrasts)
+    x <- stats::model.matrix(mt, mf, contrasts)
     
     # fit the overall linear model, weighted if weights are specified
     if (is.null(w)) {
-      z <- lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...)
+      z <- stats::lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...)
     } else {
-      z <- lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, ...)
+      z <- stats::lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, ...)
     }
     
     
@@ -360,7 +360,7 @@ regress <- function(fnctl, formula, data,
     z$na.action <- attr(mf, "na.action")
     z$offset <- offset
     z$contrasts <- attr(x, "contrasts")
-    z$xlevels <- .getXlevels(mt, mf)
+    z$xlevels <- stats::.getXlevels(mt, mf)
     z$call <- cl
     z$terms <- mt
     z$model <- mf
@@ -388,7 +388,7 @@ regress <- function(fnctl, formula, data,
     
     # set control parameter not specified, set it to glm.control(...)
     if (missing(control)) {
-      control <- glm.control(...)
+      control <- stats::glm.control(...)
     }
     
     # if method is "glm.fit", then set control to glm.control(...)
@@ -450,10 +450,10 @@ regress <- function(fnctl, formula, data,
     
     # Note that y here is different than in the lm call, where here we don't need the model.response to be
     # numeric
-    y <- model.response(mf, "any")
+    y <- stats::model.response(mf, "any")
     
     # assign to x
-    x <- model.matrix(mt, mf, contrasts)
+    x <- stats::model.matrix(mt, mf, contrasts)
 
     
     # reassign n, now that missing values have been removed
@@ -462,7 +462,7 @@ regress <- function(fnctl, formula, data,
     
     # if weights is not numeric, throw an error
     # Note from Taylor: can move this to beginning of function
-    w <- as.vector(model.weights(mf))
+    w <- as.vector(stats::model.weights(mf))
     if (!is.null(w) && !is.numeric(w)) {
       stop("'weights' must be a numeric vector")
     }
@@ -470,12 +470,12 @@ regress <- function(fnctl, formula, data,
       stop("negative weights not allowed")
     }
     
-    offset <- as.vector(model.offset(mf))
+    offset <- as.vector(stats::model.offset(mf))
     
     # get starting values for glm fit
-    start <- model.extract(mf, "start")
-    mustart <- model.extract(mf, "mustart")
-    etastart <- model.extract(mf, "etastart")
+    start <- stats::model.extract(mf, "start")
+    mustart <- stats::model.extract(mf, "mustart")
+    etastart <- stats::model.extract(mf, "etastart")
     
     # fit the overall glm
     fit <- eval(call(if (is.function(method)) "method" else method, 
@@ -506,7 +506,7 @@ regress <- function(fnctl, formula, data,
     fit$y <- y
     fit <- c(fit, list(call = call, formula = formula, terms = mt, 
                        data = data, offset = offset, control = control, method = method, 
-                       contrasts = attr(x, "contrasts"), xlevels = .getXlevels(mt, mf)))
+                       contrasts = attr(x, "contrasts"), xlevels = stats::.getXlevels(mt, mf)))
     class(fit) <- c(fit$class, c("glm", "lm"))
   }
   
@@ -534,7 +534,7 @@ regress <- function(fnctl, formula, data,
   }
   
   # Note from Taylor: I believe model is already model.matrix(fit), so this may be able to be deleted
-  model <- model.matrix(fit)
+  model <- stats::model.matrix(fit)
   
   # get predictor variables (includes intercept if there is one)
   preds <- dimnames(model)[[2]]
@@ -720,24 +720,24 @@ regress <- function(fnctl, formula, data,
   
   
   if (useFdstn) {
-    waldStat <- c(waldStat,1-pf(waldStat,p-intercept,n-p),p-intercept,n-p)
-    LRStat <- c(LRStat,1-pf(LRStat,p-intercept,n-p),p-intercept,n-p)
-    if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pf(scoreStat,p-intercept,n-p),p-intercept,n-p)
+    waldStat <- c(waldStat,1-stats::pf(waldStat,p-intercept,n-p),p-intercept,n-p)
+    LRStat <- c(LRStat,1-stats::pf(LRStat,p-intercept,n-p),p-intercept,n-p)
+    if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-stats::pf(scoreStat,p-intercept,n-p),p-intercept,n-p)
     
     # change p-value to robust p-value
-    zzs$coefficients[,secol+2] <- 2 * pt(- abs(zzs$coefficients[,secol+1]),df=n-p)
+    zzs$coefficients[,secol+2] <- 2 * stats::pt(- abs(zzs$coefficients[,secol+1]),df=n-p)
     
     # change label for p-value from Pr(>|z|) to Pr(>|t|), and "z value" to "t value"
     colnames(zzs$coefficients)[secol+1] <- "t value"
     colnames(zzs$coefficients)[secol+2] <- "Pr(>|t|)"
     
   } else {
-    waldStat <- c(waldStat,1-pchisq(waldStat,p-intercept),p-intercept)
-    LRStat <- c(LRStat,1-pchisq(LRStat,p-intercept),p-intercept)
-    if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-pchisq(waldStat,p-intercept),p-intercept)
+    waldStat <- c(waldStat,1-stats::pchisq(waldStat,p-intercept),p-intercept)
+    LRStat <- c(LRStat,1-stats::pchisq(LRStat,p-intercept),p-intercept)
+    if (!is.null(scoreStat)) scoreStat <- c(scoreStat,1-stats::pchisq(waldStat,p-intercept),p-intercept)
     
     # change p-value to robust p-value
-    zzs$coefficients[,secol+2] <- 2 * pnorm(- abs(zzs$coefficients[,secol+1]))
+    zzs$coefficients[,secol+2] <- 2 * stats::pnorm(- abs(zzs$coefficients[,secol+1]))
   }
   
   
@@ -754,7 +754,7 @@ regress <- function(fnctl, formula, data,
                     linearPredictor=linearPredictor, fit=fit, converge=converge))
   
   class(zzs) <- c("uRegress",tmp)
-  if (useFdstn) ci <- qt((1-conf.level)/2,df=n-p) * zzs$coefficients[,secol] else ci <- qnorm((1-conf.level)/2) * zzs$coefficients[,secol]
+  if (useFdstn) ci <- stats::qt((1-conf.level)/2,df=n-p) * zzs$coefficients[,secol] else ci <- stats::qnorm((1-conf.level)/2) * zzs$coefficients[,secol]
   ci <- zzs$coefficients[,1] + cbind(ci,-ci)
   dimnames(ci)[[2]] <- paste(format(100*conf.level),"%",c("L","H"),sep="")
   
@@ -902,7 +902,7 @@ regress <- function(fnctl, formula, data,
   zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1] <- ifelse(is.na(zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-2]), NA, zzs$augCoefficients[,dim(zzs$augCoefficients)[2]-1])
   if (length(tmplist)>0 & !is.null(dfs)) {
     for (i in 1:length(dfs)) {
-      zzs$augCoefficients[dim(zzs$augCoefficients)[1]-round(i/2),"df"] <- tail(dfs, n=1)
+      zzs$augCoefficients[dim(zzs$augCoefficients)[1]-round(i/2),"df"] <- utils::tail(dfs, n=1)
       dfs <- dfs[-length(dfs)]
     }
   }

@@ -92,9 +92,9 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     }
     
     tStat <- (newCoef-hyp)/SE
-    pval <- 2*pt(-abs(tStat), reg$df[2]) ## return two sided test
-    CIL <- newCoef - abs(qt((1-conf.level)/2,df=reg$df[2])*SE)
-    CIU <- newCoef + abs(qt((1-conf.level)/2,df=reg$df[2])*SE)
+    pval <- 2*stats::pt(-abs(tStat), reg$df[2]) ## return two sided test
+    CIL <- newCoef - abs(stats::qt((1-conf.level)/2,df=reg$df[2])*SE)
+    CIU <- newCoef + abs(stats::qt((1-conf.level)/2,df=reg$df[2])*SE)
     
     if(eform){
       CIL <- exp(CIL)

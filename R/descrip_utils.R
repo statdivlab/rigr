@@ -233,14 +233,14 @@ describe_vector <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL,
         } else {
             if (geomInclude) {
                 # add mean, sd, geometric mean, quantiles
-                rslt <- c(rslt, mean(x), sd(x), ifelse1(
+                rslt <- c(rslt, mean(x), stats::sd(x), ifelse1(
                     geometricMean, 
                     exp(mean(log(ifelse(x == 0, replaceZeroes, x)))), 
                     NA
-                ), quantile(x, probs))
+                ), stats::quantile(x, probs))
             } else {
                 # add mean, sd, quantiles
-                rslt <- c(rslt, mean(x), sd(x), quantile(x, probs))
+                rslt <- c(rslt, mean(x), stats::sd(x), stats::quantile(x, probs))
             }
             if (ntholds > 0) {
                 # add thresholds if any are specified
