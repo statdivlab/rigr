@@ -503,7 +503,7 @@ regress <- function(fnctl, formula, data,
     # add class, various attributes, and other values to the regression object
     fit$model <- mf
     fit$na.action <- attr(mf, "na.action")
-    fit$y <- NULL
+    fit$y <- y
     fit <- c(fit, list(call = call, formula = formula, terms = mt, 
                        data = data, offset = offset, control = control, method = method, 
                        contrasts = attr(x, "contrasts"), xlevels = .getXlevels(mt, mf)))
@@ -960,5 +960,11 @@ regress <- function(fnctl, formula, data,
   }
   zzs$args <- args
   zzs$anyRepeated <- FALSE
+  
+  # fix zzs$fit$call if class(zzs$fit) = c("glm", "lm")
+  if (class(zzs$fit)[1] == "glm") {
+    zzs$fit$call <- zzs$call
+  }
+  
   return(zzs)
 }
