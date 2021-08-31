@@ -1776,7 +1776,7 @@ predict.uRegress <- function(object, interval="prediction",level=0.95,...){
 }
 
 
-#' Extract Residuals from uRegress objects
+#' Extract Residuals from \code{uRegress} objects
 #' 
 #' Extracts residuals (unstandardized, standardized, studentized, or jackknife)
 #' from \code{uRegress} objects.
@@ -1787,7 +1787,7 @@ predict.uRegress <- function(object, interval="prediction",level=0.95,...){
 #' internally studentized residuals, while \code{"jackknife"} computes the
 #' externally studentized residuals.
 #' 
-#' #' @aliases residuals.uRegress residuals
+#' @aliases residuals.uRegress residuals
 #' 
 #' @param object an object of class \code{uRegress}, as returned by
 #' \link[rigr]{regress}.
@@ -1795,6 +1795,7 @@ predict.uRegress <- function(object, interval="prediction",level=0.95,...){
 #' \code{""}, which returns unstandardized residuals. \code{"standardized"},
 #' \code{"studentized"}, and \code{"jackknife"} return the expected type of
 #' residuals.
+#' @param ...  other arguments 
 #' @return Returns the type of residuals
 #' requested. 
 #' @seealso \code{\link[rigr]{regress}}, \code{\link[stats]{rstudent}},
@@ -1808,13 +1809,13 @@ predict.uRegress <- function(object, interval="prediction",level=0.95,...){
 #' ldlReg <- regress("mean", age~ldl, data=mri)
 #' 
 #' # Get the studentized residuals
-#' uResiduals(ldlReg, "studentized")
+#' residuals(ldlReg, "studentized")
 #' 
 #' # Get the jackknifed residuals
-#' uResiduals(ldlReg, "jackknife")
+#' residuals(ldlReg, "jackknife")
 #' 
 #' @export
-residuals.uRegress <- function(object, type=""){
+residuals.uRegress <- function(object, type="", ...){
 
   if(!("uRegress" %in% class(object))){
     stop("The first argument entered must be a uRegress object.")

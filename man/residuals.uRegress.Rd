@@ -2,9 +2,10 @@
 % Please edit documentation in R/regress_utils.R
 \name{residuals.uRegress}
 \alias{residuals.uRegress}
-\title{Extract Residuals from uRegress objects}
+\alias{residuals}
+\title{Extract Residuals from \code{uRegress} objects}
 \usage{
-\method{residuals}{uRegress}(object, type = "")
+\method{residuals}{uRegress}(object, type = "", ...)
 }
 \arguments{
 \item{object}{an object of class \code{uRegress}, as returned by
@@ -14,6 +15,8 @@
 \code{""}, which returns unstandardized residuals. \code{"standardized"},
 \code{"studentized"}, and \code{"jackknife"} return the expected type of
 residuals.}
+
+\item{...}{other arguments}
 }
 \value{
 Returns the type of residuals
@@ -29,8 +32,6 @@ functionality from the \code{stats} package to return residuals from the
 \code{uRegress} object. \code{"studentized"} residuals are computed as
 internally studentized residuals, while \code{"jackknife"} computes the
 externally studentized residuals.
-
-#' @aliases residuals.uRegress residuals
 }
 \examples{
 
@@ -41,10 +42,10 @@ data(mri)
 ldlReg <- regress("mean", age~ldl, data=mri)
 
 # Get the studentized residuals
-uResiduals(ldlReg, "studentized")
+residuals(ldlReg, "studentized")
 
 # Get the jackknifed residuals
-uResiduals(ldlReg, "jackknife")
+residuals(ldlReg, "jackknife")
 
 }
 \seealso{

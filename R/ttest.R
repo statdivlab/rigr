@@ -479,9 +479,15 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
     for (t in 1:length(ustrat)) {
       x <- subset(var1, strat1 == ustrat[t])
       y <- subset(var2, strat2 == ustrat[t])
-      ttest.obj <- ttest.do(x, y, geom = geom, by = by, null.hypoth, alternative, 
-                            var.eq, conf.level, matched, more.digits, 
-                            myargs)
+      ttest.obj <- ttest.do(var1 = x, var2 = y, 
+                            geom = geom, by = by, 
+                            null.hypoth = null.hypoth, 
+                            alternative = alternative, 
+                            var.eq = var.eq, 
+                            conf.level = conf.level, 
+                            matched = matched, 
+                            more.digits = more.digits, 
+                            myargs = myargs)
     }
   }
   ttest.obj$call <- match.call()

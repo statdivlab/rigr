@@ -23,7 +23,7 @@ print.ttest <-
     alternative = par[3]
     var.eq = as.logical(par[4])
     conf.level = par[5]
-    matched = par[6]
+    matched = as.logical(par[6])
     digits = par[7]
     null.hypoth <- as.numeric(format(null.hypoth, digits = digits))
     if (var.eq) {robust <- FALSE}

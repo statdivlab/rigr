@@ -21,7 +21,8 @@ Imports:
     Exact,
     plyr,
     sandwich,
-    tibble
+    tibble,
+    survival
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
