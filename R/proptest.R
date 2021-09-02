@@ -30,9 +30,7 @@
 #' test. Defaults to 95/100.
 #' @param more.digits a numeric value
 #' specifying whether or not to display more or fewer digits in the output.
-#' Non-integers are automatically rounded down. Any call to \code{proptest()} will
-#' run \code{proptest.default()}, with user specified values in place of the
-#' appropriate defaults.
+#' Non-integers are automatically rounded down. 
 #' 
 #' @return Prints a summary of the data and the
 #' corresponding proportions test. \item{Variable}{the variable
@@ -179,7 +177,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
                                     digits = digits))
         } else {
           chisq <- stats::prop.test(x = sum(var1), n = length(var1), conf.level = conf.level, p = null.hypoth,
-                             correct = FALSE)
+                             alternative = alternative, correct = FALSE)
           zstat <- as.numeric(format(sqrt(chisq$statistic), 
                                          digits = digits))
           pval <- as.numeric(format(chisq$p.value, 
@@ -219,8 +217,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         # no two-sample exact test
         chisq <- stats::prop.test(x = c(sum(var1), sum(var2)),
                            n = c(length(var1), length(var2)),
-                           conf.level = conf.level, correct = FALSE)
-        
+                           conf.level = conf.level, alternative = alternative, correct = FALSE)
         zstat <- as.numeric(format(sqrt(chisq$statistic), 
                                        digits = digits))
         pval <- as.numeric(format(chisq$p.value, 
@@ -270,7 +267,8 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       est_diff <- as.numeric(format(est_diff), digits = digits)
       chisq <- stats::prop.test(x = c(sum(var1), sum(var2)),
                          n = c(length(var1), length(var2)),
-                         conf.level = conf.level, correct = FALSE)
+                         conf.level = conf.level, correct = FALSE,
+                         alternative = alternative)
       
       zstat <- as.numeric(format(sqrt(chisq$statistic), 
                                  digits = digits))

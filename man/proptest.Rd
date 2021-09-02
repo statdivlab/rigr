@@ -47,9 +47,7 @@ test. Defaults to 95/100.}
 
 \item{more.digits}{a numeric value
 specifying whether or not to display more or fewer digits in the output.
-Non-integers are automatically rounded down. Any call to \code{proptest()} will
-run \code{proptest.default()}, with user specified values in place of the
-appropriate defaults.}
+Non-integers are automatically rounded down.}
 }
 \value{
 Prints a summary of the data and the
