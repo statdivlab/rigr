@@ -50,8 +50,6 @@ specifying whether or not to display more or fewer digits in the output.
 Non-integers are automatically rounded down. Any call to \code{proptest()} will
 run \code{proptest.default()}, with user specified values in place of the
 appropriate defaults.}
-
-\item{\dots}{only used in the generic S3 class.}
 }
 \value{
 Prints a summary of the data and the
@@ -98,11 +96,8 @@ values in place of defaults in the appropriate places.
 \examples{
 
 #- Read in data set -#
-psa <- read.table("http://www.emersonstatistics.com/datasets/psa.txt", header=TRUE)
+data(psa)
 attach(psa)
-
-#- Perform t-test -#
-proptest(pretxpsa, null.hypoth = 100, alternative = "greater", more.digits = 1)
 
 #- Define new binary variable as indicator -#
 #- of whether or not bss was worst possible -#
@@ -111,13 +106,10 @@ bssworst[bss == 1] <- 0
 bssworst[bss == 2] <- 0
 bssworst[bss == 3] <- 1
 
-#- Perform t-test allowing for unequal -#
-#- variances between strata -#
-proptest(pretxpsa, by = bssworst)
 
-#- Perform matched t-test -#
-proptest(pretxpsa, nadirpsa, matched = TRUE, conf.level = 99/100, more.digits = 1)
-
+#- Perform test comparing proportion in remission -#
+#- between bss strata, using dummy to make inrem a binary numeric -#
+proptest(dummy(inrem), by = bssworst)
 
 }
 \seealso{

@@ -33,7 +33,6 @@
 #' Non-integers are automatically rounded down. Any call to \code{proptest()} will
 #' run \code{proptest.default()}, with user specified values in place of the
 #' appropriate defaults.
-#' @param \dots only used in the generic S3 class.
 #' 
 #' @return Prints a summary of the data and the
 #' corresponding proportions test. \item{Variable}{the variable
@@ -70,11 +69,8 @@
 #' @examples
 #' 
 #' #- Read in data set -#
-#' psa <- read.table("http://www.emersonstatistics.com/datasets/psa.txt", header=TRUE)
+#' data(psa)
 #' attach(psa)
-#' 
-#' #- Perform t-test -#
-#' proptest(pretxpsa, null.hypoth = 100, alternative = "greater", more.digits = 1)
 #' 
 #' #- Define new binary variable as indicator -#
 #' #- of whether or not bss was worst possible -#
@@ -83,13 +79,10 @@
 #' bssworst[bss == 2] <- 0
 #' bssworst[bss == 3] <- 1
 #' 
-#' #- Perform t-test allowing for unequal -#
-#' #- variances between strata -#
-#' proptest(pretxpsa, by = bssworst)
 #' 
-#' #- Perform matched t-test -#
-#' proptest(pretxpsa, nadirpsa, matched = TRUE, conf.level = 99/100, more.digits = 1)
-#' 
+#' #- Perform test comparing proportion in remission -#
+#' #- between bss strata, using dummy to make inrem a binary numeric -#
+#' proptest(dummy(inrem), by = bssworst)
 #' 
 #' @export proptest
 proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, alternative = "two.sided", 
@@ -110,7 +103,8 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     if (!(is.scalar(null.hypoth))){
       stop("Null must be a scalar.")
     }
-    ### to do - make sure conf.level is scalar! and null is between 0 and 1 and data are 0-1, by is same length as var1
+    ### to do - make sure conf.level is scalar! and null is between 0 and 1 and data are 0-1, by is same length as var1,
+    ### can't do exact two-prop test
     if (!((length(conf.level) == 1L) && is.finite(conf.level) && 
           (conf.level > 0) && (conf.level < 1))){
       stop("'conf.level' must be a single number between 0 and 1")
@@ -173,7 +167,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         est1 <- as.numeric(format(est1), digits = digits)
         
         if (exact) {
-          binom <- binom.test(x = sum(var1), n = length(var1), p = null.hypoth, 
+          binom <- stats::binom.test(x = sum(var1), n = length(var1), p = null.hypoth, 
                               alternative = alternative, conf.level = conf.level)
           se <- sqrt(est1*(1-est1)/length(var1))
           cil <- as.numeric(format(min(binom$conf.int), 
@@ -183,17 +177,16 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
           se <- as.numeric(format(se, digits = digits))
           pval <- as.numeric(format(binom$p.value, 
                                     digits = digits))
-        }
-        else {
-          chisq <- prop.test(x = sum(var1), n = length(var1), conf.level = conf.level, p = null.hypoth,
+        } else {
+          chisq <- stats::prop.test(x = sum(var1), n = length(var1), conf.level = conf.level, p = null.hypoth,
                              correct = FALSE)
           zstat <- as.numeric(format(sqrt(chisq$statistic), 
                                          digits = digits))
           pval <- as.numeric(format(chisq$p.value, 
                                       digits = digits))
           se <- sqrt(est1*(1-est1)/length(var1))
-          cil <- est1 - qnorm(cl) * se
-          cih <- est1 + qnorm(cl) * se
+          cil <- est1 - stats::qnorm(cl) * se
+          cih <- est1 + stats::qnorm(cl) * se
           cil <- as.numeric(format(cil, digits = digits))
           cih <- as.numeric(format(cih, digits = digits))
           se <- as.numeric(format(se, digits = digits))
@@ -224,7 +217,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         est_diff <- est1 - est2
         est_diff <- as.numeric(format(est_diff), digits = digits)
         # no two-sample exact test
-        chisq <- prop.test(x = c(sum(var1), sum(var2)),
+        chisq <- stats::prop.test(x = c(sum(var1), sum(var2)),
                            n = c(length(var1), length(var2)),
                            conf.level = conf.level, correct = FALSE)
         
@@ -235,12 +228,12 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         se <- c(sqrt(est1 * (1-est1)/length(var1)),
                 sqrt(est2 * (1-est2)/length(var2)),
                 sqrt((est1 * (1-est1))/length(var1) + (est2*(1-est2))/length(var2)))
-        cil <- c(est1 - qnorm(cl)*se[1],
-                 est2 - qnorm(cl)*se[2],
-                 est1 - est2 - qnorm(cl) * se[3])
-        cih <- c(est1 + qnorm(cl)*se[1],
-                 est2 + qnorm(cl)*se[2],
-                 est1 - est2 + qnorm(cl) * se[3])
+        cil <- c(est1 - stats::qnorm(cl)*se[1],
+                 est2 - stats::qnorm(cl)*se[2],
+                 est1 - est2 - stats::qnorm(cl) * se[3])
+        cih <- c(est1 + stats::qnorm(cl)*se[1],
+                 est2 + stats::qnorm(cl)*se[2],
+                 est1 - est2 + stats::qnorm(cl) * se[3])
         cil <- as.numeric(format(cil, digits = digits))
         cih <- as.numeric(format(cih, digits = digits))
         se <- as.numeric(format(se, digits = digits))
@@ -275,7 +268,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       est2 <- as.numeric(format(est2), digits = digits)
       est_diff <- est1 - est2
       est_diff <- as.numeric(format(est_diff), digits = digits)
-      chisq <- prop.test(x = c(sum(var1), sum(var2)),
+      chisq <- stats::prop.test(x = c(sum(var1), sum(var2)),
                          n = c(length(var1), length(var2)),
                          conf.level = conf.level, correct = FALSE)
       
@@ -286,12 +279,12 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       se <- c(sqrt(est1 * (1-est1)/length(var1)),
               sqrt(est2 * (1-est2)/length(var2)),
               sqrt((est1 * (1-est1))/length(var1) + (est2*(1-est2))/length(var2)))
-      cil <- c(est1 - qnorm(cl)*se[1],
-               est2 - qnorm(cl)*se[2],
-               est1 - est2 - qnorm(cl) * se[3])
-      cih <- c(est1 + qnorm(cl)*se[1],
-               est2 + qnorm(cl)*se[2],
-               est1 - est2 + qnorm(cl) * se[3])
+      cil <- c(est1 - stats::qnorm(cl)*se[1],
+               est2 - stats::qnorm(cl)*se[2],
+               est1 - est2 - stats::qnorm(cl) * se[3])
+      cih <- c(est1 + stats::qnorm(cl)*se[1],
+               est2 + stats::qnorm(cl)*se[2],
+               est1 - est2 + stats::qnorm(cl) * se[3])
       cil <- as.numeric(format(cil, digits = digits))
       cih <- as.numeric(format(cih, digits = digits))
       se <- as.numeric(format(se, digits = digits))
@@ -318,7 +311,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       
     }
     par <- c(null.hypoth = null.hypoth, alternative = alternative, 
-             conf.level = conf.level, digits = digits)
+             conf.level = conf.level, exact = exact, digits = digits)
     invisible(list(tab = main, zstat = zstat, pval = pval, 
                    var1 = var1, var2 = var2, by = by, par = par))
   }
@@ -348,7 +341,8 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         for (t in 1:length(ustrat)) {
           x <- subset(var1, strat == ustrat[t])
           proptest.obj <- proptest.do(var1 = x, var2 = var2, 
-                                      by = by, null.hypoth = null.hypoth, alternative = alternative, 
+                                      by = by, exact = exact,
+                                      null.hypoth = null.hypoth, alternative = alternative, 
                                       conf.level = conf.level, 
                                       more.digits = more.digits, 
                                       myargs = myargs)
@@ -361,7 +355,8 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
           x <- subset(var1, strat == ustrat[t])
           cby <- subset(by, strat == ustrat[t])
           proptest.obj <- proptest.do(var1 = x, var2 = var2, 
-                                by = cby, null.hypoth = null.hypoth, alternative = alternative, 
+                                by = cby, exact = exact,
+                                null.hypoth = null.hypoth, alternative = alternative, 
                                 conf.level = conf.level, 
                                 more.digits = more.digits, 
                                 myargs = myargs)
@@ -374,7 +369,8 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         x <- subset(var1, strat1 == ustrat[t])
         y <- subset(var2, strat2 == ustrat[t])
         proptest.obj <- proptest.do(var1 = x, var2 = y, 
-                              by = by, 
+                              by = by,
+                              exact = exact,
                               null.hypoth = null.hypoth, 
                               alternative = alternative, 
                               conf.level = conf.level, 
