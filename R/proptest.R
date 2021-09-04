@@ -98,11 +98,11 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     if (!(alternative %in% c("less", "two.sided", "greater"))) {
       stop("'alternative' must be either 'less', 'two.sided', or 'greater'")
     }
-    if (!(is.scalar(null.hypoth))){
-      stop("Null must be a scalar.")
-    }
+    # if (!(is.scalar(null.hypoth))){
+    #   stop("Null must be a scalar.")
+    # }
     ### to do - make sure conf.level is scalar! and null is between 0 and 1 and data are 0-1, by is same length as var1,
-    ### can't do exact two-prop test
+    ### can't do exact two-prop test, can't specify null for two-sample test
     if (!((length(conf.level) == 1L) && is.finite(conf.level) && 
           (conf.level > 0) && (conf.level < 1))){
       stop("'conf.level' must be a single number between 0 and 1")
@@ -354,7 +354,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
           cby <- subset(by, strat == ustrat[t])
           proptest.obj <- proptest.do(var1 = x, var2 = var2, 
                                 by = cby, exact = exact,
-                                null.hypoth = null.hypoth, alternative = alternative, 
+                                null.hypoth = 0, alternative = alternative, 
                                 conf.level = conf.level, 
                                 more.digits = more.digits, 
                                 myargs = myargs)
@@ -369,7 +369,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         proptest.obj <- proptest.do(var1 = x, var2 = y, 
                               by = by,
                               exact = exact,
-                              null.hypoth = null.hypoth, 
+                              null.hypoth = 0, 
                               alternative = alternative, 
                               conf.level = conf.level, 
                               more.digits = more.digits, 

@@ -97,9 +97,9 @@ test_that("ttest() returns correct numbers for one-sample test", {
   expect_equal(t1$tab[[1]], "d") # var name
   expect_equal(as.numeric(t1$tab[[2]]), length(d)) # n obs
   expect_equal(as.numeric(t1$tab[[3]]), sum(is.na(d))) # NAs
-  expect_equal(as.numeric(t1$tab[[4]]), t2$estimate[[1]], tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[5]]), t2$stderr[[1]], tolerance = 3) # standard error of mean est
-  expect_equal(as.numeric(t1$tab[[6]]), sd(d), tolerance = 3) # std dev of data
+  expect_equal(as.numeric(t1$tab[[4]]), t2$estimate[[1]], tolerance = 1e-2) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[5]]), t2$stderr[[1]], tolerance = 1e-3) # standard error of mean est
+  expect_equal(as.numeric(t1$tab[[6]]), sd(d), tolerance = 1e-3) # std dev of data
   expect_equal(t1$var1, d) 
   expect_equal(t1$var2, NA)
   expect_equal(t1$by, NA)
@@ -132,9 +132,9 @@ test_that("ttest() returns correct numbers for one-sample test", {
   expect_equal(as.numeric(t3$tab[[1, 3]]), sum(is.na(a))) # NAs
   expect_equal(as.numeric(t3$tab[[2, 3]]), sum(is.na(b))) # NAs
   expect_equal(as.numeric(t3$tab[[3, 3]]), sum(is.na(d))) # NAs
-  expect_equal(as.numeric(t3$tab[[1, 4]]), mean(a), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t3$tab[[2, 4]]), mean(b), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t3$tab[[3, 4]]), t4$estimate[[1]], tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[1, 4]]), mean(a), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[2, 4]]), mean(b), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[3, 4]]), t4$estimate[[1]], tolerance = 1e-2) # estimate of mean
   expect_equal(t3$var1, a)
   expect_equal(t3$var2, b)
   expect_equal(t3$by, NA)
@@ -222,9 +222,9 @@ test_that("ttest() returns correct numbers for one-sample test of geometric mean
   expect_equal(t1$p, t2$p.value, tolerance = 1e-3) # p-value
   expect_equal(as.numeric(strsplit(substr(t1$tab[[7]], start = 2, stop = nchar(t1$tab[[7]])-1), ", ")[[1]]),
                t2$conf.int[1:2], tolerance = 1e-3) # conf int
-  expect_equal(as.numeric(t1$tab[[4]]), exp(t2$estimate[[1]]), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[5]]), t2$stderr[[1]], tolerance = 3) # standard error of mean est
-  expect_equal(as.numeric(t1$tab[[6]]), sd(exp(d)), tolerance = 3) # std dev of data
+  expect_equal(as.numeric(t1$tab[[4]]), t2$estimate[[1]], tolerance = 1e-2) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[5]]), t2$stderr[[1]], tolerance = 1e-3) # standard error of mean est
+  expect_equal(as.numeric(t1$tab[[6]]), sd(d), tolerance = 1e-3) # std dev of data
   expect_true(as.logical(t1$par[[1]])) # geom parameter
   expect_equal(as.numeric(t1$par[[2]]), 0) # null 
   
@@ -238,9 +238,9 @@ test_that("ttest() returns correct numbers for one-sample test of geometric mean
   expect_equal(as.numeric(strsplit(substr(t3$tab[[2, 7]], start = 2, stop = nchar(t3$tab[[2, 7]])-1), ", ")[[1]]),
                c(mean(b) - qt(0.975, 49)*sd(b)/sqrt(length(b)), mean(b) + qt(0.975, 49)*sd(b)/sqrt(length(b))), 
                tolerance = 1e-3) # conf int
-  expect_equal(as.numeric(t3$tab[[1, 4]]), exp(mean(a)), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t3$tab[[2, 4]]), exp(mean(b)), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t3$tab[[3, 4]]), exp(t4$estimate[[1]]), tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[1, 4]]), mean(a), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[2, 4]]), mean(b), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[3, 4]]), t4$estimate[[1]], tolerance = 1e-2) # estimate of mean
   expect_true(as.logical(t3$par[[1]])) # geom parameter
   expect_equal(as.numeric(t3$par[[2]]), 0) # null
 })
@@ -272,9 +272,9 @@ test_that("ttest() returns correct numbers for two-sample test,  unpooled varian
   expect_equal(as.numeric(t1$tab[[1, 3]]), sum(is.na(a))) # NAs
   expect_equal(as.numeric(t1$tab[[2, 3]]), sum(is.na(b))) # NAs
   expect_equal(as.numeric(t1$tab[[3, 3]]), sum(is.na(a)) + sum(is.na(b))) # NAs
-  expect_equal(as.numeric(t1$tab[[1, 4]]), mean(a), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[2, 4]]), mean(b), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[3, 4]]), t2$estimate[[1]], tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[1, 4]]), mean(a), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[2, 4]]), mean(b), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[3, 4]]), mean(a) - mean(b), tolerance = 1e-2) # estimate of mean
   expect_equal(t1$var1, a)
   expect_equal(t1$var2, b)
   expect_equal(t1$by, NA)
@@ -315,9 +315,9 @@ test_that("ttest() returns correct numbers for two-sample test,  pooled variance
   expect_equal(as.numeric(t1$tab[[1, 3]]), sum(is.na(a))) # NAs
   expect_equal(as.numeric(t1$tab[[2, 3]]), sum(is.na(b))) # NAs
   expect_equal(as.numeric(t1$tab[[3, 3]]), sum(is.na(a)) + sum(is.na(b))) # NAs
-  expect_equal(as.numeric(t1$tab[[1, 4]]), mean(a), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[2, 4]]), mean(b), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[3, 4]]), t2$estimate[[1]], tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[1, 4]]), mean(a), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[2, 4]]), mean(b), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[3, 4]]), mean(a) - mean(b), tolerance = 1e-2) # estimate of mean
   expect_equal(t1$var1, a)
   expect_equal(t1$var2, b)
   expect_equal(t1$by, NA)
@@ -358,9 +358,9 @@ test_that("ttest() returns correct numbers for two-sample test using by,  unpool
   expect_equal(as.numeric(t1$tab[[1, 3]]), sum(is.na(a))) # NAs
   expect_equal(as.numeric(t1$tab[[2, 3]]), sum(is.na(b))) # NAs
   expect_equal(as.numeric(t1$tab[[3, 3]]), sum(is.na(a)) + sum(is.na(b))) # NAs
-  expect_equal(as.numeric(t1$tab[[1, 4]]), mean(a), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[2, 4]]), mean(b), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[3, 4]]), t2$estimate[[1]], tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[1, 4]]), mean(a), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[2, 4]]), mean(b), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[3, 4]]), mean(a) - mean(b), tolerance = 1e-2) # estimate of mean
   expect_equal(t1$var1, a)
   expect_equal(t1$var2, b)
   expect_equal(t1$by, groups)
@@ -401,9 +401,9 @@ test_that("ttest() returns correct numbers for two-sample test using by,  unpool
   expect_equal(as.numeric(t1$tab[[1, 3]]), sum(is.na(a))) # NAs
   expect_equal(as.numeric(t1$tab[[2, 3]]), sum(is.na(b))) # NAs
   expect_equal(as.numeric(t1$tab[[3, 3]]), sum(is.na(a)) + sum(is.na(b))) # NAs
-  expect_equal(as.numeric(t1$tab[[1, 4]]), mean(a), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[2, 4]]), mean(b), tolerance = 3) # estimate of mean
-  expect_equal(as.numeric(t1$tab[[3, 4]]), t2$estimate[[1]], tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[1, 4]]), mean(a), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[2, 4]]), mean(b), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[3, 4]]), t2$estimate[[1]], tolerance = 1e-2) # estimate of mean
   expect_equal(t1$var1, a)
   expect_equal(t1$var2, b)
   expect_equal(t1$by, c(rep(1, 50), rep(2, 50)))
