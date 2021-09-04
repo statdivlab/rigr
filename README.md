@@ -58,7 +58,7 @@ Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd),
 [Brian D Williamson](https://bdwilliamson.github.io/), [Travis Y Hee
 Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en),
 Solomon Lim, [Charlie Wolock](https://cwolock.github.io/), and [Taylor
-Okonek](https://www.biostat.washington.edu/people/taylor-okenek).
+Okonek](https://taylorokonek.github.io/).
 
 ## Issues
 
