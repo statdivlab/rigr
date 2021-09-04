@@ -5,7 +5,7 @@
 #' Williamson, Travis Y. Hee Wai, and Solomon Lim at the University of
 #' Washington Department of Biostatistics. Currently maintained by
 #' Prof. Amy Willis at the University of Washington Department of Biostatistics.
-#' Previously maintained by Charlie Wolock and Taylor Okonek, also at the
+#' Previously maintained by Charles Wolock and Taylor Okonek, also at the
 #' University of Washington Department of Biostatistics. Aims to facilitate 
 #' use of R for regression, descriptive statistics, and one- and two-sample
 #' inference by implementing more intuitive layout and functionality for
@@ -26,7 +26,7 @@
 #' @aliases rigr-package rigr
 #' @docType package
 #' @author Scott S. Emerson, M.D., Ph.D, Andrew J. Spieker, Brian D.
-#' Williamson, Travis Y. Hee Wai, Solomon Lim, Charlie Wolock, and Taylor Okonek
+#' Williamson, Travis Y. Hee Wai, Solomon Lim, Charles Wolock, and Taylor Okonek
 #' 
 #' Maintainer: Amy Willis <adwillis@@uw.edu>
 #' @keywords package

@@ -34,7 +34,7 @@ You can install `rigr` from CRAN using the code below.
 install.packages("rigr")
 ```
 
-You can install the development version of `rigr` from github using the code below.
+You can install the development version of `rigr` from GitHub using the code below.
 
 ```
 devtools::install_github("statdivlab/rigr")
@@ -45,13 +45,13 @@ devtools::install_github("statdivlab/rigr")
 
 ## Documentation
 
-Examples of how to use the main functions in `rigr` are provided in three vignettes. One details the `regress` function and it's utilities, one details the `descrip` function for descriptive statistics, and the third details functions used for one- and two-sample inference, inlcuding `ttest`, `wilcoxon`, and `proptest`.
+Examples of how to use the main functions in `rigr` are provided in three vignettes. One details the `regress` function and its utilities, one details the `descrip` function for descriptive statistics, and the third details functions used for one- and two-sample inference, inlcuding `ttest`, `wilcoxon`, and `proptest`.
 
 ## Humans
 
 Maintainer: [Amy Willis](http://statisticaldiversitylab.com)
 
-Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Andrew J Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd), [Brian D Williamson](https://bdwilliamson.github.io/), [Travis Y Hee Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en), Solomon Lim, [Charlie Wolock](https://cwolock.github.io/), and [Taylor Okonek](https://taylorokonek.github.io/).
+Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Andrew J Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd), [Brian D Williamson](https://bdwilliamson.github.io/), [Travis Y Hee Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en), Solomon Lim, [Charles Wolock](https://cwolock.github.io/), and [Taylor Okonek](https://taylorokonek.github.io/).
 
 ## Issues
 

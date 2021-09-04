@@ -8,27 +8,31 @@
 Introductory Statistics Course}
 \description{
 Developed by Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker, Brian D.
-Williamson, Travis Y. Hee Wai, and Solomon Lim in the University of
-Washington Department of Biostatistics. Aims to facilitate more widespread
-use of R by implementing more intuitive layout and functionality for
+Williamson, Travis Y. Hee Wai, and Solomon Lim at the University of
+Washington Department of Biostatistics. Currently maintained by
+Prof. Amy Willis at the University of Washington Department of Biostatistics.
+Previously maintained by Charles Wolock and Taylor Okonek, also at the
+University of Washington Department of Biostatistics. Aims to facilitate 
+use of R for regression, descriptive statistics, and one- and two-sample
+inference by implementing more intuitive layout and functionality for
 existing R functions.
 }
 \details{
 \tabular{ll}{ Package: \tab rigr\cr Type: \tab Package\cr Version:
-\tab 0.0.3\cr Date: \tab 2015-09-01\cr License: \tab GPL-2\cr } A set of
+\tab 0.1.0\cr Date: \tab 2021-09-10\cr License: \tab MIT\cr } A set of
 tools designed to facilitate easy adoption of R for students in introductory
 classes with little programming experience. Compiles output from existing
 routines together in an intuitive format, and adds functionality to existing
-functions. For instance, the regression function can perform linear models,
-generalized linear models, Cox models, or generalized estimating equations.
-The user can also specify multiple-partial F-tests to print out with the
-model coefficients. We also give many routines for descriptive statistics
-and plotting.
+functions. For instance, the regression function can perform linear models
+and generalized linear models. The user can also specify multiple-partial F-tests 
+to print out with the model coefficients, and robust standard errors are 
+provided automatically. We also provide functions for descriptive statistics and one-
+and two-sample inference with improved, legible output.
 }
 \author{
-Scott S. Emerson, M.D., Ph.D, Andrew J. Spieker, and Brian D.
-Williamson, Travis Y. Hee Wai, and Solomon Lim
+Scott S. Emerson, M.D., Ph.D, Andrew J. Spieker, Brian D.
+Williamson, Travis Y. Hee Wai, Solomon Lim, Charles Wolock, and Taylor Okonek
 
-Maintainer: Travis Y. Hee Wai <theewai@uw.edu>
+Maintainer: Amy Willis <adwillis@uw.edu>
 }
 \keyword{package}
