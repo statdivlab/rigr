@@ -119,14 +119,14 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
                                  digits = digits))
 
       } else{
-        test <- stats::prop.test(x1, n1, p = null.hypoth, alternative = alternative, conf.level = conf.level)
+        test <- stats::prop.test(x1, n1, p = null.hypoth, alternative = alternative, conf.level = conf.level, correct = FALSE)
         zstat <- as.numeric(format(sqrt(test$statistic), 
                                    digits = digits))
         pval <- as.numeric(format(test$p.value, 
                                   digits = digits))
-        cil <- as.numeric(format(min(test$conf.int), 
+        cil <- as.numeric(format(est1 - stats::qnorm(cl)*se1, 
                                  digits = digits))
-        cih <- as.numeric(format(max(test$conf.int), 
+        cih <- as.numeric(format(est1 + stats::qnorm(cl)*se1, 
                                  digits = digits))
       }
       est1 <- as.numeric(format(est1, digits = digits))
@@ -140,17 +140,17 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
       twosamp <- TRUE
       est <- c(x1/n1, x2/n2, x1/n1- x2/n2)
       se <- c(sqrt(est[1] * (1-est[1])/n1), sqrt(est[2] * (1-est[2])/n2), sqrt(est[1] * (1-est[1])/n1 + est[2] * (1-est[2])/n2))
-      test <- stats::prop.test(c(x1,x2),c(n1,n2), alternative = alternative, conf.level = conf.level)
+      test <- stats::prop.test(c(x1,x2),c(n1,n2), alternative = alternative, conf.level = conf.level, correct = FALSE)
       zstat <- as.numeric(format(sqrt(test$statistic), 
                                  digits = digits))
       pval <- as.numeric(format(test$p.value, 
                                 digits = digits))
       cil <- c(est[1] - stats::qnorm(cl) * se[1],
                est[2] - stats::qnorm(cl) * se[2],
-               min(test$conf.int))
+               est[1] - est[2] - stats::qnorm(cl)*se[3])
       cih <- c(est[1] + stats::qnorm(cl) * se[1],
                est[2] + stats::qnorm(cl) * se[2],
-               max(test$conf.int))
+               est[1] - est[2] + stats::qnorm(cl)*se[3])
       cil <- as.numeric(format(cil, 
                                digits = digits))
       cih <- as.numeric(format(cih, 
@@ -158,11 +158,11 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
       est <- as.numeric(format(est, digits = digits))
       se <- as.numeric(format(se, digits = digits))
       printMat <- matrix(c("var1", n1, 
-                           est[1], se[1], paste("[", cil[1], ", ", cih[2], 
+                           est[1], se[1], paste("[", cil[1], ", ", cih[1], 
                                             "]", sep = ""),
                            "var2", n2, est[2], se[2], paste("[", cil[2], ", ", cih[2], 
                                                            "]", sep = ""),
-                           "diff", n1 + n2, est[3], se[3], paste("[", cil[3], ", ", cih[3], 
+                           "Difference", n1 + n2, est[3], se[3], paste("[", cil[3], ", ", cih[3], 
                                                                  "]", sep = "")), ncol = 5, byrow = TRUE)
       printMat <- data.frame(printMat)
       names(printMat) <- c("Group", "Obs", 
@@ -178,7 +178,7 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
   myargs <- c(deparse(substitute(n1)), deparse(substitute(n2)))
   proptesti.obj <- proptesti.do(x1 = x1, n1 = n1, x2 = x2, n2 = n2,
                           null.hypoth = null.hypoth, conf.level = conf.level,
-                          alternative = alternative, eaxct = exact, more.digits = more.digits)
+                          alternative = alternative, exact = exact, more.digits = more.digits)
   proptesti.obj$call <- match.call()
   class(proptesti.obj) <- "proptesti"
   return(proptesti.obj)
