@@ -2,18 +2,9 @@
 title: "One- and two-sample inference in rigr"
 author: "Charles Wolock, Brian D. Williamson, and Scott S. Emerson, MD PhD"
 date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    toc: yes
-    toc_depth: 2
-  pdf_document:
-    toc: yes
-subtitle: University of Washington Department of Biostatistics
-header - includes:
-- \usepackage{graphicx}
-- \usepackage[colorlinks=true, linktoc=all, linkcolor=blue]{hyperref}
+output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{One- and two-sample inference in rigr}
+  %\VignetteIndexEntry{Regression in rigr}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
