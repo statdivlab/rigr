@@ -2,13 +2,15 @@
 
 test_that("proptest() throws error for non-binary data", {
   expect_error(proptest(c(-1, 0, 1)),
-               "Only binary 0-1 data are allowed.")
+               "Only binary 0-1 data and two-level factors are allowed.")
   expect_error(proptest(c(1,1,2,2)),
-               "Only binary 0-1 data are allowed.")
+               "Only binary 0-1 data and two-level factors are allowed.")
   expect_error(proptest(c("0", "0", "1", "1")),
-               "Only binary 0-1 data are allowed.")
-  expect_error(proptest(as.factor(c("0", "0", "1", "1"))),
-               "Only binary 0-1 data are allowed.")
+               "Only binary 0-1 data and two-level factors are allowed.")
+  expect_error(proptest(as.factor(c("0", "0", "1", "1", "2"))),
+               "Only binary 0-1 data and two-level factors are allowed.")
+  expect_error(proptest(as.factor(c("0", "0", "1", "1")), as.factor(c("0", "0", "2", "2"))),
+               "Only binary 0-1 data and two-level factors are allowed.")
 })
 
 x1 <- rbinom(100, 1, 0.5)
@@ -632,6 +634,87 @@ test_that("proptest() returns correct numbers for two-sample test, using by", {
   expect_equal(p1$var1, a) 
   expect_equal(p1$var2, b)
   expect_equal(p1$by, c(rep(1, 100), rep(2, 100)))
+  expect_equal(as.numeric(p1$par[[1]]), 0) # null 
+  expect_equal(p1$par[[2]], p2$alternative) # alternative
+  expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
+  expect_false(as.logical(p1$par[[4]]))
+  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+})
+
+### factor data
+a_fac <- as.factor(ifelse(a == 0, "no", "yes"))
+b_fac <- as.factor(ifelse(b == 0, "no", "yes"))
+
+p1 <- proptest(a_fac)
+p2 <- prop.test(sum(a), length(a), correct = FALSE)
+
+test_that("proptest() returns correct numbers for one-sample test with factor", {
+  expect_s3_class(p1, "proptest")
+  expect_equal(p1$zstat, sqrt(p2$statistic[[1]]), tolerance = 1e-3) # test statistic
+  expect_equal(p1$pval, p2$p.value, tolerance = 1e-3) # p-value
+  expect_equal(as.numeric(strsplit(substr(p1$tab[[6]], start = 2, stop = nchar(p1$tab[[6]])-1), ", ")[[1]]),
+               c(p2$estimate[[1]] - 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
+                 p2$estimate[[1]] + 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(p1$tab[[1]], "a_fac") # var name
+  expect_equal(as.numeric(p1$tab[[2]]), length(a)) # n obs
+  expect_equal(as.numeric(p1$tab[[3]]), sum(is.na(a))) # NAs
+  expect_equal(as.numeric(p1$tab[[4]]), p2$estimate[[1]], tolerance = 3) # estimate of mean
+  expect_equal(as.numeric(p1$tab[[5]]), sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
+               tolerance = 3) # standard error of mean est
+  expect_equal(p1$var1, a) 
+  expect_equal(p1$var2, NA)
+  expect_equal(p1$by, NA)
+  expect_equal(as.numeric(p1$par[[1]]), p2$null.value[[1]]) # null 
+  expect_equal(p1$par[[2]], p2$alternative) # alternative
+  expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
+  expect_false(as.logical(p1$par[[4]]))
+  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+})
+
+p1 <- proptest(a_fac, b_fac)
+p2 <- prop.test(c(sum(a), sum(b)), c(length(a), length(b)), correct = FALSE)
+
+test_that("proptest() returns correct numbers for two-sample test, factor", {
+  expect_s3_class(p1, "proptest")
+  expect_equal(p1$zstat, sqrt(p2$statistic[[1]]), tolerance = 1e-3) # test statistic
+  expect_equal(p1$pval, p2$p.value, tolerance = 1e-3) # p-value
+  expect_equal(as.numeric(strsplit(substr(p1$tab[1,6], start = 2, stop = nchar(p1$tab[1,6])-1), ", ")[[1]]),
+               c(p2$estimate[[1]] - 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
+                 p2$estimate[[1]] + 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(p1$tab[2,6], start = 2, stop = nchar(p1$tab[2,6])-1), ", ")[[1]]),
+               c(p2$estimate[[2]] - 1.96*sqrt(p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b)), 
+                 p2$estimate[[2]] + 1.96*sqrt(p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(p1$tab[3,6], start = 2, stop = nchar(p1$tab[3,6])-1), ", ")[[1]]),
+               c(p2$estimate[[1]] - p2$estimate[[2]] - 1.96*
+                   sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a) + p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b)), 
+                 p2$estimate[[1]] - p2$estimate[[2]] + 1.96*
+                   sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a) + p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b))), 
+               tolerance = 1e-2) # conf int
+  expect_equal(p1$tab[1,1], "a_fac") # var name
+  expect_equal(p1$tab[2,1], "b_fac") # var name
+  expect_equal(p1$tab[3,1], "Difference") # var name
+  expect_equal(as.numeric(p1$tab[1,2]), length(a)) # n obs
+  expect_equal(as.numeric(p1$tab[2,2]), length(b)) # n obs
+  expect_equal(as.numeric(p1$tab[3,2]), length(a) + length(b)) # n obs
+  expect_equal(as.numeric(p1$tab[1,3]), sum(is.na(a))) # NAs
+  expect_equal(as.numeric(p1$tab[2,3]), sum(is.na(b))) # NAs
+  expect_equal(as.numeric(p1$tab[3,3]), sum(is.na(a)) + sum(is.na(b))) # NAs
+  expect_equal(as.numeric(p1$tab[1,4]), p2$estimate[[1]], tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(p1$tab[2,4]), p2$estimate[[2]], tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(p1$tab[3,4]), p2$estimate[[1]] - p2$estimate[[2]], tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(p1$tab[1,5]), sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
+               tolerance = 1e-3) # standard error of mean est
+  expect_equal(as.numeric(p1$tab[2,5]), sqrt(p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b)), 
+               tolerance = 1e-3) # standard error of mean est
+  expect_equal(as.numeric(p1$tab[3,5]), sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a) + 
+                                               p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b)), 
+               tolerance = 1e-3) # standard error of mean est
+  expect_equal(p1$var1, a) 
+  expect_equal(p1$var2, b)
+  expect_equal(p1$by, NA)
   expect_equal(as.numeric(p1$par[[1]]), 0) # null 
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level

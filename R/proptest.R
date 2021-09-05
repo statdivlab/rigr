@@ -3,16 +3,18 @@
 #' Produces table of relevant descriptive statistics and inference for either
 #' one- or two-sample test of proportions. This test can be approximate or exact.
 #' 
-#' Missing values must be given by \code{"NA"}s to be recognized as missing values. Any
-#' call to \code{proptest()} is run by \code{proptest.default()}, with user specified
+#' Missing values must be given by \code{"NA"}s to be recognized as missing values. Numeric data must be given
+#' in 0-1 form. This function also accepts binary factor variables, treating the higher level as 1 and the lower level 
+#' as 0. Any call to \code{proptest()} is run by \code{proptest.default()}, with user specified
 #' values in place of defaults in the appropriate places.
 #' 
 #' @aliases proptest proptest.do plot.proptest print.proptest proptest.default
 #' 
-#' @param var1 a (non-empty) numeric vector of binary (0-1)
-#' data values.
-#' @param var2 an optional (non-empty) numeric
-#' vector of binary (0-1) data values.
+#' @param var1 a (non-empty) vector of binary numeric (0-1) or binary factor
+#' data values
+#' @param var2 an optional (non-empty)
+#' vector of binary numeric (0-1) or binary factor
+#' data values
 #' @param by a variable of equal length to
 #' that of \code{var1} with two outcomes (numeric or factor). This will be used to define strata
 #' for a prop test on \code{var1}.
@@ -82,8 +84,16 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     if (!is.scalar(conf.level) || conf.level < 0 || conf.level > 1){
       stop("'conf.level' must a scalar between 0 and 1.")
     }
-    if (!is.numeric(sort(unique(c(var1, var2)))) || !isTRUE(all.equal(sort(unique(c(var1, var2))), c(0,1)))){
-      stop("Only binary 0-1 data are allowed.")
+    if (!(is.numeric(var1) && isTRUE(all.equal(sort(unique(c(var1))), c(0,1)))) &&
+        !(is.factor(c(var1)[!is.na(var1)]) && length(sort(unique(var1[!is.na(var1)]))) == 2)){
+      stop("Only binary 0-1 data and two-level factors are allowed.")
+    }
+    if (length(var2) > 1){
+      if ((!(is.numeric(var2) && isTRUE(all.equal(sort(unique(c(var2))), c(0,1)))) &&
+          !(is.factor(var2[!is.na(var2)]) && length(sort(unique(var2[!is.na(var2)]))) == 2)) ||
+        !isTRUE(all.equal(as.character(sort(unique(var1[!is.na(var1)]))), as.character(sort(unique(var2[!is.na(var2)])))))) {
+        stop("Only binary 0-1 data and two-level factors are allowed.")
+      }
     }
     if (!is.logical(exact)){
       stop("'exact' must be a logical.")
@@ -91,6 +101,21 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     if ((length(var2) > 1 || length(by) > 1) && exact){
       stop("Exact binomial test not available for two samples.")  
     }
+    #levs <- NULL
+    #levs1 <- NULL
+    #levs2 <- NULL
+    # convert factor to numeric
+    if (is.factor(var1[!is.na(var1)])){
+      levs1 <- levels(var1[!is.na(var1)])
+      var1 <- as.numeric(var1) - 1
+    }
+    if (length(var2) > 1){
+      if (is.factor(var2[!is.na(var2)])){
+        levs2 <- levels(var2[!is.na(var2)])
+        var2 <- as.numeric(var2) - 1
+      }
+    }
+    #levs <- unique(c(levs1, levs2))
 
     # can't specify null for two-sample test
     # get length of stratification variable (byt)

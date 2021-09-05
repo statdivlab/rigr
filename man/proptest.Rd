@@ -20,11 +20,12 @@ proptest(
 )
 }
 \arguments{
-\item{var1}{a (non-empty) numeric vector of binary (0-1)
-data values.}
+\item{var1}{a (non-empty) vector of binary numeric (0-1) or binary factor
+data values}
 
-\item{var2}{an optional (non-empty) numeric
-vector of binary (0-1) data values.}
+\item{var2}{an optional (non-empty)
+vector of binary numeric (0-1) or binary factor
+data values}
 
 \item{by}{a variable of equal length to
 that of \code{var1} with two outcomes (numeric or factor). This will be used to define strata
@@ -65,8 +66,9 @@ Produces table of relevant descriptive statistics and inference for either
 one- or two-sample test of proportions. This test can be approximate or exact.
 }
 \details{
-Missing values must be given by \code{"NA"}s to be recognized as missing values. Any
-call to \code{proptest()} is run by \code{proptest.default()}, with user specified
+Missing values must be given by \code{"NA"}s to be recognized as missing values. Numeric data must be given
+in 0-1 form. This function also accepts binary factor variables, treating the higher level as 1 and the lower level 
+as 0. Any call to \code{proptest()} is run by \code{proptest.default()}, with user specified
 values in place of defaults in the appropriate places.
 }
 \examples{
