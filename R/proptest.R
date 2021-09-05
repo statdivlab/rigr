@@ -1,8 +1,7 @@
 #' Test of proportions with improved layout
 #' 
 #' Produces table of relevant descriptive statistics and inference for either
-#' one- or two-sample test of proportions. This test can be approximate or exact and has
-#' the option to use a continuity correction. 
+#' one- or two-sample test of proportions. This test can be approximate or exact.
 #' 
 #' Missing values must be given by \code{"NA"}s to be recognized as missing values. Any
 #' call to \code{proptest()} is run by \code{proptest.default()}, with user specified
@@ -10,19 +9,18 @@
 #' 
 #' @aliases proptest proptest.do plot.proptest print.proptest proptest.default
 #' 
-#' @param var1 a (non-empty) numeric vector of
+#' @param var1 a (non-empty) numeric vector of binary (0-1)
 #' data values.
 #' @param var2 an optional (non-empty) numeric
-#' vector of data.
+#' vector of binary (0-1) data values.
 #' @param by a variable of equal length to
-#' that of \code{var1} with two outcomes. This will be used to define strata
+#' that of \code{var1} with two outcomes (numeric or factor). This will be used to define strata
 #' for a prop test on \code{var1}.
 #' @param exact If true, performs a
-#' test of equality of proportions with Exact Binomial based confidence
-#' intervals.
+#' test of equality of proportions using exact binomial probabilities.
 #' @param null.hypoth a number specifying the
 #' null hypothesis for the mean (or difference in means if performing a
-#' two-sample test). Defaults to zero.
+#' two-sample test). Defaults to 0.5 for a one-sample test and 0 for a two-sample test.
 #' @param alternative a string: one of
 #' \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
 #' of the test. Defaults to a two-sided test.
@@ -32,36 +30,16 @@
 #' specifying whether or not to display more or fewer digits in the output.
 #' Non-integers are automatically rounded down. 
 #' 
-#' @return Prints a summary of the data and the
-#' corresponding proportions test. \item{Variable}{the variable
-#' name supplied to the prop test function} 
-#' 
-#' \item{Group}{the group name: either
-#' the variable names supplied to the function or the names of the strata if
-#' the variable \code{by} was specified.} 
-#' \item{Obs}{Number of observations of
-#' each variable: includes missing values.} 
-#' \item{Missing}{number of missing
-#' values in each data vector.} 
-#' \item{Mean}{the sample mean of each data
-#' vector; also, the estimated difference in means in a two-sample test.}
-#' \item{Std.Err.}{the estimated standard error of the mean and of the
-#' difference in the two-sample test.} 
-#' \item{CI}{a confidence interval for the means, and
-#' for the difference in the two-sample test. This is at the confidence level
-#' specified in the argument and is a two-sided confidence interval, regardless of the 
-#' alternatuive hypothesis. If \code{prop} and/or \code{exact} are
-#' \code{TRUE}, also returns the appropriate confidence interval for the test
-#' of equality of proportions.}
-#' \item{Null hypothesis}{a statement of the null
-#' hypothesis.} 
-#' \item{Alternative hypothesis}{a statement of the alternative
-#' hypothesis.}
-#' \item{t}{value of the Z-statistic, if applicable} 
-#' \item{df}{the degrees of
-#' freedom for the test.} 
-#' \item{Pr}{a p-value for inference on the
-#' corresponding hypothesis test.}
+#' @return A list of class \code{proptest}. The print method lays out the information in an easy-to-read
+#' format. \item{zstat}{the value of the test
+#' statistic, if using an approximate test.} 
+#' \item{pval}{the p-value
+#' for the test} 
+#' \item{var1}{The user-supplied first data vector. }
+#' \item{var2}{The user-supplied second data vector. }
+#' \item{by}{The user-supplied stratification variable.}
+#' \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
+#' \item{tab}{A formatted table of descriptive and inferential results, for printing.} 
 #' 
 #' @seealso \code{\link[stats]{prop.test}}
 #' @examples
@@ -98,23 +76,26 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     if (!(alternative %in% c("less", "two.sided", "greater"))) {
       stop("'alternative' must be either 'less', 'two.sided', or 'greater'")
     }
-    # if (!(is.scalar(null.hypoth))){
-    #   stop("Null must be a scalar.")
-    # }
-    ### to do - make sure conf.level is scalar! and null is between 0 and 1 and data are 0-1, by is same length as var1,
-    ### can't do exact two-prop test, can't specify null for two-sample test
-    if (!((length(conf.level) == 1L) && is.finite(conf.level) && 
-          (conf.level > 0) && (conf.level < 1))){
-      stop("'conf.level' must be a single number between 0 and 1")
-    } 
-    # get length of stratafication variable (byt)
+    if (!(is.scalar(null.hypoth))){
+      stop("Null must be a scalar")
+    }
+    if (!is.scalar(conf.level) || conf.level < 0 || conf.level > 1){
+      stop("'conf.level' must a scalar between 0 and 1.")
+    }
+    if (!is.numeric(sort(unique(c(var1, var2)))) || !isTRUE(all.equal(sort(unique(c(var1, var2))), c(0,1)))){
+      stop("Only binary 0-1 data are allowed.")
+    }
+    if (!is.logical(exact)){
+      stop("'exact' must be a logical.")
+    }
+    if ((length(var2) > 1 || length(by) > 1) && exact){
+      stop("Exact binomial test not available for two samples.")  
+    }
+
+    # can't specify null for two-sample test
+    # get length of stratification variable (byt)
     byt <- sort(unique(by),decreasing=FALSE)
     byt <- byt[!is.na(byt)]
-    # make sure data is numeric
-    if (!is.numeric(var1) | (!is.numeric(var2) & length(var2) != 
-                             1)) {
-      stop("Cannot perform t-test on non-numeric data")
-    }
     # check to make sure additional digit request is numeric
     if (!is.numeric(more.digits)) {
       stop("Argument 'more.digits' must be numeric")

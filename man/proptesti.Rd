@@ -5,7 +5,7 @@
 \alias{proptesti.do}
 \alias{print.proptesti}
 \alias{proptesti.default}
-\title{T-test Given Descriptive Statistics with Improved Layout}
+\title{Test of proportions from summary statistics}
 \usage{
 proptesti(
   x1,
@@ -34,7 +34,7 @@ intervals.}
 
 \item{null.hypoth}{a number specifying the
 null hypothesis for the mean (or difference in means if performing a
-two-sample test). Defaults to zero.}
+two-sample test). Defaults to 0.5 for one-sample and 0 for two-sample.}
 
 \item{conf.level}{confidence level of the
 test. Defaults to 95/100.}
@@ -48,31 +48,22 @@ specifying whether or not to display more or fewer digits in the output.
 Non-integers are automatically rounded down.}
 }
 \value{
-Prints a summary of the data and the
-corresponding t-test. \item{Variable}{\code{x} in a
-one-sample test, or \code{x} and \code{y} in a two sample test. The first
-set of descriptives entered goes to \code{x}.} \item{Obs}{Number of
-observations of each variable: includes missing values.} \item{Mean}{the
-sample mean; also, the estimated difference in means in a two-sample test.}
-\item{Std.Err.}{the estimated standard error of the mean and of the
-difference in the two-sample test.} \item{Std.Dev.}{standard deviation
-estimates.} \item{CI}{a confidence interval for the means, and for the
-difference in the two-sample test. This is at the confidence level specified
-in the argument.}
-\item{Null hypothesis}{a statement of the null hypothesis.}
-\item{Alternative hypothesis}{a statement of the alternative hypothesis.}
-\item{t}{value of the t-statistic.} \item{df}{the degrees of freedom for the
-test.} \item{Pr}{a p-value for inference on the corresponding hypothesis
-test.}
+A list of class \code{proptesti}. The print method lays out the information in an easy-to-read
+format. 
+\item{zstat}{the value of the test
+statistic, if using an approximate test.} 
+\item{pval}{the p-value
+for the test} 
+\item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
+\item{tab}{A formatted table of descriptive and inferential results, for printing.}
 }
 \description{
 Produces table of relevant descriptive statistics and inference for either
-one- or two-sample t-test. In the two-sample case, the user can specify
-whether or not equal variances should be presumed.
+one- or two-sample test of proportions using counts of successes and trials, rather than
+binary data. This test can be approximate or exact.
 }
 \details{
-If \code{obs2}, \code{mean2}, or \code{sd2} is specified, then all three must be specified
-and a two-sample t-test is run.
+If \code{x2} or \code{n2} are specified, then both must be specified, and a two-sample test is run.
 }
 \examples{
 

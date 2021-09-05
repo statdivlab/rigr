@@ -1,77 +1,67 @@
 ### error handling
 
-# x1 <- c(-1, seq(1, 100))
-# 
-# test_that("ttest() throws error if geo mean requested with non-pos data", {
-#   expect_error(ttest(x1, geom = TRUE), 
-#                "Geometric mean requires that all numeric data are positive")
-# })
-# 
-# x1 <- seq(1, 100)
-# 
-# test_that("ttest() throws error if geo mean requested with non-pos null", {
-#   expect_error(ttest(x1, geom = TRUE, null.hypoth = -1), 
-#                "Geometric mean cannot be less than zero")
-# })
-# 
-# x1 <- rnorm(100)
-# x2 <- rnorm(100)
-# 
-# test_that("ttest() throws error if alternative is not 'two.sided', 'less', or 'greater", {
-#   expect_error(ttest(x1, x2, alternative = "blah"), 
-#                "'alternative' must be either 'less', 'two.sided', or 'greater'")
-# })
-# 
-# test_that("ttest() throws error if two variables and by also given", {
-#   expect_error(ttest(x1, x2, by = rep(1, 100)),
-#                "Please specify only one of the variables 'by' or 'var2'")
-# })
-# 
-# test_that("ttest() throws error if var.eq is not logical", {
-#   expect_error(ttest(x1, var.eq = 2), 
-#                "Please specify a logical value for variable 'var.eq'")
-# })
-# 
-# x3 <- rnorm(99)
-# 
-# test_that("ttest() throws error if matched test performedm on different numbers of observations", {
-#   expect_error(ttest(x1, x3, matched = TRUE),
-#               "Cannot perform matched t-test on variable of unequal length")
-#   expect_error(ttest(x3, x1, matched = TRUE),
-#                "Cannot perform matched t-test on variable of unequal length")
-#   expect_error(ttest(x1, by = c(rep(1, 51), rep(2, 49)), matched = TRUE),
-#                "Cannot perform matched t-test on variable of unequal length")
-# })
-# 
-# test_that("ttest() throws error for non-numeric data", {
-#   expect_error(ttest(c("a", "B", "c")), 
-#                "Cannot perform t-test on non-numeric data")
-# })
-# 
-# test_that("ttest() throws error for non-numeric more.digits argument", {
-#   expect_error(ttest(x1, more.digits = TRUE), 
-#                "Argument 'more.digits' must be numeric")
-# })
-# 
-# test_that("ttest() throws error if by argument contains only one value", {
-#   expect_error(ttest(x1, by = rep(1, 100)), 
-#                "Variable 'by' only has one unique value")
-# })
-# 
-# test_that("ttest() throws error if by argument contains >2 unique values", {
-#   expect_error(ttest(x1, by = c(rep(1, 50), rep(2, 49), 3)), 
-#                "Variable 'by' has more than two unique values.")
-# })
-# 
-# test_that("ttest() throws error if by argument is not of same length as data", {
-#   expect_error(ttest(x1, by = c(rep(1, 50), rep(2, 51))), 
-#                "Variable 'by' is not of equal length to data vector")
-# })
-# 
-# test_that("ttest() warns about 0 null in geometric mean test", {
-#   expect_warning(ttest(exp(x1), geom = TRUE), 
-#                  "Geometric mean of zero not allowable: alternative hypothesis default changed to 1")
-# })
+test_that("proptest() throws error for non-binary data", {
+  expect_error(proptest(c(-1, 0, 1)),
+               "Only binary 0-1 data are allowed.")
+  expect_error(proptest(c(1,1,2,2)),
+               "Only binary 0-1 data are allowed.")
+  expect_error(proptest(c("0", "0", "1", "1")),
+               "Only binary 0-1 data are allowed.")
+  expect_error(proptest(as.factor(c("0", "0", "1", "1"))),
+               "Only binary 0-1 data are allowed.")
+})
+
+x1 <- rbinom(100, 1, 0.5)
+x2 <- rbinom(100, 1, 0.5)
+
+test_that("proptest() throws error if alternative is not 'two.sided', 'less', or 'greater", {
+  expect_error(proptest(x1, x2, alternative = "blah"),
+               "'alternative' must be either 'less', 'two.sided', or 'greater'")
+})
+
+test_that("proptest() throws error if two variables and by also given", {
+  expect_error(proptest(x1, x2, by = rep(1, 100)),
+               "Please specify only one of the variables 'by' or 'var2'")
+})
+
+test_that("proptest() throws error if exact is not logical", {
+  expect_error(proptest(x1, exact = 2),
+               "'exact' must be a logical.")
+})
+
+test_that("proptest() throws error for invalid conf.level", {
+  expect_error(proptest(x1, conf.level = 1.1), "'conf.level' must a scalar between 0 and 1.")
+  expect_error(proptest(x1, conf.level = TRUE), "'conf.level' must a scalar between 0 and 1.")
+})
+
+test_that("proptest() throws error for non-numeric more.digits argument", {
+  expect_error(proptest(x1, more.digits = TRUE),
+               "Argument 'more.digits' must be numeric")
+})
+
+test_that("proptest() throws error if by argument contains only one value", {
+  expect_error(proptest(x1, by = rep(1, 100)),
+               "Variable 'by' only has one unique value")
+})
+
+test_that("proptest() throws error if by argument contains >2 unique values", {
+  expect_error(proptest(x1, by = c(rep(1, 50), rep(2, 49), 3)),
+               "Variable 'by' has more than two unique values.")
+})
+
+test_that("proptest() throws error if by argument is not of same length as data", {
+  expect_error(proptest(x1, by = c(rep(1, 50), rep(2, 51))),
+               "Variable 'by' is not of equal length to data vector")
+})
+
+test_that("proptest() throws error for non-scalar null", {
+  expect_error(proptest(x1, null.hypoth = c(0.5, 0.6)), "Null must be a scalar")
+  expect_error(proptest(x1, null.hypoth = TRUE), "Null must be a scalar")
+})
+
+test_that("proptest() throws error for exact test on 2 samples", {
+  expect_error(proptest(x1, x2, exact = TRUE), "Exact binomial test not available for two samples.")
+})
 
 ### one-sample test, approximate 
 

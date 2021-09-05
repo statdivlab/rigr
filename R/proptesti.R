@@ -1,11 +1,10 @@
-#' T-test Given Descriptive Statistics with Improved Layout
+#' Test of proportions from summary statistics
 #' 
 #' Produces table of relevant descriptive statistics and inference for either
-#' one- or two-sample t-test. In the two-sample case, the user can specify
-#' whether or not equal variances should be presumed. 
+#' one- or two-sample test of proportions using counts of successes and trials, rather than
+#' binary data. This test can be approximate or exact. 
 #' 
-#' If \code{obs2}, \code{mean2}, or \code{sd2} is specified, then all three must be specified
-#' and a two-sample t-test is run.
+#' If \code{x2} or \code{n2} are specified, then both must be specified, and a two-sample test is run.
 #' 
 #' @aliases proptesti proptesti.do print.proptesti proptesti.default
 #' 
@@ -18,7 +17,7 @@
 #' intervals.
 #' @param null.hypoth a number specifying the
 #' null hypothesis for the mean (or difference in means if performing a
-#' two-sample test). Defaults to zero.
+#' two-sample test). Defaults to 0.5 for one-sample and 0 for two-sample.
 #' @param alternative a string: one of
 #' \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
 #' of the test. Defaults to a two-sided test.
@@ -28,22 +27,14 @@
 #' specifying whether or not to display more or fewer digits in the output.
 #' Non-integers are automatically rounded down.
 #' 
-#' @return Prints a summary of the data and the
-#' corresponding t-test. \item{Variable}{\code{x} in a
-#' one-sample test, or \code{x} and \code{y} in a two sample test. The first
-#' set of descriptives entered goes to \code{x}.} \item{Obs}{Number of
-#' observations of each variable: includes missing values.} \item{Mean}{the
-#' sample mean; also, the estimated difference in means in a two-sample test.}
-#' \item{Std.Err.}{the estimated standard error of the mean and of the
-#' difference in the two-sample test.} \item{Std.Dev.}{standard deviation
-#' estimates.} \item{CI}{a confidence interval for the means, and for the
-#' difference in the two-sample test. This is at the confidence level specified
-#' in the argument.}
-#' \item{Null hypothesis}{a statement of the null hypothesis.}
-#' \item{Alternative hypothesis}{a statement of the alternative hypothesis.}
-#' \item{t}{value of the t-statistic.} \item{df}{the degrees of freedom for the
-#' test.} \item{Pr}{a p-value for inference on the corresponding hypothesis
-#' test.}
+#' @return A list of class \code{proptesti}. The print method lays out the information in an easy-to-read
+#' format. 
+#' \item{zstat}{the value of the test
+#' statistic, if using an approximate test.} 
+#' \item{pval}{the p-value
+#' for the test} 
+#' \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
+#' \item{tab}{A formatted table of descriptive and inferential results, for printing.}
 #' 
 #' @examples
 #' 
@@ -61,46 +52,46 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
                            conf.level=.95, 
                            alternative="two.sided", 
                            more.digits = 0, ...) {
-    #if (length(obs) > 1 || length(obs2) > 1 || 
-    #    length(mean) > 1 || length(mean2) > 1 ||
-    #    length(sd) > 1 || length(sd2) > 1){
-    #  stop("'obs', 'mean', and 'sd' must be variables of length 1.")
-    #} 
-    # if (!(obs%%1 == 0) || obs<= 0 || (!is.na(obs2) && (!(obs2%%1 == 0) || obs2 <= 0))){
-    #   stop("Number of observations must be a positive integer.")
-    # }
-    # if (!is.scalar(mean) || (!is.na(mean2) && !is.scalar(mean2))){
-    #   stop("Mean must be scalar.")
-    # }
-    # if (!is.scalar(sd) || (!is.na(sd2) && !is.scalar(sd2))){
-    #   stop("SD must be scalar.")
-    # }
-    # if(is.na(obs2) && (!is.na(mean2) || !is.na(sd2))) {
-    #   stop("A second number of observations must be entered for two sample test")
-    # }
-    # if(!is.na(obs2) && (is.na(mean2) || is.na(sd2))){
-    #   stop("SD and mean for the second sample must be entered for two sample test")
-    # }
-    # # check that alternative is one of "less", "two.sided", or "greater"
-    # if (!(alternative %in% c("less", "two.sided", "greater"))) {
-    #   stop("'alternative' must be either 'less', 'two.sided', or 'greater'")
-    # }
-    # # make sure var.eq is either true or false
-    # if (!is.logical(var.eq)) {
-    #   stop("Please specify a logical value for variable 'var.eq'")
-    # }
-    # # check to make sure additional digit request is numeric
-    # if (!is.scalar(more.digits)) {
-    #   stop("Argument 'more.digits' must be numeric")
-    # }
-    # 
-    # if (!is.scalar(null.hypoth)){
-    # #if (!is.numeric(null.hypoth) ||  length(null.hypoth) > 1 || !is.finite(null.hypoth)){
-    #   stop("Null must be a scalar.")
-    # }
-    # if (!(is.scalar(conf.level) && (conf.level > 0) && (conf.level < 1))){
-    #   stop("'conf.level' must be a single number between 0 and 1")
-    # } 
+    if (!(is.scalar(x1) && is.scalar(n1) && x1%%1 == 0 && n1%%1 == 0 && x1 >= 0 && n1 > 0)){
+      stop("'x1' and 'n1' must be nonnegative integers")
+    }
+    if (x1 > n1){
+      stop("Number of trials must be at least as large as number of succeses.")
+    }
+    if (sum(is.na(x2)) != length(x2) && sum(is.na(n2)) != length(n2)){
+      if (!(is.scalar(x2) && is.scalar(n2) && x2%%1 == 0 && n2 %%1 == 0 && x2 >= 0 && n2 > 0)){
+        stop("'x2' and 'n2' must be nonnegative integers")
+      }
+      if (x2 > n2){
+        stop("Number of trials must be at least as large as number of succeses.")
+      }
+    }
+    if(is.na(n2) && !is.na(x2)) {
+      stop("A second number of trials must be entered for two sample test")
+    }
+    if(!is.na(n2) && is.na(x2)){
+      stop("Number of successes for the second sample must be entered for two sample test")
+    }
+    # check that alternative is one of "less", "two.sided", or "greater"
+    if (!(alternative %in% c("less", "two.sided", "greater"))) {
+      stop("'alternative' must be either 'less', 'two.sided', or 'greater'")
+    }
+    if (!(is.scalar(null.hypoth))){
+      stop("Null must be a scalar")
+    }
+    if (!is.scalar(conf.level) || conf.level < 0 || conf.level > 1){
+      stop("'conf.level' must a scalar between 0 and 1.")
+    }
+    if (!is.logical(exact)){
+      stop("'exact' must be a logical.")
+    }
+    if (!is.na(n2) && exact){
+      stop("Exact binomial test not available for two samples.")  
+    }
+    # check to make sure additional digit request is numeric
+    if (!is.numeric(more.digits)) {
+      stop("Argument 'more.digits' must be numeric")
+    }
     more.digits <- max(floor(more.digits), 0)
     digits <- 3 + more.digits
     cl <- conf.level+(1-conf.level)/2

@@ -20,23 +20,22 @@ proptest(
 )
 }
 \arguments{
-\item{var1}{a (non-empty) numeric vector of
+\item{var1}{a (non-empty) numeric vector of binary (0-1)
 data values.}
 
 \item{var2}{an optional (non-empty) numeric
-vector of data.}
+vector of binary (0-1) data values.}
 
 \item{by}{a variable of equal length to
-that of \code{var1} with two outcomes. This will be used to define strata
+that of \code{var1} with two outcomes (numeric or factor). This will be used to define strata
 for a prop test on \code{var1}.}
 
 \item{exact}{If true, performs a
-test of equality of proportions with Exact Binomial based confidence
-intervals.}
+test of equality of proportions using exact binomial probabilities.}
 
 \item{null.hypoth}{a number specifying the
 null hypothesis for the mean (or difference in means if performing a
-two-sample test). Defaults to zero.}
+two-sample test). Defaults to 0.5 for a one-sample test and 0 for a two-sample test.}
 
 \item{alternative}{a string: one of
 \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
@@ -50,41 +49,20 @@ specifying whether or not to display more or fewer digits in the output.
 Non-integers are automatically rounded down.}
 }
 \value{
-Prints a summary of the data and the
-corresponding proportions test. \item{Variable}{the variable
-name supplied to the prop test function} 
-
-\item{Group}{the group name: either
-the variable names supplied to the function or the names of the strata if
-the variable \code{by} was specified.} 
-\item{Obs}{Number of observations of
-each variable: includes missing values.} 
-\item{Missing}{number of missing
-values in each data vector.} 
-\item{Mean}{the sample mean of each data
-vector; also, the estimated difference in means in a two-sample test.}
-\item{Std.Err.}{the estimated standard error of the mean and of the
-difference in the two-sample test.} 
-\item{CI}{a confidence interval for the means, and
-for the difference in the two-sample test. This is at the confidence level
-specified in the argument and is a two-sided confidence interval, regardless of the 
-alternatuive hypothesis. If \code{prop} and/or \code{exact} are
-\code{TRUE}, also returns the appropriate confidence interval for the test
-of equality of proportions.}
-\item{Null hypothesis}{a statement of the null
-hypothesis.} 
-\item{Alternative hypothesis}{a statement of the alternative
-hypothesis.}
-\item{t}{value of the Z-statistic, if applicable} 
-\item{df}{the degrees of
-freedom for the test.} 
-\item{Pr}{a p-value for inference on the
-corresponding hypothesis test.}
+A list of class \code{proptest}. The print method lays out the information in an easy-to-read
+format. \item{zstat}{the value of the test
+statistic, if using an approximate test.} 
+\item{pval}{the p-value
+for the test} 
+\item{var1}{The user-supplied first data vector. }
+\item{var2}{The user-supplied second data vector. }
+\item{by}{The user-supplied stratification variable.}
+\item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
+\item{tab}{A formatted table of descriptive and inferential results, for printing.}
 }
 \description{
 Produces table of relevant descriptive statistics and inference for either
-one- or two-sample test of proportions. This test can be approximate or exact and has
-the option to use a continuity correction.
+one- or two-sample test of proportions. This test can be approximate or exact.
 }
 \details{
 Missing values must be given by \code{"NA"}s to be recognized as missing values. Any

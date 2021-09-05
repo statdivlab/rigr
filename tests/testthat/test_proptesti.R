@@ -1,5 +1,53 @@
 ### error handling
 
+### error handling
+
+test_that("proptesti() throws error for improper data types", {
+  expect_error(proptesti(c(1,1), 10), "'x1' and 'n1' must be nonnegative integers")
+  expect_error(proptesti(1, "10"), "'x1' and 'n1' must be nonnegative integers")
+  expect_error(proptesti(-1, 10), "'x1' and 'n1' must be nonnegative integers")
+  expect_error(proptesti(1, 10, c(1,1), 10), "'x2' and 'n2' must be nonnegative integers")
+  expect_error(proptesti(1, 10, 1, "10"), "'x2' and 'n2' must be nonnegative integers")
+  expect_error(proptesti(1, 10, -1, 10), "'x2' and 'n2' must be nonnegative integers")
+  expect_error(proptesti(10, 1), "Number of trials must be at least as large as number of succeses.")
+  expect_error(proptesti(1, 10, 10, 1), "Number of trials must be at least as large as number of succeses.")
+  expect_error(proptesti(1, 10, 1), "A second number of trials must be entered for two sample test")
+  expect_error(proptesti(1, 10, n2 = 1), "Number of successes for the second sample must be entered for two sample test")
+})
+
+x1 <- rbinom(100, 1, 0.5)
+x2 <- rbinom(100, 1, 0.5)
+
+test_that("proptesti() throws error if alternative is not 'two.sided', 'less', or 'greater", {
+  expect_error(proptesti(sum(x1), length(x1), alternative = "blah"),
+               "'alternative' must be either 'less', 'two.sided', or 'greater'")
+})
+
+test_that("proptesti() throws error if exact is not logical", {
+  expect_error(proptesti(sum(x1), length(x1), exact = 2),
+               "'exact' must be a logical.")
+})
+
+test_that("proptesti() throws error for invalid conf.level", {
+  expect_error(proptesti(sum(x1), length(x1), conf.level = 1.1), "'conf.level' must a scalar between 0 and 1.")
+  expect_error(proptesti(sum(x1), length(x1), conf.level = TRUE), "'conf.level' must a scalar between 0 and 1.")
+})
+
+test_that("proptesti() throws error for non-numeric more.digits argument", {
+  expect_error(proptesti(sum(x1), length(x1), more.digits = TRUE),
+               "Argument 'more.digits' must be numeric")
+})
+
+test_that("proptesti() throws error for non-scalar null", {
+  expect_error(proptesti(sum(x1), length(x1), null.hypoth = c(0.5, 0.6)), "Null must be a scalar")
+  expect_error(proptesti(sum(x1), length(x1), null.hypoth = TRUE), "Null must be a scalar")
+})
+
+test_that("proptesit() throws error for exact test on 2 samples", {
+  expect_error(proptesti(sum(x1), length(x1), sum(x2), length(x2),
+                        exact = TRUE), "Exact binomial test not available for two samples.")
+})
+
 # x1 <- c(-1, seq(1, 100))
 # 
 # test_that("ttest() throws error if geo mean requested with non-pos data", {
