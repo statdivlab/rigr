@@ -1,0 +1,112 @@
+---
+title: "One- and two-sample inference in rigr"
+author: "Charles Wolock, Brian D. Williamson, and Scott S. Emerson, MD PhD"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: yes
+    toc_depth: 2
+  pdf_document:
+    toc: yes
+subtitle: University of Washington Department of Biostatistics
+header - includes:
+- \usepackage{graphicx}
+- \usepackage[colorlinks=true, linktoc=all, linkcolor=blue]{hyperref}
+vignette: >
+  %\VignetteIndexEntry{One- and two-sample inference in rigr}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r}
+library(rigr)
+```
+ 
+The `rigr` package replicates many of the basic inferential functions from R's `stats` package, with an eye toward inference as taught in an introductory statistic. To demonstrate these basic functions, we will use the included `mri` dataset. Information about the dataset can be found by running `?mri`. Since the data is part of the package, we can load it via
+
+```{r}
+data(mri)
+```
+
+Throughout this vignette, we will assume familiarity with basic data manipulation and statistical tasks. 
+
+# One and Two Sample Functions
+
+Many of our analyses boil down to one-sample or two-sample problems; What is the mean time to death? What is the median home price in Seattle? What is the difference in mean time to death between control and the treatment group? The list goes on. There are many methods of analyzing one- and two-sample relationships, and in our package we have implemented three approaches that are commonly encountered. 
+
+## T-tests
+
+One of the most common statistical tests is the t-test, since we are often interested in the mean and making comparisons between means. A one-sample t-test asks whether the mean of the distribution from which a sample is drawn is equal to some fixed value; a two-sample t-test asks whether the difference in means between two distributions is equal to some value (often 0, i.e. no difference in means).
+
+Our function `ttest()` is flexible, allowing stratification, calculation of the geometric mean, and equal/unequal variances between samples. For example, a t-test of whether the mean of the `ldl` variable is equal to 125 yields, in base R and `rigr`
+
+```{r}
+ttest(mri$ldl, null.hypoth = 125)
+```
+
+Note that in addition to running the hypothesis test, `ttest` also returns a point estimate and confidence interval for the mean. 
+
+If instead we wanted a two-sample t-test of whether the difference in mean LDL between males and females were zero, we could stratify using the `by` argument:
+
+```{r}
+ttest(mri$ldl, by = mri$sex)
+```
+
+In addition to using `by`, we can also run two-sample tests by simply providing two data vectors. 
+
+Note that in our package, the default is to presume unequal variances between samples, which the authors believe to usually be the correct course. We also run two-sided tests by default, but others can be specified, along with non-0 null hypotheses, and tests at levels other than 0.95. 
+
+```{r}
+ttest(mri$ldl, null.hypoth = 125, conf.level = 0.9)
+```
+
+If we prefer to run the test using summary statistics (sample mean, sample standard deviation, and sample size) we can instead use the `ttesti` function. The inference is the same as that provided by `ttest`, but we do not need a data vector: 
+
+```{r}
+# compare
+ttest(mri$weight, null.hypoth = 155)
+ttesti(length(mri$weight), mean(mri$weight), sd(mri$weight), null.hypoth = 155)
+```
+
+## Tests of proportions
+
+With binary data, we may wish to make inference on probabilities. In `rigr`, we can do this using `proptest`. For one-sample proportion tests, there are both approximate (based on the normal distribution) and exact (based on the binomial distribution) options. For example, we may wish to test whether the proportion of LDL values that are greater than 128 is equal to 0.5 (the default `null.hypoth`). Note that we are creating our binary data within the `proptest` call. Using the `exact` argument allows us to choose what kind of test we run. In this case, the results are quite similar. 
+
+```{r}
+proptest(as.numeric(mri$ldl > 128), exact = FALSE)
+proptest(as.numeric(mri$ldl > 128), exact = TRUE)
+```
+
+Given two samples, we can also test whether two proportions are equal to each other. There is no `exact` option for a two-sample test. Here we test whether the proportion of men with LDL > 128 is the same as the proportion of women. 
+
+```{r}
+proptest(as.numeric(mri$ldl > 128), by = mri$sex)
+```
+
+The `proptesti` function is analogous to `ttesti` - rather than providing data vectors, we can provide summary statistics in the form of counts of successes out of a total number of trials. Here we test whether the proportion of people with weight greater than 155 is equal to 0.5. 
+
+```{r}
+proptesti(sum(mri$weight > 155), length(mri$weight), exact = FALSE)
+```
+
+## Wilcoxon and Mann-Whitney
+
+The Wilcoxon and Mann-Whitney tests, which use the ``rank'' of the given variables, are nonparametric methods for analyzing the locations of the underlying distributions that gave rise to a dataset. They are often viewed as alternative to one- and two-sample t-tests, respectively. 
+
+Our function `wilcoxon()` takes one or two samples and performs either an approximate or exact test of location. Since these tests are not based on the mean of the data, the output looks slightly different from that of `ttest`. Here, we perform a paired (matched) test on made-up data comparing individuals with cystic fibrosis (CF) to health individuals.  
+
+```{r}
+## create the data
+cf <- c(1153, 1132, 1165, 1460, 1162, 1493, 1358, 1453, 1185, 1824, 1793, 1930, 2075)
+healthy <- c(996, 1080, 1182, 1452, 1634, 1619, 1140, 1123, 1113, 1463, 1632, 1614, 1836)
+
+wilcoxon(cf, healthy, paired = TRUE)
+```
+
+This function can also provide a confidence interval for the median, although unlike the Wilcoxon and Mann-Whitney tests, this confidence interval is semiparametric rather than nonparametric. 
+
+```{r}
+wilcoxon(cf, healthy, paired = TRUE, conf.int = TRUE)
+```
+
+Note that there is no version of `wilcoxon` using summary statistics, since the test relies on the ranks of the observed data. 
