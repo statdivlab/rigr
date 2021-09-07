@@ -11,7 +11,7 @@ vignette: >
 
 A key feature of many exploratory analyses is obtaining descriptive statistics for multiple variables. In the `rigr` package, we provide a function `descrip()` with improved output for descriptive statistics for an arbitrary number of variables. Key features include the ability to easily compute summary measures on strata or subsets of the variables specified. We go through examples making use of these key features below.
 
-# Strata
+# Descriptive statistics with `descrip`
 
 Throughout our examples, we'll use the `fev` dataset. This dataset is included in the `rigr` package; see its documentation by running `?fev`. 
 
@@ -29,24 +29,25 @@ descrip(fev)
 
 Since we input a dataframe, we can see that all variables have the same number of elements given in the `N` column. None of our variables have any missing values, as seen in the `Msng` column. 
 
-Rather than specifying the whole dataframe, if we are interested in only the variables fev and height, we can input only those two vectors into the `descrip()` function, as below.
+Rather than specifying the whole dataframe, if we are interested in only the variables `fev` and `height`, we can input only those two vectors into the `descrip()` function, as below.
 
 ```{r}
 descrip(fev$fev, fev$height)
 ```
 
+# Descriptive statistics for strata
 
-Suppose we wish to obtain descriptive statistics of the fev and height variables, stratified by smoking status. To do this, we can use the strata parameter in descrip.
+Suppose we wish to obtain descriptive statistics of the `fev` and `height` variables, stratified by smoking status. To do this, we can use the `strata` parameter in `descrip`: 
 
 ```{r}
 descrip(fev$fev, fev$height, strata = fev$smoke)
 ```
 
-In the output, we can see that overall descriptive statistics, as well as descriptive statistics for each strata (smoke = 1, smoke = 2) are returned in the table.
+In the output, we can see that overall descriptive statistics, as well as descriptive statistics for each stratum (smoke = 1, smoke = 2) are returned in the table.
 
-# Subset
+# Descriptive statistics for subsets
 
-Now suppose we only want descriptive statistics for the height and fev variables for individuals over the age of 10. We first create an indicator variable for age > 10 outside of the `descrip()` function, and then include this variable in the subset parameter.
+Now suppose we only want descriptive statistics for height and FEV for individuals over the age of 10. We first create an indicator variable for `age > 10` *outside* of the `descrip()` function, and then give this variable to the `subset` parameter.
 
 ```{r}
 greater_10 <- ifelse(fev$age > 10, 1, 0)
@@ -55,11 +56,11 @@ descrip(fev$fev, fev$height, subset = greater_10)
 
 # Above/Below
 
-Suppose we want to know the proportion of individuals with fev greater than 2, stratified by smoking status. We can use the strata argument as before, in addition to the above parameter to obtain this set of descriptive statistics
+Suppose we want to know the proportion of individuals with FEV greater than 2, stratified by smoking status. We can use the `strata` argument as before, in addition to the `above` parameter to obtain this set of descriptive statistics: 
 
 ```{r}
 descrip(fev$fev, strata = fev$smoke, above = 2)
 ```
 
-From the output, we can see that 96.92% of the indivuals in this dataset with smoking status 1 had an fev greater than 2, and 71.99% of the individuals in this dataset with smoking status 2 had an fev greater than 2.
+From the output, we can see that 96.92% of the individuals in this dataset who smoke (smoking status 1) had an FEV greater than 2 L/sec, and 71.99% of the individuals in this dataset who were nonsmokers had an FEV greater than 2 L/sec. 
 
