@@ -2,7 +2,7 @@
 #' 
 #' Produces point estimates, interval estimates, and p values for an arbitrary
 #' functional (mean, geometric mean, proportion, odds) of a
-#' variable of class \code{integer}, \code{numeric}, \code{Surv}, when
+#' variable of class \code{integer}, or \code{numeric} when
 #' regressed on an arbitrary number of covariates. Multiple Partial F-tests can
 #' be specified using the \code{\link[rigr]{U}} function.
 #' 
@@ -26,9 +26,7 @@
 #' follow them).
 #' 
 #' @aliases regress fitted.uRegress print.augCoefficients print.uRegress
-#' uLRtest uWaldtest termTraverse explode indentNames getLevels testList
-#' pasteTwo processTerm addArgs pasteOn pasteOnSpline pastePair movingSum
-#' myNext reFormatReg createCols checkNesting splitOnParen reFormat equal
+#' uLRtest uWaldtest 
 #' @param fnctl a character string indicating
 #' the functional (summary measure of the distribution) for which inference is
 #' desired. Choices include \code{"mean"}, \code{"geometric mean"},
@@ -82,7 +80,7 @@
 #' na.action,qr,singular.ok,offset,contrasts,control
 #' optional arguments that are passed to the functionality of \code{lm} or
 #' \code{glm}.
-#' @param ... additional arguments to be passed to the \code{\link[stats]{lm}} function call
+#' @param ... additional arguments to be passed to the \code{lm} function call
 #' @return An object of class uRegress is
 #' returned. Parameter estimates, confidence intervals, and p values are
 #' contained in a matrix $augCoefficients. 

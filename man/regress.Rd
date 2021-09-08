@@ -7,25 +7,6 @@
 \alias{print.uRegress}
 \alias{uLRtest}
 \alias{uWaldtest}
-\alias{termTraverse}
-\alias{explode}
-\alias{indentNames}
-\alias{getLevels}
-\alias{testList}
-\alias{pasteTwo}
-\alias{processTerm}
-\alias{addArgs}
-\alias{pasteOn}
-\alias{pasteOnSpline}
-\alias{pastePair}
-\alias{movingSum}
-\alias{myNext}
-\alias{reFormatReg}
-\alias{createCols}
-\alias{checkNesting}
-\alias{splitOnParen}
-\alias{reFormat}
-\alias{equal}
 \title{General Regression for an Arbitrary Functional}
 \usage{
 regress(
@@ -117,7 +98,7 @@ unexponentiated coefficients, and one with the exponentiated coefficients.}
 lm() or glm() function, respectively. You may optionally specify \code{method = "model.frame"}, which
 returns the model frame and does no fitting.}
 
-\item{...}{additional arguments to be passed to the \code{\link[stats]{lm}} function call}
+\item{...}{additional arguments to be passed to the \code{lm} function call}
 }
 \value{
 An object of class uRegress is
@@ -127,7 +108,7 @@ contained in a matrix $augCoefficients.
 \description{
 Produces point estimates, interval estimates, and p values for an arbitrary
 functional (mean, geometric mean, proportion, odds) of a
-variable of class \code{integer}, \code{numeric}, \code{Surv}, when
+variable of class \code{integer}, or \code{numeric} when
 regressed on an arbitrary number of covariates. Multiple Partial F-tests can
 be specified using the \code{\link[rigr]{U}} function.
 }
