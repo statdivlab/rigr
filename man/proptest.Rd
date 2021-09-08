@@ -16,15 +16,16 @@ proptest(
   null.hypoth = 0.5,
   alternative = "two.sided",
   conf.level = 0.95,
+  correct = FALSE,
   more.digits = 0
 )
 }
 \arguments{
-\item{var1}{a (non-empty) vector of binary numeric (0-1) or binary factor
+\item{var1}{a (non-empty) vector of binary numeric (0-1), binary factor, or logical
 data values}
 
 \item{var2}{an optional (non-empty)
-vector of binary numeric (0-1) or binary factor
+vector of binary numeric (0-1), binary factor, or logical
 data values}
 
 \item{by}{a variable of equal length to
@@ -44,6 +45,8 @@ of the test. Defaults to a two-sided test.}
 
 \item{conf.level}{confidence level of the
 test. Defaults to 95/100.}
+
+\item{correct}{A logical indicating whether to use a continuity correction.}
 
 \item{more.digits}{a numeric value
 specifying whether or not to display more or fewer digits in the output.
@@ -68,7 +71,7 @@ one- or two-sample test of proportions. This test can be approximate or exact.
 \details{
 Missing values must be given by \code{"NA"}s to be recognized as missing values. Numeric data must be given
 in 0-1 form. This function also accepts binary factor variables, treating the higher level as 1 and the lower level 
-as 0. Any call to \code{proptest()} is run by \code{proptest.default()}, with user specified
+as 0, or logical variables. Any call to \code{proptest()} is run by \code{proptest.default()}, with user specified
 values in place of defaults in the appropriate places.
 }
 \examples{

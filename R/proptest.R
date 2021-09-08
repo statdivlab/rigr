@@ -5,15 +5,15 @@
 #' 
 #' Missing values must be given by \code{"NA"}s to be recognized as missing values. Numeric data must be given
 #' in 0-1 form. This function also accepts binary factor variables, treating the higher level as 1 and the lower level 
-#' as 0. Any call to \code{proptest()} is run by \code{proptest.default()}, with user specified
+#' as 0, or logical variables. Any call to \code{proptest()} is run by \code{proptest.default()}, with user specified
 #' values in place of defaults in the appropriate places.
 #' 
 #' @aliases proptest proptest.do plot.proptest print.proptest proptest.default
 #' 
-#' @param var1 a (non-empty) vector of binary numeric (0-1) or binary factor
+#' @param var1 a (non-empty) vector of binary numeric (0-1), binary factor, or logical
 #' data values
 #' @param var2 an optional (non-empty)
-#' vector of binary numeric (0-1) or binary factor
+#' vector of binary numeric (0-1), binary factor, or logical
 #' data values
 #' @param by a variable of equal length to
 #' that of \code{var1} with two outcomes (numeric or factor). This will be used to define strata
@@ -28,6 +28,7 @@
 #' of the test. Defaults to a two-sided test.
 #' @param conf.level confidence level of the
 #' test. Defaults to 95/100.
+#' @param correct A logical indicating whether to use a continuity correction.
 #' @param more.digits a numeric value
 #' specifying whether or not to display more or fewer digits in the output.
 #' Non-integers are automatically rounded down. 
@@ -64,11 +65,11 @@
 #' 
 #' @export proptest
 proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, alternative = "two.sided", 
-                 conf.level = 0.95, more.digits = 0) 
+                 conf.level = 0.95, correct = FALSE, more.digits = 0) 
 {
   proptest.do <- function(var1, var2 = NA, by = NA, 
                        exact = FALSE, null.hypoth = 0.5, alternative = "two.sided", 
-                       conf.level = 0.95, more.digits = 0, 
+                       conf.level = 0.95, correct = FALSE, more.digits = 0, 
                        myargs, ...) {
     # can only do var1 vs var2 or var1 by
     if (length(var2) > 1 & length(by) > 1) {
@@ -85,18 +86,23 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       stop("'conf.level' must a scalar between 0 and 1.")
     }
     if (!(is.numeric(var1) && isTRUE(all.equal(sort(unique(c(var1))), c(0,1)))) &&
-        !(is.factor(c(var1)[!is.na(var1)]) && length(sort(unique(var1[!is.na(var1)]))) == 2)){
-      stop("Only binary 0-1 data and two-level factors are allowed.")
+        !(is.factor(c(var1)[!is.na(var1)]) && length(sort(unique(var1[!is.na(var1)]))) == 2) &&
+        !is.logical(var1)){
+      stop("Only binary 0-1 data, two-level factors, and logicals are allowed.")
     }
     if (length(var2) > 1){
       if ((!(is.numeric(var2) && isTRUE(all.equal(sort(unique(c(var2))), c(0,1)))) &&
-          !(is.factor(var2[!is.na(var2)]) && length(sort(unique(var2[!is.na(var2)]))) == 2)) ||
+          !(is.factor(var2[!is.na(var2)]) && length(sort(unique(var2[!is.na(var2)]))) == 2) &&
+          !is.logical(var2)) ||
         !isTRUE(all.equal(as.character(sort(unique(var1[!is.na(var1)]))), as.character(sort(unique(var2[!is.na(var2)])))))) {
-        stop("Only binary 0-1 data and two-level factors are allowed.")
+        stop("Only binary 0-1 data, two-level factors, and logicals are allowed.")
       }
     }
     if (!is.logical(exact)){
       stop("'exact' must be a logical.")
+    }
+    if (!is.logical(correct)){
+      stop("'correct' must be a logical.")
     }
     if ((length(var2) > 1 || length(by) > 1) && exact){
       stop("Exact binomial test not available for two samples.")  
@@ -152,6 +158,8 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       var1 <- var1[by == by2]
     }
     digits <- 3 + more.digits
+    
+    yates <- ifelse(correct, 0.5, 0)
     
     cl <- (1 + conf.level)/2
     # Case where by is not entered
@@ -315,7 +323,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       
     }
     par <- c(null.hypoth = null.hypoth, alternative = alternative, 
-             conf.level = conf.level, exact = exact, digits = digits)
+             conf.level = conf.level, exact = exact, digits = digits, correct = correct)
     invisible(list(tab = main, zstat = zstat, pval = pval, 
                    var1 = var1, var2 = var2, by = by, par = par))
   }
@@ -348,6 +356,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
                                       by = by, exact = exact,
                                       null.hypoth = null.hypoth, alternative = alternative, 
                                       conf.level = conf.level, 
+                                      correct = correct,
                                       more.digits = more.digits, 
                                       myargs = myargs)
           
@@ -362,6 +371,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
                                 by = cby, exact = exact,
                                 null.hypoth = 0, alternative = alternative, 
                                 conf.level = conf.level, 
+                                correct = correct,
                                 more.digits = more.digits, 
                                 myargs = myargs)
         }
@@ -378,6 +388,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
                               null.hypoth = 0, 
                               alternative = alternative, 
                               conf.level = conf.level, 
+                              correct = correct,
                               more.digits = more.digits, 
                               myargs = myargs)
       }

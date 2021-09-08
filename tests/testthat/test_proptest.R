@@ -2,15 +2,15 @@
 
 test_that("proptest() throws error for non-binary data", {
   expect_error(proptest(c(-1, 0, 1)),
-               "Only binary 0-1 data and two-level factors are allowed.")
+               "Only binary 0-1 data, two-level factors, and logicals are allowed.")
   expect_error(proptest(c(1,1,2,2)),
-               "Only binary 0-1 data and two-level factors are allowed.")
+               "Only binary 0-1 data, two-level factors, and logicals are allowed.")
   expect_error(proptest(c("0", "0", "1", "1")),
-               "Only binary 0-1 data and two-level factors are allowed.")
+               "Only binary 0-1 data, two-level factors, and logicals are allowed.")
   expect_error(proptest(as.factor(c("0", "0", "1", "1", "2"))),
-               "Only binary 0-1 data and two-level factors are allowed.")
+               "Only binary 0-1 data, two-level factors, and logicals are allowed.")
   expect_error(proptest(as.factor(c("0", "0", "1", "1")), as.factor(c("0", "0", "2", "2"))),
-               "Only binary 0-1 data and two-level factors are allowed.")
+               "Only binary 0-1 data, two-level factors, and logicals are allowed.")
 })
 
 x1 <- rbinom(100, 1, 0.5)
