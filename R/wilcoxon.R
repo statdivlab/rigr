@@ -31,24 +31,34 @@
 #' @param conf.int logical indicating whether
 #' or not to calculate and display a confidence interval
 #' @param conf.level confidence level for the
-#' interval.
+#' interval. Defaults to 0.95.
 #' 
 #' @return A list of class \code{wilcoxon}
 #' is returned. The print method lays out the information in an easy-to-read
-#' format. \item{statistic}{the value of the test
-#' statistic with a name describing it.} \item{parameter}{the parameter(s) for
-#' the exact distribution of the test statistic.} \item{p.value}{the p-value
-#' for the test (calculated for the test statistic).} \item{null.value}{the
-#' parameter \code{null.hypoth}.} \item{alternative}{character string describing the
-#' alternative hypothesis.} \item{method}{the type of test applied.}
+#' format. 
+#' \item{statistic}{the value of the test
+#' statistic with a name describing it.} 
+#' \item{parameter}{the parameter(s) for
+#' the exact distribution of the test statistic.} 
+#' \item{p.value}{the p-value
+#' for the test (calculated for the test statistic).} 
+#' \item{null.value}{the
+#' parameter \code{null.hypoth}.} 
+#' \item{alternative}{character string describing the
+#' alternative hypothesis.} 
+#' \item{method}{the type of test applied.}
 #' \item{data.name}{a character string giving the names of the data.}
 #' \item{conf.int}{a confidence interval for the location parameter (only
-#' present if the argument \code{conf.int=TRUE}).} \item{estimate}{an estimate
+#' present if the argument \code{conf.int=TRUE}).} 
+#' \item{estimate}{an estimate
 #' of the location parameter (only present if the argument
-#' \code{conf.int=TRUE}).} \item{table}{a formatted table of rank sum and
+#' \code{conf.int=TRUE}).} 
+#' \item{table}{a formatted table of rank sum and
 #' number of observation values, for printing.} \item{vars}{a formatted table
-#' of variances, for printing.} \item{hyps}{a formatted table of the
-#' hypotheses, for printing.} \item{inf}{a formatted table of inference values,
+#' of variances, for printing.} 
+#' \item{hyps}{a formatted table of the
+#' hypotheses, for printing.} 
+#' \item{inf}{a formatted table of inference values,
 #' for printing.}
 #' 
 #' @seealso \code{\link[stats]{wilcox.test}}

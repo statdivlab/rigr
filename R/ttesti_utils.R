@@ -14,8 +14,8 @@ print.ttesti <- function(x, ...) {
   alternative = par[2]
   var.eq = as.logical(par[3])
   conf.level = par[4]
-  digits = par[5]
-  twosamp <- x$twosamp
+  twosamp <- as.logical(par[5])
+  digits = par[6]
   null.hypoth <- as.numeric(format(null.hypoth, digits = digits))
   if (var.eq) {robust <- FALSE}
   if (!var.eq) {robust <- TRUE}
