@@ -33,8 +33,9 @@
 #' the functional (summary measure of the distribution) for which inference is
 #' desired. Choices include \code{"mean"}, \code{"geometric mean"},
 #' \code{"odds"}, \code{"rate"}. 
-#' @param formula an object of class
-#' \code{formula} as might be passed to \code{lm}, \code{glm}, or \code{coxph}.
+#' @param formula an object of class \code{formula} as might be passed to 
+#' \code{lm} or \code{glm}. Functions of variables, specified using \code{\link[rigr]{dummy}}
+#' or \code{\link[rigr]{polynomial}} may also be included in \code{formula}.
 #' @param data a data frame, matrix, or other data structure with matching
 #' names to those entered in \code{formula}.
 #' @param intercept a logical value

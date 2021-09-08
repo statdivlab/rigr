@@ -1,6 +1,6 @@
 Package: rigr
 Title: Regression, Inference, and General Data Analysis Tools for R
-Version: 0.0.1
+Version: 1.0.0
 Authors@R: c(person("Amy D", "Willis", email = "adwillis@uw.edu", role = c("aut", "cre")),
              person("Taylor", "Okonek", role = "aut"),
              person("Charles J", "Wolock", role = "aut"),
@@ -12,7 +12,7 @@ Authors@R: c(person("Amy D", "Willis", email = "adwillis@uw.edu", role = c("aut"
              person("Solomon", "Lim", role = "aut"),
              person("Terry M", "Therneu", role = "ctb"),
              person("Thomas", "Lumley", role = "ctb"))
-Description: TODO A set of tools designed to facilitate easy adoption of R for students in introductory classes with little programming experience. Compiles output from existing routines together in an intuitive format, and adds functionality to existing functions. For instance, the regression function can perform linear models, generalized linear models, Cox models, or generalized estimating equations. The user can also specify multiple-partial F-tests to print out with the model coefficients. We also give many routines for descriptive statistics and plotting.
+Description: TODO A set of tools to streamline data analysis in R. Learning both R and introductory statistics at the same time can be challenging, and so we created rigr to facilitate common data analysis tasks and to enable learners to focus on statistical concepts. We provide easy-to-use interfaces for descriptive statistics, one- and two-sample inference, and regression analyses. Heteroskedasticity-robust ("sandwich") standard errors are included by default in all regression output, and multiple partial F-tests are easy to specify. A single regression function (`regress()`) can fit both linear and generalized linear models, allowing students to more easily make connections between different classes of models.
 License: MIT + file LICENSE
 BugReports: https://github.com/statdivlab/rigr/issues
 Depends:
@@ -30,5 +30,6 @@ Suggests:
     tidyverse
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
+Encoding: UTF-8
 Config/testthat/edition: 3
 LazyData: true
