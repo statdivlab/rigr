@@ -66,15 +66,16 @@
 #' proptest(factor(inrem), by = bssworst)
 #' 
 #' @export proptest
-proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, alternative = "two.sided", 
-                 conf.level = 0.95, more.digits = 0) 
+proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE, 
+                    null.hypoth = ifelse(is.null(var2) && is.null(by), 0.5, 0), alternative = "two.sided", 
+                    conf.level = 0.95, more.digits = 0) 
 {
-  proptest.do <- function(var1, var2 = NA, by = NA, 
-                       exact = FALSE, null.hypoth = 0.5, alternative = "two.sided", 
+  proptest.do <- function(var1, var2 = NULL, by = NULL, 
+                       exact = FALSE, null.hypoth = ifelse(is.null(var2) && is.null(by), 0.5, 0), alternative = "two.sided", 
                        conf.level = 0.95, more.digits = 0, 
                        myargs, ...) {
     # can only do var1 vs var2 or var1 by
-    if (length(var2) > 1 & length(by) > 1) {
+    if (length(var2) > 0 & length(by) > 0) {
       stop("Please specify only one of the variables 'by' or 'var2'")
     }
     # check that alternative is one of "less", "two.sided", or "greater"
@@ -92,7 +93,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         !is.logical(var1)){
       stop("Only binary 0-1 data, two-level factors, and logicals are allowed.")
     }
-    if (length(var2) > 1){
+    if (length(var2) > 0){
       if ((!(is.numeric(var2) && isTRUE(all.equal(sort(unique(var2)), c(0,1)))) &&
           !(is.factor(var2[!is.na(var2)]) && length(sort(unique(var2[!is.na(var2)]))) == 2) &&
           !is.logical(var2)) ||
@@ -106,7 +107,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     # if (!is.logical(correct)){
     #   stop("'correct' must be a logical.")
     # }
-    if ((length(var2) > 1 || length(by) > 1) && exact){
+    if ((length(var2) > 0 || length(by) > 0) && exact){
       stop("Exact binomial test not available for two samples.")  
     }
     #levs <- NULL
@@ -117,7 +118,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       levs1 <- levels(var1[!is.na(var1)])
       var1 <- as.numeric(var1) - 1
     }
-    if (length(var2) > 1){
+    if (length(var2) > 0){
       if (is.factor(var2[!is.na(var2)])){
         levs2 <- levels(var2[!is.na(var2)])
         var2 <- as.numeric(var2) - 1
@@ -140,11 +141,11 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     # something with more digits
     more.digits <- max(floor(more.digits), 0)
     # ensure by variable has length 2 (no more or less)
-    if (length(unique(by)) == 1 & !is.na(by[1])) {
+    if (!is.null(by[1]) && length(unique(by)) == 1) {
       stop("Variable 'by' only has one unique value")
     }
     
-    if (length(by) > 1) {
+    if (length(by) > 0) {
       if (length(unique(by)) > 2 & sum(is.na(by)) == 0) {
         stop("Variable 'by' has more than two unique values.")
       }
@@ -165,9 +166,9 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     
     cl <- (1 + conf.level)/2
     # Case where by is not entered
-    if (length(by) == 1 & is.na(by[1])) {
+    if (length(by) == 0 & is.null(by[1])) {
       # var2 is not entered
-      if (length(var2) == 1 & is.na(var2[1])) {
+      if (length(var2) == 0 & is.null(var2)) {
         ns <- c(length(var1))
         msg <- sum(is.na(var1))
         var1 <- var1[!is.na(var1)]
@@ -214,7 +215,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         row.names(main) <- c("")
       }
       # two-sample, not using by
-      if (length(var2) > 1) {
+      if (length(var2) > 0 && is.null(by)) {
         ns <- c(length(var1), length(var2), length(var1) + length(var2))
         msg <- c(sum(is.na(var1)), sum(is.na(var2)), sum(is.na(var1)) + sum(is.na(var2)))
         var1 <- var1[!is.na(var1)]
@@ -229,15 +230,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         est1 <- as.numeric(format(est1), digits = digits)
         est2 <- as.numeric(format(est2), digits = digits)
         est_diff <- est1 - est2
-        est_diff <- as.numeric(format(est_diff), digits = digits)
         # no two-sample exact test
-        chisq <- stats::prop.test(x = c(sum(var1), sum(var2)),
-                           n = c(length(var1), length(var2)),
-                           conf.level = conf.level, alternative = alternative, correct = FALSE)
-        zstat <- as.numeric(format(sqrt(chisq$statistic), 
-                                       digits = digits))
-        pval <- as.numeric(format(chisq$p.value, 
-                                    digits = digits))
         se <- c(sqrt(est1 * (1-est1)/length(var1)),
                 sqrt(est2 * (1-est2)/length(var2)),
                 sqrt((est1 * (1-est1))/length(var1) + (est2*(1-est2))/length(var2)))
@@ -247,10 +240,20 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
         cih <- c(est1 + stats::qnorm(cl)*se[1],
                  est2 + stats::qnorm(cl)*se[2],
                  est1 - est2 + stats::qnorm(cl) * se[3])
+        zstat <- (est_diff - null.hypoth)/se[3]
+        if (alternative == "two.sided"){
+          pval <- 2*stats::pnorm(-abs(zstat))
+        } else if(alternative == "less"){
+          pval <- stats::pnorm(zstat)
+        } else{
+          pval <- 1 - stats::pnorm(zstat)
+        }
+        zstat <- as.numeric(format(zstat, digits = digits))
+        pval <- as.numeric(format(pval, digits = digits))
         cil <- as.numeric(format(cil, digits = digits))
         cih <- as.numeric(format(cih, digits = digits))
         se <- as.numeric(format(se, digits = digits))
-        
+        est_diff <- as.numeric(format(est_diff), digits = digits)
         main <- matrix(c(myargs[1], ns[1], msg[1], est1, 
                            se[1], paste("[", cil[1], ", ", cih[1], "]", sep = ""), 
                          myargs[2], ns[2], msg[2], 
@@ -265,7 +268,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       }
     }
     # two-sample, using by
-    if (length(by) > 1 && length(var2) > 1) {
+    if (length(by) > 0) {
       ns <- c(length(var1), length(var2), length(var1) + length(var2))
       msg <- c(sum(is.na(var1)), sum(is.na(var2)), sum(is.na(var1)) + sum(is.na(var2)))
       var1 <- var1[!is.na(var1)]
@@ -281,15 +284,6 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       est2 <- as.numeric(format(est2), digits = digits)
       est_diff <- est1 - est2
       est_diff <- as.numeric(format(est_diff), digits = digits)
-      chisq <- stats::prop.test(x = c(sum(var1), sum(var2)),
-                         n = c(length(var1), length(var2)),
-                         conf.level = conf.level, correct = FALSE,
-                         alternative = alternative)
-      
-      zstat <- as.numeric(format(sqrt(chisq$statistic), 
-                                 digits = digits))
-      pval <- as.numeric(format(chisq$p.value, 
-                                digits = digits))
       se <- c(sqrt(est1 * (1-est1)/length(var1)),
               sqrt(est2 * (1-est2)/length(var2)),
               sqrt((est1 * (1-est1))/length(var1) + (est2*(1-est2))/length(var2)))
@@ -299,6 +293,14 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       cih <- c(est1 + stats::qnorm(cl)*se[1],
                est2 + stats::qnorm(cl)*se[2],
                est1 - est2 + stats::qnorm(cl) * se[3])
+      zstat <- (est_diff - null.hypoth)/se[3]
+      if (alternative == "two.sided"){
+        pval <- 2*stats::pnorm(-abs(zstat))
+      } else if(alternative == "less"){
+        pval <- stats::pnorm(zstat)
+      } else{
+        pval <- 1 - stats::pnorm(zstat)
+      }
       cil <- as.numeric(format(cil, digits = digits))
       cih <- as.numeric(format(cih, digits = digits))
       se <- as.numeric(format(se, digits = digits))
@@ -331,68 +333,68 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
   }
     
     
-    myargs <- c(deparse(substitute(var1)), deparse(substitute(var2)), 
-                deparse(substitute(by)))
-    uby <- unique(by)
-    
-    if (is.na(var2[1]) & length(var2) == 1) {
-      if (is.na(by[1]) & length(by) == 1) {
-        strat <- rep(1, length(var1))
-      }
-      if (length(by) > 1) {
-        strat <- rep(1, length(var1))
-      }
+  myargs <- c(deparse(substitute(var1)), deparse(substitute(var2)), 
+              deparse(substitute(by)))
+  uby <- unique(by)
+  
+  if (is.null(var2[1]) && length(var2) == 0) {
+    if (is.null(by[1]) && length(by) == 0) {
+      strat <- rep(1, length(var1))
     }
-    if (length(var2) > 1) {
-      strat1 <- rep(1, length(var1))
-      strat2 <- rep(1, length(var2))
+    if (length(by) > 0) {
+      strat <- rep(1, length(var1))
     }
-    
-    
-    if (is.na(var2[1]) & length(var2) == 1) {
-      if (is.na(by[1]) & length(by) == 1) {
-        ustrat <- unique(strat)
-        for (t in 1:length(ustrat)) {
-          x <- subset(var1, strat == ustrat[t])
-          proptest.obj <- proptest.do(var1 = x, var2 = var2, 
-                                      by = by, exact = exact,
-                                      null.hypoth = null.hypoth, alternative = alternative, 
-                                      conf.level = conf.level,
-                                      more.digits = more.digits, 
-                                      myargs = myargs)
-          
-        }
-      }
-      if (length(by) > 1) {
-        ustrat <- unique(strat)
-        for (t in 1:length(ustrat)) {
-          x <- subset(var1, strat == ustrat[t])
-          cby <- subset(by, strat == ustrat[t])
-          proptest.obj <- proptest.do(var1 = x, var2 = var2, 
-                                by = cby, exact = exact,
-                                null.hypoth = 0, alternative = alternative, 
-                                conf.level = conf.level,
-                                more.digits = more.digits, 
-                                myargs = myargs)
-        }
-      }
-    }
-    if (length(var2) > 1) {
-      ustrat <- unique(c(strat1, strat2))
+  }
+  if (length(var2) > 0) {
+    strat1 <- rep(1, length(var1))
+    strat2 <- rep(1, length(var2))
+  }
+  
+  
+  if (is.null(var2[1]) && length(var2) == 0) {
+    if (is.null(by[1]) && length(by) == 0) {
+      ustrat <- unique(strat)
       for (t in 1:length(ustrat)) {
-        x <- subset(var1, strat1 == ustrat[t])
-        y <- subset(var2, strat2 == ustrat[t])
-        proptest.obj <- proptest.do(var1 = x, var2 = y, 
-                              by = by,
-                              exact = exact,
-                              null.hypoth = 0, 
-                              alternative = alternative, 
-                              conf.level = conf.level,
-                              more.digits = more.digits, 
-                              myargs = myargs)
+        x <- subset(var1, strat == ustrat[t])
+        proptest.obj <- proptest.do(var1 = x, var2 = var2, 
+                                    by = by, exact = exact,
+                                    null.hypoth = null.hypoth, alternative = alternative, 
+                                    conf.level = conf.level,
+                                    more.digits = more.digits, 
+                                    myargs = myargs)
+        
       }
     }
-    proptest.obj$call <- match.call()
-    class(proptest.obj) <- "proptest"
-    return(proptest.obj)
+    if (length(by) > 0) {
+      ustrat <- unique(strat)
+      for (t in 1:length(ustrat)) {
+        x <- subset(var1, strat == ustrat[t])
+        cby <- subset(by, strat == ustrat[t])
+        proptest.obj <- proptest.do(var1 = x, var2 = var2, 
+                                    by = cby, exact = exact,
+                                    null.hypoth = null.hypoth, alternative = alternative, 
+                                    conf.level = conf.level,
+                                    more.digits = more.digits, 
+                                    myargs = myargs)
+      }
+    }
+  }
+  if (length(var2) > 0) {
+    ustrat <- unique(c(strat1, strat2))
+    for (t in 1:length(ustrat)) {
+      x <- subset(var1, strat1 == ustrat[t])
+      y <- subset(var2, strat2 == ustrat[t])
+      proptest.obj <- proptest.do(var1 = x, var2 = y, 
+                                  by = by,
+                                  exact = exact,
+                                  null.hypoth = null.hypoth, 
+                                  alternative = alternative, 
+                                  conf.level = conf.level,
+                                  more.digits = more.digits, 
+                                  myargs = myargs)
+    }
+  }
+  proptest.obj$call <- match.call()
+  class(proptest.obj) <- "proptest"
+  return(proptest.obj)
 }

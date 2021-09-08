@@ -10,10 +10,10 @@
 \usage{
 proptest(
   var1,
-  var2 = NA,
-  by = NA,
+  var2 = NULL,
+  by = NULL,
   exact = FALSE,
-  null.hypoth = 0.5,
+  null.hypoth = ifelse(is.null(var2) && is.null(by), 0.5, 0),
   alternative = "two.sided",
   conf.level = 0.95,
   more.digits = 0
