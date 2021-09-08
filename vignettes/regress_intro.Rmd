@@ -141,3 +141,31 @@ regress("mean", atrophy ~ age + sex + U("Smoking variables" = ~packyrs + yrsquit
 
 `"Smoking variables"` is what we name the group of variables `packyrs` and `yrsquit`. The overall F statistic and p-value associated with the inclusion of these two smoking variables variables in the model are 4.37 and 0.0130, respectively.
 
+# Tests of linear combinations of regression coefficients
+
+Suppose we're interested in testing whether or not a certain linear combination of coefficients in our regression model is equal to a given null hypothesis. We can use the `lincom` function to perform this test. Consider the regression model below:
+
+```{r}
+mod_rigr <- regress("mean", atrophy ~ age + sex + height + weight, data = mri)
+```
+
+If we want to test the null hypothesis that the coefficient created by `height + weight` is equal to zero, we can specify this test using `lincom` as follows.
+
+```{r}
+# The elements in mod_combo correspond to Intercept, age, sexMale, height, and weight
+mod_combo <- c(0, 0, 0, 1, 1)
+lincom(mod_rigr, mod_combo)
+```
+
+Suppose we instead want to test the null hypothesis that the coefficient created by `2 * age + sexMale` is equal to 50. We specify this by,
+
+```{r}
+mod_combo <- c(0, 2, 1, 0, 0)
+lincom(mod_rigr, mod_combo, hyp = 50)
+```
+
+Note that the standard errors returned by default are robust, as are the associated confidence intervals and p-values.
+
+
+
+
