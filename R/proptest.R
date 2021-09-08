@@ -85,13 +85,13 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     if (!is.scalar(conf.level) || conf.level < 0 || conf.level > 1){
       stop("'conf.level' must a scalar between 0 and 1.")
     }
-    if (!(is.numeric(var1) && isTRUE(all.equal(sort(unique(c(var1))), c(0,1)))) &&
-        !(is.factor(c(var1)[!is.na(var1)]) && length(sort(unique(var1[!is.na(var1)]))) == 2) &&
+    if (!(is.numeric(var1) && isTRUE(all.equal(sort(unique(var1)), c(0,1)))) &&
+        !(is.factor(var1[!is.na(var1)]) && length(sort(unique(var1[!is.na(var1)]))) == 2) &&
         !is.logical(var1)){
       stop("Only binary 0-1 data, two-level factors, and logicals are allowed.")
     }
     if (length(var2) > 1){
-      if ((!(is.numeric(var2) && isTRUE(all.equal(sort(unique(c(var2))), c(0,1)))) &&
+      if ((!(is.numeric(var2) && isTRUE(all.equal(sort(unique(var2)), c(0,1)))) &&
           !(is.factor(var2[!is.na(var2)]) && length(sort(unique(var2[!is.na(var2)]))) == 2) &&
           !is.logical(var2)) ||
         !isTRUE(all.equal(as.character(sort(unique(var1[!is.na(var1)]))), as.character(sort(unique(var2[!is.na(var2)])))))) {

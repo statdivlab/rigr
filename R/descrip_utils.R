@@ -96,18 +96,6 @@ sum_KM <- function(x, times, rightCtsCDF = TRUE) {
     c(1, x$S)[rslt]
 }
 
-#' Compute the lifetime distribution function 1 - S(t)
-#' 
-#' @inheritParams sum_KM
-#' 
-#' @return the lifetime distribution function, 1 - S(t)
-#' 
-#' @keywords internal
-#' @noRd
-prob_KM <- function(x, times, rightCtsCDF = TRUE) {
-    1 - sum_KM(x, times, rightCtsCDF)
-}
-
 #' Compute quantiles of the Kaplan-Meier curve
 #' 
 #' @inheritParams sum_KM
