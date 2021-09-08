@@ -348,3 +348,24 @@ test_that("lincom() returns correct numbers for two combs, model SE, non-zero nu
   expect_equal(lc1$comb2$nms, "-0.8*(Intercept)+2.1*x")
   expect_equal(lc1$comb2$hyp, 0)
 })
+
+### Zeroes!
+
+data(mri)
+testReg <- regress ("mean", ldl~age+stroke, data = mri)
+testReg2 <- regress("mean", atrophy ~ age + sex, data = mri)
+testC <- matrix(c(0, 0.5, -1, 1, 60, 0, -0.5, 0, 50), byrow = TRUE, nrow = 3)
+testC2 <- c(0, -10, 1)
+lc1 <- lincom(testReg, testC, hyp = c(0, 125, 50))
+lc2 <- lincom(testReg2, testC2)
+
+test_that("lincom() works with 0 coefficients", {
+  expect_equal(lc1$comb1$nms, "0.5*age-1*stroke")
+  expect_equal(lc1$comb1$hyp, 0)
+  expect_equal(lc1$comb2$nms, "1*(Intercept)+60*age")
+  expect_equal(lc1$comb2$hyp, 125)
+  expect_equal(lc1$comb3$nms, "-0.5*(Intercept)+50*stroke")
+  expect_equal(lc1$comb3$hyp, 50)
+  expect_equal(lc2$comb1$nms, "-10*age+1*sexMale")
+  expect_equal(lc2$comb1$hyp, 0)
+})

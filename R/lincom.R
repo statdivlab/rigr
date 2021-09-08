@@ -65,7 +65,7 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
   lincom.do <- function(reg, comb, hyp, conf.level, robustSE, eform){
 
     if(any(comb==0)){
-      mat <- comb[-(comb==0)]
+      mat <- comb[-which(comb==0)]
     } else {
       mat <- comb
     }
@@ -76,7 +76,7 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     nms <- paste(mat[mat!=0], nms, sep="*")
     if(length(nms)>1){
       for (i in 2:length(nms)){
-        if (getNms[i] && comb[1,i] > 0){
+        if (mat[i] > 0){
           nms[i] <- paste0("+", nms[i])
         }
       }
