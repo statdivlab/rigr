@@ -9,11 +9,12 @@
 #' @param reg an object of class \code{uRegress}.
 #' @param comb a vector or matrix containing the values of the constants which
 #' create the linear combination of the form \deqn{c_0 + c_1\beta_1 + \dots}.
-#' need to give zeroes if coefficients aren't going to be included
+#' Zeroes must be given if coefficients aren't going to be included. For testing
+#' multiple combinations, this must be a matrix with number of columns equal to the number of
+#' coefficients in the model.
 #' @param hyp the null hypothesis to compare the linear combination of
-#' coefficients against. The default value is \code{0}. An error will be thrown
-#' if the number of columns of this matrix are not equal to the number of
-#' coefficients in the model. a matrix (or single) hypothesis
+#' coefficients against. This is a scalar if one combination is given, and a 
+#' vector or matrix otherwise. The default value is \code{0}. 
 #' @param conf.level a number between 0 and 1, indicating the desired
 #' confidence level for intervals.
 #' @param robustSE a logical value indicating whether or not to use robust
@@ -26,12 +27,9 @@
 #' @return Prints a matrix with the point
 #' estimate of the linear combination of coefficients, a p-value, and
 #' confidence interval.
-#' @author Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
-#' Brian D. Williamson
-#' @examples
 #' 
+#' @examples
 #' # Loading required libraries
-#' library(survival)
 #' library(sandwich)
 #' 
 #' # Reading in a dataset
@@ -40,9 +38,14 @@
 #' # Linear regression of LDL on age (with robust SE by default)
 #' testReg <- regress ("mean", ldl~age+stroke, data = mri)
 #' 
-#' # Testing coefficient created by .5*age - stroke (the first 1 comes from including the intercept)
-#' testC <- c(1, .5, -1)
+#' # Testing coefficient created by .5*age - stroke (the first 0 comes from excluding the intercept)
+#' testC <- c(0, 0.5, -1)
 #' lincom(testReg, testC)
+#' 
+#' # Test multiple combinations: 
+#' # whether .5*age - stroke = 0 and Intercept + 60*age = 125 
+#' testC <- matrix(c(0, 0.5, -1, 1, 60, 0), byrow = TRUE, nrow = 2)
+#' lincom(testReg, testC, hyp = c(0, 125))
 #' 
 #' @export lincom
 lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$fnctl!="mean"){

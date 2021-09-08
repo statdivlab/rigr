@@ -8,8 +8,8 @@
 \title{Wilcoxon Signed Rank and Mann-Whitney-Wilcoxon Rank Sum Test}
 \usage{
 wilcoxon(
-  y,
-  x = NULL,
+  var1,
+  var2 = NULL,
   alternative = "two.sided",
   null.hypoth = 0,
   paired = FALSE,
@@ -20,10 +20,10 @@ wilcoxon(
 )
 }
 \arguments{
-\item{y}{numeric vector of data values.
+\item{var1}{numeric vector of data values.
 Non-finite (missing or infinite) values will be omitted.}
 
-\item{x}{optional numeric vector of data
+\item{var2}{optional numeric vector of data
 values. Non-finite (missing or infinite) values will be omitted.}
 
 \item{alternative}{specifies the
