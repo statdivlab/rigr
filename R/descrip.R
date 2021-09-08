@@ -22,7 +22,7 @@
 #' variables of class \code{Date}, estimated proportions will be labeled using
 #' the Julian date since January 1, 1970.
 #' 
-#' @aliases descrip ifelse1 print.uDescriptives
+#' @aliases descrip print.uDescriptives
 #' @param \dots an arbitrary number of variables for which descriptive statistics 
 #'   are desired. The arguments can be vectors, matrices, or lists. Individual 
 #'   columns of a matrix or elements of a list may be of class \code{numeric}, 
@@ -130,10 +130,10 @@
 #' 
 #' @examples
 #' 
-#' #- Read in the data -#
+#' # Read in the data
 #' data(mri) 
 #' 
-#' #- Create the table -#
+#' # Create the table 
 #' descrip(mri)
 #' 
 #' @export descrip
