@@ -32,7 +32,8 @@ coefficients in the model. a matrix (or single) hypothesis}
 confidence level for intervals.}
 
 \item{robustSE}{a logical value indicating whether or not to use robust
-standard errors in calculation. If \code{TRUE}, then \code{robustSE} must
+standard errors in calculation. Defaults to \code{TRUE}. 
+If \code{TRUE}, then \code{robustSE} must
 have been \code{TRUE} when \code{reg} was created.}
 
 \item{eform}{a logical value indicating whether or not to exponentiate the

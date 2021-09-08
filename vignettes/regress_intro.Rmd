@@ -141,31 +141,27 @@ regress("mean", atrophy ~ age + sex + U("Smoking variables" = ~packyrs + yrsquit
 
 `"Smoking variables"` is what we name the group of variables `packyrs` and `yrsquit`. The overall F statistic and p-value associated with the inclusion of these two smoking variables variables in the model are 4.37 and 0.0130, respectively.
 
-# Tests of linear combinations of regression coefficients
+# Testing contrasts: hypotheses about linear combinations of regression coefficients
 
-Suppose we're interested in testing whether or not a certain linear combination of coefficients in our regression model is equal to a given null hypothesis. We can use the `lincom` function to perform this test. Consider the regression model below:
+You may be interested in testing a null hypothesis about a linear combination of coefficients in our regression model. For example, to investigate "Is the mean atrophy for a female subject equal to the mean atrophy for a male subject who is 10 years younger?", our hypothesis test involves both the coefficients on age and sex. We can test this hypothesis using the `lincom` function. First, we need to fit a linear model of age and sex on atrophy:
 
 ```{r}
-mod_rigr <- regress("mean", atrophy ~ age + sex + height + weight, data = mri)
+mod_rigr <- regress("mean", atrophy ~ age + sex, data = mri)
+mod_rigr
 ```
 
-If we want to test the null hypothesis that the coefficient created by `height + weight` is equal to zero, we can specify this test using `lincom` as follows.
+We then create a vector giving the linear combination of the coefficient that we hypothesized to be zero, and perform the test using `lincom`. The elements in `mod_combo` correspond to `Intercept`, `age`, and `sexMale`, because this was their order in the coefficient table shown above. 
 
 ```{r}
-# The elements in mod_combo correspond to Intercept, age, sexMale, height, and weight
-mod_combo <- c(0, 0, 0, 1, 1)
+mod_combo <- c(0, -10, 1)
 lincom(mod_rigr, mod_combo)
-```
-
-Suppose we instead want to test the null hypothesis that the coefficient created by `2 * age + sexMale` is equal to 50. We specify this by,
-
-```{r}
-mod_combo <- c(0, 2, 1, 0, 0)
-lincom(mod_rigr, mod_combo, hyp = 50)
 ```
 
 Note that the standard errors returned by default are robust, as are the associated confidence intervals and p-values.
 
+We could also test the null hypothesis that the mean difference in atrophy between these two groups (females, and males 10 years younger) is equal to -1 as follows:
 
-
+```{r}
+lincom(mod_rigr, mod_combo, hyp = -1)
+```
 
