@@ -90,8 +90,8 @@ test_that("ttesti() returns correct numbers for one-sample test", {
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_false(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
-  expect_false(t1$twosamp)
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_false(as.logical(t1$par[[5]]))
 })
 
 t1 <- ttesti(length(a), mean(a), sd(a), null.hypoth = 1)
@@ -112,8 +112,8 @@ test_that("ttesti() returns correct numbers for one-sample test, non-0 null", {
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_false(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
-  expect_false(t1$twosamp)
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_false(as.logical(t1$par[[5]]))
 })
 
 t1 <- ttesti(length(a), mean(a), sd(a), alternative = "less")
@@ -135,8 +135,8 @@ test_that("ttesti() returns correct numbers for one-sample test, left-sided", {
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_false(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
-  expect_false(t1$twosamp)
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_false(as.logical(t1$par[[5]]))
 })
 
 t1 <- ttesti(length(a), mean(a), sd(a), alternative = "greater")
@@ -157,8 +157,8 @@ test_that("ttesti() returns correct numbers for one-sample test, right-sided", {
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_false(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
-  expect_false(t1$twosamp)
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_false(as.logical(t1$par[[5]]))
 })
 
 t1 <- ttesti(length(a), mean(a), sd(a), conf.level = 0.9, more.digits = 1)
@@ -179,8 +179,8 @@ test_that("ttesti() returns correct numbers for one-sample test, different conf.
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_false(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 4) # digits
-  expect_false(t1$twosamp)
+  expect_equal(as.numeric(t1$par[[6]]), 4) # digits
+  expect_false(as.logical(t1$par[[5]]))
 })
 
 ### two-sample unpaired test, unpooled variance
@@ -219,7 +219,8 @@ test_that("ttest() returns correct numbers for two-sample test, unpooled varianc
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_false(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_true(as.logical(t1$par[[5]]))
 })
 
 t1 <- ttesti(length(a), mean(a), sd(a), length(b), mean(b), sd(b), alternative = "less")
@@ -255,7 +256,8 @@ test_that("ttest() returns correct numbers for two-sample test, unpooled varianc
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_false(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_true(as.logical(t1$par[[5]]))
 })
 
 t1 <- ttesti(length(a), mean(a), sd(a), length(b), mean(b), sd(b), alternative = "greater")
@@ -291,7 +293,8 @@ test_that("ttest() returns correct numbers for two-sample test, unpooled varianc
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_false(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_true(as.logical(t1$par[[5]]))
 })
 
 ### two-sample unpaired test, pooled variance
@@ -329,7 +332,8 @@ test_that("ttest() returns correct numbers for two-sample test, pooled variance"
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_true(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_true(as.logical(t1$par[[5]]))
 })
 
 t1 <- ttesti(length(a), mean(a), sd(a), length(b), mean(b), sd(b), var.eq = TRUE, alternative = "less")
@@ -366,7 +370,8 @@ test_that("ttest() returns correct numbers for two-sample test, pooled variance,
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_true(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_true(as.logical(t1$par[[5]]))
 })
 
 t1 <- ttesti(length(a), mean(a), sd(a), length(b), mean(b), sd(b), var.eq = TRUE, alternative = "greater")
@@ -403,5 +408,6 @@ test_that("ttest() returns correct numbers for two-sample test, pooled variance,
   expect_equal(t1$par[[2]], t2$alternative) # alternative
   expect_true(as.logical(t1$par[[3]])) # equal var
   expect_equal(as.numeric(t1$par[[4]]), attr(t2$conf.int, "conf.level")) # conf level
-  expect_equal(as.numeric(t1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(t1$par[[6]]), 3) # digits
+  expect_true(as.logical(t1$par[[5]]))
 })

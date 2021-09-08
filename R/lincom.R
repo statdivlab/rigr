@@ -1,8 +1,7 @@
-#' Tests of Linear Combinations of Regression
-#' Coefficients
+#' Tests of Linear Combinations of RegressionCoefficients
 #' 
-#' Produces point estimates, interval estimates, and p values for linear
-#' combinations of regression coefficients using a \code{ uRegress} object.
+#' Produces point estimates, interval estimates, and p-values for linear
+#' combinations of regression coefficients using a \code{uRegress} object.
 #' 
 #' @aliases lincom lincom.do print.lincom
 #' 
@@ -24,9 +23,15 @@
 #' @param eform a logical value indicating whether or not to exponentiate the
 #' estimated coefficient. By default this is performed based on the type of
 #' regression used.
-#' @return Prints a matrix with the point
-#' estimate of the linear combination of coefficients, a p-value, and
-#' confidence interval.
+#' 
+#' @return A list of class \code{lincom}. The \code{comb} entries in the list are labeled
+#' \code{comb1}, \code{comb2}, etc. for as many linear combinations were used. Each is a list with
+#' the following components:
+#' \item{printMat}{A formatted table with inferential results for the linear combination of coefficients. 
+#' These include the point estimate, standard error, confidence interval, and t-test for the linear 
+#' combination.}
+#' \item{nms}{The name of the linear combination, for printing.}
+#' \item{hyp}{The null hypothesis for the linear combination.}
 #' 
 #' @examples
 #' # Loading required libraries
@@ -60,6 +65,10 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
   ## throw error if eform not logical
   if (!(is.logical(eform))){
     stop("Argument eform must be a logical.")
+  }
+  ## throw error if hyp has any NAs
+  if (sum(is.na(hyp)) != 0 || sum(is.na(comb) != 0)){
+    stop("comb' and 'hyp' cannot contains NAs")
   }
   
   lincom.do <- function(reg, comb, hyp, conf.level, robustSE, eform){
@@ -148,7 +157,9 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     if(dim(comb)[2]!=dim(reg$coefficients)[1]){
       stop("Matrix of constants must have columns equal to the number of coefficients")
     }
-    if(is.vector(hyp)){
+    if(is.vector(hyp) && length(hyp) > 1){
+      hyp <- matrix(hyp, nrow=length(hyp))
+    } else{
       hyp <- matrix(hyp, nrow=dim(comb)[1])
     }
     ## throw error if hyp has wrong dimension

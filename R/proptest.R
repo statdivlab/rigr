@@ -1,12 +1,11 @@
 #' Test of proportions with improved layout
 #' 
-#' Produces table of relevant descriptive statistics and inference for either
-#' one- or two-sample test of proportions. This test can be approximate or exact.
+#' Performs a one- or two-sample test of proportions using data. This test can be approximate or exact.
 #' 
-#' Missing values must be given by \code{"NA"}s to be recognized as missing values. Numeric data must be given
-#' in 0-1 form. This function also accepts binary factor variables, treating the higher level as 1 and the lower level 
-#' as 0, or logical variables. Any call to \code{proptest()} is run by \code{proptest.default()}, with user specified
-#' values in place of defaults in the appropriate places.
+#' Missing values must be given by \code{"NA"}s to be recognized as missing values. 
+#' Numeric data must be given in 0-1 form. 
+#' This function also accepts binary factor variables, treating the higher level as 1 and the lower level 
+#' as 0, or logical variables. 
 #' 
 #' @aliases proptest proptest.do plot.proptest print.proptest proptest.default
 #' 
@@ -27,14 +26,17 @@
 #' \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
 #' of the test. Defaults to a two-sided test.
 #' @param conf.level confidence level of the
-#' test. Defaults to 95/100.
-#' @param correct A logical indicating whether to use a continuity correction.
+#' test. Defaults to 0.95.
 #' @param more.digits a numeric value
 #' specifying whether or not to display more or fewer digits in the output.
 #' Non-integers are automatically rounded down. 
 #' 
 #' @return A list of class \code{proptest}. The print method lays out the information in an easy-to-read
-#' format. \item{zstat}{the value of the test
+#' format. 
+#' \item{tab}{A formatted table of descriptive and inferential results (total number of observations,
+#' number of missing observations, sample proportion, standard error of the proportion estimate), 
+#' along with a confidence interval for the underlying proportion.}
+#' \item{zstat}{the value of the test
 #' statistic, if using an approximate test.} 
 #' \item{pval}{the p-value
 #' for the test} 
@@ -42,34 +44,34 @@
 #' \item{var2}{The user-supplied second data vector. }
 #' \item{by}{The user-supplied stratification variable.}
 #' \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
-#' \item{tab}{A formatted table of descriptive and inferential results, for printing.} 
+
 #' 
 #' @seealso \code{\link[stats]{prop.test}}
 #' @examples
 #' 
-#' #- Read in data set -#
+#' # Read in data set
 #' data(psa)
 #' attach(psa)
 #' 
-#' #- Define new binary variable as indicator -#
-#' #- of whether or not bss was worst possible -#
+#' # Define new binary variable as indicator
+#' # of whether or not bss was worst possible
 #' bssworst <- bss
 #' bssworst[bss == 1] <- 0
 #' bssworst[bss == 2] <- 0
 #' bssworst[bss == 3] <- 1
 #' 
 #' 
-#' #- Perform test comparing proportion in remission -#
-#' #- between bss strata -#
+#' # Perform test comparing proportion in remission
+#' # between bss strata
 #' proptest(factor(inrem), by = bssworst)
 #' 
 #' @export proptest
 proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, alternative = "two.sided", 
-                 conf.level = 0.95, correct = FALSE, more.digits = 0) 
+                 conf.level = 0.95, more.digits = 0) 
 {
   proptest.do <- function(var1, var2 = NA, by = NA, 
                        exact = FALSE, null.hypoth = 0.5, alternative = "two.sided", 
-                       conf.level = 0.95, correct = FALSE, more.digits = 0, 
+                       conf.level = 0.95, more.digits = 0, 
                        myargs, ...) {
     # can only do var1 vs var2 or var1 by
     if (length(var2) > 1 & length(by) > 1) {
@@ -101,9 +103,9 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     if (!is.logical(exact)){
       stop("'exact' must be a logical.")
     }
-    if (!is.logical(correct)){
-      stop("'correct' must be a logical.")
-    }
+    # if (!is.logical(correct)){
+    #   stop("'correct' must be a logical.")
+    # }
     if ((length(var2) > 1 || length(by) > 1) && exact){
       stop("Exact binomial test not available for two samples.")  
     }
@@ -159,7 +161,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
     }
     digits <- 3 + more.digits
     
-    yates <- ifelse(correct, 0.5, 0)
+    #yates <- ifelse(correct, 0.5, 0)
     
     cl <- (1 + conf.level)/2
     # Case where by is not entered
@@ -323,7 +325,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
       
     }
     par <- c(null.hypoth = null.hypoth, alternative = alternative, 
-             conf.level = conf.level, exact = exact, digits = digits, correct = correct)
+             conf.level = conf.level, exact = exact, digits = digits)
     invisible(list(tab = main, zstat = zstat, pval = pval, 
                    var1 = var1, var2 = var2, by = by, par = par))
   }
@@ -355,8 +357,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
           proptest.obj <- proptest.do(var1 = x, var2 = var2, 
                                       by = by, exact = exact,
                                       null.hypoth = null.hypoth, alternative = alternative, 
-                                      conf.level = conf.level, 
-                                      correct = correct,
+                                      conf.level = conf.level,
                                       more.digits = more.digits, 
                                       myargs = myargs)
           
@@ -370,8 +371,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
           proptest.obj <- proptest.do(var1 = x, var2 = var2, 
                                 by = cby, exact = exact,
                                 null.hypoth = 0, alternative = alternative, 
-                                conf.level = conf.level, 
-                                correct = correct,
+                                conf.level = conf.level,
                                 more.digits = more.digits, 
                                 myargs = myargs)
         }
@@ -387,8 +387,7 @@ proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, 
                               exact = exact,
                               null.hypoth = 0, 
                               alternative = alternative, 
-                              conf.level = conf.level, 
-                              correct = correct,
+                              conf.level = conf.level,
                               more.digits = more.digits, 
                               myargs = myargs)
       }
