@@ -42,12 +42,8 @@ print.proptesti <- function(x, ...) {
           "\n", propZ,
           "\n",propp, collapse = "\n")
     } else{ # two sample
-      propInf0 <- paste("Ho: Difference in proportions ", par1[1], " 0", sep = "")
-      propInf1 <- paste("Ha: Difference in proportions ", par1[2], " 0", sep = "")
-      # propInf0 <- paste("Ho: ", partest2, " ", partest, " proportions ", par1[1], " ", 
-      #                   null.hypoth," ;", sep = "")
-      # propInf1 <- paste("Ha: ", partest2, " ", partest, " proportions ", par1[2], " ", 
-      #                   null.hypoth, sep = "")
+      propInf0 <- paste("Ho: Difference in proportions ", par1[1], " ", null.hypoth, sep = "")
+      propInf1 <- paste("Ha: Difference in proportions ", par1[2], " ", null.hypoth, sep = "")
       propZ <- ifelse(!exact, paste("Z = ", zstat, sep=""), "")
       propp <- paste("p.value = ", pval, sep="")
       cat("\nTwo-sample proportion test (approximate)", ":\n", collapse = "\n")

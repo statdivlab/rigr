@@ -10,10 +10,10 @@
 proptesti(
   x1,
   n1,
-  x2 = NA,
-  n2 = NA,
+  x2 = NULL,
+  n2 = NULL,
   exact = FALSE,
-  null.hypoth = 0.5,
+  null.hypoth = ifelse(is.null(x2) && is.null(n2), 0.5, 0),
   conf.level = 0.95,
   alternative = "two.sided",
   more.digits = 0

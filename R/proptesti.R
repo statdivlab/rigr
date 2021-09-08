@@ -42,13 +42,13 @@
 #' proptesti(10, 100, 15, 200, alternative = "less")
 #' 
 #' @export proptesti
-proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
-                   null.hypoth = 0.5, 
+proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
+                      null.hypoth = ifelse(is.null(x2) && is.null(n2), 0.5, 0), 
                    conf.level=.95, 
                    alternative="two.sided", 
                    more.digits = 0){
-  proptesti.do <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
-                           null.hypoth = 0.5, 
+  proptesti.do <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
+                           null.hypoth = ifelse(is.null(x2) && is.null(n2), 0.5, 0), 
                            conf.level=.95, 
                            alternative="two.sided", 
                            more.digits = 0, ...) {
@@ -58,7 +58,7 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
     if (x1 > n1){
       stop("Number of trials must be at least as large as number of succeses.")
     }
-    if (sum(is.na(x2)) != length(x2) && sum(is.na(n2)) != length(n2)){
+    if (!is.null(x2) && !is.null(n2)){
       if (!(is.scalar(x2) && is.scalar(n2) && x2%%1 == 0 && n2 %%1 == 0 && x2 >= 0 && n2 > 0)){
         stop("'x2' and 'n2' must be nonnegative integers")
       }
@@ -66,10 +66,10 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
         stop("Number of trials must be at least as large as number of succeses.")
       }
     }
-    if(is.na(n2) && !is.na(x2)) {
+    if(is.null(n2) && !is.null(x2)) {
       stop("A second number of trials must be entered for two sample test")
     }
-    if(!is.na(n2) && is.na(x2)){
+    if(!is.null(n2) && is.null(x2)){
       stop("Number of successes for the second sample must be entered for two sample test")
     }
     # check that alternative is one of "less", "two.sided", or "greater"
@@ -85,7 +85,7 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
     if (!is.logical(exact)){
       stop("'exact' must be a logical.")
     }
-    if (!is.na(n2) && exact){
+    if (!is.null(n2) && exact){
       stop("Exact binomial test not available for two samples.")  
     }
     # check to make sure additional digit request is numeric
@@ -95,7 +95,7 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
     more.digits <- max(floor(more.digits), 0)
     digits <- 3 + more.digits
     cl <- conf.level+(1-conf.level)/2
-    if(is.na(n2)){
+    if(is.null(n2)){
       twosamp <- FALSE
       est1 <- x1/n1
       se1 <- sqrt(est1 * (1-est1)/n1)
@@ -131,11 +131,16 @@ proptesti <- function(x1, n1, x2 = NA, n2 = NA, exact = FALSE,
       twosamp <- TRUE
       est <- c(x1/n1, x2/n2, x1/n1- x2/n2)
       se <- c(sqrt(est[1] * (1-est[1])/n1), sqrt(est[2] * (1-est[2])/n2), sqrt(est[1] * (1-est[1])/n1 + est[2] * (1-est[2])/n2))
-      test <- stats::prop.test(c(x1,x2),c(n1,n2), alternative = alternative, conf.level = conf.level, correct = FALSE)
-      zstat <- as.numeric(format(sqrt(test$statistic), 
-                                 digits = digits))
-      pval <- as.numeric(format(test$p.value, 
-                                digits = digits))
+      zstat <- (est[3] - null.hypoth)/se[3]
+      if (alternative == "two.sided"){
+        pval <- 2*stats::pnorm(-abs(zstat))
+      } else if(alternative == "less"){
+        pval <- stats::pnorm(zstat)
+      } else{
+        pval <- 1 - stats::pnorm(zstat)
+      }
+      zstat <- as.numeric(format(zstat, digits = digits))
+      pval <- as.numeric(format(pval, digits = digits))
       cil <- c(est[1] - stats::qnorm(cl) * se[1],
                est[2] - stats::qnorm(cl) * se[2],
                est[1] - est[2] - stats::qnorm(cl)*se[3])
