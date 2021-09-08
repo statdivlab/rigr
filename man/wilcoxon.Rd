@@ -11,7 +11,7 @@ wilcoxon(
   y,
   x = NULL,
   alternative = "two.sided",
-  mu = 0,
+  null.hypoth = 0,
   paired = FALSE,
   exact = FALSE,
   correct = FALSE,
@@ -30,7 +30,7 @@ values. Non-finite (missing or infinite) values will be omitted.}
 alternative hypothesis for the test; acceptable values are
 \code{"two.sided"}, \code{"greater"}, or \code{"less"}.}
 
-\item{mu}{the value of the null
+\item{null.hypoth}{the value of the null
 hypothesis.}
 
 \item{paired}{logical indicating whether
@@ -44,8 +44,7 @@ whether or not an exact test should be computed.}
 or not a continuity correction should be used and displayed.}
 
 \item{conf.int}{logical indicating whether
-or not to calculate and display a 'confidence interval' (performs a
-semi-parametric test on medians, and is non-robust) and point estimate.}
+or not to calculate and display a confidence interval}
 
 \item{conf.level}{confidence level for the
 interval.}
@@ -57,7 +56,7 @@ format. \item{statistic}{the value of the test
 statistic with a name describing it.} \item{parameter}{the parameter(s) for
 the exact distribution of the test statistic.} \item{p.value}{the p-value
 for the test (calculated for the test statistic).} \item{null.value}{the
-parameter \code{mu}.} \item{alternative}{character string describing the
+parameter \code{null.hypoth}.} \item{alternative}{character string describing the
 alternative hypothesis.} \item{method}{the type of test applied.}
 \item{data.name}{a character string giving the names of the data.}
 \item{conf.int}{a confidence interval for the location parameter (only
@@ -72,8 +71,13 @@ for printing.}
 \description{
 Performs Wilcoxon signed rank test or Mann-Whitney-Wilcoxon rank sum test
 depending on data and logicals entered. Relies heavily on the function
-\code{\link[stats]{wilcox.test}}. Adds formatting and variances, and prints
-the z-score and p-value in addition to the test statistic and p-value.
+\code{\link[stats]{wilcox.test}}. Adds formatting and variances.
+}
+\details{
+In the one-sample case, the returned confidence interval (when \code{conf.int = TRUE})
+is a confidence interval for the pseudo-median of the underlying distribution. In the two-sample 
+case, the function returns a confidence interval for the median of the difference between samples from 
+the two distributions. See \code{\link[stats]{wilcox.test}} for more information.
 }
 \examples{
 

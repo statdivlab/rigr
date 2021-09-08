@@ -2,9 +2,13 @@
 #' 
 #' Performs Wilcoxon signed rank test or Mann-Whitney-Wilcoxon rank sum test
 #' depending on data and logicals entered. Relies heavily on the function
-#' \code{\link[stats]{wilcox.test}}. Adds formatting and variances, and prints
-#' the z-score and p-value in addition to the test statistic and p-value.
+#' \code{\link[stats]{wilcox.test}}. Adds formatting and variances.
 #' 
+#' 
+#' In the one-sample case, the returned confidence interval (when \code{conf.int = TRUE})
+#' is a confidence interval for the pseudo-median of the underlying distribution. In the two-sample 
+#' case, the function returns a confidence interval for the median of the difference between samples from 
+#' the two distributions. See \code{\link[stats]{wilcox.test}} for more information.
 #' 
 #' @aliases wilcoxon wilcoxon.do print.wilcoxon wilcoxon.default
 #' 
@@ -15,7 +19,7 @@
 #' @param alternative specifies the
 #' alternative hypothesis for the test; acceptable values are
 #' \code{"two.sided"}, \code{"greater"}, or \code{"less"}.
-#' @param mu the value of the null
+#' @param null.hypoth the value of the null
 #' hypothesis.
 #' @param paired logical indicating whether
 #' the data are paired or not. Default is \code{FALSE}. If \code{TRUE}, data
@@ -25,8 +29,7 @@
 #' @param correct logical indicating whether
 #' or not a continuity correction should be used and displayed.
 #' @param conf.int logical indicating whether
-#' or not to calculate and display a 'confidence interval' (performs a
-#' semi-parametric test on medians, and is non-robust) and point estimate.
+#' or not to calculate and display a confidence interval
 #' @param conf.level confidence level for the
 #' interval.
 #' 
@@ -36,7 +39,7 @@
 #' statistic with a name describing it.} \item{parameter}{the parameter(s) for
 #' the exact distribution of the test statistic.} \item{p.value}{the p-value
 #' for the test (calculated for the test statistic).} \item{null.value}{the
-#' parameter \code{mu}.} \item{alternative}{character string describing the
+#' parameter \code{null.hypoth}.} \item{alternative}{character string describing the
 #' alternative hypothesis.} \item{method}{the type of test applied.}
 #' \item{data.name}{a character string giving the names of the data.}
 #' \item{conf.int}{a confidence interval for the location parameter (only
@@ -63,14 +66,14 @@
 #' 
 #' @export wilcoxon
 wilcoxon <- function(y, x = NULL, alternative = "two.sided", 
-                     mu = 0, paired = FALSE, exact = FALSE, correct = FALSE, conf.int = FALSE, 
+                     null.hypoth = 0, paired = FALSE, exact = FALSE, correct = FALSE, conf.int = FALSE, 
                      conf.level = 0.95){
   wilcoxon.do <- function (y, x, alternative, 
-                           mu, paired, exact, correct, conf.int, 
+                           null.hypoth, paired, exact, correct, conf.int, 
                            conf.level, myargs, ...){
-    # error handling for mu (null hypothesis mean)
-    if (!missing(mu) && ((length(mu) > 1L) || !is.finite(mu))) 
-      stop("'mu' must be a single number")
+    # error handling for null.hypoth (null hypothesis mean)
+    if (!missing(null.hypoth) && ((length(null.hypoth) > 1L) || !is.finite(null.hypoth))) 
+      stop("'null.hypoth' must be a single number")
     # error handling for CI
     if (conf.int) {
       if (!((length(conf.level) == 1L) && is.finite(conf.level) && 
@@ -112,7 +115,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
     CORRECTION <- 0
     if (is.null(x)) {
       METHOD <- "Wilcoxon signed rank test"
-      y <- y - mu # shift by null mu
+      y <- y - null.hypoth # shift by null null.hypoth
       # keep track of but drop zeroes
       ZEROES <- any(y == 0)
       nZeroes <- sum(y==0)
@@ -149,7 +152,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
         z <- 2*(STATISTIC - ePos)/sqrt(n*(n+1)*(2*n+1)/6)
         # confidence interval
         if (conf.int) {
-          y <- y + mu
+          y <- y + null.hypoth
           alpha <- 1 - conf.level
           diffs <- outer(y, y, "+")
           diffs <- sort(diffs[!lower.tri(diffs)])/2
@@ -201,7 +204,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
                        greater = stats::pnorm(z, lower.tail = FALSE), 
                        two.sided = 2 * min(stats::pnorm(z), stats::pnorm(z, lower.tail = FALSE)))
         if (conf.int) {# calculate confidence interval if requested
-          y <- y + mu
+          y <- y + null.hypoth
           alpha <- 1 - conf.level
           mumin <- min(y)
           mumax <- max(y)
@@ -292,7 +295,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       if (length(x) < 1L) 
         stop("not enough finite 'x' observations")
       METHOD <- "Wilcoxon rank sum test"
-      r <- rank(c(y - mu, x))
+      r <- rank(c(y - null.hypoth, x))
       n.y <- as.double(length(y))
       n.x <- as.double(length(x))
       rankSumX <- sum(r[seq(from=length(y)+1, to=length(y)+length(x))]) #- n.x * (n.x + 1)/2
@@ -431,11 +434,11 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       }
     }
 
-    names(mu) <- if (paired || !is.null(x)) 
+    names(null.hypoth) <- if (paired || !is.null(x)) 
       "location shift"
     else "location"
     RVAL <- list(statistic = STATISTIC, parameter = NULL, p.value = as.numeric(PVAL), 
-                 null.value = mu, alternative = alternative, method = METHOD, 
+                 null.value = null.hypoth, alternative = alternative, method = METHOD, 
                  data.name = DNAME)
     if("signed" %in% strsplit(METHOD, " ")[[1]]){# create formatted matrices for printing signed rank test
       ## create matrix of observed and expected values
@@ -487,7 +490,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       } else{
         rownames(inf) <- c("Z")
       }
-      hyps <- matrix(c(mu, alternative),nrow=1)
+      hyps <- matrix(c(null.hypoth, alternative),nrow=1)
       colnames(hyps) <- c("H0", "Ha")
       rownames(hyps) <- "Hypothesized Median"
     } else{ # formatted matrices for printing rank sum test
@@ -539,7 +542,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
       } else{
         rownames(inf) <- c("Z")
       }
-      hyps <- matrix(c(mu, alternative),nrow=1)
+      hyps <- matrix(c(null.hypoth, alternative),nrow=1)
       colnames(hyps) <- c("H0", "Ha")
       rownames(hyps) <- "Hypothesized Median"
     }
@@ -555,7 +558,7 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
   wilcox.obj <- wilcoxon.do(y=y,
                             x=x,
                             alternative=alternative,
-                            mu=mu,paired=paired,
+                            null.hypoth=null.hypoth,paired=paired,
                             exact=exact,
                             correct=correct,
                             conf.int=conf.int,

@@ -62,19 +62,19 @@ The result the same as that provided by `ttest(mri$weight, null.hypoth = 155)`.
 
 ## Tests of proportions
 
-In the above example, we investigated the mean of a continuous random variable. However, sometimes we work with binary data. In this case, we may wish to make inference on probabilities. In `rigr`, we can do this using `proptest`. For one-sample proportion tests, there are both approximate (based on the normal distribution) and exact (based on the binomial distribution) options. For example, we may wish to test whether the proportion of LDL values that are greater than 128mg/dL is equal to 0.5: 
+In the above example, we investigated the mean of a continuous random variable. However, sometimes we work with binary data. In this case, we may wish to make inference on probabilities. In `rigr`, we can do this using `proptest`. For one-sample proportion tests, there are both approximate (based on the normal distribution) and exact (based on the binomial distribution) options. For example, we may wish to test whether the proportion of LDL values that are greater than 128mg/dL is equal to 0.5. 
 
 ```{r}
-proptest(as.numeric(mri$ldl > 128), null.hypoth = 0.5, exact = FALSE)
-proptest(as.numeric(mri$ldl > 128), null.hypoth = 0.5, exact = TRUE)
+proptest(mri$ldl > 128, null.hypoth = 0.5, exact = FALSE)
+proptest(mri$ldl > 128, null.hypoth = 0.5, exact = TRUE)
 ```
 
-Note that we are creating our binary data within the `proptest` call. Using the `exact` argument allows us to choose what kind of test we run. In this case, the results are quite similar. 
+Note that we are creating our binary data within the `proptest` call. The `proptest` function works with 0-1 numeric data, two-level factors, or (as above) `TRUE`/`FALSE` data. Using the `exact` argument allows us to choose what kind of test we run. In this case, the results are quite similar. 
 
 Given two samples, we can also test whether two proportions are equal to each other. There is no `exact` option for a two-sample test. Here we test whether the proportion of men with LDL greater than 128 mg/dL is the same as the proportion of women. 
 
 ```{r}
-proptest(as.numeric(mri$ldl > 128), by = mri$sex)
+proptest(mri$ldl > 128, by = mri$sex)
 ```
 
 The `proptesti` function is analogous to `ttesti` described above - rather than providing data vectors, we can provide summary statistics in the form of counts of successes out of a total number of trials. Here we test whether the proportion of people with weight greater than 155 lbs is equal to 0.6. 

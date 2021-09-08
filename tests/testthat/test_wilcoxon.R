@@ -2,9 +2,9 @@
 
 y <- rnorm(100)
 
-test_that("wilcoxon() throws error if mu is not a (finite) scalar", {
-  expect_error(wilcoxon(y, mu = c(1,2)), "'mu' must be a single number")
-  expect_error(wilcoxon(y, mu = Inf), "'mu' must be a single number")
+test_that("wilcoxon() throws error if null.hypoth is not a (finite) scalar", {
+  expect_error(wilcoxon(y, null.hypoth = c(1,2)), "'null.hypoth' must be a single number")
+  expect_error(wilcoxon(y, null.hypoth = Inf), "'null.hypoth' must be a single number")
 })
 
 test_that("wilcoxon() throws error if conf.level is not a number between 0 and 1", {
@@ -287,9 +287,9 @@ test_that("wilcoxon() returns correct CIs other than 95% (corrected)", {
                as.numeric(wil4$conf.int), tolerance = 1e-4)
 })
 
-wil1 <- wilcoxon(d, correct = FALSE, conf.int = TRUE, mu = 0.5)
+wil1 <- wilcoxon(d, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
 wil2 <- wilcox.test(d, correct = FALSE, conf.int = TRUE, mu = 0.5)
-wil3 <- wilcoxon(a, b, paired = TRUE, correct = FALSE, conf.int = TRUE, mu = 0.5)
+wil3 <- wilcoxon(a, b, paired = TRUE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
 wil4 <- wilcox.test(a, b, paired = TRUE, correct = FALSE, conf.int = TRUE, mu = 0.5)
 
 test_that("wilcoxon() returns correct inference for non-0 null (approximate)", {
@@ -495,9 +495,9 @@ test_that("wilcoxon() returns correct CIs other than 95% (exact)", {
                as.numeric(wil4$conf.int), tolerance = 1e-4)
 })
 
-wil1 <- wilcoxon(d, exact = TRUE, correct = FALSE, conf.int = TRUE, mu = 0.5)
+wil1 <- wilcoxon(d, exact = TRUE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
 wil2 <- wilcox.test(d, exact = TRUE, correct = FALSE, conf.int = TRUE, mu = 0.5)
-wil3 <- wilcoxon(a, b, paired = TRUE, exact = TRUE, correct = FALSE, conf.int = TRUE, mu = 0.5)
+wil3 <- wilcoxon(a, b, paired = TRUE, exact = TRUE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
 wil4 <- wilcox.test(a, b, paired = TRUE, exact = TRUE, correct = FALSE, conf.int = TRUE, mu = 0.5)
 
 test_that("wilcoxon() returns correct inference for non-0 null (exact)", {
@@ -648,7 +648,7 @@ test_that("wilcoxon() returns correct CIs other than 95% (corrected)", {
                as.numeric(wil2$conf.int), tolerance = 1e-4)
 })
 
-wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, mu = 0.5)
+wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
 wil2 <- wilcox.test(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, mu = 0.5)
 
 test_that("wilcoxon() returns correct inference for non-0 null (approximate)", {
@@ -746,7 +746,7 @@ test_that("wilcoxon() returns correct CIs other than 95% (exact)", {
                as.numeric(wil2$conf.int), tolerance = 1e-4)
 })
 
-wil1 <- wilcoxon(a, b, paired = FALSE, exact = TRUE, correct = FALSE, conf.int = TRUE, mu = 0.5)
+wil1 <- wilcoxon(a, b, paired = FALSE, exact = TRUE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
 wil2 <- wilcox.test(a, b, paired = FALSE, exact = TRUE, correct = FALSE, conf.int = TRUE, mu = 0.5)
 
 test_that("wilcoxon() returns correct inference for non-0 null (exact)", {
