@@ -2,7 +2,6 @@
 % Please edit documentation in R/descrip.R
 \name{descrip}
 \alias{descrip}
-\alias{ifelse1}
 \alias{print.uDescriptives}
 \title{Descriptive Statistics}
 \usage{
@@ -176,10 +175,10 @@ the Julian date since January 1, 1970.
 }
 \examples{
 
-#- Read in the data -#
+# Read in the data
 data(mri) 
 
-#- Create the table -#
+# Create the table 
 descrip(mri)
 
 }
