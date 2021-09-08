@@ -208,7 +208,7 @@
 #' 
 #' \item{age}{subject age at time of measurement (years)}
 #' 
-#' \item{fev}{measured FEV (liters per second)}
+#' \item{fev}{measured forced exhalation volume (liters per second)}
 #' 
 #' \item{height}{subject height at time of measurement (inches)}
 #' 

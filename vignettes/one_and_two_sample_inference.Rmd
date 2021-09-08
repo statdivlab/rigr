@@ -1,6 +1,6 @@
 ---
 title: "One- and two-sample inference in rigr"
-author: "Charles Wolock, Brian D. Williamson, and Scott S. Emerson, MD PhD"
+author: "Charles Wolock, Brian D. Williamson, and Scott S. Emerson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -13,7 +13,7 @@ vignette: >
 library(rigr)
 ```
  
-The `rigr` package replicates many of the basic inferential functions from R's `stats` package, with an eye toward inference as taught in an introductory statistic. To demonstrate these basic functions, we will use the included `mri` dataset. Information about the dataset can be found by running `?mri`. Since the data is part of the package, we can load it via
+The `rigr` package replicates many of the basic inferential functions from R's `stats` package, with an eye toward inference as taught in an introductory statistics class. To demonstrate these basic functions, we will use the included `mri` dataset. Information about the dataset can be found by running `?mri`. Since the data is part of the package, we can load it via
 
 ```{r}
 data(mri)
@@ -21,21 +21,21 @@ data(mri)
 
 Throughout this vignette, we will assume familiarity with basic data manipulation and statistical tasks. 
 
-# One and Two Sample Functions
+# One and two-sample inference
 
-Many of our analyses boil down to one-sample or two-sample problems; What is the mean time to death? What is the median home price in Seattle? What is the difference in mean time to death between control and the treatment group? The list goes on. There are many methods of analyzing one- and two-sample relationships, and in our package we have implemented three approaches that are commonly encountered. 
+Many of our analyses boil down to one-sample or two-sample problems, such as "What is the mean time to graduation?", "What is the median home price in Seattle?", or "What is the difference in mean time to a relapse event between the control and the treatment group?" There are many methods of analyzing one- and two-sample relationships, and in our package we have implemented three common approaches. 
 
-## T-tests
+## t-tests
 
-One of the most common statistical tests is the t-test, since we are often interested in the mean and making comparisons between means. A one-sample t-test asks whether the mean of the distribution from which a sample is drawn is equal to some fixed value; a two-sample t-test asks whether the difference in means between two distributions is equal to some value (often 0, i.e. no difference in means).
+We are often interested in making statements about the average (or *mean*) value of a variable. A one-sample t-test asks whether the mean of the distribution from which a sample is drawn is equal to some fixed value. A two-sample t-test asks whether the difference in means between two distributions is equal to some value (often zero, i.e., no difference in means).
 
-Our function `ttest()` is flexible, allowing stratification, calculation of the geometric mean, and equal/unequal variances between samples. For example, a t-test of whether the mean of the `ldl` variable is equal to 125 yields, in base R and `rigr`
+Our function `ttest()` is flexible, allowing stratification, calculation of the geometric mean, and equal/unequal variances between samples. For example, a t-test of whether the mean of the `ldl` variable is equal to 125 mg/dL can be performed using `rigr` as follows:
 
 ```{r}
 ttest(mri$ldl, null.hypoth = 125)
 ```
 
-Note that in addition to running the hypothesis test, `ttest` also returns a point estimate and confidence interval for the mean. 
+Note that in addition to running the hypothesis test, `ttest` also returns a point estimate (the column `Mean` under `Summary`) and a 95\% confidence interval for the true mean LDL. 
 
 If instead we wanted a two-sample t-test of whether the difference in mean LDL between males and females were zero, we could stratify using the `by` argument:
 
@@ -43,46 +43,49 @@ If instead we wanted a two-sample t-test of whether the difference in mean LDL b
 ttest(mri$ldl, by = mri$sex)
 ```
 
-In addition to using `by`, we can also run two-sample tests by simply providing two data vectors. 
+In addition to using `by`, we can also run two-sample tests by simply providing two data vectors: `ttest(mri$ldl[mri$sex == "Female"], mri$ldl[mri$sex == "Male"])`. 
 
-Note that in our package, the default is to presume unequal variances between samples, which the authors believe to usually be the correct course. We also run two-sided tests by default, but others can be specified, along with non-0 null hypotheses, and tests at levels other than 0.95. 
+Note that the default of `ttest` is to assume unequal variances between groups, which we (the authors of this package) believe to be the best choice in most scenarios. We also run two-sided tests by default, but others can be specified, along with non-zero null hypotheses, and tests at levels other than 0.95: 
 
 ```{r}
 ttest(mri$ldl, null.hypoth = 125, conf.level = 0.9)
+ttest(mri$ldl, by = mri$sex, var.eq = FALSE)
 ```
 
-If we prefer to run the test using summary statistics (sample mean, sample standard deviation, and sample size) we can instead use the `ttesti` function. The inference is the same as that provided by `ttest`, but we do not need a data vector: 
+If we prefer to run the test using summary statistics (sample mean, sample standard deviation, and sample size) we can instead use the `ttesti` function:
 
 ```{r}
-# compare
-ttest(mri$weight, null.hypoth = 155)
 ttesti(length(mri$weight), mean(mri$weight), sd(mri$weight), null.hypoth = 155)
 ```
 
+The result the same as that provided by `ttest(mri$weight, null.hypoth = 155)`. 
+
 ## Tests of proportions
 
-With binary data, we may wish to make inference on probabilities. In `rigr`, we can do this using `proptest`. For one-sample proportion tests, there are both approximate (based on the normal distribution) and exact (based on the binomial distribution) options. For example, we may wish to test whether the proportion of LDL values that are greater than 128 is equal to 0.5 (the default `null.hypoth`). Note that we are creating our binary data within the `proptest` call. Using the `exact` argument allows us to choose what kind of test we run. In this case, the results are quite similar. 
+In the above example, we investigated the mean of a continuous random variable. However, sometimes we work with binary data. In this case, we may wish to make inference on probabilities. In `rigr`, we can do this using `proptest`. For one-sample proportion tests, there are both approximate (based on the normal distribution) and exact (based on the binomial distribution) options. For example, we may wish to test whether the proportion of LDL values that are greater than 128mg/dL is equal to 0.5: 
 
 ```{r}
-proptest(as.numeric(mri$ldl > 128), exact = FALSE)
-proptest(as.numeric(mri$ldl > 128), exact = TRUE)
+proptest(as.numeric(mri$ldl > 128), null.hypoth = 0.5, exact = FALSE)
+proptest(as.numeric(mri$ldl > 128), null.hypoth = 0.5, exact = TRUE)
 ```
 
-Given two samples, we can also test whether two proportions are equal to each other. There is no `exact` option for a two-sample test. Here we test whether the proportion of men with LDL > 128 is the same as the proportion of women. 
+Note that we are creating our binary data within the `proptest` call. Using the `exact` argument allows us to choose what kind of test we run. In this case, the results are quite similar. 
+
+Given two samples, we can also test whether two proportions are equal to each other. There is no `exact` option for a two-sample test. Here we test whether the proportion of men with LDL greater than 128 mg/dL is the same as the proportion of women. 
 
 ```{r}
 proptest(as.numeric(mri$ldl > 128), by = mri$sex)
 ```
 
-The `proptesti` function is analogous to `ttesti` - rather than providing data vectors, we can provide summary statistics in the form of counts of successes out of a total number of trials. Here we test whether the proportion of people with weight greater than 155 is equal to 0.5. 
+The `proptesti` function is analogous to `ttesti` described above - rather than providing data vectors, we can provide summary statistics in the form of counts of successes out of a total number of trials. Here we test whether the proportion of people with weight greater than 155 lbs is equal to 0.6. 
 
 ```{r}
-proptesti(sum(mri$weight > 155), length(mri$weight), exact = FALSE)
+proptesti(sum(mri$weight > 155), length(mri$weight), exact = FALSE, null.hypoth= 0.6)
 ```
 
 ## Wilcoxon and Mann-Whitney
 
-The Wilcoxon and Mann-Whitney tests, which use the ``rank'' of the given variables, are nonparametric methods for analyzing the locations of the underlying distributions that gave rise to a dataset. They are often viewed as alternative to one- and two-sample t-tests, respectively. 
+The Wilcoxon and Mann-Whitney tests, which use the "rank" of the given variables, are nonparametric methods for analyzing the locations of the underlying distributions that gave rise to a dataset. They are often viewed as alternative to one- and two-sample t-tests, respectively. 
 
 Our function `wilcoxon()` takes one or two samples and performs either an approximate or exact test of location. Since these tests are not based on the mean of the data, the output looks slightly different from that of `ttest`. Here, we perform a paired (matched) test on made-up data comparing individuals with cystic fibrosis (CF) to health individuals.  
 

@@ -132,10 +132,15 @@ be specified using the \code{\link[rigr]{U}} function.
 }
 \details{
 Regression models include linear regression (for the ``mean'' functional), logistic
-regression (for the ``odds'' functional), Poisson regression (for the
-``rate'' functional), and a linear regression of a logged outcome on covariates
+regression with logit link (for the ``odds'' functional), Poisson regression with log link (for the
+``rate'' functional), and a linear regression of a log-transformed outcome 
 (for the ``geometric mean'' functional). Proportional hazards regression is currently not
-supported in the \code{regress} function. Objects created using the
+supported in the \code{regress} function. 
+
+Note that the only possible link function in `regress` with `fnctl = odds"` is the logit link. 
+Similarly, the only possible link function in `regress` with `fnctl = "rate"` is the log link.
+
+Objects created using the
 \code{\link[rigr]{U}} function can also be passed in. If the
 \code{\link[rigr]{U}} call involves a partial formula of the form
 \code{~ var1 + var2}, then \code{regress} will return a multiple-partial

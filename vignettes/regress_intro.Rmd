@@ -9,133 +9,135 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-In the `rigr` package, we have set out to make regression and analysis easier by:
+In the `rigr` package, we have set out to make regression and analysis easier by
 
-* allowing the user to specify different types of regression from one function
-* allowing the user to specify multiple-partial F-tests
-* displaying output in a more intuitive fashion than base R
-* automatically computing confidence intervals and p-values using robust standard errors
+1. allowing you to specify different types of regression from one function; 
+2. automatically computing confidence intervals and p-values using robust standard errors. 
+3. displaying output in a more intuitive fashion than base R; and
+4. allowing you to specify multiple-partial F-tests;
 
-This function is `regress()`. The basic arguments to this function, which unlock all of its potential, are
+This capability is implemented in the function `regress()`. The basic arguments to this function are
 
-* `fnctl` - the functional
-* `formula` - the formula for the linear model
-* `data` - the data to use for the model
+* `fnctl`: the functional
+* `formula`: the formula for the linear model
+* `data`: the data to use for the model
 
-We use the concept of a *functional* to handle our first goal. A functional takes a function as its argument and returns a number - hence the mean is a functional, because it takes a distribution as its argument and returns a single number. The allowed functionals to `regress()` are
+## `fnctl`: the functional
 
-|Functional | Type of Regression | Previous command (package)|
+We use the concept of a *functional* to handle our first goal: allowing you to specify different types of regression models using a single function. A functional takes a *function* as its argument and returns a number - the most common example of a functional in regression is the *mean*. The allowed functionals to `regress()` are
+
+|Functional | Type of Regression | base R command |
 |---|:---|:---|
-|`"mean"` | Linear Regression | `lm()` (`stats` - base R) |
-|`"geometric mean"` | Linear Regression on logarithmically transformed Y | `lm()`, with Y log transformed (`stats` - base R) |
-|`"odds"` | Logistic Regression | `glm(family = binomial)` (`stats` - base R) |
-|`"rate"` | Poisson Regression | `glm(family = poisson)` (`stats` - base R) |
+|`"mean"` | Linear Regression | `lm()` |
+|`"geometric mean"` | Linear Regression on logarithmically transformed Y | `lm()`, with Y log-transformed |
+|`"odds"` | Logistic Regression | `glm(family = binomial)` |
+|`"rate"` | Poisson Regression | `glm(family = poisson)` |
 
-The *formula* to `regress()` is the same as a formula given to `lm()` or any of the other regression commands from base R, but with one small addition. To address our second goal of allowing the user to specify multiple-partial F-tests, we have added a special function - `U()` - which can be added to the formula. `regress()` will compute an F statistic for all variables included inside the `U()` specification.
+## `formula` and `data`
+
+The *formula* to `regress()` is the same as a formula given to `lm()` or `glm()`, but with additional optional functionality to enable sophisticated analyses (multiple partial F-tests) with fewer headaches. 
+
+<!-- To allow users to specify multiple partial F-tests, we have added a special function - `U()` - which can be added to the formula. `regress()` will compute an F statistic for all variables included inside the `U()` specification. -->
 
 The *data* argument is exactly the same as that in `lm()` or any of the other regression commands.
 
 # Linear Regression
-As a first example, we run a linear regression analysis of atrophy on age and race, from the `mri` data. This dataset is included in the `rigr` package; see its documentation by running `?mri`.
+
+As a first example, we run a linear regression of atrophy (a measure of global brain activity) on age, sex and race, from the `mri` data. This dataset is included in the `rigr` package; see its documentation by running `?mri`.
 
 ```{r}
 ## Preparing our R session
 library(rigr)
 data(mri)
+regress("mean", atrophy ~ age + sex + race, data = mri)
 ```
 
-```{r}
-regress("mean", atrophy ~ age + race, data = mri)
-```
+Notice that by default robust standard error estimates are returned in addition to the naive estimates. The robust estimates are also used to perform inference. Thus, the confidence intervals, statistics, and p-values use these estimates of the standard error.
 
-This call automatically prints the coefficients table. First, notice that by default robust standard error estimates (calculated using the `sandwich` package) are returned, in addition to the naive estimates. The robust estimates are also used to perform the inference - thus the confidence intervals, statistics, and p-values use these estimates of the standard error.
+F-statistics are also displayed by default, including the multiple partial F-tests for the levels of a multi-level category (such as `race`) as well as the overall F-test for the variable.
 
-F-statistics are also displayed by default. This allows us to display multiple-partial F-tests within the coefficients table, such as the overall F test for the race variable in the regression above.
-
-## Regression on the Geometric Mean
-
-In normal linear regression, we are comparing the mean of the response variable across groups defined by the predictors. However, if we were to log transform the response, we would be comparing the geometric mean across groups. In `regress()`, we simply have to use the `"geometric mean"` functional.
-
-Consider doing regression on the geometric mean of the packyrs variable in the `mri` dataset. It should be noted that many of the packyrs observations are 0, which will cause problems when calculating the geometric mean. This is addressed using the `replaceZeroes` parameter in regress. By default for the geometric mean functional, zeroes in the outcome variable are replaced by a value equal to one-half the lowest nonzero value in the outcome variable. If the user wishes to specify a different value by which to replace zeroes, they may do say using the `replaceZeroes` argument.
-
-```{r}
-regress("geometric mean", packyrs ~ age, data = mri)
-```
-
-```{r}
-regress("geometric mean", packyrs ~ age, data = mri, replaceZeroes = 4)
-```
-
-In the output from regress using the geometric mean functional, we see a table for the `Raw Model` and the `Transformed Model`. The `e(Est)`, `e(95%L)`, and `e(95%H)` columns in the `Transformed Model` table correspond to exponentiated values from the `Raw Model`.
 
 # Generalized Linear Regression
 
 ## Logistic Regression
-Using the same function, and the same syntax, we can also run generalized linear regression. For example, if we wanted to examine the odds of having diabetes between binarized sexes (male and female), we would run a logistic regression.
+
+We can also run generalized linear regression using `regress()`. For example, to model the odds of having diabetes for males compared to females, we could run a logistic regression as follows:
 
 ```{r}
 regress("odds", diabetes ~ sex, data = mri)
 ```
 
-In all of the generalized linear regression output we see two tables, as we did when our functional was geometric mean. The `Raw Model` table displays coefficients and standard errors for the model after we have transformed the response variable, but we have not transformed back. Recall that in most generalized linear regression cases, we need to back-transform our results to get them in the original units. This is due to using a link function to model the regression. If you want to suppress printing the `Raw Model` table, set `suppress = TRUE` in your `regress` call.
+In all of the generalized linear regression output we see two tables. The `Raw Model` table displays estimated coefficients (and their standard errors) on the log-odds scale. The `Transformed Model` table exponentiates the estimated coefficients and their confidence intervals so that the estimated parameters can be interpreted on the odds scale. 
 
-The `Transformed Model` table does the back-transform for you. It exponentiates all of the coefficients and the confidence intervals so that they are in the original units. 
+Note that the only possible link function in `regress` with `fnctl = odds"` is the logit link. Similarly, the only possible link function in `regress` with `fnctl = "rate"` is the log link.
 
 ## Poisson Regression
-The final functional that `regress` supports is rate, which corresponds to Poisson regression. If we wanted to regress yrsquit on age, we would specify that as follows.
+
+The final functional that `regress` supports is `"rate"`, for use in Poisson regression. To regress `yrsquit` on `age`, we would run:
 
 ```{r}
 regress("rate", yrsquit ~ age, data = mri)
 ```
 
-Note that again we have two tables of output, denoted by `Raw Model` and `Transformed Model`.
+Note that again we have two tables of output, denoted by `Raw Model` and `Transformed Model`, with `Transformed Model` displaying expotentiated estimated coefficients. 
+
+# Regression on the Geometric Mean
+
+Most often in linear regression we are interested in modeling the mean of the response variable. However, we are sometimes interested in modeling the mean of the log-transformed response variable, which allows us to make statements about the geometric mean of the response. In `regress()`, we can use the `"geometric mean"` functional to fit this model. Regression on the geometric mean of the `packyrs` variable in the `mri` dataset can be performed as follows:
+
+```{r}
+regress("geometric mean", packyrs ~ age, data = mri)
+```
+
+It should be noted that many of the `packyrs` observations are zero, but the geometric mean of data including an observation of zero is zero... regardless of how many non-zeros were also observed. Therefore, by default, zeroes in the outcome variable are replaced by a value equal to one-half the lowest nonzero value in the outcome variable. This is based on the idea that the lowest observed value could be a proxy for the lower limit of detection. If you wish to specify a different value with which to replace zeroes, you may do say using the `replaceZeroes` argument.
+
+```{r}
+regress("geometric mean", packyrs ~ age, data = mri, replaceZeroes = 1)
+```
+
+In the output from regress using the geometric mean functional, we see a table for the `Raw Model` and the `Transformed Model`. The `e(Est)`, `e(95%L)`, and `e(95%H)` columns in the `Transformed Model` table correspond to exponentiated values from the `Raw Model` - you'll notice that $e^{5.119} \approx 167.2.$
 
 # Re-parameterizations of a Variable
 
 There are two special functions in `rigr` which allow us to re-parameterize variables:
 
-* `dummy` - create dummy variables
-* `polynomial` - create a polynomial
+* `dummy`: create dummy variables
+* `polynomial`: create a polynomial
 
-Both of these functions may be used in a `regress()` call, and will additionally give a multiple-partial F-test of the entire variable automatically.
+Both of these functions may be used in a `regress()` call, and will additionally give a multiple partial F-test of the entire variable automatically.
 
-## Dummy
+## Specifying the reference group with `dummy`
 
-The `dummy` function is particularly useful in that the user may specify the reference group they wish to use in a call to `regress()`. Below we show an example of using the reference group "Female" vs. the reference group "Male" for binarized sex.
+The `dummy` function is useful for specifying the reference group that you wish to use with categorical variables. Below we show an example of using the reference group "Female" vs. the reference group "Male" in a regression on `sex`. 
 
 ```{r}
 regress("mean", atrophy ~ dummy(sex, reference = "Male"), data = mri)
-```
-
-```{r}
 regress("mean", atrophy ~ dummy(sex, reference = "Female"), data = mri)
 ```
 
 Notice that below the coefficients table in the output, the reference category is reported.
 
-## Polynomial
+## Polynomial regression
 
-An example of how the `polynomial` function is used in a regress call can be found below.
+You can fit higher-order polynomials using `polynomial`: 
 
 ```{r}
 regress("mean", atrophy ~ polynomial(age, degree = 2), data = mri)
 ```
 
-Note that all polynomials less than or equal to the degree specified are included in the model, and that the variables in the polynomial specification are mean centered by default. The user may change the centering using the `center` parameter in the polynomial function, an example of which is as follows.
+Note that all polynomials less than or equal to the degree specified are included in the model, and that the variables in the polynomial specification are mean-centered by default. You can change the centering using the `center` parameter in the polynomial function, an example of which is as follows.
 
 ```{r}
-regress("mean", atrophy ~ polynomial(age, degree = 2, center = 50), data = mri)
+regress("mean", atrophy ~ polynomial(age, degree = 2, center = 65), data = mri)
 ```
 
-# User-specified Multiple-partial F-tests
+# User-specified multiple partial F-tests
 
-As we mentioned above, the *formula* in `regress()` allows you to specify multiple-partial F-tests. This comes in handy if you want to test a subset of variables all at once in your regression. 
-
-Suppose you want to test whether both the variables packyrs and yrsquit together are statistically significantly associated with atrophy, in a linear regression model that already includes age as a predictor. This can be accomplished using the `U` function. In the following example, we name the group of variables packyrs and yrsquit "smoke".
+You can also perform multiple partial F-tests using formulas and the `U` function. This is useful when want to test a subset of variables all at once in your regression. For example, to test whether both the variables `packyrs` and `yrsquit` are associated with `atrophy` in a model with age as a predictor, we can run
 
 ```{r}
-regress("mean", atrophy ~ age + U(smoke = ~packyrs + yrsquit), data = mri)
+regress("mean", atrophy ~ age + sex + U("Smoking variables" = ~packyrs + yrsquit), data = mri)
 ```
 
-The overall F statistic and p-value associated with the inclusion of these two "smoke" variables in the model are 4.37 and 0.0130, respectively.
+`"Smoking variables"` is what we name the group of variables `packyrs` and `yrsquit`. The overall F statistic and p-value associated with the inclusion of these two smoking variables variables in the model are 4.37 and 0.0130, respectively.
 
