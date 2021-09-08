@@ -85,14 +85,12 @@
 #' @return An object of class uRegress is
 #' returned. Parameter estimates, confidence intervals, and p values are
 #' contained in a matrix $augCoefficients. 
-#' @author Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
-#' Brian D. Williamson, Travis Hee Wai
+#' 
 #' @seealso Functions for fitting linear models (\code{\link[stats]{lm}}), and
 #' generalized linear models (\code{\link[stats]{glm}}). Also see the function to specify
 #' multiple-partial F-tests, \code{\link[rigr]{U}}.
+#' 
 #' @examples
-#' 
-#' 
 #' # Loading dataset
 #' data(mri)
 #' 

@@ -60,8 +60,8 @@
 #' 
 #' 
 #' #- Perform test comparing proportion in remission -#
-#' #- between bss strata, using dummy to make inrem a binary numeric -#
-#' proptest(dummy(inrem), by = bssworst)
+#' #- between bss strata -#
+#' proptest(factor(inrem), by = bssworst)
 #' 
 #' @export proptest
 proptest<-function (var1, var2 = NA, by = NA, exact = FALSE, null.hypoth = 0.5, alternative = "two.sided", 

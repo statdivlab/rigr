@@ -89,8 +89,8 @@ bssworst[bss == 3] <- 1
 
 
 #- Perform test comparing proportion in remission -#
-#- between bss strata, using dummy to make inrem a binary numeric -#
-proptest(dummy(inrem), by = bssworst)
+#- between bss strata -#
+proptest(factor(inrem), by = bssworst)
 
 }
 \seealso{

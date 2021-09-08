@@ -12,9 +12,9 @@
 #' 
 #' @aliases wilcoxon wilcoxon.do print.wilcoxon wilcoxon.default
 #' 
-#' @param y numeric vector of data values.
+#' @param var1 numeric vector of data values.
 #' Non-finite (missing or infinite) values will be omitted.
-#' @param x optional numeric vector of data
+#' @param var2 optional numeric vector of data
 #' values. Non-finite (missing or infinite) values will be omitted.
 #' @param alternative specifies the
 #' alternative hypothesis for the test; acceptable values are
@@ -65,7 +65,7 @@
 #' wilcoxon(cf, healthy, conf.int=TRUE)
 #' 
 #' @export wilcoxon
-wilcoxon <- function(y, x = NULL, alternative = "two.sided", 
+wilcoxon <- function(var1, var2 = NULL, alternative = "two.sided", 
                      null.hypoth = 0, paired = FALSE, exact = FALSE, correct = FALSE, conf.int = FALSE, 
                      conf.level = 0.95){
   wilcoxon.do <- function (y, x, alternative, 
@@ -553,10 +553,10 @@ wilcoxon <- function(y, x = NULL, alternative = "two.sided",
     invisible(RVAL)
   }
   
-  myargs <- c(deparse(substitute(y)), deparse(substitute(x)))
+  myargs <- c(deparse(substitute(var1)), deparse(substitute(var2)))
   
-  wilcox.obj <- wilcoxon.do(y=y,
-                            x=x,
+  wilcox.obj <- wilcoxon.do(y=var1,
+                            x=var2,
                             alternative=alternative,
                             null.hypoth=null.hypoth,paired=paired,
                             exact=exact,

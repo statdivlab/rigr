@@ -151,8 +151,6 @@ The multiple partial tests must be the last terms specified in the model (i.e. n
 follow them).
 }
 \examples{
-
-
 # Loading dataset
 data(mri)
 
@@ -173,8 +171,4 @@ regress("odds", sex_bin ~ atrophy, data = mri)
 Functions for fitting linear models (\code{\link[stats]{lm}}), and
 generalized linear models (\code{\link[stats]{glm}}). Also see the function to specify
 multiple-partial F-tests, \code{\link[rigr]{U}}.
-}
-\author{
-Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker,
-Brian D. Williamson, Travis Hee Wai
 }
