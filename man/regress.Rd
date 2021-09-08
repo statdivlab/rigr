@@ -137,8 +137,8 @@ regression with logit link (for the ``odds'' functional), Poisson regression wit
 (for the ``geometric mean'' functional). Proportional hazards regression is currently not
 supported in the \code{regress} function. 
 
-Note that the only possible link function in `regress` with `fnctl = odds"` is the logit link. 
-Similarly, the only possible link function in `regress` with `fnctl = "rate"` is the log link.
+Note that the only possible link function in \code{regress} with \code{fnctl = odds"} is the logit link. 
+Similarly, the only possible link function in \code{regress} with \code{fnctl = "rate"} is the log link.
 
 Objects created using the
 \code{\link[rigr]{U}} function can also be passed in. If the
