@@ -536,6 +536,13 @@ regress <- function(fnctl, formula, data,
   if (length(terms) != length(terms_fromlabels)) {
     terms_names <- terms
     terms <- terms_fromlabels
+    # figure out which terms are multi-level categorical
+    for (i in 1:length(terms_fromlabels)) {
+      var_nums <- grep(terms_fromlabels[i], terms_names)
+      if (length(var_nums) == 1) {
+        terms[i] <- terms_names[var_nums]
+      }
+    }
   }
   
   # Note from Taylor: I believe model is already model.matrix(fit), so this may be able to be deleted
