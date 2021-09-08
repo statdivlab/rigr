@@ -12,8 +12,8 @@
 #' (for the ``geometric mean'' functional). Proportional hazards regression is currently not
 #' supported in the \code{regress} function. 
 #' 
-#' Note that the only possible link function in \code{regress} with \code{fnctl = "odds"} is the logit link. 
-#' Similarly, the only possible link function in \code{regress} with \code{fnctl = "rate"} is the log link.
+#' Note that the only possible link function in `regress` with `fnctl = odds"` is the logit link. 
+#' Similarly, the only possible link function in `regress` with `fnctl = "rate"` is the log link.
 #' 
 #' Objects created using the
 #' \code{\link[rigr]{U}} function can also be passed in. If the
@@ -33,8 +33,9 @@
 #' the functional (summary measure of the distribution) for which inference is
 #' desired. Choices include \code{"mean"}, \code{"geometric mean"},
 #' \code{"odds"}, \code{"rate"}. 
-#' @param formula an object of class
-#' \code{formula} as might be passed to \code{lm}, \code{glm}, or \code{coxph}.
+#' @param formula an object of class \code{formula} as might be passed to 
+#' \code{lm} or \code{glm}. Functions of variables, specified using \code{\link[rigr]{dummy}}
+#' or \code{\link[rigr]{polynomial}} may also be included in \code{formula}.
 #' @param data a data frame, matrix, or other data structure with matching
 #' names to those entered in \code{formula}.
 #' @param intercept a logical value
