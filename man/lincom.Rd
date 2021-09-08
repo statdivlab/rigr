@@ -9,7 +9,7 @@
 lincom(
   reg,
   comb,
-  hyp = 0,
+  null.hypoth = 0,
   conf.level = 0.95,
   robustSE = TRUE,
   eform = reg$fnctl != "mean"
@@ -19,12 +19,12 @@ lincom(
 \item{reg}{an object of class \code{uRegress}.}
 
 \item{comb}{a vector or matrix containing the values of the constants which
-create the linear combination of the form \deqn{c_0 + c_1\beta_1 + \dots}.
+create the linear combination of the form \deqn{c_0 + c_1\beta_1 + \dots}
 Zeroes must be given if coefficients aren't going to be included. For testing
 multiple combinations, this must be a matrix with number of columns equal to the number of
 coefficients in the model.}
 
-\item{hyp}{the null hypothesis to compare the linear combination of
+\item{null.hypoth}{the null hypothesis to compare the linear combination of
 coefficients against. This is a scalar if one combination is given, and a 
 vector or matrix otherwise. The default value is \code{0}.}
 
@@ -48,7 +48,7 @@ the following components:
 These include the point estimate, standard error, confidence interval, and t-test for the linear 
 combination.}
 \item{nms}{The name of the linear combination, for printing.}
-\item{hyp}{The null hypothesis for the linear combination.}
+\item{null.hypoth}{The null hypothesis for the linear combination.}
 }
 \description{
 Produces point estimates, interval estimates, and p-values for linear
@@ -71,6 +71,6 @@ lincom(testReg, testC)
 # Test multiple combinations: 
 # whether .5*age - stroke = 0 and Intercept + 60*age = 125 
 testC <- matrix(c(0, 0.5, -1, 1, 60, 0), byrow = TRUE, nrow = 2)
-lincom(testReg, testC, hyp = c(0, 125))
+lincom(testReg, testC, null.hypoth = c(0, 125))
 
 }

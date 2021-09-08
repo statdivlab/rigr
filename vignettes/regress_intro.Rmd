@@ -162,6 +162,6 @@ Note that the standard errors returned by default are robust, as are the associa
 We could also test the null hypothesis that the mean difference in atrophy between these two groups (females, and males 10 years younger) is equal to -1 as follows:
 
 ```{r}
-lincom(mod_rigr, mod_combo, hyp = -1)
+lincom(mod_rigr, mod_combo, null.hypoth = -1)
 ```
 

@@ -7,11 +7,11 @@
 #' 
 #' @param reg an object of class \code{uRegress}.
 #' @param comb a vector or matrix containing the values of the constants which
-#' create the linear combination of the form \deqn{c_0 + c_1\beta_1 + \dots}.
+#' create the linear combination of the form \deqn{c_0 + c_1\beta_1 + \dots}
 #' Zeroes must be given if coefficients aren't going to be included. For testing
 #' multiple combinations, this must be a matrix with number of columns equal to the number of
 #' coefficients in the model.
-#' @param hyp the null hypothesis to compare the linear combination of
+#' @param null.hypoth the null hypothesis to compare the linear combination of
 #' coefficients against. This is a scalar if one combination is given, and a 
 #' vector or matrix otherwise. The default value is \code{0}. 
 #' @param conf.level a number between 0 and 1, indicating the desired
@@ -31,7 +31,7 @@
 #' These include the point estimate, standard error, confidence interval, and t-test for the linear 
 #' combination.}
 #' \item{nms}{The name of the linear combination, for printing.}
-#' \item{hyp}{The null hypothesis for the linear combination.}
+#' \item{null.hypoth}{The null hypothesis for the linear combination.}
 #' 
 #' @examples
 #' # Loading required libraries
@@ -50,10 +50,10 @@
 #' # Test multiple combinations: 
 #' # whether .5*age - stroke = 0 and Intercept + 60*age = 125 
 #' testC <- matrix(c(0, 0.5, -1, 1, 60, 0), byrow = TRUE, nrow = 2)
-#' lincom(testReg, testC, hyp = c(0, 125))
+#' lincom(testReg, testC, null.hypoth = c(0, 125))
 #' 
 #' @export lincom
-lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$fnctl!="mean"){
+lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, eform=reg$fnctl!="mean"){
   ## if conf.level is not between 0 and 1, throw error
   if(conf.level < 0 || conf.level > 1){
     stop("Confidence Level must be between 0 and 1")
@@ -66,12 +66,12 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
   if (!(is.logical(eform))){
     stop("Argument eform must be a logical.")
   }
-  ## throw error if hyp has any NAs
-  if (sum(is.na(hyp)) != 0 || sum(is.na(comb) != 0)){
-    stop("comb' and 'hyp' cannot contains NAs")
+  ## throw error if null.hypoth has any NAs
+  if (sum(is.na(null.hypoth)) != 0 || sum(is.na(comb) != 0)){
+    stop("comb' and 'null.hypoth' cannot contains NAs")
   }
   
-  lincom.do <- function(reg, comb, hyp, conf.level, robustSE, eform){
+  lincom.do <- function(reg, comb, null.hypoth, conf.level, robustSE, eform){
 
     if(any(comb==0)){
       mat <- comb[-which(comb==0)]
@@ -104,7 +104,7 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
       SE <- matrix(apply(SE, 1, function(x) x[!is.na(x)]), nrow=dim(SE)[2])
     }
     
-    tStat <- (newCoef-hyp)/SE
+    tStat <- (newCoef-null.hypoth)/SE
     pval <- 2*stats::pt(-abs(tStat), reg$df[2]) ## return two sided test
     CIL <- newCoef - abs(stats::qt((1-conf.level)/2,df=reg$df[2])*SE)
     CIU <- newCoef + abs(stats::qt((1-conf.level)/2,df=reg$df[2])*SE)
@@ -125,7 +125,7 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
                                        "T", "Pr(T > |t|)"))
     }
     
-    lincom.obj <- list(printMat = printMat, nms = nms, hyp = hyp)
+    lincom.obj <- list(printMat = printMat, nms = nms, null.hypoth = null.hypoth)
     invisible(lincom.obj)
   }
   
@@ -134,8 +134,8 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     if(length(comb) != dim(reg$coefficients)[1]){
       stop("Vector of constants must be equal to number of coefficients in model, including intercept if applicable")
     }
-    ## throw error if hyp is not a scalar
-    if (!(is.numeric(hyp)) || length(hyp) > 1){
+    ## throw error if null.hypoth is not a scalar
+    if (!(is.numeric(null.hypoth)) || length(null.hypoth) > 1){
       stop("Null hypothesis must a scalar.")
     }
     ## if robustSE requested but was not in regress(), throw error
@@ -147,7 +147,7 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     lincom.obj <- vector(mode = "list", length = 1)
     lincom.obj[[1]] <- lincom.do(reg = reg, 
                             comb = comb, 
-                            hyp = hyp, 
+                            null.hypoth = null.hypoth, 
                             conf.level = conf.level, 
                             robustSE = robustSE, 
                             eform = eform)
@@ -157,19 +157,19 @@ lincom <- function(reg, comb, hyp=0, conf.level=.95, robustSE = TRUE, eform=reg$
     if(dim(comb)[2]!=dim(reg$coefficients)[1]){
       stop("Matrix of constants must have columns equal to the number of coefficients")
     }
-    if(is.vector(hyp) && length(hyp) > 1){
-      hyp <- matrix(hyp, nrow=length(hyp))
+    if(is.vector(null.hypoth) && length(null.hypoth) > 1){
+      null.hypoth <- matrix(null.hypoth, nrow=length(null.hypoth))
     } else{
-      hyp <- matrix(hyp, nrow=dim(comb)[1])
+      null.hypoth <- matrix(null.hypoth, nrow=dim(comb)[1])
     }
-    ## throw error if hyp has wrong dimension
-    if (!(is.numeric(hyp)) || dim(hyp)[1] != dim(comb)[1] || dim(hyp)[2] != 1){
+    ## throw error if null.hypoth has wrong dimension
+    if (!(is.numeric(null.hypoth)) || dim(null.hypoth)[1] != dim(comb)[1] || dim(null.hypoth)[2] != 1){
       stop("Null hypothesis must numeric and of the same dimension as the number of combinations being tested.")
     }
     lincom.obj <- vector(mode = "list", length = dim(comb)[1])
     ## apply to a vector for each
     for(i in 1:dim(comb)[1]){
-      lincom.obj.partial <- lincom.do(reg, comb[i,], hyp[i,], conf.level, robustSE, eform)
+      lincom.obj.partial <- lincom.do(reg, comb[i,], null.hypoth[i,], conf.level, robustSE, eform)
       lincom.obj[[i]] <- lincom.obj.partial
       names(lincom.obj)[[i]] <- paste0("comb", i)
     }
