@@ -18,9 +18,9 @@ A data frame with 654 rows and 7 variables:
 
 \item{height}{subject height at time of measurement (inches)}
 
-\item{sex}{subject sex (1 = male, 2 = female)}
+\item{sex}{subject sex}
 
-\item{smoke}{smoking habits (1 = yes, 2 = no)}
+\item{smoke}{smoking habits ("yes" or "no")}
 }
 }
 \source{
