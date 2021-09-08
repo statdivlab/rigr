@@ -12,7 +12,7 @@
 #' (for the ``geometric mean'' functional). Proportional hazards regression is currently not
 #' supported in the \code{regress} function. 
 #' 
-#' Note that the only possible link function in \code{regress} with \code{fnctl = odds"} is the logit link. 
+#' Note that the only possible link function in \code{regress} with \code{fnctl = "odds"} is the logit link. 
 #' Similarly, the only possible link function in \code{regress} with \code{fnctl = "rate"} is the log link.
 #' 
 #' Objects created using the

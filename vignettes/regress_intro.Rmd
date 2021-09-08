@@ -12,9 +12,9 @@ vignette: >
 In the `rigr` package, we have set out to make regression and analysis easier by
 
 1. allowing you to specify different types of regression from one function; 
-2. automatically computing confidence intervals and p-values using robust standard errors. 
+2. automatically computing confidence intervals and p-values using robust standard errors; 
 3. displaying output in a more intuitive fashion than base R; and
-4. allowing you to specify multiple-partial F-tests;
+4. allowing you to specify multiple-partial F-tests.
 
 This capability is implemented in the function `regress()`. The basic arguments to this function are
 
@@ -24,7 +24,7 @@ This capability is implemented in the function `regress()`. The basic arguments 
 
 ## `fnctl`: the functional
 
-We use the concept of a *functional* to handle our first goal: allowing you to specify different types of regression models using a single function. A functional takes a *function* as its argument and returns a number - the most common example of a functional in regression is the *mean*. The allowed functionals to `regress()` are
+We use the concept of a *functional* to handle our first goal: allowing you to specify different types of regression models using a single function. A functional takes a *function* as its argument and returns a number. The most common example of a functional in regression is the *mean*. The allowed functionals to `regress()` are
 
 |Functional | Type of Regression | base R command |
 |---|:---|:---|
