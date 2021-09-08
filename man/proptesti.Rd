@@ -37,7 +37,7 @@ null hypothesis for the mean (or difference in means if performing a
 two-sample test). Defaults to 0.5 for one-sample and 0 for two-sample.}
 
 \item{conf.level}{confidence level of the
-test. Defaults to 95/100.}
+test. Defaults to 0.95}
 
 \item{alternative}{a string: one of
 \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
@@ -50,24 +50,24 @@ Non-integers are automatically rounded down.}
 \value{
 A list of class \code{proptesti}. The print method lays out the information in an easy-to-read
 format. 
+\item{tab}{A formatted table of descriptive and inferential results (total number of observations,
+sample proportion, standard error of the proportion estimate), 
+along with a confidence interval for the underlying proportion.}
 \item{zstat}{the value of the test
 statistic, if using an approximate test.} 
 \item{pval}{the p-value
 for the test} 
 \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
-\item{tab}{A formatted table of descriptive and inferential results, for printing.}
 }
 \description{
-Produces table of relevant descriptive statistics and inference for either
-one- or two-sample test of proportions using counts of successes and trials, rather than
+Perfroms a one- or two-sample test of proportions using counts of successes and trials, rather than
 binary data. This test can be approximate or exact.
 }
 \details{
 If \code{x2} or \code{n2} are specified, then both must be specified, and a two-sample test is run.
 }
 \examples{
-
-#- Two-sample test -#
+# Two-sample test
 proptesti(10, 100, 15, 200, alternative = "less")
 
 }

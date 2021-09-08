@@ -4,8 +4,7 @@
 \alias{lincom}
 \alias{lincom.do}
 \alias{print.lincom}
-\title{Tests of Linear Combinations of Regression
-Coefficients}
+\title{Tests of Linear Combinations of RegressionCoefficients}
 \usage{
 lincom(
   reg,
@@ -42,13 +41,18 @@ estimated coefficient. By default this is performed based on the type of
 regression used.}
 }
 \value{
-Prints a matrix with the point
-estimate of the linear combination of coefficients, a p-value, and
-confidence interval.
+A list of class \code{lincom}. The \code{comb} entries in the list are labeled
+\code{comb1}, \code{comb2}, etc. for as many linear combinations were used. Each is a list with
+the following components:
+\item{printMat}{A formatted table with inferential results for the linear combination of coefficients. 
+These include the point estimate, standard error, confidence interval, and t-test for the linear 
+combination.}
+\item{nms}{The name of the linear combination, for printing.}
+\item{hyp}{The null hypothesis for the linear combination.}
 }
 \description{
-Produces point estimates, interval estimates, and p values for linear
-combinations of regression coefficients using a \code{ uRegress} object.
+Produces point estimates, interval estimates, and p-values for linear
+combinations of regression coefficients using a \code{uRegress} object.
 }
 \examples{
 # Loading required libraries

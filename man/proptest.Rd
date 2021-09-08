@@ -16,7 +16,6 @@ proptest(
   null.hypoth = 0.5,
   alternative = "two.sided",
   conf.level = 0.95,
-  correct = FALSE,
   more.digits = 0
 )
 }
@@ -44,9 +43,7 @@ two-sample test). Defaults to 0.5 for a one-sample test and 0 for a two-sample t
 of the test. Defaults to a two-sided test.}
 
 \item{conf.level}{confidence level of the
-test. Defaults to 95/100.}
-
-\item{correct}{A logical indicating whether to use a continuity correction.}
+test. Defaults to 0.95.}
 
 \item{more.digits}{a numeric value
 specifying whether or not to display more or fewer digits in the output.
@@ -54,7 +51,11 @@ Non-integers are automatically rounded down.}
 }
 \value{
 A list of class \code{proptest}. The print method lays out the information in an easy-to-read
-format. \item{zstat}{the value of the test
+format. 
+\item{tab}{A formatted table of descriptive and inferential results (total number of observations,
+number of missing observations, sample proportion, standard error of the proportion estimate), 
+along with a confidence interval for the underlying proportion.}
+\item{zstat}{the value of the test
 statistic, if using an approximate test.} 
 \item{pval}{the p-value
 for the test} 
@@ -62,34 +63,32 @@ for the test}
 \item{var2}{The user-supplied second data vector. }
 \item{by}{The user-supplied stratification variable.}
 \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
-\item{tab}{A formatted table of descriptive and inferential results, for printing.}
 }
 \description{
-Produces table of relevant descriptive statistics and inference for either
-one- or two-sample test of proportions. This test can be approximate or exact.
+Performs a one- or two-sample test of proportions using data. This test can be approximate or exact.
 }
 \details{
-Missing values must be given by \code{"NA"}s to be recognized as missing values. Numeric data must be given
-in 0-1 form. This function also accepts binary factor variables, treating the higher level as 1 and the lower level 
-as 0, or logical variables. Any call to \code{proptest()} is run by \code{proptest.default()}, with user specified
-values in place of defaults in the appropriate places.
+Missing values must be given by \code{"NA"}s to be recognized as missing values. 
+Numeric data must be given in 0-1 form. 
+This function also accepts binary factor variables, treating the higher level as 1 and the lower level 
+as 0, or logical variables.
 }
 \examples{
 
-#- Read in data set -#
+# Read in data set
 data(psa)
 attach(psa)
 
-#- Define new binary variable as indicator -#
-#- of whether or not bss was worst possible -#
+# Define new binary variable as indicator
+# of whether or not bss was worst possible
 bssworst <- bss
 bssworst[bss == 1] <- 0
 bssworst[bss == 2] <- 0
 bssworst[bss == 3] <- 1
 
 
-#- Perform test comparing proportion in remission -#
-#- between bss strata -#
+# Perform test comparing proportion in remission
+# between bss strata
 proptest(factor(inrem), by = bssworst)
 
 }

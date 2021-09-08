@@ -5,7 +5,7 @@
 \alias{ttesti.do}
 \alias{print.ttesti}
 \alias{ttesti.default}
-\title{T-test Given Descriptive Statistics with Improved Layout}
+\title{T-test Given Summary Statistics with Improved Layout}
 \usage{
 ttesti(
   obs,
@@ -44,7 +44,7 @@ null hypothesis for the mean (or difference in means if performing a
 two-sample test). Defaults to zero.}
 
 \item{conf.level}{confidence level of the test.
-Defaults to 95/100.}
+Defaults to 0.95.}
 
 \item{alternative}{a string: one of
 \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
@@ -59,26 +59,21 @@ specifying whether or not to display more or fewer digits in the output.
 Non-integers are automatically rounded down.}
 }
 \value{
-Prints a summary of the data and the
-corresponding t-test. \item{Variable}{\code{x} in a
-one-sample test, or \code{x} and \code{y} in a two sample test. The first
-set of descriptives entered goes to \code{x}.} \item{Obs}{Number of
-observations of each variable: includes missing values.} \item{Mean}{the
-sample mean; also, the estimated difference in means in a two-sample test.}
-\item{Std.Err.}{the estimated standard error of the mean and of the
-difference in the two-sample test.} \item{Std.Dev.}{standard deviation
-estimates.} \item{CI}{a confidence interval for the means, and for the
-difference in the two-sample test. This is at the confidence level specified
-in the argument.}
-\item{Null hypothesis}{a statement of the null hypothesis.}
-\item{Alternative hypothesis}{a statement of the alternative hypothesis.}
-\item{t}{value of the t-statistic.} \item{df}{the degrees of freedom for the
-test.} \item{Pr}{a p-value for inference on the corresponding hypothesis
-test.}
+a list of class \code{ttesti}. The print method lays out the information in an easy-to-read
+format. 
+\item{tab}{A formatted table of descriptive and inferential statistics (number of observations,
+mean, standard error of the mean estimate, standard deviation), 
+along with a confidence interval for the mean.}
+\item{df}{Degrees of freedom for the t-test.}
+\item{p}{P-value for the t-test.}
+\item{tstat}{Test statistic for the t-test.}
+\item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
+\item{twosamp}{A logical value indicating whether a two-sample test was performed.}
+\item{call}{The call made to the \code{ttesti} function.}
 }
 \description{
-Produces table of relevant descriptive statistics and inference for either
-one- or two-sample t-test. In the two-sample case, the user can specify
+Performs a one- or two-sample t-test given summary statistics. 
+In the two-sample case, the user can specify
 whether or not equal variances should be presumed.
 }
 \details{
@@ -87,10 +82,10 @@ and a two-sample t-test is run.
 }
 \examples{
 
-#- T-test given sample descriptives -#
-ttesti(24, 175, 35, null.hyp=230)
+# t-test given sample descriptives
+ttesti(24, 175, 35, null.hypoth=230)
 
-#- Two-sample test -#
+# two-sample test
 ttesti(10, -1.6, 1.5, 30, -.7, 2.1)
 
 }

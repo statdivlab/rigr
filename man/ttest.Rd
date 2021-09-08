@@ -48,7 +48,7 @@ variances should be presumed in a two-sample t-test. Also controls robust
 standard errors.}
 
 \item{conf.level}{confidence level of the
-test. Defaults to 95/100.}
+test. Defaults to 0.95.}
 
 \item{matched}{a logical value, either
 \code{TRUE} or \code{FALSE}, indicating whether or not the variables of a
@@ -59,72 +59,50 @@ specifying whether or not to display more or fewer digits in the output.
 Non-integers are automatically rounded down.}
 }
 \value{
-Prints a summary of the data and the
-corresponding t-test. \item{Variable}{the variable
-name supplied to the t-test function} 
-
-\item{Group}{the group name: either
-the variable names supplied to the function or the names of the strata if
-the variable \code{by} was specified.} 
-\item{Obs}{Number of observations of
-each variable: includes missing values.} 
-\item{Missing}{number of missing
-values in each data vector.} 
-\item{Mean}{the sample mean of each data
-vector; also, the estimated difference in means in a two-sample test.}
-\item{Std.Err.}{the estimated standard error of the mean and of the
-difference in the two-sample test.} 
-\item{Std.Dev.}{standard deviation
-estimates from the data.} 
-\item{CI}{a confidence interval for the means, and
-for the difference in the two-sample test. This is at the confidence level
-specified in the argument and is a two-sided confidence interval, regardless of the 
-alternatuive hypothesis. If \code{prop} and/or \code{exact} are
-\code{TRUE}, also returns the appropriate confidence interval for the test
-of equality of proportions.}
-\item{Null hypothesis}{a statement of the null
-hypothesis.} 
-\item{Alternative hypothesis}{a statement of the alternative
-hypothesis.}
-\item{t}{value of the t-statistic.} 
-\item{df}{the degrees of
-freedom for the test.} 
-\item{Pr}{a p-value for inference on the
-corresponding hypothesis test.}
+a list of class \code{ttest}. The print method lays out the information in an easy-to-read
+format. 
+\item{tab}{A formatted table of descriptive and inferential statistics (total number of observations,
+number of missing observations, mean, standard error of the mean estimate, standard deviation), 
+along with a confidence interval for the mean.}
+\item{df}{Degrees of freedom for the t-test.}
+\item{p}{P-value for the t-test.}
+\item{tstat}{Test statistic for the t-test.}
+\item{var1}{The user-supplied first data vector. }
+\item{var2}{The user-supplied second data vector. }
+\item{by}{The user-supplied stratification variable.}
+\item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
+\item{geo}{A formatted table of descriptive and inferential statistics for the geometric mean.}
+\item{call}{The call made to the \code{ttest} function.}
 }
 \description{
-Produces table of relevant descriptive statistics and inference for either
-one- or two-sample t-test. In the two-sample case, the user can specify
+Performs a one- or two-sample t-test using data. In the two-sample case, the user can specify
 whether or not observations are matched, and whether or not equal variances
-should be presumed. Can also perform a test of equality of proportions (Wald
-based or exact binomial based).
+should be presumed.
 }
 \details{
-Missing values must be given by \code{"NA"}s to be recognized as missing values. Any
-call to \code{ttest()} is run by \code{ttest.default()}, with user specified
-values in place of defaults in the appropriate places.
+Missing values must be given by \code{NA} to be recognized as missing values.
 }
 \examples{
 
-#- Read in data set -#
+# Read in data set
 data(psa)
 attach(psa)
 
-#- Perform t-test -#
+# Perform t-test
 ttest(pretxpsa, null.hypoth = 100, alternative = "greater", more.digits = 1)
 
-#- Define new binary variable as indicator -#
-#- of whether or not bss was worst possible -#
+# Define new binary variable as indicator
+# of whether or not bss was worst possible
 bssworst <- bss
 bssworst[bss == 1] <- 0
 bssworst[bss == 2] <- 0
 bssworst[bss == 3] <- 1
 
-#- Perform t-test allowing for unequal -#
-#- variances between strata -#
+# Perform t-test allowing for unequal
+# variances between strata -#
 ttest(pretxpsa, by = bssworst)
 
-#- Perform matched t-test -#
+# Perform matched t-test
 ttest(pretxpsa, nadirpsa, matched = TRUE, conf.level = 99/100, more.digits = 1)
 
 
