@@ -36,7 +36,8 @@ code below.
 [StatDivLab](http://statisticaldiversitylab.com/), but relies on
 community support to log issues and implement new features. Is there a
 method you would like to have implemented? Please submit a pull request
-or start a [discussion](https://github.com/statdivlab/rigr/discussions)!
+or start a
+[discussion](https://github.com/statdivlab/rigr/discussions/)!
 
 ## Documentation
 
@@ -48,21 +49,21 @@ including `ttest`, `wilcoxon`, and `proptest`.
 
 ## Humans
 
-Maintainer: [Amy Willis](http://statisticaldiversitylab.com)
+Maintainer: [Amy Willis](http://statisticaldiversitylab.com/)
 
 Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Andrew J
-Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd),
+Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd/),
 [Brian D Williamson](https://bdwilliamson.github.io/), [Travis Y Hee
-Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en),
+Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en/),
 Solomon Lim, [Charles Wolock](https://cwolock.github.io/), and [Taylor
 Okonek](https://taylorokonek.github.io/).
 
 ## Issues
 
 If you encounter any bugs, please [file an
-issue](https://github.com/statdivlab/rigr/issues). Better yet, [submit a
-pull request](https://github.com/statdivlab/rigr/pulls)!
+issue](https://github.com/statdivlab/rigr/issues/). Better yet, [submit
+a pull request](https://github.com/statdivlab/rigr/pulls/)!
 
 Do you have a question? Please first check out the vignettes, then
 please post on the
-[Discussions](https://github.com/statdivlab/rigr/discussions).
+[Discussions](https://github.com/statdivlab/rigr/discussions/).

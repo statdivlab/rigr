@@ -58,7 +58,7 @@ If we prefer to run the test using summary statistics (sample mean, sample stand
 ttesti(length(mri$weight), mean(mri$weight), sd(mri$weight), null.hypoth = 155)
 ```
 
-The result the same as that provided by `ttest(mri$weight, null.hypoth = 155)`. 
+The result is the same as that provided by `ttest(mri$weight, null.hypoth = 155)`. 
 
 ## Tests of proportions
 
