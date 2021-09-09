@@ -96,7 +96,7 @@ Measurements range from 0 to 100, with 100 being the most severe atrophy.}
 means no changes, 9 means marked changes.} 
 
 \item{numinf}{a count of
-the number of distinct regions identified on MRi scan which were suggestive
+the number of distinct regions identified on MRI scan which were suggestive
 of infarcts.} 
 
 \item{volinf}{a measure of the total volume of

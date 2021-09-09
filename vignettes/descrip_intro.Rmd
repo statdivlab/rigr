@@ -1,5 +1,5 @@
 ---
-title: "Desriptive statistics in rigr"
+title: "Descriptive statistics in rigr"
 author: "Taylor Okonek"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

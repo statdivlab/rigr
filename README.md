@@ -34,7 +34,7 @@ code below.
 
 `rigr` is maintained by the
 [StatDivLab](http://statisticaldiversitylab.com/), but relies on
-community support to log issues and implement new featues. Is there a
+community support to log issues and implement new features. Is there a
 method you would like to have implemented? Please submit a pull request
 or start a [discussion](https://github.com/statdivlab/rigr/discussions)!
 
@@ -44,7 +44,7 @@ Examples of how to use the main functions in `rigr` are provided in
 three vignettes. One details the `regress` function and its utilities,
 one details the `descrip` function for descriptive statistics, and the
 third details functions used for one- and two-sample inference,
-inlcuding `ttest`, `wilcoxon`, and `proptest`.
+including `ttest`, `wilcoxon`, and `proptest`.
 
 ## Humans
 

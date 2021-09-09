@@ -18,7 +18,7 @@ A data frame with 19792 rows and 11 variables:
 
 \item{yrdeg}{year highest degree attained}
 
-\item{field}{Arts (Arts and Humanities), Prof (professional school, ie, Business, Law, Engineering or Public Affairs), or Other}
+\item{field}{Arts (Arts and Humanities), Prof (professional school, e.g., Business, Law, Engineering or Public Affairs), or Other}
 
 \item{startyr}{year in which the faculty member was hired (2 digits)}
 

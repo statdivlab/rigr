@@ -79,7 +79,7 @@ The final functional that `regress` supports is `"rate"`, for use in Poisson reg
 regress("rate", yrsquit ~ age, data = mri)
 ```
 
-Note that again we have two tables of output, denoted by `Raw Model` and `Transformed Model`, with `Transformed Model` displaying expotentiated estimated coefficients. 
+Note that again we have two tables of output, denoted by `Raw Model` and `Transformed Model`, with `Transformed Model` displaying exponentiated estimated coefficients. 
 
 # Regression on the Geometric Mean
 

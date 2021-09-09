@@ -40,12 +40,12 @@ You can install the development version of `rigr` from GitHub using the code bel
 devtools::install_github("statdivlab/rigr")
 ```
 
-`rigr` is maintained by the [StatDivLab](http://statisticaldiversitylab.com/), but relies on community support to log issues and implement new featues. Is there a method you would like to have implemented? Please submit a pull request or start a [discussion](https://github.com/statdivlab/rigr/discussions)!
+`rigr` is maintained by the [StatDivLab](http://statisticaldiversitylab.com/), but relies on community support to log issues and implement new features. Is there a method you would like to have implemented? Please submit a pull request or start a [discussion](https://github.com/statdivlab/rigr/discussions)!
 
 
 ## Documentation
 
-Examples of how to use the main functions in `rigr` are provided in three vignettes. One details the `regress` function and its utilities, one details the `descrip` function for descriptive statistics, and the third details functions used for one- and two-sample inference, inlcuding `ttest`, `wilcoxon`, and `proptest`.
+Examples of how to use the main functions in `rigr` are provided in three vignettes. One details the `regress` function and its utilities, one details the `descrip` function for descriptive statistics, and the third details functions used for one- and two-sample inference, including `ttest`, `wilcoxon`, and `proptest`.
 
 ## Humans
 

@@ -1,6 +1,6 @@
 #' Test of proportions from summary statistics
 #' 
-#' Perfroms a one- or two-sample test of proportions using counts of successes and trials, rather than
+#' Performs a one- or two-sample test of proportions using counts of successes and trials, rather than
 #' binary data. This test can be approximate or exact. 
 #' 
 #' If \code{x2} or \code{n2} are specified, then both must be specified, and a two-sample test is run.

@@ -98,7 +98,7 @@
 #' means no changes, 9 means marked changes.} 
 #' 
 #' \item{numinf}{a count of
-#' the number of distinct regions identified on MRi scan which were suggestive
+#' the number of distinct regions identified on MRI scan which were suggestive
 #' of infarcts.} 
 #' 
 #' \item{volinf}{a measure of the total volume of
@@ -139,7 +139,7 @@
 #' 
 #' \item{yrdeg}{year highest degree attained}
 #' 
-#' \item{field}{Arts (Arts and Humanities), Prof (professional school, ie, Business, Law, Engineering or Public Affairs), or Other}
+#' \item{field}{Arts (Arts and Humanities), Prof (professional school, e.g., Business, Law, Engineering or Public Affairs), or Other}
 #' 
 #' \item{startyr}{year in which the faculty member was hired (2 digits)}
 #' 

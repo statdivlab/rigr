@@ -1,7 +1,7 @@
 #' Descriptive Statistics, One Sample Inference, Regression, and Plotting in an
 #' Introductory Statistics Course
 #' 
-#' Developed by Scott S. Emerson, M.D., Ph.D., Andrew J. Spieker, Brian D.
+#' Developed by Scott S. Emerson, Andrew J. Spieker, Brian D.
 #' Williamson, Travis Y. Hee Wai, and Solomon Lim at the University of
 #' Washington Department of Biostatistics. Currently maintained by
 #' Prof. Amy Willis at the University of Washington Department of Biostatistics.
@@ -12,7 +12,7 @@
 #' existing R functions.
 #' 
 #' \tabular{ll}{ Package: \tab rigr\cr Type: \tab Package\cr Version:
-#' \tab 0.1.0\cr Date: \tab 2021-09-10\cr License: \tab MIT\cr } A set of
+#' \tab 1.0.0\cr Date: \tab 2021-09-10\cr License: \tab MIT\cr } A set of
 #' tools designed to facilitate easy adoption of R for students in introductory
 #' classes with little programming experience. Compiles output from existing
 #' routines together in an intuitive format, and adds functionality to existing
@@ -25,7 +25,7 @@
 #' @name rigr-package
 #' @aliases rigr-package rigr
 #' @docType package
-#' @author Scott S. Emerson, M.D., Ph.D, Andrew J. Spieker, Brian D.
+#' @author Scott S. Emerson, Andrew J. Spieker, Brian D.
 #' Williamson, Travis Y. Hee Wai, Solomon Lim, Charles Wolock, and Taylor Okonek
 #' 
 #' Maintainer: Amy Willis <adwillis@@uw.edu>

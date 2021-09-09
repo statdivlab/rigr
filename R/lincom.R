@@ -1,4 +1,4 @@
-#' Tests of Linear Combinations of RegressionCoefficients
+#' Tests of Linear Combinations of Regression Coefficients
 #' 
 #' Produces point estimates, interval estimates, and p-values for linear
 #' combinations of regression coefficients using a \code{uRegress} object.

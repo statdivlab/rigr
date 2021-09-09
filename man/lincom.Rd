@@ -4,7 +4,7 @@
 \alias{lincom}
 \alias{lincom.do}
 \alias{print.lincom}
-\title{Tests of Linear Combinations of RegressionCoefficients}
+\title{Tests of Linear Combinations of Regression Coefficients}
 \usage{
 lincom(
   reg,

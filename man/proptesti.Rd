@@ -60,7 +60,7 @@ for the test}
 \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
 }
 \description{
-Perfroms a one- or two-sample test of proportions using counts of successes and trials, rather than
+Performs a one- or two-sample test of proportions using counts of successes and trials, rather than
 binary data. This test can be approximate or exact.
 }
 \details{
