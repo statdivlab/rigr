@@ -68,6 +68,7 @@ test_that("ttest() throws error if by argument contains >2 unique values", {
 test_that("ttest() throws error if by argument is not of same length as data", {
   expect_error(ttest(x1, by = c(rep(1, 50), rep(2, 51))), 
                "Variable 'by' is not of equal length to data vector")
+  expect_error(ttest(x1, by = c(rep(1, 50), rep(2, 50), NA)), "Variable 'by' is not of equal length to data vector")
 })
 
 test_that("ttest() warns about 0 null in geometric mean test", {

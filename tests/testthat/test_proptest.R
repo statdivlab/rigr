@@ -54,6 +54,8 @@ test_that("proptest() throws error if by argument contains >2 unique values", {
 test_that("proptest() throws error if by argument is not of same length as data", {
   expect_error(proptest(x1, by = c(rep(1, 50), rep(2, 51))),
                "Variable 'by' is not of equal length to data vector")
+  expect_error(proptest(x1, by = c(rep(1, 50), rep(2, 50), NA)), 
+               "Variable 'by' is not of equal length to data vector")
 })
 
 test_that("proptest() throws error for non-scalar null", {
@@ -769,4 +771,97 @@ p2 <- prop.test(c(sum(a),sum(b)), c(length(a), length(b)), correct = TRUE, alter
 test_that("proptesti() continuity correction works, one sample, right-sided", {
   expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2)
   expect_equal(abs(p1$pval), p2$p.value, tolerance = 1e-2)
+})
+
+### NAs
+a_na <- c(NA, a)
+b_na <- c(b, NA)
+a_short <- a_na[2:101]
+b_short <- b_na[1:100]
+by <- c(rep(1, 101), rep(2,99), NA, NA)
+e <- c(a_na, b_na)
+
+p1 <- proptest(a_na, b_na)
+p2 <- proptest(a_short, b_short)
+p3 <- proptest(e, by = by)
+p4 <- proptest(a_short, b_short[-100])
+
+test_that("ttest() counts NAs correctly", {
+  expect_s3_class(p1, "proptest")
+  expect_equal(p1$zstat, p2$zstat, tolerance = 1e-2) # test statistic
+  expect_equal(p1$pval, p2$pval, tolerance = 1e-2) # p-value
+  expect_equal(as.numeric(strsplit(substr(p1$tab[1,6], start = 2, stop = nchar(p1$tab[1,6])-1), ", ")[[1]]),
+               as.numeric(strsplit(substr(p2$tab[1,6], start = 2, stop = nchar(p2$tab[1,6])-1), ", ")[[1]]),
+               tolerance = 1e-2) # conf int
+  expect_equal(as.numeric(strsplit(substr(p1$tab[2,6], start = 2, stop = nchar(p1$tab[2,6])-1), ", ")[[1]]),
+               as.numeric(strsplit(substr(p2$tab[2,6], start = 2, stop = nchar(p2$tab[2,6])-1), ", ")[[1]]),
+               tolerance = 1e-2) # conf int
+  expect_equal(as.numeric(strsplit(substr(p1$tab[3,6], start = 2, stop = nchar(p1$tab[3,6])-1), ", ")[[1]]),
+               as.numeric(strsplit(substr(p2$tab[3,6], start = 2, stop = nchar(p2$tab[3,6])-1), ", ")[[1]]),
+               tolerance = 1e-2) # conf int
+  expect_equal(p1$tab[1,1], "a_na") # var name
+  expect_equal(p1$tab[2,1], "b_na") # var name
+  expect_equal(p1$tab[3,1], "Difference") # var name
+  expect_equal(as.numeric(p1$tab[1,2]), length(a_na)) # n obs
+  expect_equal(as.numeric(p1$tab[2,2]), length(b_na)) # n obs
+  expect_equal(as.numeric(p1$tab[3,2]), length(a_na) + length(b_na)) # n obs
+  expect_equal(as.numeric(p1$tab[1,3]), sum(is.na(a_na))) # NAs
+  expect_equal(as.numeric(p1$tab[2,3]), sum(is.na(b_na))) # NAs
+  expect_equal(as.numeric(p1$tab[3,3]), sum(is.na(a_na)) + sum(is.na(b_na))) # NAs
+  expect_equal(as.numeric(p1$tab[1,4]), as.numeric(p2$tab[1,4]), tolerance = 1e-2) # estimate of mean
+  expect_equal(as.numeric(p1$tab[2,4]), as.numeric(p2$tab[2,4]), tolerance = 1e-2) # estimate of mean
+  expect_equal(as.numeric(p1$tab[3,4]), as.numeric(p2$tab[3,4]), tolerance = 1e-2) # estimate of mean
+  expect_equal(as.numeric(p1$tab[1,5]), as.numeric(p2$tab[1,5]), 
+               tolerance = 1e-2) # standard error of mean est
+  expect_equal(as.numeric(p1$tab[2,5]), as.numeric(p2$tab[2,5]), 
+               tolerance = 1e-2) # standard error of mean est
+  expect_equal(as.numeric(p1$tab[3,5]), as.numeric(p2$tab[3,5]), 
+               tolerance = 1e-2) # standard error of mean est
+  expect_equal(p1$var1, a_short) 
+  expect_equal(p1$var2, b_short)
+  expect_null(p1$by)
+  expect_equal(as.numeric(p1$par[[1]]), 0) # null 
+  expect_equal(p1$par[[2]], p1$par[[2]]) # alternative
+  expect_equal(as.numeric(p1$par[[3]]), as.numeric(p2$par[[3]])) # conf level
+  expect_false(as.logical(p1$par[[4]]))
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
+  
+  expect_s3_class(p3, "proptest")
+  expect_equal(p3$zstat, p4$zstat, tolerance = 1e-2) # test statistic
+  expect_equal(p3$pval, p4$pval, tolerance = 1e-2) # p-value
+  expect_equal(as.numeric(strsplit(substr(p3$tab[1,6], start = 2, stop = nchar(p3$tab[1,6])-1), ", ")[[1]]),
+               as.numeric(strsplit(substr(p4$tab[1,6], start = 2, stop = nchar(p4$tab[1,6])-1), ", ")[[1]]),
+               tolerance = 1e-2) # conf int
+  expect_equal(as.numeric(strsplit(substr(p3$tab[2,6], start = 2, stop = nchar(p3$tab[2,6])-1), ", ")[[1]]),
+               as.numeric(strsplit(substr(p4$tab[2,6], start = 2, stop = nchar(p4$tab[2,6])-1), ", ")[[1]]),
+               tolerance = 1e-2) # conf int
+  expect_equal(as.numeric(strsplit(substr(p3$tab[3,6], start = 2, stop = nchar(p3$tab[3,6])-1), ", ")[[1]]),
+               as.numeric(strsplit(substr(p4$tab[3,6], start = 2, stop = nchar(p4$tab[3,6])-1), ", ")[[1]]),
+               tolerance = 1e-2) # conf int
+  expect_equal(p3$tab[1,1], "by = 1") # var name
+  expect_equal(p3$tab[2,1], "by = 2") # var name
+  expect_equal(p3$tab[3,1], "Difference") # var name
+  expect_equal(as.numeric(p3$tab[1,2]), length(a_na)) # n obs
+  expect_equal(as.numeric(p3$tab[2,2]), length(b_na)-2) # n obs
+  expect_equal(as.numeric(p3$tab[3,2]), length(a_na) + length(b_na)-2) # n obs
+  expect_equal(as.numeric(p3$tab[1,3]), sum(is.na(a_na))) # NAs
+  expect_equal(as.numeric(p3$tab[2,3]), 0) # NAs
+  expect_equal(as.numeric(p3$tab[3,3]), sum(is.na(a_na)) + 0) # NAs
+  expect_equal(as.numeric(p3$tab[1,4]), as.numeric(p4$tab[1,4]), tolerance = 1e-2) # estimate of mean
+  expect_equal(as.numeric(p3$tab[2,4]), as.numeric(p4$tab[2,4]), tolerance = 1e-2) # estimate of mean
+  expect_equal(as.numeric(p3$tab[3,4]), as.numeric(p4$tab[3,4]), tolerance = 1e-2) # estimate of mean
+  expect_equal(as.numeric(p3$tab[1,5]), as.numeric(p4$tab[1,5]), 
+               tolerance = 1e-2) # standard error of mean est
+  expect_equal(as.numeric(p3$tab[2,5]), as.numeric(p4$tab[2,5]), 
+               tolerance = 1e-2) # standard error of mean est
+  expect_equal(as.numeric(p3$tab[3,5]), as.numeric(p4$tab[3,5]), 
+               tolerance = 1e-2) # standard error of mean est
+  expect_equal(p3$var1, a_short) 
+  expect_equal(p3$var2, b_short[-100])
+  expect_equal(p3$by, by[!is.na(by)])
+  expect_equal(as.numeric(p3$par[[1]]), 0) # null 
+  expect_equal(p3$par[[2]], p3$par[[2]]) # alternative
+  expect_equal(as.numeric(p3$par[[3]]), as.numeric(p4$par[[3]])) # conf level
+  expect_false(as.logical(p3$par[[4]]))
+  expect_equal(as.numeric(p3$par[[6]]), 3) # digits
 })

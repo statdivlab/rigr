@@ -333,68 +333,14 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
     
   myargs <- c(deparse(substitute(var1)), deparse(substitute(var2)), 
               deparse(substitute(by)))
-  uby <- unique(by)
+  proptest.obj <- proptest.do(var1 = var1, var2 = var2, 
+                              by = by, exact = exact,
+                              null.hypoth = null.hypoth, alternative = alternative, 
+                              conf.level = conf.level,
+                              more.digits = more.digits, 
+                              correct = correct,
+                              myargs = myargs)
   
-  if (is.null(var2[1]) && length(var2) == 0) {
-    if (is.null(by[1]) && length(by) == 0) {
-      strat <- rep(1, length(var1))
-    }
-    if (length(by) > 0) {
-      strat <- rep(1, length(var1))
-    }
-  }
-  if (length(var2) > 0) {
-    strat1 <- rep(1, length(var1))
-    strat2 <- rep(1, length(var2))
-  }
-  
-  
-  if (is.null(var2[1]) && length(var2) == 0) {
-    if (is.null(by[1]) && length(by) == 0) {
-      ustrat <- unique(strat)
-      for (t in 1:length(ustrat)) {
-        x <- subset(var1, strat == ustrat[t])
-        proptest.obj <- proptest.do(var1 = x, var2 = var2, 
-                                    by = by, exact = exact,
-                                    null.hypoth = null.hypoth, alternative = alternative, 
-                                    conf.level = conf.level,
-                                    more.digits = more.digits, 
-                                    correct = correct,
-                                    myargs = myargs)
-        
-      }
-    }
-    if (length(by) > 0) {
-      ustrat <- unique(strat)
-      for (t in 1:length(ustrat)) {
-        x <- subset(var1, strat == ustrat[t])
-        cby <- subset(by, strat == ustrat[t])
-        proptest.obj <- proptest.do(var1 = x, var2 = var2, 
-                                    by = cby, exact = exact,
-                                    null.hypoth = null.hypoth, alternative = alternative, 
-                                    conf.level = conf.level,
-                                    more.digits = more.digits, 
-                                    correct = correct,
-                                    myargs = myargs)
-      }
-    }
-  }
-  if (length(var2) > 0) {
-    ustrat <- unique(c(strat1, strat2))
-    for (t in 1:length(ustrat)) {
-      x <- subset(var1, strat1 == ustrat[t])
-      y <- subset(var2, strat2 == ustrat[t])
-      proptest.obj <- proptest.do(var1 = x, var2 = y, 
-                                  by = by,
-                                  exact = exact,
-                                  null.hypoth = null.hypoth, 
-                                  alternative = alternative, 
-                                  conf.level = conf.level,
-                                  more.digits = more.digits,
-                                  correct = correct,
-                                  myargs = myargs)
-    }
-  }
   proptest.obj$call <- match.call()
   class(proptest.obj) <- "proptest"
   return(proptest.obj)
