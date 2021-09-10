@@ -114,7 +114,7 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
           (conf.level > 0) && (conf.level < 1))){
       stop("'conf.level' must be a single number between 0 and 1")
     } 
-    # get length of stratafication variable (byt)
+    # get length of stratification variable (byt)
     byt <- sort(unique(by),decreasing=FALSE)
     byt <- byt[!is.na(byt)]
     # make sure var1 and var2 are the same length if a paired t test is requested
@@ -164,12 +164,6 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
     digits <- 3 + more.digits
     
     cl <- (1 + conf.level)/2
-    if (matched) {
-      to.include <- (1 - as.numeric(is.na(var1))) * (1 - 
-                                                       as.numeric(is.na(var2)))
-      var1[to.include == 0] <- NA
-      var2[to.include == 0] <- NA
-    }
     # adjust values if the geometric means are to be compared
     if (geom) {
       var1 <- log(var1)
@@ -180,6 +174,15 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
       }
       null.hypoth <- log(null.hypoth)
     }
+    var1_orig <- var1
+    var2_orig <- var2
+    if (matched) {
+      to.include <- (1 - as.numeric(is.na(var1))) * (1 - 
+                                                       as.numeric(is.na(var2)))
+      var1[to.include == 0] <- NA
+      var2[to.include == 0] <- NA
+    }
+
     
     # Case where by is not entered
     if (length(by) == 1 & is.na(by[1])) {
@@ -231,12 +234,12 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         route <- stats::t.test(var1, var2, alternative = alternative, 
                         var.equal = var.eq, conf.level = conf.level, 
                         paired = matched, mu = null.hypoth)
-        mns <- c(mean(var1, na.rm = TRUE), mean(var2, 
+        mns <- c(mean(var1_orig, na.rm = TRUE), mean(var2_orig, 
                                                 na.rm = TRUE), as.numeric(route$estimate[1]))
         if (!matched) {
           mns[3] <- mns[3] - as.numeric(route$estimate[2])
         }
-        stdev <- c(stats::sd(var1, na.rm = TRUE), stats::sd(var2, na.rm = TRUE), 
+        stdev <- c(stats::sd(var1_orig, na.rm = TRUE), stats::sd(var2_orig, na.rm = TRUE), 
                    NA)
         if (matched) {
           stdev[3] <- stats::sd((var2 - var1), na.rm = TRUE)
@@ -245,8 +248,8 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
         if (!matched) {
           ns[3] <- length(var1) + length(var2)
         }
-        msg <- c(sum(is.na(var1)), sum(is.na(var2)), 
-                 sum(is.na(var1)) + sum(is.na(var2)))
+        msg <- c(sum(is.na(var1_orig)), sum(is.na(var2_orig)), 
+                 sum(is.na(var1_orig)) + sum(is.na(var2_orig)))
         if (matched) {
           msg[3] <- sum(is.na(var1 * var2))
         }
@@ -405,69 +408,13 @@ ttest<-function (var1, var2 = NA, by = NA, geom = FALSE,
   
   myargs <- c(deparse(substitute(var1)), deparse(substitute(var2)), 
               deparse(substitute(by)))
-  uby <- unique(by)
-
-  if (is.na(var2[1]) & length(var2) == 1) {
-    if (is.na(by[1]) & length(by) == 1) {
-      if (!matched) {
-        strat <- rep(1, length(var1))
-      }
-    }
-    if (length(by) > 1) {
-      strat <- rep(1, length(var1))
-    }
-  }
-  if (length(var2) > 1) {
-    strat1 <- rep(1, length(var1))
-    strat2 <- rep(1, length(var2))
-  }
+  ttest.obj <- ttest.do(var1 = var1, var2 = var2, 
+                        geom = geom, 
+                        by = by, null.hypoth = null.hypoth, alternative = alternative, 
+                        var.eq = var.eq, conf.level = conf.level, 
+                        matched = matched, more.digits = more.digits, 
+                        myargs = myargs)
   
-  
-  if (is.na(var2[1]) & length(var2) == 1) {
-    if (is.na(by[1]) & length(by) == 1) {
-      if (!matched) {
-        ustrat <- unique(strat)
-        for (t in 1:length(ustrat)) {
-          x <- subset(var1, strat == ustrat[t])
-          ttest.obj <- ttest.do(var1 = x, var2 = var2, 
-                                geom = geom, 
-                                by = by, null.hypoth = null.hypoth, alternative = alternative, 
-                                var.eq = var.eq, conf.level = conf.level, 
-                                matched = matched, more.digits = more.digits, 
-                                myargs = myargs)
-        }
-      }
-    }
-    if (length(by) > 1) {
-      ustrat <- unique(strat)
-      for (t in 1:length(ustrat)) {
-        x <- subset(var1, strat == ustrat[t])
-        cby <- subset(by, strat == ustrat[t])
-        ttest.obj <- ttest.do(var1 = x, var2 = var2, 
-                              geom = geom,  
-                              by = cby, null.hypoth = null.hypoth, alternative = alternative, 
-                              var.eq = var.eq, conf.level = conf.level, 
-                              matched = matched, more.digits = more.digits, 
-                              myargs = myargs)
-      }
-    }
-  }
-  if (length(var2) > 1) {
-    ustrat <- unique(c(strat1, strat2))
-    for (t in 1:length(ustrat)) {
-      x <- subset(var1, strat1 == ustrat[t])
-      y <- subset(var2, strat2 == ustrat[t])
-      ttest.obj <- ttest.do(var1 = x, var2 = y, 
-                            geom = geom, by = by, 
-                            null.hypoth = null.hypoth, 
-                            alternative = alternative, 
-                            var.eq = var.eq, 
-                            conf.level = conf.level, 
-                            matched = matched, 
-                            more.digits = more.digits, 
-                            myargs = myargs)
-    }
-  }
   ttest.obj$call <- match.call()
   class(ttest.obj) <- "ttest"
   return(ttest.obj)

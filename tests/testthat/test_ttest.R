@@ -417,3 +417,107 @@ test_that("ttest() returns correct numbers for two-sample test using by,  unpool
   expect_true(as.logical(t1$par[[6]])) # matched
   expect_equal(as.numeric(t1$par[[7]]), 3) # digits
 })
+
+### NAs
+a_na <- c(NA, a)
+b_na <- c(b, NA)
+a_matched <- a_na
+a_matched[51] <- NA
+b_matched <- b_na
+b_matched[1] <- NA
+b_short <- b[1:49]
+by <- c(rep(1, 51), rep(2,49), NA, NA)
+e <- c(a_na, b_na)
+
+t1 <- ttest(a_na, b_na, matched = TRUE)
+t2 <- t.test(a_na, b_na, paired = TRUE)
+t3 <- ttest(a_na, b_na, matched = FALSE)
+t4 <- t.test(a_na, b_na, paired = FALSE)
+t5 <- ttest(e, by = by)
+t6 <- t.test(a_na, b[-50])
+
+test_that("ttest() counts NAs correctly", {
+  expect_equal(t1$df, t2$parameter[[1]], tolerance = 1e-3) # df
+  expect_equal(t1$tstat, t2$statistic[[1]], tolerance = 1e-3) # test statistic
+  expect_equal(t1$p, t2$p.value, tolerance = 1e-3) # p-value
+  expect_equal(as.numeric(strsplit(substr(t1$tab[[3, 7]], start = 2, stop = nchar(t1$tab[[3, 7]])-1), ", ")[[1]]),
+               t2$conf.int[1:2], tolerance = 5e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t1$tab[[1, 7]], start = 2, stop = nchar(t1$tab[[1, 7]])-1), ", ")[[1]]),
+               c(mean(a) - qt(0.975, 49)*sd(a)/sqrt(length(a)), mean(a) + qt(0.975, 49)*sd(a)/sqrt(length(a))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t1$tab[[2, 7]], start = 2, stop = nchar(t1$tab[[2, 7]])-1), ", ")[[1]]),
+               c(mean(b) - qt(0.975, 49)*sd(b)/sqrt(length(b)), mean(b) + qt(0.975, 49)*sd(b)/sqrt(length(b))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(t1$tab[[1,1]], "a_na") # var name
+  expect_equal(t1$tab[[2,1]], "b_na") # var name
+  expect_equal(t1$tab[[3,1]], "Difference") # var name
+  expect_equal(as.numeric(t1$tab[[1, 2]]), length(a_na)) # n obs
+  expect_equal(as.numeric(t1$tab[[2, 2]]), length(b_na)) # n obs
+  expect_equal(as.numeric(t1$tab[[3, 2]]), length(a_na)) # n obs
+  expect_equal(as.numeric(t1$tab[[1, 3]]), sum(is.na(a_na))) # NAs
+  expect_equal(as.numeric(t1$tab[[2, 3]]), sum(is.na(b_na))) # NAs
+  expect_equal(as.numeric(t1$tab[[3, 3]]), sum(is.na(a_na)) + sum(is.na(b_na))) # NAs
+  expect_equal(as.numeric(t1$tab[[1, 4]]), mean(a), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[2, 4]]), mean(b), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t1$tab[[3, 4]]), mean(a_matched - b_matched, na.rm=TRUE), tolerance = 1e-2) # estimate of mean
+  expect_equal(t1$var1, a_matched)
+  expect_equal(t1$var2, b_matched)
+  expect_equal(t1$by, NA)
+  
+  expect_equal(t3$df, t4$parameter[[1]], tolerance = 1e-3) # df
+  expect_equal(t3$tstat, t4$statistic[[1]], tolerance = 1e-3) # test statistic
+  expect_equal(t3$p, t4$p.value, tolerance = 1e-3) # p-value
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[3, 7]], start = 2, stop = nchar(t3$tab[[3, 7]])-1), ", ")[[1]]),
+               t4$conf.int[1:2], tolerance = 5e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[1, 7]], start = 2, stop = nchar(t3$tab[[1, 7]])-1), ", ")[[1]]),
+               c(mean(a) - qt(0.975, 49)*sd(a)/sqrt(length(a)), mean(a) + qt(0.975, 49)*sd(a)/sqrt(length(a))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t3$tab[[2, 7]], start = 2, stop = nchar(t3$tab[[2, 7]])-1), ", ")[[1]]),
+               c(mean(b) - qt(0.975, 49)*sd(b)/sqrt(length(b)), mean(b) + qt(0.975, 49)*sd(b)/sqrt(length(b))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(t3$tab[[1,1]], "a_na") # var name
+  expect_equal(t3$tab[[2,1]], "b_na") # var name
+  expect_equal(t3$tab[[3,1]], "Difference") # var name
+  expect_equal(as.numeric(t3$tab[[1, 2]]), length(a_na)) # n obs
+  expect_equal(as.numeric(t3$tab[[2, 2]]), length(b_na)) # n obs
+  expect_equal(as.numeric(t3$tab[[3, 2]]), length(a_na) + length(b_na)) # n obs
+  expect_equal(as.numeric(t3$tab[[1, 3]]), sum(is.na(a_na))) # NAs
+  expect_equal(as.numeric(t3$tab[[2, 3]]), sum(is.na(b_na))) # NAs
+  expect_equal(as.numeric(t3$tab[[3, 3]]), sum(is.na(a_na)) + sum(is.na(b_na))) # NAs
+  expect_equal(as.numeric(t3$tab[[1, 4]]), mean(a), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[2, 4]]), mean(b), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t3$tab[[3, 4]]), mean(a_na, na.rm = TRUE) - mean(b_na, na.rm=TRUE), 
+               tolerance = 1e-2) # estimate of mean
+  expect_equal(t3$var1, a_na)
+  expect_equal(t3$var2, b_na)
+  expect_equal(t3$by, NA)
+  
+  expect_equal(t5$df, t6$parameter[[1]], tolerance = 1e-3) # df
+  expect_equal(t5$tstat, t6$statistic[[1]], tolerance = 1e-3) # test statistic
+  expect_equal(t5$p, t6$p.value, tolerance = 1e-3) # p-value
+  expect_equal(as.numeric(strsplit(substr(t5$tab[[3, 7]], start = 2, stop = nchar(t5$tab[[3, 7]])-1), ", ")[[1]]),
+               t6$conf.int[1:2], tolerance = 5e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t5$tab[[1, 7]], start = 2, stop = nchar(t5$tab[[1, 7]])-1), ", ")[[1]]),
+               c(mean(a) - qt(0.975, 49)*sd(a)/sqrt(length(a)), mean(a) + qt(0.975, 49)*sd(a)/sqrt(length(a))), 
+               tolerance = 1e-3) # conf int
+  expect_equal(as.numeric(strsplit(substr(t5$tab[[2, 7]], start = 2, stop = nchar(t5$tab[[2, 7]])-1), ", ")[[1]]),
+               c(mean(b_short) - qt(0.975, 48)*sd(b_short)/sqrt(49), 
+                 mean(b_short) + qt(0.975, 48)*sd(b_short)/sqrt(49)), 
+               tolerance = 1e-2) # conf int
+  expect_equal(t5$tab[[1,1]], "by = 1") # var name
+  expect_equal(t5$tab[[2,1]], "by = 2") # var name
+  expect_equal(t5$tab[[3,1]], "Difference") # var name
+  expect_equal(as.numeric(t5$tab[[1, 2]]), length(a_na)) # n obs
+  expect_equal(as.numeric(t5$tab[[2, 2]]), length(b_short)) # n obs
+  expect_equal(as.numeric(t5$tab[[3, 2]]), length(a_na) + length(b_na)-2) # n obs
+  expect_equal(as.numeric(t5$tab[[1, 3]]), sum(is.na(a_na))) # NAs
+  expect_equal(as.numeric(t5$tab[[2, 3]]), sum(is.na(b_short))) # NAs
+  expect_equal(as.numeric(t5$tab[[3, 3]]), sum(is.na(a_na)) + sum(is.na(b_short))) # NAs
+  expect_equal(as.numeric(t5$tab[[1, 4]]), mean(a), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t5$tab[[2, 4]]), mean(b_short), tolerance = 1e-3) # estimate of mean
+  expect_equal(as.numeric(t5$tab[[3, 4]]), mean(a_na, na.rm = TRUE) - mean(b_short), 
+               tolerance = 1e-2) # estimate of mean
+  expect_equal(t5$var1, a_na)
+  expect_equal(t5$var2, b_short)
+  expect_equal(t5$by, by[!is.na(by)])
+})

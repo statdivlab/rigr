@@ -781,3 +781,42 @@ test_that("wilcoxon() returns correct numbers for two-sample uncorrected test, n
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
 })
+
+
+### NAs
+a_na <- c(NA, a)
+b_na <- c(b, NA)
+wil1 <- wilcoxon(a_na, b_na, paired = TRUE)
+wil2 <- wilcox.test(a_na, b_na, paired = TRUE, correct = FALSE, exact = FALSE)
+wil3 <- wilcoxon(a_na, b_na, paired = FALSE)
+wil4 <- wilcox.test(a_na, b_na, paired = FALSE, correct = FALSE, exact = FALSE)
+
+test_that("wilcoxon() handles NAs", {
+  expect_s3_class(wil1, "wilcoxon")
+  expect_equal(as.numeric(wil1$statistic), as.numeric(wil2$statistic))
+  expect_equal(wil1$p.value, wil2$p.value)
+  expect_equal(wil1$method, wil2$method)
+  expect_equal(wil1$data.name, wil2$data.name)
+  #expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
+  expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
+               round(wil2$p.value, digits = 4))
+  expect_equal(wil1$alternative, wil2$alternative)
+  expect_equal(as.numeric(wil1$hyps[1,1]), as.numeric(wil1$null.value))
+  expect_equal(wil1$hyps[1,2], wil1$alternative)
+  expect_equal(wil1$null.value, wil2$null.value) 
+  expect_equal(wil1$parameter, wil2$parameter)
+  
+  expect_s3_class(wil3, "wilcoxon")
+  expect_equal(as.numeric(wil3$statistic), as.numeric(wil4$statistic))
+  expect_equal(wil3$p.value, wil4$p.value)
+  expect_equal(wil3$method, wil4$method)
+  expect_equal(wil3$data.name, wil2$data.name)
+  #expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
+  expect_equal(round(as.numeric(wil3$inf[1,2]), digits = 4), 
+               round(wil4$p.value, digits = 4))
+  expect_equal(wil3$alternative, wil4$alternative)
+  expect_equal(as.numeric(wil3$hyps[1,1]), as.numeric(wil3$null.value))
+  expect_equal(wil3$hyps[1,2], wil3$alternative)
+  expect_equal(wil3$null.value, wil4$null.value) 
+  expect_equal(wil3$parameter, wil4$parameter)
+})
