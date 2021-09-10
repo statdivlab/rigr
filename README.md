@@ -9,28 +9,37 @@
 
 # `rigr`: Regression, Inference, and General Data Analysis Tools for R
 
-# Introduction
+## Introduction
 
-`rigr` is a R package designed to facilitate easy adoption of regression
-and inference tools in R. `rigr`, formerly known as `uwIntroStats`,
-compiles output from existing routines together in an intuitive format,
-and adds functionality to existing functions. For instance, the
-`regress` function can perform linear models and generalized linear
-models. The user can also specify multiple-partial F-tests to print out
-with the model coefficients, and robust standard errors are provided
-automatically. We also provide functions for descriptive statistics and
-one- and two-sample inference with improved, legible output.
+`rigr` is an `R` package to streamline data analysis in `R`. Learning
+both `R` and introductory statistics at the same time can be
+challenging, and so we created `rigr` to facilitate common data analysis
+tasks and enable learners to focus on statistical concepts.
+
+`rigr`, formerly known as
+[`uwIntroStats`](https://cran.r-project.org/web/packages/uwIntroStats/index.html),
+provides easy-to-use interfaces for descriptive statistics, one- and
+two-sample inference, and regression analyses. `rigr` output includes
+key information while omitting unncessary details that can be confusing
+to beginners. Heteroskedasticity-robust (“sandwich”) standard errors are
+returned by default, and multiple partial F-tests and tests for
+contrasts are easy to specify. A single regression function
+(`regress()`) can fit both linear and generalized linear models,
+allowing students to more easily make connections between different
+classes of models.
 
 ## Installation
-
-You can install `rigr` from CRAN using the code below.
-
-    install.packages("rigr")
 
 You can install the development version of `rigr` from GitHub using the
 code below.
 
-    devtools::install_github("statdivlab/rigr")
+    remotes::install_github("statdivlab/rigr")
+
+If this produces an error, please run `install.packages("remotes")`
+first then try the above line again.
+
+**Coming soon:** We are in the process of submitting `rigr` to CRAN, and
+will update this document with CRAN installation instructions shortly.
 
 `rigr` is maintained by the
 [StatDivLab](http://statisticaldiversitylab.com/), but relies on
@@ -51,19 +60,23 @@ including `ttest`, `wilcoxon`, and `proptest`.
 
 Maintainer: [Amy Willis](http://statisticaldiversitylab.com/)
 
-Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Andrew J
+Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Brian D
+Williamson](https://bdwilliamson.github.io/), [Charles
+Wolock](https://cwolock.github.io/), [Taylor
+Okonek](https://taylorokonek.github.io/), [Jim
+Hughes](https://www.biostat.washington.edu/people/james-hughes), [Amy
+Willis](http://statisticaldiversitylab.com/), [Andrew J
 Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd/),
-[Brian D Williamson](https://bdwilliamson.github.io/), [Travis Y Hee
-Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en/),
-Solomon Lim, [Charles Wolock](https://cwolock.github.io/), and [Taylor
-Okonek](https://taylorokonek.github.io/).
+[Travis Y Hee
+Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en/) and
+Solomon Lim.
 
 ## Issues
 
-If you encounter any bugs, please [file an
+If you encounter any **bugs**, please [file an
 issue](https://github.com/statdivlab/rigr/issues/). Better yet, [submit
 a pull request](https://github.com/statdivlab/rigr/pulls/)!
 
-Do you have a question? Please first check out the vignettes, then
+Do you have a **question**? Please first check out the vignettes, then
 please post on the
 [Discussions](https://github.com/statdivlab/rigr/discussions/).
