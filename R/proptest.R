@@ -27,6 +27,7 @@
 #' of the test. Defaults to a two-sided test.
 #' @param conf.level confidence level of the
 #' test. Defaults to 0.95.
+#' @param correct a logical indicating whether to perform a continuity correction
 #' @param more.digits a numeric value
 #' specifying whether or not to display more or fewer digits in the output.
 #' Non-integers are automatically rounded down. 
@@ -68,11 +69,11 @@
 #' @export proptest
 proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE, 
                     null.hypoth = ifelse(is.null(var2) && is.null(by), 0.5, 0), alternative = "two.sided", 
-                    conf.level = 0.95, more.digits = 0) 
+                    conf.level = 0.95, correct = FALSE, more.digits = 0) 
 {
   proptest.do <- function(var1, var2 = NULL, by = NULL, 
                        exact = FALSE, null.hypoth = ifelse(is.null(var2) && is.null(by), 0.5, 0), alternative = "two.sided", 
-                       conf.level = 0.95, more.digits = 0, 
+                       conf.level = 0.95, correct = FALSE, more.digits = 0, 
                        myargs, ...) {
     # can only do var1 vs var2 or var1 by
     if (length(var2) > 0 & length(by) > 0) {
@@ -104,11 +105,14 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
     if (!is.logical(exact)){
       stop("'exact' must be a logical.")
     }
-    # if (!is.logical(correct)){
-    #   stop("'correct' must be a logical.")
-    # }
+    if (!is.logical(correct)){
+      stop("'correct' must be a logical.")
+    }
     if ((length(var2) > 0 || length(by) > 0) && exact){
       stop("Exact binomial test not available for two samples.")  
+    }
+    if (null.hypoth != 0 && !is.null(var2)){
+      stop("Two sample test only allows a null of 0.")
     }
     #levs <- NULL
     #levs1 <- NULL
@@ -162,8 +166,6 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
     }
     digits <- 3 + more.digits
     
-    #yates <- ifelse(correct, 0.5, 0)
-    
     cl <- (1 + conf.level)/2
     # Case where by is not entered
     if (length(by) == 0 & is.null(by[1])) {
@@ -194,8 +196,8 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
                                     digits = digits))
         } else {
           chisq <- stats::prop.test(x = sum(var1), n = length(var1), conf.level = conf.level, p = null.hypoth,
-                             alternative = alternative, correct = FALSE)
-          zstat <- as.numeric(format(sqrt(chisq$statistic), 
+                             alternative = alternative, correct = correct)
+          zstat <- as.numeric(format(sign(est1 - null.hypoth)*sqrt(chisq$statistic), 
                                          digits = digits))
           pval <- as.numeric(format(chisq$p.value, 
                                       digits = digits))
@@ -240,16 +242,13 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
         cih <- c(est1 + stats::qnorm(cl)*se[1],
                  est2 + stats::qnorm(cl)*se[2],
                  est1 - est2 + stats::qnorm(cl) * se[3])
-        zstat <- (est_diff - null.hypoth)/se[3]
-        if (alternative == "two.sided"){
-          pval <- 2*stats::pnorm(-abs(zstat))
-        } else if(alternative == "less"){
-          pval <- stats::pnorm(zstat)
-        } else{
-          pval <- 1 - stats::pnorm(zstat)
-        }
-        zstat <- as.numeric(format(zstat, digits = digits))
-        pval <- as.numeric(format(pval, digits = digits))
+        chisq <- stats::prop.test(x = c(sum(var1), sum(var2)),
+                                  n = c(length(var1), length(var2)),
+                                  conf.level = conf.level, alternative = alternative, correct = correct)
+        zstat <- as.numeric(format(sign(est_diff)*sqrt(chisq$statistic), 
+                                   digits = digits))
+        pval <- as.numeric(format(chisq$p.value, 
+                                  digits = digits))
         cil <- as.numeric(format(cil, digits = digits))
         cih <- as.numeric(format(cih, digits = digits))
         se <- as.numeric(format(se, digits = digits))
@@ -293,14 +292,13 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
       cih <- c(est1 + stats::qnorm(cl)*se[1],
                est2 + stats::qnorm(cl)*se[2],
                est1 - est2 + stats::qnorm(cl) * se[3])
-      zstat <- (est_diff - null.hypoth)/se[3]
-      if (alternative == "two.sided"){
-        pval <- 2*stats::pnorm(-abs(zstat))
-      } else if(alternative == "less"){
-        pval <- stats::pnorm(zstat)
-      } else{
-        pval <- 1 - stats::pnorm(zstat)
-      }
+      chisq <- stats::prop.test(x = c(sum(var1), sum(var2)),
+                                n = c(length(var1), length(var2)),
+                                conf.level = conf.level, alternative = alternative, correct = correct)
+      zstat <- as.numeric(format(sign(est_diff)*sqrt(chisq$statistic), 
+                                 digits = digits))
+      pval <- as.numeric(format(chisq$p.value, 
+                                digits = digits))
       cil <- as.numeric(format(cil, digits = digits))
       cih <- as.numeric(format(cih, digits = digits))
       se <- as.numeric(format(se, digits = digits))
@@ -327,7 +325,7 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
       
     }
     par <- c(null.hypoth = null.hypoth, alternative = alternative, 
-             conf.level = conf.level, exact = exact, digits = digits)
+             conf.level = conf.level, exact = exact, correct = correct, digits = digits)
     invisible(list(tab = main, zstat = zstat, pval = pval, 
                    var1 = var1, var2 = var2, by = by, par = par))
   }
@@ -361,6 +359,7 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
                                     null.hypoth = null.hypoth, alternative = alternative, 
                                     conf.level = conf.level,
                                     more.digits = more.digits, 
+                                    correct = correct,
                                     myargs = myargs)
         
       }
@@ -375,6 +374,7 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
                                     null.hypoth = null.hypoth, alternative = alternative, 
                                     conf.level = conf.level,
                                     more.digits = more.digits, 
+                                    correct = correct,
                                     myargs = myargs)
       }
     }
@@ -390,7 +390,8 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
                                   null.hypoth = null.hypoth, 
                                   alternative = alternative, 
                                   conf.level = conf.level,
-                                  more.digits = more.digits, 
+                                  more.digits = more.digits,
+                                  correct = correct,
                                   myargs = myargs)
     }
   }

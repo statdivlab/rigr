@@ -22,6 +22,7 @@
 #' of the test. Defaults to a two-sided test.
 #' @param conf.level confidence level of the
 #' test. Defaults to 0.95
+#' @param correct a logical indicating whether to perform a continuity correction
 #' @param more.digits a numeric value
 #' specifying whether or not to display more or fewer digits in the output.
 #' Non-integers are automatically rounded down.
@@ -44,13 +45,15 @@
 #' @export proptesti
 proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
                       null.hypoth = ifelse(is.null(x2) && is.null(n2), 0.5, 0), 
-                   conf.level=.95, 
-                   alternative="two.sided", 
-                   more.digits = 0){
+                      conf.level=.95, 
+                      alternative="two.sided", 
+                      correct = FALSE,
+                      more.digits = 0){
   proptesti.do <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
                            null.hypoth = ifelse(is.null(x2) && is.null(n2), 0.5, 0), 
                            conf.level=.95, 
                            alternative="two.sided", 
+                           correct = FALSE,
                            more.digits = 0, ...) {
     if (!(is.scalar(x1) && is.scalar(n1) && x1%%1 == 0 && n1%%1 == 0 && x1 >= 0 && n1 > 0)){
       stop("'x1' and 'n1' must be nonnegative integers")
@@ -85,8 +88,14 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
     if (!is.logical(exact)){
       stop("'exact' must be a logical.")
     }
+    if (!is.logical(correct)){
+      stop("'correct' must be a logical.")
+    }
     if (!is.null(n2) && exact){
       stop("Exact binomial test not available for two samples.")  
+    }
+    if (null.hypoth != 0 && !is.null(n2)){
+      stop("Two sample test only allows a null of 0.")
     }
     # check to make sure additional digit request is numeric
     if (!is.numeric(more.digits)) {
@@ -108,10 +117,10 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
                                  digits = digits))
         cih <- as.numeric(format(max(test$conf.int), 
                                  digits = digits))
-
+        
       } else{
-        test <- stats::prop.test(x1, n1, p = null.hypoth, alternative = alternative, conf.level = conf.level, correct = FALSE)
-        zstat <- as.numeric(format(sqrt(test$statistic), 
+        test <- stats::prop.test(x1, n1, p = null.hypoth, alternative = alternative, conf.level = conf.level, correct = correct)
+        zstat <- as.numeric(format(sign(est1 - null.hypoth)*sqrt(test$statistic), 
                                    digits = digits))
         pval <- as.numeric(format(test$p.value, 
                                   digits = digits))
@@ -123,24 +132,19 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
       est1 <- as.numeric(format(est1, digits = digits))
       se1 <- as.numeric(format(se1, digits = digits))
       printMat <- matrix(c("var1", n1, 
-                       est1, se1, paste("[", cil, ", ", cih, 
-                                       "]", sep = "")), ncol = 5)
+                           est1, se1, paste("[", cil, ", ", cih, 
+                                            "]", sep = "")), ncol = 5)
       colnames(printMat) <- c("Variable", "Obs", "Mean", "Std. Error", paste0(conf.level*100, "% CI"))
       rownames(printMat) <- ""
     } else{
       twosamp <- TRUE
       est <- c(x1/n1, x2/n2, x1/n1- x2/n2)
       se <- c(sqrt(est[1] * (1-est[1])/n1), sqrt(est[2] * (1-est[2])/n2), sqrt(est[1] * (1-est[1])/n1 + est[2] * (1-est[2])/n2))
-      zstat <- (est[3] - null.hypoth)/se[3]
-      if (alternative == "two.sided"){
-        pval <- 2*stats::pnorm(-abs(zstat))
-      } else if(alternative == "less"){
-        pval <- stats::pnorm(zstat)
-      } else{
-        pval <- 1 - stats::pnorm(zstat)
-      }
-      zstat <- as.numeric(format(zstat, digits = digits))
-      pval <- as.numeric(format(pval, digits = digits))
+      test <- stats::prop.test(c(x1,x2),c(n1,n2), alternative = alternative, conf.level = conf.level, correct = correct)
+      zstat <- as.numeric(format(sign(est[3])*sqrt(test$statistic), 
+                                 digits = digits))
+      pval <- as.numeric(format(test$p.value, 
+                                digits = digits))
       cil <- c(est[1] - stats::qnorm(cl) * se[1],
                est[2] - stats::qnorm(cl) * se[2],
                est[1] - est[2] - stats::qnorm(cl)*se[3])
@@ -155,26 +159,26 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
       se <- as.numeric(format(se, digits = digits))
       printMat <- matrix(c("var1", n1, 
                            est[1], se[1], paste("[", cil[1], ", ", cih[1], 
-                                            "]", sep = ""),
+                                                "]", sep = ""),
                            "var2", n2, est[2], se[2], paste("[", cil[2], ", ", cih[2], 
-                                                           "]", sep = ""),
+                                                            "]", sep = ""),
                            "Difference", n1 + n2, est[3], se[3], paste("[", cil[3], ", ", cih[3], 
-                                                                 "]", sep = "")), ncol = 5, byrow = TRUE)
+                                                                       "]", sep = "")), ncol = 5, byrow = TRUE)
       printMat <- data.frame(printMat)
       names(printMat) <- c("Group", "Obs", 
-                       "Mean", "Std. Err.", paste(conf.level * 100, "% CI", sep = ""))
+                           "Mean", "Std. Err.", paste(conf.level * 100, "% CI", sep = ""))
       row.names(printMat) <- c("", " ", "  ")
     }
     par <- c(null.hypoth = null.hypoth, alternative = alternative, 
              conf.level = conf.level, exact = exact,  twosamp = twosamp,
-             digits = digits)
+             correct = correct, digits = digits)
     invisible(list(tab = printMat, pval = pval, zstat = zstat, 
                    par = par))
   }
   myargs <- c(deparse(substitute(n1)), deparse(substitute(n2)))
   proptesti.obj <- proptesti.do(x1 = x1, n1 = n1, x2 = x2, n2 = n2,
-                          null.hypoth = null.hypoth, conf.level = conf.level,
-                          alternative = alternative, exact = exact, more.digits = more.digits)
+                                null.hypoth = null.hypoth, conf.level = conf.level,
+                                alternative = alternative, exact = exact, correct = correct, more.digits = more.digits)
   proptesti.obj$call <- match.call()
   class(proptesti.obj) <- "proptesti"
   return(proptesti.obj)

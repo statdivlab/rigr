@@ -94,7 +94,7 @@ test_that("proptest() returns correct numbers for one-sample test", {
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, null.hypoth = 0.6)
@@ -121,7 +121,7 @@ test_that("proptest() returns correct numbers for one-sample test, non-0.5 null"
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, alternative = "less")
@@ -148,7 +148,7 @@ test_that("proptest() returns correct numbers for one-sample test, left-sided", 
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, alternative = "greater")
@@ -175,7 +175,7 @@ test_that("proptest() returns correct numbers for one-sample test, right-sided",
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, conf.level = 0.9)
@@ -202,7 +202,7 @@ test_that("proptest() returns correct numbers for one-sample test, non-0.95 leve
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 ### one-sample test, exact
@@ -229,7 +229,7 @@ test_that("proptest() returns correct numbers for one-sample exact test", {
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_true(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, exact = TRUE, null.hypoth = 0.6)
@@ -254,7 +254,7 @@ test_that("proptest() returns correct numbers for one-sample exact test, non-0.5
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_true(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, exact = TRUE, alternative = "less")
@@ -279,7 +279,7 @@ test_that("proptest() returns correct numbers for one-sample exact test, left-si
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_true(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, exact = TRUE, alternative = "greater")
@@ -304,7 +304,7 @@ test_that("proptest() returns correct numbers for one-sample exact test, right-s
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_true(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, exact = TRUE, conf.level = 0.9)
@@ -329,7 +329,7 @@ test_that("proptest() returns correct numbers for one-sample exact test, non-0.9
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_true(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 
@@ -384,7 +384,7 @@ test_that("proptest() returns correct numbers for two-sample test", {
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, b, alternative = "less")
@@ -434,7 +434,7 @@ test_that("proptest() returns correct numbers for two-sample test, left-sided", 
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, b, alternative = "greater")
@@ -484,7 +484,7 @@ test_that("proptest() returns correct numbers for two-sample test, right-sided",
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a, b, conf.level = 0.9)
@@ -534,62 +534,7 @@ test_that("proptest() returns correct numbers for two-sample test, right-sided",
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
-})
-
-p1 <- proptest(a, b, null.hypoth = 0.6)
-p2 <- prop.test(c(sum(a), sum(b)), c(length(a), length(b)), correct = FALSE)
-est1 <- sum(a)/length(a)
-est2 <- sum(b)/length(b)
-se <- sqrt(est1*(1-est1)/length(a) + est2*(1-est2)/length(b))
-test_stat <- (est1 - est2 - 0.6)/se
-pval <- 2*pnorm(-abs(test_stat))
-
-test_that("proptest() returns correct numbers for two-sample test, non-0 null", {
-  expect_s3_class(p1, "proptest")
-  expect_equal(p1$zstat, test_stat, tolerance = 1e-2) # test statistic
-  expect_equal(p1$pval, pval, tolerance = 1e-2) # p-value
-  expect_equal(as.numeric(strsplit(substr(p1$tab[1,6], start = 2, stop = nchar(p1$tab[1,6])-1), ", ")[[1]]),
-               c(p2$estimate[[1]] - 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
-                 p2$estimate[[1]] + 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a))), 
-               tolerance = 1e-2) # conf int
-  expect_equal(as.numeric(strsplit(substr(p1$tab[2,6], start = 2, stop = nchar(p1$tab[2,6])-1), ", ")[[1]]),
-               c(p2$estimate[[2]] - 1.96*sqrt(p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b)), 
-                 p2$estimate[[2]] + 1.96*sqrt(p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b))), 
-               tolerance = 1e-2) # conf int
-  expect_equal(as.numeric(strsplit(substr(p1$tab[3,6], start = 2, stop = nchar(p1$tab[3,6])-1), ", ")[[1]]),
-               c(p2$estimate[[1]] - p2$estimate[[2]] - 1.96*
-                   sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a) + p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b)), 
-                 p2$estimate[[1]] - p2$estimate[[2]] + 1.96*
-                   sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a) + p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b))), 
-               tolerance = 1e-2) # conf int
-  expect_equal(p1$tab[1,1], "a") # var name
-  expect_equal(p1$tab[2,1], "b") # var name
-  expect_equal(p1$tab[3,1], "Difference") # var name
-  expect_equal(as.numeric(p1$tab[1,2]), length(a)) # n obs
-  expect_equal(as.numeric(p1$tab[2,2]), length(b)) # n obs
-  expect_equal(as.numeric(p1$tab[3,2]), length(a) + length(b)) # n obs
-  expect_equal(as.numeric(p1$tab[1,3]), sum(is.na(a))) # NAs
-  expect_equal(as.numeric(p1$tab[2,3]), sum(is.na(b))) # NAs
-  expect_equal(as.numeric(p1$tab[3,3]), sum(is.na(a)) + sum(is.na(b))) # NAs
-  expect_equal(as.numeric(p1$tab[1,4]), p2$estimate[[1]], tolerance = 1e-2) # estimate of mean
-  expect_equal(as.numeric(p1$tab[2,4]), p2$estimate[[2]], tolerance = 1e-2) # estimate of mean
-  expect_equal(as.numeric(p1$tab[3,4]), p2$estimate[[1]] - p2$estimate[[2]], tolerance = 1e-2) # estimate of mean
-  expect_equal(as.numeric(p1$tab[1,5]), sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
-               tolerance = 1e-2) # standard error of mean est
-  expect_equal(as.numeric(p1$tab[2,5]), sqrt(p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b)), 
-               tolerance = 1e-2) # standard error of mean est
-  expect_equal(as.numeric(p1$tab[3,5]), sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a) + 
-                                               p2$estimate[[2]]*(1-p2$estimate[[2]])/length(b)), 
-               tolerance = 1e-2) # standard error of mean est
-  expect_equal(p1$var1, a) 
-  expect_equal(p1$var2, b)
-  expect_null(p1$by)
-  expect_equal(as.numeric(p1$par[[1]]), 0.6) # null 
-  expect_equal(p1$par[[2]], p2$alternative) # alternative
-  expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
-  expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 ### two-sample test, using by 
@@ -642,7 +587,7 @@ test_that("proptest() returns correct numbers for two-sample test, using by", {
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 groups <- factor(c(rep("group 1", 100), rep("group 2", 100)))
@@ -693,7 +638,7 @@ test_that("proptest() returns correct numbers for two-sample test, using by", {
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 ### factor data
@@ -724,7 +669,7 @@ test_that("proptest() returns correct numbers for one-sample test with factor", 
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
 })
 
 p1 <- proptest(a_fac, b_fac)
@@ -774,5 +719,54 @@ test_that("proptest() returns correct numbers for two-sample test, factor", {
   expect_equal(p1$par[[2]], p2$alternative) # alternative
   expect_equal(as.numeric(p1$par[[3]]), attr(p2$conf.int, "conf.level")) # conf level
   expect_false(as.logical(p1$par[[4]]))
-  expect_equal(as.numeric(p1$par[[5]]), 3) # digits
+  expect_equal(as.numeric(p1$par[[6]]), 3) # digits
+})
+
+### continuity correction
+p1 <- proptest(a, null.hypoth = 0.6, correct = TRUE, alternative = "two.sided")
+p2 <- prop.test(sum(a), length(a), correct = TRUE, p = 0.6, alternative = "two.sided")
+
+test_that("proptesti() continuity correction works, one sample, two-sided", {
+  expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2)
+  expect_equal(abs(p1$pval), p2$p.value, tolerance = 1e-2)
+})
+
+p1 <- proptest(a, null.hypoth = 0.6, correct = TRUE, alternative = "less")
+p2 <- prop.test(sum(a), length(a), correct = TRUE, p = 0.6, alternative = "less")
+
+test_that("proptesti() continuity correction works, one sample, left-sided", {
+  expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2)
+  expect_equal(abs(p1$pval), p2$p.value, tolerance = 1e-2)
+})
+
+p1 <- proptest(a, null.hypoth = 0.6, correct = TRUE, alternative = "greater")
+p2 <- prop.test(sum(a), length(a), correct = TRUE, p = 0.6, alternative = "greater")
+
+test_that("proptesti() continuity correction works, one sample, right-sided", {
+  expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2)
+  expect_equal(abs(p1$pval), p2$p.value, tolerance = 1e-2)
+})
+
+p1 <- proptest(a,b, correct = TRUE, alternative = "two.sided")
+p2 <- prop.test(c(sum(a),sum(b)), c(length(a), length(b)), correct = TRUE, alternative = "two.sided")
+
+test_that("proptesti() continuity correction works, one sample, two-sided", {
+  expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2)
+  expect_equal(abs(p1$pval), p2$p.value, tolerance = 1e-2)
+})
+
+p1 <- proptest(a,b, correct = TRUE, alternative = "less")
+p2 <- prop.test(c(sum(a),sum(b)), c(length(a), length(b)), correct = TRUE, alternative = "less")
+
+test_that("proptesti() continuity correction works, one sample, left-sided", {
+  expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2)
+  expect_equal(abs(p1$pval), p2$p.value, tolerance = 1e-2)
+})
+
+p1 <- proptest(a,b, correct = TRUE, alternative = "greater")
+p2 <- prop.test(c(sum(a),sum(b)), c(length(a), length(b)), correct = TRUE, alternative = "greater")
+
+test_that("proptesti() continuity correction works, one sample, right-sided", {
+  expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2)
+  expect_equal(abs(p1$pval), p2$p.value, tolerance = 1e-2)
 })

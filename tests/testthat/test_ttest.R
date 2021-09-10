@@ -34,7 +34,7 @@ test_that("ttest() throws error if var.eq is not logical", {
 
 x3 <- rnorm(99)
 
-test_that("ttest() throws error if matched test performedm on different numbers of observations", {
+test_that("ttest() throws error if matched test performed on different numbers of observations", {
   expect_error(ttest(x1, x3, matched = TRUE),
               "Cannot perform matched t-test on variable of unequal length")
   expect_error(ttest(x3, x1, matched = TRUE),
@@ -45,6 +45,8 @@ test_that("ttest() throws error if matched test performedm on different numbers 
 
 test_that("ttest() throws error for non-numeric data", {
   expect_error(ttest(c("a", "B", "c")), 
+               "Cannot perform t-test on non-numeric data")
+  expect_error(ttest(x1, rep(NA, 100)), 
                "Cannot perform t-test on non-numeric data")
 })
 

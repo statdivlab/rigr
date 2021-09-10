@@ -16,6 +16,7 @@ proptest(
   null.hypoth = ifelse(is.null(var2) && is.null(by), 0.5, 0),
   alternative = "two.sided",
   conf.level = 0.95,
+  correct = FALSE,
   more.digits = 0
 )
 }
@@ -44,6 +45,8 @@ of the test. Defaults to a two-sided test.}
 
 \item{conf.level}{confidence level of the
 test. Defaults to 0.95.}
+
+\item{correct}{a logical indicating whether to perform a continuity correction}
 
 \item{more.digits}{a numeric value
 specifying whether or not to display more or fewer digits in the output.
