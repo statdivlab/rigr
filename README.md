@@ -17,7 +17,7 @@ challenging, and so we created `rigr` to facilitate common data analysis
 tasks and enable learners to focus on statistical concepts.
 
 `rigr`, formerly known as
-[`uwIntroStats`](https://cran.r-project.org/web/packages/uwIntroStats/index.html),
+[`uwIntroStats`](https://CRAN.R-project.org/package=uwIntroStats),
 provides easy-to-use interfaces for descriptive statistics, one- and
 two-sample inference, and regression analyses. `rigr` output includes
 key information while omitting unncessary details that can be confusing
