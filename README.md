@@ -30,6 +30,10 @@ classes of models.
 
 ## Installation
 
+You can install the development version of `rigr` from CRAN as follows:
+
+    install.packages("rigr")
+
 You can install the development version of `rigr` from GitHub using the
 code below.
 
@@ -37,9 +41,6 @@ code below.
 
 If this produces an error, please run `install.packages("remotes")`
 first then try the above line again.
-
-**Coming soon:** We are in the process of submitting `rigr` to CRAN, and
-will update this document with CRAN installation instructions shortly.
 
 `rigr` is maintained by the
 [StatDivLab](http://statisticaldiversitylab.com/), but relies on
@@ -66,10 +67,9 @@ Wolock](https://cwolock.github.io/), [Taylor
 Okonek](https://taylorokonek.github.io/), [Jim
 Hughes](https://www.biostat.washington.edu/people/james-hughes), [Amy
 Willis](http://statisticaldiversitylab.com/), [Andrew J
-Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd/),
-[Travis Y Hee
-Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en/) and
-Solomon Lim.
+Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd/)
+and [Travis Y Hee
+Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en/).
 
 ## Issues
 

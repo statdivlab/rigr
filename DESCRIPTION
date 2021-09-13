@@ -1,18 +1,16 @@
 Package: rigr
 Title: Regression, Inference, and General Data Analysis Tools for R
 Version: 1.0.0
-Authors@R: c(person("Amy D", "Willis", email = "adwillis@uw.edu", role = c("aut", "cre")),
+Authors@R: c(person("Amy D", "Willis", email = "adwillis@uw.edu", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-2802-4317")),
              person("Taylor", "Okonek", role = "aut"),
              person("Charles J", "Wolock", role = "aut"),
              person("Brian D", "Williamson", role = "aut"),
              person("Scott S", "Emerson", role = "aut"),
              person("Andrew J", "Spieker", role = "aut"),
-             person("Travis Y Hee", "Wai", role = "aut"),
+             person("Travis Y Hee", "Wai", role = "ctb"),
              person("James P", "Hughes", role = "ctb"),
-             person("Solomon", "Lim", role = "aut"),
-             person("Terry M", "Therneu", role = "ctb"),
              person("Thomas", "Lumley", role = "ctb"))
-Description: A set of tools to streamline data analysis in R. Learning both R and introductory statistics at the same time can be challenging, and so we created 'rigr' to facilitate common data analysis tasks and enable learners to focus on statistical concepts. We provide easy-to-use interfaces for descriptive statistics, one- and two-sample inference, and regression analyses. 'rigr' output includes key information while omitting unncessary details that can be confusing to beginners. Heteroskedasticity-robust ("sandwich") standard errors are returned by default, and multiple partial F-tests and tests for contrasts are easy to specify. A single regression function ('regress()') can fit both linear and generalized linear models, allowing students to more easily make connections between different classes of models.
+Description: A set of tools to streamline data analysis in R. Learning both R and introductory statistics at the same time can be challenging, and so we created 'rigr' to facilitate common data analysis tasks and enable learners to focus on statistical concepts. We provide easy-to-use interfaces for descriptive statistics, one- and two-sample inference, and regression analyses. 'rigr' output includes key information while omitting unnecessary details that can be confusing to beginners. Heteroscedasticity-robust ("sandwich") standard errors are returned by default, and multiple partial F-tests and tests for contrasts are easy to specify. A single regression function can fit both linear and generalized linear models, allowing students to more easily make connections between different classes of models.
 License: MIT + file LICENSE
 BugReports: https://github.com/statdivlab/rigr/issues/
 Depends:
