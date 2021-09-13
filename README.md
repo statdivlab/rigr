@@ -30,10 +30,6 @@ classes of models.
 
 ## Installation
 
-You can install the development version of `rigr` from CRAN as follows:
-
-    install.packages("rigr")
-
 You can install the development version of `rigr` from GitHub using the
 code below.
 
@@ -41,6 +37,10 @@ code below.
 
 If this produces an error, please run `install.packages("remotes")`
 first then try the above line again.
+
+**Update (13 September 2021):** `rigr` has been submitted to CRAN, and
+we hope update this document with CRAN installation instructions
+shortly.
 
 `rigr` is maintained by the
 [StatDivLab](http://statisticaldiversitylab.com/), but relies on
