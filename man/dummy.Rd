@@ -6,7 +6,7 @@
 \usage{
 dummy(
   x,
-  subset = rep(T, length(x)),
+  subset = rep(TRUE, length(x)),
   reference = sort(unique(x[!is.na(x)])),
   includeAll = FALSE
 )

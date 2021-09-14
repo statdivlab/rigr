@@ -696,7 +696,7 @@ regress <- function(fnctl, formula, data,
   
   if (fnctl %in% c("mean","geometric mean")) {
     zzs <- summary(fit)
-    converge <- T
+    converge <- TRUE
     zzs$naiveCov <-zzs$sigma^2 * zzs$cov.unscaled
     n <- sum(zzs$df[1:2])
   } else {
@@ -707,8 +707,8 @@ regress <- function(fnctl, formula, data,
   }
   
   if (robustSE) {
-    m <- sandwich::sandwich(fit,adjust=T)
-    zzs$coefficients <- cbind(zzs$coefficients[,1:2,drop=F],sqrt(diag(m)),zzs$coefficients[,-(1:2),drop=F])
+    m <- sandwich::sandwich(fit,adjust=TRUE)
+    zzs$coefficients <- cbind(zzs$coefficients[,1:2,drop=FALSE],sqrt(diag(m)),zzs$coefficients[,-(1:2),drop=FALSE])
     dimnames(zzs$coefficients)[[2]][2:3] <- c("Naive SE","Robust SE")
     zzs$robustCov <- m
   }
@@ -752,7 +752,7 @@ regress <- function(fnctl, formula, data,
   
   droppedPred <- is.na(fit$coefficients)
   
-  linearPredictor <- z$X[, !droppedPred] %*% zzs$coefficients[,1,drop=F]
+  linearPredictor <- z$X[, !droppedPred] %*% zzs$coefficients[,1,drop=FALSE]
   
   ## Creating the final uRegress object
   zzs$call <- cl
@@ -787,7 +787,7 @@ regress <- function(fnctl, formula, data,
   zzs$augCoefficients[!u,-1] <- NA 
   
   # compute f-stat as t-stat^2
-  zzs$augCoefficients[,ncol-1] <- zzs$augCoefficients[,ncol-1,drop=F]^2
+  zzs$augCoefficients[,ncol-1] <- zzs$augCoefficients[,ncol-1,drop=FALSE]^2
   zzs$augCoefficients[fst!=lst,] <- NA
   
   zzs$useFdstn <- useFdstn

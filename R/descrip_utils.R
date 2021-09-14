@@ -656,7 +656,7 @@ print.uDescriptives <- function (x, ..., sigfigs=max(3,getOption("digits")-3),wi
                 if (rd <= nonsci.limit & abs(x[i]) < 10^nonsci.limit) {
                     tmp <- format(round(x[i],rd),nsmall=rd,width=1)
                 } else {
-                    tmp <- format(round(x[i],rd), digits=sf, scientific=T, width=1)
+                    tmp <- format(round(x[i],rd), digits=sf, scientific=TRUE, width=1)
                 }
             }
             rslt <- c(rslt,ifelse(x[i]<0,tmp,paste(" ",tmp,sep="")))

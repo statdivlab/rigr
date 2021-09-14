@@ -4,7 +4,7 @@
 \alias{polynomial}
 \title{Create Polynomials}
 \usage{
-polynomial(x, degree = 2, center = mean(x, na.rm = T))
+polynomial(x, degree = 2, center = mean(x, na.rm = TRUE))
 }
 \arguments{
 \item{x}{variable used to create the

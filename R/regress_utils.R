@@ -1666,7 +1666,7 @@ print.augCoefficients <-
     # centers all but df and P value, which is right justified
     
     cmptRoundDigits <- function (x, sf) {
-      y <- max(abs(x),na.rm=T)
+      y <- max(abs(x),na.rm=TRUE)
       if (y==0) {
         sf
       } else {
@@ -1685,7 +1685,7 @@ print.augCoefficients <-
           if (rd <= nonsci.limit & abs(x[i]) < 10^nonsci.limit) {
             tmp <- format(round(x[i],rd),nsmall=rd,width=1)
           } else {
-            tmp <- format(round(x[i],rd), digits=sf, scientific=T, width=1)
+            tmp <- format(round(x[i],rd), digits=sf, scientific=TRUE, width=1)
           }
         }
         rslt <- c(rslt,ifelse(x[i]<0,tmp,paste(" ",tmp,sep="")))
@@ -1702,7 +1702,7 @@ print.augCoefficients <-
     dimnames(frmtCoefficients)[[2]][Pvalcol-2] <- paste("  ",dimnames(frmtCoefficients)[[2]][Pvalcol-2])
     frmtCoefficients[,Pvalcol-1] <- format(x[,Pvalcol-1])
     if (Psci) {
-      frmtCoefficients[,Pvalcol] <- format(x[,Pvalcol],digits=sigfigs,scientific=T,width=width,justify="centre")
+      frmtCoefficients[,Pvalcol] <- format(x[,Pvalcol],digits=sigfigs,scientific=TRUE,width=width,justify="centre")
     } else{
       z <- paste(format(round(x[,Pvalcol],4),width=width-1,justify="right")," ",sep="")
       z[x[,Pvalcol] < 5e-5] <- format("< 0.00005",width=width,justify="right")
@@ -1742,7 +1742,7 @@ fitted.uRegress <-
 #' the class of \code{object$fit}. See \code{\link[stats]{predict.lm}}, 
 #' or \code{\link[stats]{predict.glm}} for
 #' more details. 
-#' @return %% ~Describe the value returned Returns a matrix with the fitted
+#' @return Returns a matrix with the fitted
 #' value and prediction interval for the entered X. 
 #' @seealso \code{\link[rigr]{regress}}
 #' @examples

@@ -1,36 +1,32 @@
-#' Descriptive Statistics, One Sample Inference, Regression, and Plotting in an
-#' Introductory Statistics Course
-#' 
+#' Regression, Inference, and General Data Analysis Tools in R
+#'
 #' Developed by Scott S. Emerson, Andrew J. Spieker, Brian D.
-#' Williamson, Travis Y. Hee Wai, and Solomon Lim at the University of
+#' Williamson, and Travis Y. Hee Wai at the University of
 #' Washington Department of Biostatistics. Currently maintained by
 #' Prof. Amy Willis at the University of Washington Department of Biostatistics.
 #' Previously maintained by Charles Wolock and Taylor Okonek, also at the
-#' University of Washington Department of Biostatistics. Aims to facilitate 
-#' use of R for regression, descriptive statistics, and one- and two-sample
+#' University of Washington Department of Biostatistics. Aims to facilitate
+#' regression, descriptive statistics, and one- and two-sample
 #' inference by implementing more intuitive layout and functionality for
 #' existing R functions.
-#' 
+#'
 #' \tabular{ll}{ Package: \tab rigr\cr Type: \tab Package\cr Version:
 #' \tab 1.0.0\cr Date: \tab 2021-09-10\cr License: \tab MIT\cr } A set of
 #' tools designed to facilitate easy adoption of R for students in introductory
 #' classes with little programming experience. Compiles output from existing
 #' routines together in an intuitive format, and adds functionality to existing
 #' functions. For instance, the regression function can perform linear models
-#' and generalized linear models. The user can also specify multiple-partial F-tests 
-#' to print out with the model coefficients, and robust standard errors are 
+#' and generalized linear models. The user can also specify multiple-partial F-tests
+#' to print out with the model coefficients, and robust standard errors are
 #' provided automatically. We also provide functions for descriptive statistics and one-
 #' and two-sample inference with improved, legible output.
-#' 
+#'
 #' @name rigr-package
 #' @aliases rigr-package rigr
 #' @docType package
 #' @author Scott S. Emerson, Andrew J. Spieker, Brian D.
-#' Williamson, Travis Y. Hee Wai, Solomon Lim, Charles Wolock, and Taylor Okonek
-#' 
+#' Williamson, Amy D. Willis, Charles Wolock, and Taylor Okonek
+#'
 #' Maintainer: Amy Willis <adwillis@@uw.edu>
 #' @keywords package
 NULL
-
-
-

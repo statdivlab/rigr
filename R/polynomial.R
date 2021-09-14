@@ -24,7 +24,7 @@
 #' regress("mean", atrophy ~ polynomial(age, degree = 2), data = mri)
 #' 
 #' @export polynomial
-polynomial <- function(x,degree=2,center=mean(x,na.rm=T)) {
+polynomial <- function(x,degree=2,center=mean(x,na.rm=TRUE)) {
   cl <- match.call()
   nm <- deparse(cl[[2]])
   x <- x - center

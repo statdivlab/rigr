@@ -20,7 +20,7 @@ or \code{\link[stats]{predict.glm}} for
 more details.}
 }
 \value{
-%% ~Describe the value returned Returns a matrix with the fitted
+Returns a matrix with the fitted
 value and prediction interval for the entered X.
 }
 \description{

@@ -18,7 +18,7 @@
 #' dummy(mri$chd)
 #' 
 #' @export dummy
-dummy <- function(x, subset=rep(T,length(x)), reference=sort(unique(x[!is.na(x)])),includeAll=FALSE) {
+dummy <- function(x, subset=rep(TRUE,length(x)), reference=sort(unique(x[!is.na(x)])),includeAll=FALSE) {
 	cl <- match.call()
 	nm <- deparse(cl[[2]])
 	
