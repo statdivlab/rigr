@@ -1,8 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<!-- badges: start 
-[![CRAN status](https://www.r-pkg.org/badges/version/corncob)](https://CRAN.R-project.org/package=corncob)-->
+<!-- badges: start  -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/rigr)](https://CRAN.R-project.org/package=rigr)
 [![R-CMD-check](https://github.com/statdivlab/rigr/workflows/R-CMD-check/badge.svg)](https://github.com/statdivlab/rigr/actions)
 [![codecov](https://codecov.io/gh/statdivlab/rigr/branch/main/graph/badge.svg)](https://codecov.io/gh/statdivlab/rigr)
 <!-- badges: end -->
