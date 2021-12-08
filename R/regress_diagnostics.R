@@ -61,6 +61,16 @@ residuals.uRegress <- function(object, type="", ...){
   }
 }
 
+#' Extract Studentized residuals from \code{uRegress} objects
+#' 
+#' Extracts Studentized residuals from \code{uRegress} objects by relying on
+#' functionality from the \code{stats} package.
+#' 
+#' @param object an object of class \code{uRegress}, as returned by
+#' \link[rigr]{regress}.
+#' 
+#' @return a vector of Studentized residuals
+#' 
 #' @export
 rstudent.uRegress <- function(object) {
   
@@ -68,6 +78,16 @@ rstudent.uRegress <- function(object) {
   
 }
 
+#' Extract standardized residuals from \code{uRegress} objects
+#' 
+#' Extracts standardized residuals from \code{uRegress} objects by relying on
+#' functionality from the \code{stats} package.
+#' 
+#' @param object an object of class \code{uRegress}, as returned by
+#' \link[rigr]{regress}.
+#' 
+#' @return a vector of standardized residuals
+#' 
 #' @export
 rstandard.uRegress <- function(object) {
   
@@ -75,6 +95,20 @@ rstandard.uRegress <- function(object) {
   
 }
 
+#' Calculate dfbeta from \code{uRegress} objects
+#' 
+#' Extracts dfbeta from \code{uRegress} objects by relying on
+#' functionality from the \code{stats} package. Note that 
+#' \code{dfbeta} and \code{dfbetas} are not the same (\code{dfbetas} are 
+#' less than the \code{dfbeta} values by a 
+#' scaling factor that reflects both the leverage of the observation in
+#'  question and the residual model error). 
+#' 
+#' @param object an object of class \code{uRegress}, as returned by
+#' \link[rigr]{regress}.
+#' 
+#' @return a matrix of dfbeta values, with a row for each observation and a column for each model coefficient
+#' 
 #' @export
 dfbeta.uRegress <- function(object, ...) {
   
@@ -82,6 +116,20 @@ dfbeta.uRegress <- function(object, ...) {
   
 }
 
+#' Calculate dfbetas from \code{uRegress} objects
+#' 
+#' Extracts dfbetas from \code{uRegress} objects by relying on
+#' functionality from the \code{stats} package. Note that 
+#' \code{dfbeta} and \code{dfbetas} are not the same (\code{dfbetas} are 
+#' less than the \code{dfbeta} values by a 
+#' scaling factor that reflects both the leverage of the observation in
+#'  question and the residual model error). 
+#' 
+#' @param object an object of class \code{uRegress}, as returned by
+#' \link[rigr]{regress}.
+#' 
+#' @return a matrix of dfbetas values, with a row for each observation and a column for each model coefficient
+#' 
 #' @export
 dfbetas.uRegress <- function(object, ...) {
   
@@ -89,6 +137,16 @@ dfbetas.uRegress <- function(object, ...) {
   
 }
 
+#' Calculate Cook's distances from \code{uRegress} objects
+#' 
+#' Extracts Cook's distances from \code{uRegress} objects by relying on
+#' functionality from the \code{stats} package. 
+#' 
+#' @param object an object of class \code{uRegress}, as returned by
+#' \link[rigr]{regress}.
+#' 
+#' @return a vector of Cook's distances 
+#' 
 #' @export
 cooks.distance.uRegress <- function(object, ...) {
   
@@ -96,6 +154,16 @@ cooks.distance.uRegress <- function(object, ...) {
   
 }
 
+#' Calculate the hat-values (leverages) from \code{uRegress} objects
+#' 
+#' Extracts hat-values (leverages) from \code{uRegress} objects by relying on
+#' functionality from the \code{stats} package. 
+#' 
+#' @param object an object of class \code{uRegress}, as returned by
+#' \link[rigr]{regress}.
+#' 
+#' @return a vector of hat-values (leverages)
+#' 
 #' @export
 hatvalues.uRegress <- function(object, ...) {
   
