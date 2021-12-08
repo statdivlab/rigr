@@ -67,7 +67,7 @@ test_that("polynomial() throws errors if degree misspecified", {
 
 test_that("regress() gives warning if fnctl != 'geometric mean' and replaceZeroes != FALSE", {
   expect_warning(regress("mean", packyrs ~ age, data = mri, replaceZeroes = TRUE), 
-               "replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
+                 "replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
   expect_warning(regress("mean", packyrs ~ age, data = mri, replaceZeroes = 7), 
                  "replaceZeroes does not do anything for this fnctl, zeroes will not be replaced")
 })
@@ -928,7 +928,7 @@ test_that("regress() works with binary dummy variables", {
 
 rigr_dum <- dummy(mri$sex, includeAll = TRUE)
 my_dum <- cbind(Female = ifelse(mri$sex == "Female", 1, 0),
-                 Male = ifelse(mri$sex == "Male", 1, 0))
+                Male = ifelse(mri$sex == "Male", 1, 0))
 
 test_that("dummy() returns all columns when includeAll = TRUE", {
   # vectors are the same
@@ -939,7 +939,7 @@ test_that("dummy() returns all columns when includeAll = TRUE", {
   # dimnames are returned currently
   expect_equal(dimnames(rigr_dum)[[2]],
                c("Female","Male"))
-
+  
 })
 
 # check that reference works appropriately
@@ -1157,4 +1157,47 @@ test_that("residuals method works for all type arguments", {
                (mod_rigr_lm$residuals)/sigmahat)
 })
 
+### issue with variables names
+## FAILING
+# test_that("variables can be called dummy", {
+#   set.seed(1)
+#   dd <- data.frame(y=rnorm(100), x=rnorm(100))
+#   dd$ydummy <- dd$y>0
+#   dd$ybinned <- dd$y>0
+#   
+#   expect_s3_class(regress("mean", ybinned~x, data=dd), "uRegress") # no issue
+#   expect_s3_class(regress("mean", ydummy~x, data=dd), "uRegress")  # Error in rep(varname, att$dim[2]) : invalid 'times' argument
+# })
 
+
+### diagnostics
+
+test_that("case diagnostics are correct", {
+  mri_reg1 <- regress("mean", atrophy ~ age * sex, data = mri)
+  mri_lm1 <- lm(atrophy ~ age * sex, data = mri)
+  
+  ## these measures should be the same
+  expect_true(all(residuals(mri_reg1) == residuals(mri_lm1)))
+  expect_true(all(dfbeta(mri_reg1) == dfbeta(mri_lm1)))
+  expect_true(all(dfbetas(mri_reg1) == dfbetas(mri_lm1)))
+  expect_true(all(cooks.distance(mri_reg1) == cooks.distance(mri_lm1)))
+  expect_true(all(hatvalues(mri_reg1) == hatvalues(mri_lm1)))
+  
+  ## these measures should be perfectly linearly correlated (down to numerical diffs)
+  expect_equal(cor(rstandard(mri_reg1),  rstandard(mri_lm1)), 1, tolerance=1e-4) 
+  expect_equal(cor(rstudent(mri_reg1),  rstudent(mri_lm1)), 1, tolerance=1e-4) 
+  
+})
+
+## FAILING
+# test_that("harder case diagnostics are finished", {
+#   mri_reg1 <- regress("mean", atrophy ~ age * sex, data = mri)
+#   mri_lm1 <- lm(atrophy ~ age * sex, data = mri)
+#   
+#   # still failing
+#   # both require lm.influence(model, do.coef = FALSE)$hat and lm.influence(model, do.coef = FALSE)$sigma
+#   expect_equal(cor(covratio(mri_reg1),  covratio(mri_lm1)), 1, tolerance=1e-4) 
+#   expect_equal(cor(dffits(mri_reg1),  dffits(mri_lm1)), 1, tolerance=1e-4) 
+#   expect_s3_class(influence.measures(mri_reg1), "infl") 
+#   
+# })
