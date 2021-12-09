@@ -4,11 +4,13 @@
 \alias{rstudent.uRegress}
 \title{Extract Studentized residuals from \code{uRegress} objects}
 \usage{
-\method{rstudent}{uRegress}(object)
+\method{rstudent}{uRegress}(model, ...)
 }
 \arguments{
-\item{object}{an object of class \code{uRegress}, as returned by
+\item{model}{an object of class \code{uRegress}, as returned by
 \link[rigr]{regress}.}
+
+\item{...}{other arguments to pass to \code{residuals.uRegress}}
 }
 \value{
 a vector of Studentized residuals

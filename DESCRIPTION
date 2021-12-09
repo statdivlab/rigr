@@ -19,6 +19,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     sandwich,
+    stats,
     survival
 Suggests:
     testthat (>= 3.0.0),

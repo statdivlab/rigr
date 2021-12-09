@@ -2,13 +2,16 @@
 % Please edit documentation in R/regress_diagnostics.R
 \name{dfbeta.uRegress}
 \alias{dfbeta.uRegress}
+\alias{dfbeta}
 \title{Calculate dfbeta from \code{uRegress} objects}
 \usage{
-\method{dfbeta}{uRegress}(object, ...)
+\method{dfbeta}{uRegress}(model, ...)
 }
 \arguments{
-\item{object}{an object of class \code{uRegress}, as returned by
+\item{model}{an object of class \code{uRegress}, as returned by
 \link[rigr]{regress}.}
+
+\item{...}{other arguments to pass to \code{stats::dfbeta}}
 }
 \value{
 a matrix of dfbeta values, with a row for each observation and a column for each model coefficient

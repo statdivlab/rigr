@@ -4,11 +4,13 @@
 \alias{rstandard.uRegress}
 \title{Extract standardized residuals from \code{uRegress} objects}
 \usage{
-\method{rstandard}{uRegress}(object)
+\method{rstandard}{uRegress}(model, ...)
 }
 \arguments{
-\item{object}{an object of class \code{uRegress}, as returned by
+\item{model}{an object of class \code{uRegress}, as returned by
 \link[rigr]{regress}.}
+
+\item{...}{other arguments to pass to \code{residuals.uRegress}}
 }
 \value{
 a vector of standardized residuals

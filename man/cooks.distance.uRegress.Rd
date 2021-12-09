@@ -4,11 +4,13 @@
 \alias{cooks.distance.uRegress}
 \title{Calculate Cook's distances from \code{uRegress} objects}
 \usage{
-\method{cooks.distance}{uRegress}(object, ...)
+\method{cooks.distance}{uRegress}(model, ...)
 }
 \arguments{
-\item{object}{an object of class \code{uRegress}, as returned by
+\item{model}{an object of class \code{uRegress}, as returned by
 \link[rigr]{regress}.}
+
+\item{...}{other arguments to pass to \code{stats::cooks.distance}}
 }
 \value{
 a vector of Cook's distances

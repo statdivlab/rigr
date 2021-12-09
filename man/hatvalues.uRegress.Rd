@@ -4,11 +4,13 @@
 \alias{hatvalues.uRegress}
 \title{Calculate the hat-values (leverages) from \code{uRegress} objects}
 \usage{
-\method{hatvalues}{uRegress}(object, ...)
+\method{hatvalues}{uRegress}(model, ...)
 }
 \arguments{
-\item{object}{an object of class \code{uRegress}, as returned by
+\item{model}{an object of class \code{uRegress}, as returned by
 \link[rigr]{regress}.}
+
+\item{...}{other arguments to pass to \code{stats::hatvalues}}
 }
 \value{
 a vector of hat-values (leverages)

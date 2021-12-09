@@ -4,11 +4,13 @@
 \alias{dfbetas.uRegress}
 \title{Calculate dfbetas from \code{uRegress} objects}
 \usage{
-\method{dfbetas}{uRegress}(object, ...)
+\method{dfbetas}{uRegress}(model, ...)
 }
 \arguments{
-\item{object}{an object of class \code{uRegress}, as returned by
+\item{model}{an object of class \code{uRegress}, as returned by
 \link[rigr]{regress}.}
+
+\item{...}{other arguments to pass to \code{stats::dfbetas}}
 }
 \value{
 a matrix of dfbetas values, with a row for each observation and a column for each model coefficient
