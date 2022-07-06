@@ -46,7 +46,7 @@
 #' @param subset vector indicating a subset
 #' to be used for all inference.
 #' @param robustSE a logical indicator
-#' that standard errors are to be computed using the Huber-White sandwich
+#' that standard errors (and confidence intervals) are to be computed using the Huber-White sandwich
 #' estimator.
 #' @param conf.level a numeric scalar
 #' indicating the level of confidence to be used in computing confidence
