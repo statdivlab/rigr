@@ -883,8 +883,8 @@ myNext <- function(num, vec){
 #' @keywords internal
 #' @noRd
 reFormatReg <- function(p, h, mf){
-  polynomial <- grepl("polynomial", h)
-  dummy <- grepl("dummy", h)
+  polynomial <- grepl("polynomial\\(", h)
+  dummy <- grepl("dummy\\(", h)
   args <- as.list(h)
   
   parens <- grepl(")", p, fixed=TRUE)
