@@ -966,7 +966,17 @@ reFormatReg <- function(p, h, mf){
       }
       # Note from Taylor: this throws a warning, but the results seem to end up okay
       # This is a temporary fix, and should be addressed in the future
+      
+      # Note from Yiqun: something weird is happening here -- the default reference
+      # group is always preserved even in presence of ref="" argument; we are gonna
+      # take it out for now -- looks like it's replacing the wrong coef names
+      
+      # Yiqun: this should fix the wrong labeling by removing the base categories
+      # in each iteration; interactions will have to be investigated further.
+      baseline_category <- paste0(args[[indx]]$nm,'.',args[[indx]]$reference) 
+      repsplit <- repsplit[repsplit!=baseline_category] # ad hoc??
       suppressWarnings(split[grepl(tmp[i], split, fixed=TRUE)] <- repsplit) 
+      
       ## paste back in, if interactions
       if(!bool){
         split[(args[[indx]]$num+1):length(split)] <- pastePair(split[(args[[indx]]$num+1):length(split)])

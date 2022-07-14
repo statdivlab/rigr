@@ -46,8 +46,8 @@
 #' @param subset vector indicating a subset
 #' to be used for all inference.
 #' @param robustSE a logical indicator
-#' that standard errors are to be computed using the Huber-White sandwich
-#' estimator.
+#' that standard errors (and confidence intervals) are to be computed using the Huber-White sandwich
+#' estimator. The default is TRUE.
 #' @param conf.level a numeric scalar
 #' indicating the level of confidence to be used in computing confidence
 #' intervals. The default is 0.95.
@@ -574,6 +574,7 @@ regress <- function(fnctl, formula, data,
   if(intercept) {
     cols[1] <- "(Intercept)"
   }
+  # 
   names(fit$coefficients) <- preds
   
   # get number of predictors in overall model

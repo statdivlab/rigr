@@ -58,8 +58,8 @@ optional weights for weighted regression.}
 to be used for all inference.}
 
 \item{robustSE}{a logical indicator
-that standard errors are to be computed using the Huber-White sandwich
-estimator.}
+that standard errors (and confidence intervals) are to be computed using the Huber-White sandwich
+estimator. The default is TRUE.}
 
 \item{conf.level}{a numeric scalar
 indicating the level of confidence to be used in computing confidence
