@@ -893,7 +893,7 @@ test_that("regress() returns same output as lm() when doing F-test using U() fun
 ### dummy works as it's supposed to for binary covariates
 
 mod_rigr <- regress("mean", atrophy ~ dummy(sex), data = mri)
-mri$sex.Female <- ifelse(mri$sex == "Female", 0, 1)
+mri$sex.Male <- ifelse(mri$sex == "Female", 0, 1)
 mod_lm <- lm(atrophy ~ sex.Female, data = mri)
 mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
 mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 2) * mod_lm_robust_se

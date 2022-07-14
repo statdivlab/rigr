@@ -362,7 +362,8 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_s3_class(wil1, "wilcoxon")
   expect_equal(as.numeric(wil1$statistic), as.numeric(wil2$statistic))
   expect_equal(wil1$p.value, wil2$p.value)
-  expect_equal(wil1$method, wil2$method)
+  # Yiqun: remove this method test since stats::wilcox.test does not provide the exact distinction
+  #expect_equal(wil1$method, wil2$method)
   expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
@@ -379,7 +380,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
-  expect_equal(wil3$method, wil4$method)
+  #expect_equal(wil3$method, wil4$method)
   expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1,2]), digits = 4), 
@@ -404,7 +405,8 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_s3_class(wil1, "wilcoxon")
   expect_equal(as.numeric(wil1$statistic), as.numeric(wil2$statistic))
   expect_equal(wil1$p.value, wil2$p.value)
-  expect_equal(wil1$method, wil2$method)
+  # Yiqun: remove this method test since stats::wilcox.test does not provide the exact distinction
+  #expect_equal(wil1$method, wil2$method)
   expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
@@ -421,7 +423,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
-  expect_equal(wil3$method, wil4$method)
+  #expect_equal(wil3$method, wil4$method)
   expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1,2]), digits = 4), 
@@ -446,7 +448,8 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_s3_class(wil1, "wilcoxon")
   expect_equal(as.numeric(wil1$statistic), as.numeric(wil2$statistic))
   expect_equal(wil1$p.value, wil2$p.value)
-  expect_equal(wil1$method, wil2$method)
+  # yiqun: remove this method test since stats::wilcox.test does not provide the exact distinction
+  # expect_equal(wil1$method, wil2$method)
   expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
@@ -463,7 +466,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
-  expect_equal(wil3$method, wil4$method)
+  #expect_equal(wil3$method, wil4$method)
   expect_equal(wil3$data.name, wil4$data.name)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
   expect_equal(round(as.numeric(wil3$inf[1,2]), digits = 4), 
@@ -674,7 +677,8 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_s3_class(wil1, "wilcoxon")
   expect_equal(as.numeric(wil1$statistic), as.numeric(wil2$statistic))
   expect_equal(wil1$p.value, wil2$p.value)
-  expect_equal(wil1$method, wil2$method)
+  # Yiqun: remove this method test since stats::wilcox.test does not provide the exact distinction
+  # expect_equal(wil1$method, wil2$method)
   expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
@@ -697,7 +701,8 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_s3_class(wil1, "wilcoxon")
   expect_equal(as.numeric(wil1$statistic), as.numeric(wil2$statistic))
   expect_equal(wil1$p.value, wil2$p.value)
-  expect_equal(wil1$method, wil2$method)
+  # Yiqun: removing this test since stats::wilcoxon does not provide the same method name
+  #expect_equal(wil1$method, wil2$method) 
   expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
@@ -720,7 +725,8 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_s3_class(wil1, "wilcoxon")
   expect_equal(as.numeric(wil1$statistic), as.numeric(wil2$statistic))
   expect_equal(wil1$p.value, wil2$p.value)
-  expect_equal(wil1$method, wil2$method)
+  # Yiqun: removing this test since stats::wilcoxon does not provide the same method name
+  #expect_equal(wil1$method, wil2$method)
   expect_equal(wil1$data.name, wil2$data.name)
   expect_equal(as.numeric(wil1$inf[1,1]), as.numeric(wil2$statistic))
   expect_equal(round(as.numeric(wil1$inf[1,2]), digits = 4), 
