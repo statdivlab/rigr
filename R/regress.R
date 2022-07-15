@@ -170,9 +170,13 @@ regress <- function(fnctl, formula, data,
   form_temp <- deparse(formula[[3]])
   form_temp <- unlist(strsplit(form_temp, "\\+"))
   form_temp <- trimws(form_temp, "both")
-  remove_int <- grepl("-1", form_temp)
+  # Note from Yiqun: added the - sign split logic
+  remove_int <- grepl("-\\s*1", form_temp)
   if (any(remove_int)) {
-    form_temp <- paste(form_temp[!remove_int], collapse = "+")
+    form_temp <- gsub("-\\s*1","",form_temp)
+    form_temp <- trimws(form_temp, "both")
+    form_temp <- paste(form_temp, collapse = "+")
+    #form_temp <- paste(form_temp[!remove_int], collapse = "+")
     formula <- stats::as.formula(paste(unlist(strsplit(deparse(formula),"~"))[1], "~", form_temp), env = .GlobalEnv)
     intercept <- FALSE
   }
