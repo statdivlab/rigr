@@ -1204,8 +1204,7 @@ processTerm <- function (z, Term, TermName) {
       TermName_split <- unlist(strsplit(TermName,":"))
       
       if (length(TermName_split) == 1) {
-        # this causes problem if other entries of the dimnames(Term)[[2]] contains 
-        # TermName as well
+        # only match strings that start with TermName 
         predNms <- gsub(paste0("^",TermName), "", dimnames(Term)[[2]])
       } else {
         dimnames_Term_split <- strsplit(dimnames(Term)[[2]], ":")
@@ -1213,9 +1212,7 @@ processTerm <- function (z, Term, TermName) {
         for (i in 1:length(TermName_split)) {
           # if the term name is exactly equal to the dimname, don't replace it
           if (TermName_split[i] != dimnames_Term_split[[1]][i]) {
-            #cat("TermName2",dimnames_Term_split,"\n")
-            dimnames_Term_split <- lapply(dimnames_Term_split, 
-                                          function(x) {c(gsub(paste0("^",TermName_split[i]), "", x[i]), x[-i])})
+            dimnames_Term_split <- lapply(dimnames_Term_split, function(x) {c(gsub(paste0("^",TermName_split[i]), "", x[i]), x[-i])})
             
           }
           

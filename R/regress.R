@@ -170,7 +170,7 @@ regress <- function(fnctl, formula, data,
   form_temp <- deparse(formula[[3]])
   form_temp <- unlist(strsplit(form_temp, "\\+"))
   form_temp <- trimws(form_temp, "both")
-  # Note from Yiqun: added the - sign split logic 
+  # Note from Yiqun: added the - sign split logic
   remove_int <- grepl("-\\s*1", form_temp)
   if (any(remove_int)) {
     form_temp <- gsub("-\\s*1","",form_temp)
@@ -583,11 +583,13 @@ regress <- function(fnctl, formula, data,
   
   # get number of predictors in overall model
   p <- length(terms)
+  
   # process terms and get correct order for partial F-tests
   
   # need versions of terms and colnames(model) without parentheses for grep
   terms_noparens <- gsub("\\)", "", gsub("\\(", "", terms))
   colnames_model_noparens <- gsub("\\)", "", gsub("\\(", "", colnames(model)))
+  
   # get how many colons are present in each terms_noparens element
   num_colons <- unlist(lapply(strsplit(terms_noparens, ":"), length)) - 1
   
