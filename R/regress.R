@@ -588,6 +588,7 @@ regress <- function(fnctl, formula, data,
   
   # need versions of terms and colnames(model) without parentheses for grep
   terms_noparens <- gsub("\\)", "", gsub("\\(", "", terms))
+  terms_noparens <- gsub("\\,\\s*reference\\s*=[^\\:]*","",terms_noparens)
   colnames_model_noparens <- gsub("\\)", "", gsub("\\(", "", colnames(model)))
   
   # get how many colons are present in each terms_noparens element
@@ -609,6 +610,7 @@ regress <- function(fnctl, formula, data,
     if (is_dummy) {
       # subset terms_noparens to only include the variable name, first split by comma in case
       # additional arguments specified in polynomial()
+      # Note from Yiqun: this logic is not sufficient and causes problem for any dummy:dummy interactions
       terms_noparens[i] <- gsub("dummy","",unlist(strsplit(terms_noparens[i],","))[1])
     }
     
