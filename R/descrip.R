@@ -162,7 +162,9 @@ descrip <- function (..., strata = NULL, subset = NULL,
   for (i in 1:p) {
     # x gets data for that variable
     x <- L[[i]]
-    
+    if(is.character(x)){
+      x <- as.factor(x)
+    }
     # if descriptive variable is a list
     if (is.list(x)) {
       # and there are no names
@@ -412,6 +414,9 @@ descrip <- function (..., strata = NULL, subset = NULL,
   nV <- 0
   for (i in 1:p) {
     x <- L[[i]]
+    if(is.character(x)){
+      x <- as.factor(x)
+    }
     if (is.list(x)) {
       names(x) <- nms[nV + (1:length(x))]
       nV <- nV + length(x)

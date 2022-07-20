@@ -783,8 +783,17 @@ regress <- function(fnctl, formula, data,
   u[u] <- !droppedPred 
   
   # assign all of coefficients matrix to relevant rows of augCoefficients
-  zzs$augCoefficients[u,] <- zzs$coefficients
-  
+  # throw a more informative error message using try catch
+  tryCatch(
+    expr={
+      zzs$augCoefficients[u,] <- zzs$coefficients
+    },
+    error = function(e){
+      message("Caught an error in formatting the regression results! Some common causes for this error message: 
+      (i) name conflicts between covariates and one of the categories in the data (consider renaming your covariates);
+      (ii) interactions between categorical variables with specified reference levels (consider changing the reference levels outside of the regress call).")
+    }
+  )
   # Note from Taylor: bad practice to assign something to a base function name
   ncol <- dim(zzs$augCoefficients)[2]
   zzs$augCoefficients[!u,-1] <- NA 
