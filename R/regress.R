@@ -588,6 +588,7 @@ regress <- function(fnctl, formula, data,
   
   # need versions of terms and colnames(model) without parentheses for grep
   terms_noparens <- gsub("\\)", "", gsub("\\(", "", terms))
+  terms_noparens <- gsub("\\,\\s*reference\\s*=[^\\:]*","",terms_noparens)
   colnames_model_noparens <- gsub("\\)", "", gsub("\\(", "", colnames(model)))
   
   # get how many colons are present in each terms_noparens element
@@ -609,6 +610,7 @@ regress <- function(fnctl, formula, data,
     if (is_dummy) {
       # subset terms_noparens to only include the variable name, first split by comma in case
       # additional arguments specified in polynomial()
+      # Note from Yiqun: this logic is not sufficient and causes problem for any dummy:dummy interactions
       terms_noparens[i] <- gsub("dummy","",unlist(strsplit(terms_noparens[i],","))[1])
     }
     
@@ -783,8 +785,17 @@ regress <- function(fnctl, formula, data,
   u[u] <- !droppedPred 
   
   # assign all of coefficients matrix to relevant rows of augCoefficients
-  zzs$augCoefficients[u,] <- zzs$coefficients
-  
+  # throw a more informative error message using try catch
+  tryCatch(
+    expr={
+      zzs$augCoefficients[u,] <- zzs$coefficients
+    },
+    error = function(e){
+      message("Caught an error in formatting the regression results! Some common causes for this error message: 
+      (i) name conflicts between covariates and one of the categories in the data (consider renaming your covariates);
+      (ii) interactions between categorical variables with specified reference levels (consider changing the reference levels outside of the regress call).")
+    }
+  )
   # Note from Taylor: bad practice to assign something to a base function name
   ncol <- dim(zzs$augCoefficients)[2]
   zzs$augCoefficients[!u,-1] <- NA 
