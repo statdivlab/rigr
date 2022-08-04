@@ -9,3 +9,11 @@ print.lincom <- function(x, ...) {
                  has.Pvalue = TRUE)
   }
 }
+
+# Print method for class "lincom" when joint.test=TRUE
+#' @noRd
+#' @export
+print.lincom.joint <- function(x, ...) {
+  stats::printCoefmat(t(x$printMat[1,]), digits = 4, 
+                        has.Pvalue = TRUE)
+}
