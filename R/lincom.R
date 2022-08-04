@@ -20,13 +20,19 @@
 #' standard errors in calculation. Defaults to \code{TRUE}. 
 #' If \code{TRUE}, then \code{robustSE} must
 #' have been \code{TRUE} when \code{reg} was created.
+#' @param joint.test a logical value indicating whether or not to use a joint Chi-square test 
+#' for all the null hypotheses. If joint.test is \code{TRUE}, then no confidence interval is calculated. 
+#' Defaults to \code{FALSE}. 
+#' @param useFdstn a logical indicator that the F distribution should be used for test statistics 
+#' instead of the chi squared distribution. Defaults to \code{TRUE}. 
 #' @param eform a logical value indicating whether or not to exponentiate the
 #' estimated coefficient. By default this is performed based on the type of
 #' regression used.
 #' 
-#' @return A list of class \code{lincom}. The \code{comb} entries in the list are labeled
-#' \code{comb1}, \code{comb2}, etc. for as many linear combinations were used. Each is a list with
-#' the following components:
+#' @return A list of class \code{lincom} (\code{joint.test} is \code{False}) or 
+#' \code{lincom.joint} (\code{joint.test} is \code{True}). For the \code{lincom} class,
+#' \code{comb} entries in the list are labeled \code{comb1}, \code{comb2}, etc. for as many linear combinations were used. 
+#' Each is a list with the following components:
 #' \item{printMat}{A formatted table with inferential results for the linear combination of coefficients. 
 #' These include the point estimate, standard error, confidence interval, and t-test for the linear 
 #' combination.}
@@ -48,12 +54,17 @@
 #' lincom(testReg, testC)
 #' 
 #' # Test multiple combinations: 
-#' # whether .5*age - stroke = 0 and Intercept + 60*age = 125 
+#' # whether separately whether .5*age - stroke = 0 or Intercept + 60*age = 125 
 #' testC <- matrix(c(0, 0.5, -1, 1, 60, 0), byrow = TRUE, nrow = 2)
 #' lincom(testReg, testC, null.hypoth = c(0, 125))
 #' 
+#' # Test joint null hypothesis:
+#' # H0: .5*age - stroke = 0 AND Intercept + 60*age = 125 
+#' lincom(testReg, testC, null.hypoth = c(0, 125), joint.test = TRUE)
+#' 
 #' @export lincom
-lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, eform=reg$fnctl!="mean"){
+lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, 
+                   joint.test = FALSE, useFdstn = FALSE, eform=reg$fnctl!="mean"){
   ## if conf.level is not between 0 and 1, throw error
   if(conf.level < 0 || conf.level > 1){
     stop("Confidence Level must be between 0 and 1")
@@ -128,6 +139,34 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, ef
     lincom.obj <- list(printMat = printMat, nms = nms, null.hypoth = null.hypoth)
     invisible(lincom.obj)
   }
+
+  lincom.do.joint <- function(reg, comb, null.hypoth, robustSE, useFdstn){
+    rank_of_mat <- qr(comb)$rank
+    #if(rank_of_mat!=nrow(comb)){
+    #  warning("The contrast matrix is not full rank; that is, at least two hypotheses specified are equivalent")
+    #}
+    new_coef <- comb %*%  reg$coefficients[,1,drop=FALSE] - null.hypoth
+    if(robustSE){
+      covMat <- comb %*% reg$robustCov %*% t(comb)
+    } else {
+      covMat <- comb %*% reg$naiveCov %*% t(comb)
+    }
+    if(useFdstn){
+      #p <- stats::pf(f, q, df, lower.tail = FALSE)
+      #rval[2, 2:4] <- c(q, f, p)
+      test_stat <- c(t(new_coef) %*% solve(covMat) %*% new_coef)/rank_of_mat
+      pval <- stats::pf(test_stat, rank_of_mat, reg$df[2], lower.tail=FALSE)
+      printMat <- matrix(c(test_stat, rank_of_mat, reg$df[2],pval), nrow=1)
+      dimnames(printMat) <- list(NULL, c("Chi2 stat","num df","den df","p value"))
+    }else{
+      test_stat <- c(t(new_coef) %*% solve(covMat) %*% new_coef)
+      pval <- stats::pchisq(test_stat, df = rank_of_mat, lower.tail=FALSE)
+      printMat <- matrix(c(test_stat, rank_of_mat, pval), nrow=1)
+      dimnames(printMat) <- list(NULL, c("Chi2 stat","df","p value"))
+    }
+    lincom.obj <- list(printMat=printMat, null.hypoth=null.hypoth, nms=NULL)
+    invisible(lincom.obj)
+  }
   
   if(is.vector(comb)){
     ## if the number of coefficients listed is different from number in model (can actually be one more)
@@ -168,14 +207,23 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, ef
     }
     lincom.obj <- vector(mode = "list", length = dim(comb)[1])
     ## apply to a vector for each
-    for(i in 1:dim(comb)[1]){
-      lincom.obj.partial <- lincom.do(reg, comb[i,], null.hypoth[i,], conf.level, robustSE, eform)
-      lincom.obj[[i]] <- lincom.obj.partial
-      names(lincom.obj)[[i]] <- paste0("comb", i)
+    if(!joint.test){
+      for(i in 1:dim(comb)[1]){
+        lincom.obj.partial <- lincom.do(reg, comb[i,], null.hypoth[i,], conf.level, robustSE, eform)
+        lincom.obj[[i]] <- lincom.obj.partial
+        names(lincom.obj)[[i]] <- paste0("comb", i)
+      }
+    }else{
+      # if it is joint test...
+      lincom.obj <- lincom.do.joint(reg, comb, null.hypoth, robustSE, useFdstn)
     }
   }
   lincom.obj$call <- match.call()
-  class(lincom.obj) <- "lincom"
+  if(!joint.test){
+    class(lincom.obj) <- "lincom"
+  }else{
+    class(lincom.obj) <- "lincom.joint"
+  }
   return(lincom.obj)
   
 }
