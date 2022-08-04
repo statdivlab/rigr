@@ -23,6 +23,8 @@
 #' @param joint.test a logical value indicating whether or not to use a joint Chi-square test 
 #' for all the null hypotheses. If joint.test is \code{TRUE}, then no confidence interval is calculated. 
 #' Defaults to \code{FALSE}. 
+#' @param useFdstn a logical indicator that the F distribution should be used for test statistics 
+#' instead of the chi squared distribution. Defaults to \code{TRUE}. 
 #' @param eform a logical value indicating whether or not to exponentiate the
 #' estimated coefficient. By default this is performed based on the type of
 #' regression used.
@@ -56,12 +58,13 @@
 #' testC <- matrix(c(0, 0.5, -1, 1, 60, 0), byrow = TRUE, nrow = 2)
 #' lincom(testReg, testC, null.hypoth = c(0, 125))
 #' 
-#' Test joint null hypothesis:
+#' # Test joint null hypothesis:
 #' # H0: .5*age - stroke = 0 AND Intercept + 60*age = 125 
 #' lincom(testReg, testC, null.hypoth = c(0, 125), joint.test = TRUE)
 #' 
 #' @export lincom
-lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, joint.test = FALSE, eform=reg$fnctl!="mean"){
+lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, 
+                   joint.test = FALSE, useFdstn = FALSE, eform=reg$fnctl!="mean"){
   ## if conf.level is not between 0 and 1, throw error
   if(conf.level < 0 || conf.level > 1){
     stop("Confidence Level must be between 0 and 1")
@@ -136,9 +139,8 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, jo
     lincom.obj <- list(printMat = printMat, nms = nms, null.hypoth = null.hypoth)
     invisible(lincom.obj)
   }
-  
-  
-  lincom.do.joint <- function(reg, comb, null.hypoth, robustSE){
+
+  lincom.do.joint <- function(reg, comb, null.hypoth, robustSE, useFdstn){
     rank_of_mat <- qr(comb)$rank
     #if(rank_of_mat!=nrow(comb)){
     #  warning("The contrast matrix is not full rank; that is, at least two hypotheses specified are equivalent")
@@ -149,10 +151,19 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, jo
     } else {
       covMat <- comb %*% reg$naiveCov %*% t(comb)
     }
-    test_stat <- c(t(new_coef) %*% solve(covMat) %*% new_coef)
-    pval <- stats::pchisq(test_stat, df = rank_of_mat, lower.tail=FALSE)
-    printMat <- matrix(c(test_stat, rank_of_mat, pval), nrow=1)
-    dimnames(printMat) <- list(NULL, c("X2 stat","df","P(>|X2 stat|)"))
+    if(useFdstn){
+      #p <- stats::pf(f, q, df, lower.tail = FALSE)
+      #rval[2, 2:4] <- c(q, f, p)
+      test_stat <- c(t(new_coef) %*% solve(covMat) %*% new_coef)/rank_of_mat
+      pval <- stats::pf(test_stat, rank_of_mat, reg$df[2], lower.tail=FALSE)
+      printMat <- matrix(c(test_stat, rank_of_mat, reg$df[2],pval), nrow=1)
+      dimnames(printMat) <- list(NULL, c("Chi2 stat","num df","den df","p value"))
+    }else{
+      test_stat <- c(t(new_coef) %*% solve(covMat) %*% new_coef)
+      pval <- stats::pchisq(test_stat, df = rank_of_mat, lower.tail=FALSE)
+      printMat <- matrix(c(test_stat, rank_of_mat, pval), nrow=1)
+      dimnames(printMat) <- list(NULL, c("Chi2 stat","df","p value"))
+    }
     lincom.obj <- list(printMat=printMat, null.hypoth=null.hypoth, nms=NULL)
     invisible(lincom.obj)
   }
@@ -204,9 +215,8 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE, jo
       }
     }else{
       # if it is joint test...
-      lincom.obj <- lincom.do.joint(reg, comb, null.hypoth, robustSE)
+      lincom.obj <- lincom.do.joint(reg, comb, null.hypoth, robustSE, useFdstn)
     }
-
   }
   lincom.obj$call <- match.call()
   if(!joint.test){

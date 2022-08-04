@@ -13,6 +13,7 @@ lincom(
   conf.level = 0.95,
   robustSE = TRUE,
   joint.test = FALSE,
+  useFdstn = FALSE,
   eform = reg$fnctl != "mean"
 )
 }
@@ -40,6 +41,9 @@ have been \code{TRUE} when \code{reg} was created.}
 \item{joint.test}{a logical value indicating whether or not to use a joint Chi-square test 
 for all the null hypotheses. If joint.test is \code{TRUE}, then no confidence interval is calculated. 
 Defaults to \code{FALSE}.}
+
+\item{useFdstn}{a logical indicator that the F distribution should be used for test statistics 
+instead of the chi squared distribution. Defaults to \code{TRUE}.}
 
 \item{eform}{a logical value indicating whether or not to exponentiate the
 estimated coefficient. By default this is performed based on the type of
@@ -79,7 +83,7 @@ lincom(testReg, testC)
 testC <- matrix(c(0, 0.5, -1, 1, 60, 0), byrow = TRUE, nrow = 2)
 lincom(testReg, testC, null.hypoth = c(0, 125))
 
-Test joint null hypothesis:
+# Test joint null hypothesis:
 # H0: .5*age - stroke = 0 AND Intercept + 60*age = 125 
 lincom(testReg, testC, null.hypoth = c(0, 125), joint.test = TRUE)
 
