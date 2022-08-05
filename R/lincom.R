@@ -141,10 +141,8 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE,
   }
 
   lincom.do.joint <- function(reg, comb, null.hypoth, robustSE, useFdstn){
+    
     rank_of_mat <- qr(comb)$rank
-    #if(rank_of_mat!=nrow(comb)){
-    #  warning("The contrast matrix is not full rank; that is, at least two hypotheses specified are equivalent")
-    #}
     new_coef <- comb %*%  reg$coefficients[,1,drop=FALSE] - null.hypoth
     if(robustSE){
       covMat <- comb %*% reg$robustCov %*% t(comb)
@@ -152,12 +150,10 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE,
       covMat <- comb %*% reg$naiveCov %*% t(comb)
     }
     if(useFdstn){
-      #p <- stats::pf(f, q, df, lower.tail = FALSE)
-      #rval[2, 2:4] <- c(q, f, p)
       test_stat <- c(t(new_coef) %*% solve(covMat) %*% new_coef)/rank_of_mat
       pval <- stats::pf(test_stat, rank_of_mat, reg$df[2], lower.tail=FALSE)
       printMat <- matrix(c(test_stat, rank_of_mat, reg$df[2],pval), nrow=1)
-      dimnames(printMat) <- list(NULL, c("Chi2 stat","num df","den df","p value"))
+      dimnames(printMat) <- list(NULL, c("F stat","num df","den df","p value"))
     }else{
       test_stat <- c(t(new_coef) %*% solve(covMat) %*% new_coef)
       pval <- stats::pchisq(test_stat, df = rank_of_mat, lower.tail=FALSE)
