@@ -4,9 +4,18 @@
 \alias{anova.uRegress}
 \title{ANOVA}
 \usage{
-\method{anova}{uRegress}(null_model, full_model, test = "Wald", robustSE = TRUE, useFdstn = TRUE)
+\method{anova}{uRegress}(
+  ...,
+  null_model,
+  full_model,
+  test = "Wald",
+  robustSE = TRUE,
+  useFdstn = TRUE
+)
 }
 \arguments{
+\item{...}{argument to be passed in}
+
 \item{null_model}{an object of class \code{uRegress}, the model with fewer parameters.}
 
 \item{full_model}{an object of class \code{uRegress}, the model with more parameters.}
@@ -48,6 +57,5 @@ testReg_null <- regress ("mean", ldl~age+stroke, data = mri)
 # Linear regression of LDL on age, stroke, and race (with robust SE by default)
 testReg_full <- regress ("mean", ldl~age+stroke+race, data = mri)
 # Comparing the two models using the Wald test with robust SE
-anova(testReg_null, testReg_full, test = "Wald")
-
+anova (null_model = testReg_null, full_model = testReg_full, test = "Wald")
 }

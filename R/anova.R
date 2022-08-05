@@ -14,6 +14,7 @@
 #' have been \code{TRUE} when \code{reg} was created.
 #' @param useFdstn a logical indicator that the F distribution should be used for test statistics 
 #' instead of the chi squared distribution. Defaults to \code{TRUE}. 
+#' @param ... argument to be passed in
 #' @return A list of class \code{anova.uRegress} with the following components:
 #' \item{printMat}{A formatted table with inferential results (i.e., test statistics and p-values) for comparing two nested models.}
 #' \item{null model}{The null model in the comparison.}
@@ -33,10 +34,10 @@
 #' testReg_full <- regress ("mean", ldl~age+stroke+race, data = mri)
 
 #' # Comparing the two models using the Wald test with robust SE
-#' anova(testReg_null, testReg_full, test = "Wald")
-#' 
+#' anova (null_model = testReg_null, full_model = testReg_full, test = "Wald")
+#' @rdname anova.uRegress
 #' @export 
-anova.uRegress <- function(null_model, full_model, test="Wald", robustSE = TRUE, useFdstn = TRUE){
+anova.uRegress <- function(..., null_model, full_model, test="Wald", robustSE = TRUE, useFdstn = TRUE){
   
   if(!("uRegress" %in% class(null_model))|!("uRegress" %in% class(full_model))){
     stop("uRegress objects must be entered!")
