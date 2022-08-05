@@ -5,7 +5,6 @@
 #' parameters is referred to as the null model (or the smaller model).
 #' 
 #' null_model, full_model, ..., test="Wald", robustSE = TRUE, useFdstn = TRUE
-#' @param reg an object of class \code{uRegress}.
 #' @param null_model an object of class \code{uRegress}, the model with fewer parameters.
 #' @param full_model an object of class \code{uRegress}, the model with more parameters.
 #' @param test a character string specifying the test statistic to be used. Can be one of 'Wald' or 'LRT'.
@@ -37,7 +36,7 @@
 #' anova(testReg_null, testReg_full, test = "Wald")
 #' 
 #' @export 
-anova.uRegress <- function(null_model, full_model, ..., test="Wald", robustSE = TRUE, useFdstn = TRUE){
+anova.uRegress <- function(null_model, full_model, test="Wald", robustSE = TRUE, useFdstn = TRUE){
   
   if(!("uRegress" %in% class(null_model))|!("uRegress" %in% class(full_model))){
     stop("uRegress objects must be entered!")

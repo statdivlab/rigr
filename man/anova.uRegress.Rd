@@ -4,14 +4,7 @@
 \alias{anova.uRegress}
 \title{ANOVA}
 \usage{
-\method{anova}{uRegress}(
-  null_model,
-  full_model,
-  ...,
-  test = "Wald",
-  robustSE = TRUE,
-  useFdstn = TRUE
-)
+\method{anova}{uRegress}(null_model, full_model, test = "Wald", robustSE = TRUE, useFdstn = TRUE)
 }
 \arguments{
 \item{null_model}{an object of class \code{uRegress}, the model with fewer parameters.}
@@ -27,8 +20,6 @@ have been \code{TRUE} when \code{reg} was created.}
 
 \item{useFdstn}{a logical indicator that the F distribution should be used for test statistics 
 instead of the chi squared distribution. Defaults to \code{TRUE}.}
-
-\item{reg}{an object of class \code{uRegress}.}
 }
 \value{
 A list of class \code{anova.uRegress} with the following components:
