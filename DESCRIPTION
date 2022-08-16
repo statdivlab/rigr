@@ -7,7 +7,7 @@ Authors@R: c(person("Amy D", "Willis", email = "adwillis@uw.edu", role = c("aut"
              person("Brian D", "Williamson", role = "aut"),
              person("Scott S", "Emerson", role = "aut"),
              person("Andrew J", "Spieker", role = "aut"),
-             person("Yiqun", "Chen", role = "aut"),
+             person("Yiqun T", "Chen", role = "aut"),
              person("Travis Y Hee", "Wai", role = "ctb"),
              person("James P", "Hughes", role = "ctb"),
              person("R Core Team", role = "ctb"),
