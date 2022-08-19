@@ -162,6 +162,7 @@ mri$sex_bin <- ifelse(mri$sex == "Female", 1, 0)
 regress("odds", sex_bin ~ atrophy, data = mri)
 
 # Cox regression of age on survival 
+library(survival)
 regress("hazard", Surv(obstime, death)~age, data=mri)
 }
 \seealso{

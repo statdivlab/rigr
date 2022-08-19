@@ -338,34 +338,34 @@ test1 <- data.frame(time=c(4,3,1,1,2,2,3),
               x=c(0,2,1,1,1,0,0), 
               sex=c(0,0,0,0,1,1,1)) 
 # Fit a stratified model without F distribution or robust SE
-mod_coxph <- coxph(Surv(time, status) ~ x + strata(sex), test1) 
+mod_coxph <- survival::coxph(Surv(time, status) ~ x + strata(sex), test1)
 mod_rigr <- regress("hazard", Surv(time, status) ~ x + strata(sex), data = test1, 
                     useFdstn = FALSE, robustSE = FALSE)
 
-test_that("regress() returns same output as coxph() for fnctl = 'hazard'", {
+test_that("regress() returns same output as coxph() for fnctl = hazard", {
   # Estimate
-  expect_equal(mod_rigr$augCoefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
-               mod_coxph$coefficients)
+  expect_equal(unname(mod_rigr$augCoefficients[, colnames(mod_rigr$augCoefficients) == "Estimate"]),
+               unname(mod_coxph$coefficients))
   # naive SE
-  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "se(coef)"],
-               sqrt(mod_coxph$var))
+  expect_equal(as.vector(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "se(coef)"]),
+               as.vector(sqrt(mod_coxph$var)))
   
-}
+})
 
 # Fit a stratified model without F distribution or robust SE
-mod_coxph <- coxph(Surv(obstime, death) ~ sex + age + strata(race), mri) 
+mod_coxph <- survival::coxph(Surv(obstime, death) ~ sex + age + strata(race), mri)
 mod_rigr <- regress("hazard", Surv(obstime, death) ~ sex + age + strata(race), data = mri, 
                     useFdstn = FALSE, robustSE = FALSE)
 
-test_that("regress() returns same output as coxph() for fnctl = 'hazard'", {
+test_that("regress() returns same output as coxph() for fnctl = hazard", {
   # Estimate
-  expect_equal(mod_rigr$augCoefficients[, colnames(mod_rigr$coefficients) == "Estimate"],
-               mod_coxph$coefficients)
+  expect_equal(unname(mod_rigr$augCoefficients[, colnames(mod_rigr$augCoefficients) == "Estimate"]),
+               unname(mod_coxph$coefficients))
   # naive SE
-  expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "se(coef)"],
-               sqrt(mod_coxph$var))
+  expect_equal(as.vector(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "se(coef)"]),
+               as.vector(sqrt(diag(mod_coxph$var))))
   
-}
+})
 
 ### interaction terms in lms
 

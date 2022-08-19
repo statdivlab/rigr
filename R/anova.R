@@ -53,8 +53,11 @@ anova.uRegress <- function(object, full_object, test="Wald", robustSE = TRUE, us
   }
   # simple check for nested models
   if(full_object$fit$rank<=object$fit$rank){
-    stop("The null model has the same or more coefficients than the full model -- double check the order of the 
-         two models passed in!")
+    warning("The null model has the same or more coefficients than the full model. We will proceed 
+    by reversing their orders. Double check the order of the two models passed in!")
+    temp_object <- full_object
+    full_object <- object
+    object <- temp_object
   }
   
   object_cov <- (rownames(object$coefficients))
