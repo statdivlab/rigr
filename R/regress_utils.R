@@ -1306,10 +1306,15 @@ print.uRegress <- function (x,...,augmented=TRUE,digits=max(3,getOption("digits"
     cat("\n\n")
   }
   if(!x$anyRepeated){
-    if (x$fnctl %in% c("mean","geometric mean")) {
-      #f <- getAnywhere(print.summary.lm)$objs[[1]]
-      f <- printerLm
-    } else f <- printerGlm
+    if (x$fnctl != "hazard") {
+      if (x$fnctl %in% c("mean","geometric mean")) {
+        #f <- getAnywhere(print.summary.lm)$objs[[1]]
+        f <- printerLm
+      } else f <- printerGlm
+    } else {
+      f <- printerCox
+    }
+    
   } 
   if (augmented) {
     x$coefficients <- x$augCoefficients
@@ -1434,6 +1439,129 @@ getLevels <- function(nms, coefNums, termnms, term.lbls, level){
   return(levels)
 }
 
+# helper function for print.uRegress, used to be inside of print.uRegress()
+printerCox <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.cor = x$symbolic.cor, 
+                     signif.stars = getOption("show.signif.stars"), suppress, ...) 
+{
+  if(!is.null(x$augmented)){
+    augmented <- x$augmented
+  } else{
+    augmented <- FALSE
+  }
+  cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
+      "\n\n", sep = "")
+  # cat("Deviance Residuals: \n")
+  # if (x$df.residual > 5) {
+  #   x$deviance.resid <- stats::setNames(stats::quantile(x$deviance.resid, 
+  #                                                       na.rm = TRUE), c("Min", "1Q", "Median", "3Q", "Max"))
+  # }
+  # xx <- zapsmall(x$deviance.resid, digits + 1L)
+  # print.default(xx, digits = digits, na.print = "", print.gap = 2L)
+  if (is.null(x$coefficients) | nrow(x$coefficients) == 0L) {
+    cat("\nNo Coefficients\n")
+  }
+  else { 
+    df <- if ("df" %in% names(x)) 
+      x[["df"]]
+    else NULL
+    if (!is.null(df) && (nsingular <- df[3L] - df[1L])) 
+      cat("\nCoefficients: (", nsingular, " not defined because of singularities)\n", 
+          sep = "")
+    else cat("\nCoefficients:\n")
+    if(augmented){
+      if(is.na(x$transformed[1])){
+        print.augCoefficients(x$model)
+      } else if (suppress){
+        cat("\nTransformed Model:\n")
+        print.augCoefficients(x$transformed)
+      } else {
+        cat("\nRaw Model:\n")
+        print.augCoefficients(x$model)
+        cat("\nTransformed Model:\n")
+        print.augCoefficients(x$transformed)
+      }
+    } else{
+      if(is.na(x$transformed[1])){
+        stats::printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
+                            na.print = "NA", ...)
+      } else if (suppress){
+        cat("\nTransformed Model:\n")
+        stats::printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
+                            na.print = "NA", ...)
+      } else {
+        cat("\nRaw Model:\n")
+        stats::printCoefmat(x$model, digits = digits, signif.stars = signif.stars, 
+                            na.print = "NA", ...)
+        cat("\nTransformed Model:\n")
+        stats::printCoefmat(x$transformed, digits = digits, signif.stars = signif.stars, 
+                            na.print = "NA", ...)
+        
+      }
+    }
+  }
+  for(i in 1:length(x$args)){
+    if(is.list(x$args[[i]])){
+      if(x$args[[i]]$transformation=="polynomial"){
+        cat("\n", paste("Polynomial terms calculated from ", x$args[[i]]$nm, ", centered at ",round(x$args[[i]]$center, digits), sep=""),  "\n")
+      } else {
+        cat("\n", paste("Dummy terms calculated from ", x$args[[i]]$nm, ", reference = ",x$args[[i]]$reference,sep=""), "\n")
+      }
+    }
+  }
+  if(any(x$dropped)){
+    cat("\n", "Predictor(s) dropped due to overfitting", "\n")
+  }
+  # cat("\n(Dispersion parameter for ", x$family$family, " family taken to be ", 
+  #     format(x$dispersion), ")\n\n", apply(cbind(paste(format(c("Null", 
+  #                                                               "Residual"), justify = "right"), "deviance:"), format(unlist(x[c("null.deviance", 
+  #                                                                                                                                "deviance")]), digits = max(5L, digits + 1L)), " on", 
+  #                                                format(unlist(x[c("df.null", "df.residual")])), " degrees of freedom\n"), 
+  #                                          1L, paste, collapse = " "), sep = "")
+  if (nzchar(mess <- stats::naprint(x$na.action))) 
+    cat("  (", mess, ")\n", sep = "")
+  # cat("AIC: ", format(x$aic, digits = max(4L, digits + 1L)), 
+  #     "\n\n", "Number of Fisher Scoring iterations: ", x$iter, 
+  #     "\n", sep = "")
+  correl <- x$correlation
+  if (!is.null(correl)) {
+    p <- NCOL(correl)
+    if (p > 1) {
+      cat("\nCorrelation of Coefficients:\n")
+      if (is.logical(symbolic.cor) && symbolic.cor) {
+        print(stats::symnum(correl, abbr.colnames = NULL))
+      }
+      else {
+        correl <- format(round(correl, 2L), nsmall = 2L, 
+                         digits = digits)
+        correl[!lower.tri(correl)] <- ""
+        print(correl[-1, -p, drop = FALSE], quote = FALSE)
+      }
+    }
+  }
+  cat("n = ", x$n)
+  if (!is.null(x$nevent)) cat(", number of events=", x$nevent, "\n")
+  cat("Overall significance test: \n")
+  cat("Likelihood ratio test= ", format(round(x$logtest["test"], 2)), "  on ",
+      x$logtest["df"], " df,", "   p=", 
+      format.pval(x$logtest["pvalue"], digits=4),
+      "\n", sep = "")
+  cat("Wald test            = ", format(round(x$waldtest["test"], 2)), "  on ",
+      x$waldtest["df"], " df,", "   p=", 
+      format.pval(x$waldtest["pvalue"], digits=4),
+      "\n", sep = "")
+  cat("Score (logrank) test = ", format(round(x$sctest["test"], 2)), "  on ",
+      x$sctest["df"]," df,", "   p=", 
+      format.pval(x$sctest["pvalue"], digits=4), sep ="")
+  if (is.null(x$robscore))
+    cat("\n\n")
+  else cat(",   Robust = ", format(round(x$robscore["test"], 2)), 
+           "  p=", 
+           format.pval(x$robscore["pvalue"], digits=4), "\n\n", sep="")   
+  
+  cat("\n")
+  invisible(x)
+}
+ 
 # helper function for print.uRegress, used to be inside of print.uRegress()
 printerLm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.cor = x$symbolic.cor, 
                        signif.stars = getOption("show.signif.stars"), suppress, ...) 

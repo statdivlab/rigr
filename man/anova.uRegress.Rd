@@ -4,21 +4,12 @@
 \alias{anova.uRegress}
 \title{ANOVA}
 \usage{
-\method{anova}{uRegress}(
-  ...,
-  null_model,
-  full_model,
-  test = "Wald",
-  robustSE = TRUE,
-  useFdstn = TRUE
-)
+\method{anova}{uRegress}(object, full_object, test = "LRT", robustSE = TRUE, useFdstn = TRUE, ...)
 }
 \arguments{
-\item{...}{argument to be passed in}
+\item{object}{an object of class \code{uRegress}, the model with fewer parameters (i.e. the null model).}
 
-\item{null_model}{an object of class \code{uRegress}, the model with fewer parameters.}
-
-\item{full_model}{an object of class \code{uRegress}, the model with more parameters.}
+\item{full_object}{an object of class \code{uRegress}, the model with more parameters (i.e. the full model).}
 
 \item{test}{a character string specifying the test statistic to be used. Can be one of 'Wald' or 'LRT'.}
 
@@ -29,6 +20,8 @@ have been \code{TRUE} when \code{reg} was created.}
 
 \item{useFdstn}{a logical indicator that the F distribution should be used for test statistics 
 instead of the chi squared distribution. Defaults to \code{TRUE}.}
+
+\item{...}{argument to be passed in}
 }
 \value{
 A list of class \code{anova.uRegress} with the following components:
@@ -40,9 +33,6 @@ A list of class \code{anova.uRegress} with the following components:
 Compute analysis of variance (or deviance) tables for two fitted, nested \code{uRegress} objects. The model with more
 parameters is referred to as the full model (or the larger model), and the model with fewer
 parameters is referred to as the null model (or the smaller model).
-}
-\details{
-null_model, full_model, ..., test="Wald", robustSE = TRUE, useFdstn = TRUE
 }
 \examples{
 # Loading required libraries
@@ -57,5 +47,5 @@ testReg_null <- regress ("mean", ldl~age+stroke, data = mri)
 # Linear regression of LDL on age, stroke, and race (with robust SE by default)
 testReg_full <- regress ("mean", ldl~age+stroke+race, data = mri)
 # Comparing the two models using the Wald test with robust SE
-anova (null_model = testReg_null, full_model = testReg_full, test = "Wald")
+anova(testReg_null, testReg_full, test = "Wald")
 }
