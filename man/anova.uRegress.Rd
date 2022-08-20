@@ -4,14 +4,7 @@
 \alias{anova.uRegress}
 \title{ANOVA}
 \usage{
-\method{anova}{uRegress}(
-  object,
-  full_object,
-  test = "Wald",
-  robustSE = TRUE,
-  useFdstn = TRUE,
-  ...
-)
+\method{anova}{uRegress}(object, full_object, test = "LRT", robustSE = TRUE, useFdstn = TRUE, ...)
 }
 \arguments{
 \item{object}{an object of class \code{uRegress}, the model with fewer parameters (i.e. the null model).}

@@ -36,7 +36,7 @@
 #' anova(testReg_null, testReg_full, test = "Wald")
 #' @rdname anova.uRegress
 #' @export 
-anova.uRegress <- function(object, full_object, test="Wald", robustSE = TRUE, useFdstn = TRUE, ...){
+anova.uRegress <- function(object, full_object, test="LRT", robustSE = TRUE, useFdstn = TRUE, ...){
   
   if(!("uRegress" %in% class(object))|!("uRegress" %in% class(full_object))){
     stop("uRegress objects must be entered!")
@@ -46,36 +46,45 @@ anova.uRegress <- function(object, full_object, test="Wald", robustSE = TRUE, us
     stop("Only Wald and LRT tests are available.")
   }
   
-  if(is.null(object$robustCov)|is.null(full_object$robustCov)){
-    if(robustSE){
+  if (is.null(object$robustCov)|is.null(full_object$robustCov)) {
+    if (robustSE) {
       stop("uRegress objects must be created with robust standard errors.")
     }
   }
-  # simple check for nested models
-  if(full_object$fit$rank<=object$fit$rank){
-    warning("The null model has the same or more coefficients than the full model. We will proceed 
-    by reversing their orders. Double check the order of the two models passed in!")
-    temp_object <- full_object
-    full_object <- object
-    object <- temp_object
+  
+  # 
+  if (object$fnctl != full_object$fnctl) {
+    stop("uRegress objects must be created with the same fnctl!")
   }
   
+  # simple check for nested models
+  if (object$fnctl != "hazard" & full_object$fnctl!= "hazard") {
+    if (full_object$fit$rank<=object$fit$rank) {
+      warning("The null model has the same or more coefficients than the full model. We will proceed 
+    by reversing their orders. Double check the order of the two models passed in!")
+      temp_object <- full_object
+      full_object <- object
+      object <- temp_object
+    }
+  }
+
   object_cov <- (rownames(object$coefficients))
   full_object_cov <- (rownames(full_object$coefficients))
   
-  if(!(all(object_cov %in% object_cov))){
+  if (!(all(object_cov %in% object_cov))) {
     warning("The two models do not appear to be nested -- double check the input.")
     if(test!="LRT"){
-      stop("Only LRT is supported when the input models do not appear to be nested.")
+      stop("Only LRT is supported when the input models are not symbolically nested.")
     }
   }
   
   # first do likelihood ratio test 
-  if(test=="LRT"){
+  if (test=="LRT") {
     # we first extract the likelihood of both models
+    # this actually works for glm, lm, and hazard regression
     lr_null <- stats::logLik(object$fit)[1]
     lr_full <- stats::logLik(full_object$fit)[1]
-    df <- abs(full_object$fit$rank - object$fit$rank)
+    df <- abs(sum(!is.na(full_object$fit$coefficients)) - sum(!is.na(object$fit$coefficients)))
     LRStat <- 2 * abs(lr_full - lr_null)
     # compute p-value
     pval <- pchisq(LRStat, df, lower.tail = FALSE)
@@ -100,8 +109,19 @@ anova.uRegress <- function(object, full_object, test="Wald", robustSE = TRUE, us
     }
     if(useFdstn){
       test_stat <- c(t(new_coef) %*% solve(covMat) %*% new_coef)/nrow(comb)
-      pval <- stats::pf(test_stat, nrow(comb), full_object$df[2], lower.tail=FALSE)
-      printMat <- matrix(c(test_stat, nrow(comb), full_object$df[2],pval), nrow=1)
+      if (!is.null(full_object$df)) {
+        denom_df <- full_object$df[2]
+      } else if (full_object$fnctl == "hazard") {
+        denom_df <- full_object$nevent
+      } else {
+        if (!is.null(full_object$n)){
+          denom_df <- full_object$n 
+        } else {
+          stop("Cannot obtain an approximated denom df.")
+        }
+      }
+      pval <- stats::pf(test_stat, nrow(comb), denom_df, lower.tail=FALSE)
+      printMat <- matrix(c(test_stat, nrow(comb), denom_df, pval), nrow=1)
       dimnames(printMat) <- list(NULL, c("F stat","num df","den df","p value"))
     }else{
       test_stat <- c(t(new_coef) %*% solve(covMat) %*% new_coef)
