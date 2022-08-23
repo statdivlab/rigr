@@ -26,7 +26,8 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    tidyverse
+    tidyverse,
+    car
 VignetteBuilder: knitr
 RoxygenNote: 7.2.1
 Encoding: UTF-8

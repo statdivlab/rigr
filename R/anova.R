@@ -6,19 +6,22 @@
 #' 
 #' @param object an object of class \code{uRegress}, the model with fewer parameters (i.e. the null model).
 #' @param full_object an object of class \code{uRegress}, the model with more parameters (i.e. the full model).
-#' @param test a character string specifying the test statistic to be used. Can be one of 'Wald' or 'LRT'.
-#' @param robustSE a logical value indicating whether or not to use robust
+#' @param test a character string specifying the test statistic to be used. Can be one of 'Wald' or 'LRT', which 
+#' corresponds to Wald or likelihood (partial likelihood for hazard regressions) ratio tests. Note that currently 
+#' the Wald test is only supported for symbolically nested models; that is, when the larger model contains all 
+#' the covariates (with the same names) in the smaller model. 
+#' @param robustSE a logical value indicating whether or not to use robust 
 #' standard errors in calculation. Defaults to \code{TRUE}. 
 #' If \code{TRUE}, then \code{robustSE} must
 #' have been \code{TRUE} when \code{reg} was created.
 #' @param useFdstn a logical indicator that the F distribution should be used for test statistics 
-#' instead of the chi squared distribution. Defaults to \code{TRUE}. 
+#' instead of the chi squared distribution. Defaults to \code{FALSE}. This option is not supported when 
+#' input \code{reg} is a hazard regression (i.e., \code{fnctl="hazard"}).
 #' @param ... argument to be passed in
 #' @return A list of class \code{anova.uRegress} with the following components:
 #' \item{printMat}{A formatted table with inferential results (i.e., test statistics and p-values) for comparing two nested models.}
 #' \item{null model}{The null model in the comparison.}
 #' \item{full model}{The full model in the comparison.}
-
 #' @examples
 #' # Loading required libraries
 #' library(sandwich)
@@ -117,7 +120,7 @@ anova.uRegress <- function(object, full_object, test="LRT", robustSE = TRUE, use
         if (!is.null(full_object$n)){
           denom_df <- full_object$n 
         } else {
-          stop("Cannot obtain an approximated denom df.")
+          stop("Cannot obtain an approximated denom df in F test; consider setting useFdstn=FALSE")
         }
       }
       pval <- stats::pf(test_stat, nrow(comb), denom_df, lower.tail=FALSE)

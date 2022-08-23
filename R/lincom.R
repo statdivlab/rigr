@@ -24,7 +24,8 @@
 #' for all the null hypotheses. If joint.test is \code{TRUE}, then no confidence interval is calculated. 
 #' Defaults to \code{FALSE}. 
 #' @param useFdstn a logical indicator that the F distribution should be used for test statistics 
-#' instead of the chi squared distribution. Defaults to \code{TRUE}. 
+#' instead of the chi squared distribution. Defaults to \code{TRUE}. This option is not supported when 
+#' input \code{reg} is a hazard regression (i.e., \code{fnctl="hazard"}).
 #' @param eform a logical value indicating whether or not to exponentiate the
 #' estimated coefficient. By default this is performed based on the type of
 #' regression used.
@@ -73,13 +74,20 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE,
   if(!("uRegress" %in% class(reg))){
     stop("uRegress object must be entered")
   }
+  ## throw error if fnctl is survival and use F distribution is True
+  if (reg$fnctl == "hazard") {
+    if(useFdstn){
+      warning("Cannot obtain an approximated denom df in F test; setting useFdstn=FALSE.")
+      useFdstn = FALSE
+    }
+  }
   ## throw error if eform not logical
   if (!(is.logical(eform))){
     stop("Argument eform must be a logical.")
   }
   ## throw error if null.hypoth has any NAs
   if (sum(is.na(null.hypoth)) != 0 || sum(is.na(comb) != 0)){
-    stop("comb' and 'null.hypoth' cannot contains NAs")
+    stop("comb' and 'null.hypoth' cannot contains NAs.")
   }
   
   lincom.do <- function(reg, comb, null.hypoth, conf.level, robustSE, eform){
@@ -116,10 +124,16 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE,
     }
     
     tStat <- (newCoef-null.hypoth)/SE
-    pval <- 2*stats::pt(-abs(tStat), reg$df[2]) ## return two sided test
-    CIL <- newCoef - abs(stats::qt((1-conf.level)/2,df=reg$df[2])*SE)
-    CIU <- newCoef + abs(stats::qt((1-conf.level)/2,df=reg$df[2])*SE)
-    
+    if (reg$fnctl != "hazard") {
+      pval <- 2*stats::pt(-abs(tStat), df=reg$df[2]) ## return two sided test
+      CIL <- newCoef - abs(stats::qt((1-conf.level)/2,df=reg$df[2])*SE)
+      CIU <- newCoef + abs(stats::qt((1-conf.level)/2,df=reg$df[2])*SE)
+    } else {
+      pval <- 2*stats::pnorm(-abs(tStat)) ## return two sided test
+      CIL <- newCoef - abs(stats::qnorm((1-conf.level)/2)*SE)
+      CIU <- newCoef + abs(stats::qnorm((1-conf.level)/2)*SE)
+    }
+
     if(eform){
       CIL <- exp(CIL)
       CIU <- exp(CIU)
@@ -127,9 +141,11 @@ lincom <- function(reg, comb, null.hypoth=0, conf.level=.95, robustSE = TRUE,
     }
     
     printMat <- matrix(c(newCoef, SE, CIL, CIU, tStat, pval), nrow=dim(comb)[1])
+    
     dimnames(printMat) <- list(rep("", dim(comb)[1]), c("Estimate", "Std. Err.",
                                                         paste(format(100*conf.level),"%",c("L","H"), sep=""),
                                                         "T", "Pr(T > |t|)"))
+    
     if(eform){
       dimnames(printMat) <- list("", c("e(Est)", "Std. Err.",
                                        paste("e(", paste(format(100*conf.level),"%",c("L","H"),sep=""), ")",sep=""),

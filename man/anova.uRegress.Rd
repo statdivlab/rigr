@@ -11,15 +11,19 @@
 
 \item{full_object}{an object of class \code{uRegress}, the model with more parameters (i.e. the full model).}
 
-\item{test}{a character string specifying the test statistic to be used. Can be one of 'Wald' or 'LRT'.}
+\item{test}{a character string specifying the test statistic to be used. Can be one of 'Wald' or 'LRT', which 
+corresponds to Wald or likelihood (partial likelihood for hazard regressions) ratio tests. Note that currently 
+the Wald test is only supported for symbolically nested models; that is, when the larger model contains all 
+the covariates (with the same names) in the smaller model.}
 
-\item{robustSE}{a logical value indicating whether or not to use robust
+\item{robustSE}{a logical value indicating whether or not to use robust 
 standard errors in calculation. Defaults to \code{TRUE}. 
 If \code{TRUE}, then \code{robustSE} must
 have been \code{TRUE} when \code{reg} was created.}
 
 \item{useFdstn}{a logical indicator that the F distribution should be used for test statistics 
-instead of the chi squared distribution. Defaults to \code{TRUE}.}
+instead of the chi squared distribution. Defaults to \code{FALSE}. This option is not supported when 
+input \code{reg} is a hazard regression (i.e., \code{fnctl="hazard"}).}
 
 \item{...}{argument to be passed in}
 }
