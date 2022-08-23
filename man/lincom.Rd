@@ -43,7 +43,8 @@ for all the null hypotheses. If joint.test is \code{TRUE}, then no confidence in
 Defaults to \code{FALSE}.}
 
 \item{useFdstn}{a logical indicator that the F distribution should be used for test statistics 
-instead of the chi squared distribution. Defaults to \code{TRUE}.}
+instead of the chi squared distribution. Defaults to \code{TRUE}. This option is not supported when 
+input \code{reg} is a hazard regression (i.e., \code{fnctl="hazard"}).}
 
 \item{eform}{a logical value indicating whether or not to exponentiate the
 estimated coefficient. By default this is performed based on the type of

@@ -369,3 +369,37 @@ test_that("lincom() works with 0 coefficients", {
   expect_equal(lc2$comb1$nms, "-10*age+1*sexMale")
   expect_equal(lc2$comb1$null.hypoth, 0)
 })
+
+### Tests for joint hypothesis
+data(mri)
+library(sandwich)
+testReg <- regress ("mean", ldl~age+stroke, data = mri)
+testC <- matrix(c(0, 0.5, -1, 1, 60, 0), byrow = TRUE, nrow = 2)
+joint_t_1 <- lincom(testReg, testC, null.hypoth = c(0, 125), 
+                    joint.test = TRUE, robustSE = FALSE)
+car_joint_result <- car::linearHypothesis(testReg$fit, hypothesis.matrix=testC, 
+                      rhs= c(0, 125), test="Chisq")
+# first check the non robust version is correct
+test_that("lincom() works with a simple joint test with 2 hypotheses", {
+  expect_equal(joint_t_1$printMat[2],2)
+  expect_equal(joint_t_1$printMat[1], car_joint_result$Chisq[2], 
+               tolerance = 1e-4)
+  expect_equal(joint_t_1$printMat[3], car_joint_result$`Pr(>Chisq)`[2], 
+               tolerance = 1e-4)
+})
+
+# next check that the robust version is correct
+joint_t_1 <- lincom(testReg, testC, null.hypoth = c(0, 125), 
+                    joint.test = TRUE, robustSE = TRUE)
+# sandwich::sanwich corresponds to white.adjust with hc1
+car_joint_result <- car::linearHypothesis(testReg$fit, hypothesis.matrix=testC, 
+                                          rhs= c(0, 125), test="Chisq",
+                                          white.adjust="hc1")
+test_that("lincom() works with a simple joint test with 2 hypotheses", {
+  expect_equal(joint_t_1$printMat[2],2)
+  expect_equal(joint_t_1$printMat[1], car_joint_result$Chisq[2], 
+               tolerance = 1e-4)
+  expect_equal(joint_t_1$printMat[3], car_joint_result$`Pr(>Chisq)`[2], 
+               tolerance = 1e-4)
+})
+

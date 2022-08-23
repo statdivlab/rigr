@@ -12,5 +12,4 @@ print.anova.uRegress <- function(x, ...) {
   cat("\n")
   stats::printCoefmat(t(x$printMat[1,]), digits = 4, 
                       has.Pvalue = TRUE)
-  
 }
