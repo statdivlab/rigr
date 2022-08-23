@@ -24,7 +24,7 @@
 #' two-sample test). Defaults to 0.5 for a one-sample test and 0 for a two-sample test.
 #' @param alternative a string: one of
 #' \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
-#' of the test. Defaults to a two-sided test.
+#' of the test. Defaults to a two-sided test. 
 #' @param conf.level confidence level of the
 #' test. Defaults to 0.95.
 #' @param correct a logical indicating whether to perform a continuity correction
@@ -67,7 +67,7 @@
 #' proptest(factor(inrem), by = bssworst)
 #' 
 #' @export proptest
-proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE, 
+proptest <- function (var1, var2 = NULL, by = NULL, exact = FALSE, 
                     null.hypoth = ifelse(is.null(var2) && is.null(by), 0.5, 0), alternative = "two.sided", 
                     conf.level = 0.95, correct = FALSE, more.digits = 0) 
 {
@@ -216,7 +216,7 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
                           "Estimate", "Std. Err.", paste(conf.level * 100, "% CI", sep = ""))
         row.names(main) <- c("")
       }
-      # two-sample, not using by
+      # two-sample, not using by 
       if (length(var2) > 0 && is.null(by)) {
         ns <- c(length(var1), length(var2), length(var1) + length(var2))
         msg <- c(sum(is.na(var1)), sum(is.na(var2)), sum(is.na(var1)) + sum(is.na(var2)))
@@ -244,7 +244,9 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
                  est1 - est2 + stats::qnorm(cl) * se[3])
         chisq <- stats::prop.test(x = c(sum(var1), sum(var2)),
                                   n = c(length(var1), length(var2)),
-                                  conf.level = conf.level, alternative = alternative, correct = correct)
+                                  conf.level = conf.level, 
+                                  alternative = alternative, 
+                                  correct = correct)
         zstat <- as.numeric(format(sign(est_diff)*sqrt(chisq$statistic), 
                                    digits = digits))
         pval <- as.numeric(format(chisq$p.value, 
@@ -335,7 +337,8 @@ proptest<-function (var1, var2 = NULL, by = NULL, exact = FALSE,
               deparse(substitute(by)))
   proptest.obj <- proptest.do(var1 = var1, var2 = var2, 
                               by = by, exact = exact,
-                              null.hypoth = null.hypoth, alternative = alternative, 
+                              null.hypoth = null.hypoth, 
+                              alternative = alternative, 
                               conf.level = conf.level,
                               more.digits = more.digits, 
                               correct = correct,
