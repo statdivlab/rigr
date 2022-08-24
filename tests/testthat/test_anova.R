@@ -99,8 +99,9 @@ coxph_reg_null <- coxph(Surv(obstime, death)~age, data=mri)
 coxph_reg_full <- coxph(Surv(obstime, death)~age+height+weight, data=mri)
 
 
+
 anova_coxph_1 <- anova(hazard_reg_null, hazard_reg_full, robustSE = FALSE, test = "LRT")
-anova_coxph_2 <- anova(coxph_reg_null, coxph_reg_full, test = "LRT")
+anova_coxph_2 <- anova(coxph_reg_null, coxph_reg_full, test = "Chisq")
 
 
 test_that("anova.uRegress() works with two nested models with fnctl=survival", {
