@@ -1,11 +1,18 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- badges: start  -->
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/rigr)](https://CRAN.R-project.org/package=rigr)
 [![R-CMD-check](https://github.com/statdivlab/rigr/workflows/R-CMD-check/badge.svg)](https://github.com/statdivlab/rigr/actions)
 [![codecov](https://codecov.io/gh/statdivlab/rigr/branch/main/graph/badge.svg)](https://codecov.io/gh/statdivlab/rigr)
+
 <!-- badges: end -->
 
 # `rigr`: Regression, Inference, and General Data Analysis Tools for R
@@ -21,7 +28,7 @@ tasks and enable learners to focus on statistical concepts.
 [`uwIntroStats`](https://CRAN.R-project.org/package=uwIntroStats),
 provides easy-to-use interfaces for descriptive statistics, one- and
 two-sample inference, and regression analyses. `rigr` output includes
-key information while omitting unncessary details that can be confusing
+key information while omitting unnecessary details that can be confusing
 to beginners. Heteroskedasticity-robust (“sandwich”) standard errors are
 returned by default, and multiple partial F-tests and tests for
 contrasts are easy to specify. A single regression function
@@ -65,7 +72,8 @@ Maintainer: [Amy Willis](http://statisticaldiversitylab.com/)
 Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Brian D
 Williamson](https://bdwilliamson.github.io/), [Charles
 Wolock](https://cwolock.github.io/), [Taylor
-Okonek](https://taylorokonek.github.io/), [Jim
+Okonek](https://taylorokonek.github.io/), [Yiqun
+Chen](https://yiqunchen.github.io/), [Jim
 Hughes](https://www.biostat.washington.edu/people/james-hughes), [Amy
 Willis](http://statisticaldiversitylab.com/), [Andrew J
 Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd/)
