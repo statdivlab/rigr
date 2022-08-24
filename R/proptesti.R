@@ -130,9 +130,11 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
         cih <- as.numeric(format(est1 + stats::qnorm(cl)*se1, 
                                  digits = digits))
         if (alternative == "less") {
-          cil <- 0
+          cil <- as.numeric(format(min(test$conf.int), 
+                                   digits = digits))
         } else if (alternative == "greater") {
-          cih <- 1
+          cih <- as.numeric(format(max(test$conf.int), 
+                                   digits = digits))
         }
       }
       est1 <- as.numeric(format(est1, digits = digits))
