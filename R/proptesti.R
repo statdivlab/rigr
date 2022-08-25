@@ -19,7 +19,8 @@
 #' two-sample test). Defaults to 0.5 for one-sample and 0 for two-sample.
 #' @param alternative a string: one of
 #' \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
-#' of the test. Defaults to a two-sided test.
+#' of the test. Defaults to a two-sided test. When either \code{"less"} or \code{"greater"} is 
+#' used, the corresponding one-sided confidence interval is returned. 
 #' @param conf.level confidence level of the
 #' test. Defaults to 0.95
 #' @param correct a logical indicating whether to perform a continuity correction
@@ -55,17 +56,17 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
                            alternative="two.sided", 
                            correct = FALSE,
                            more.digits = 0, ...) {
-    if (!(is.scalar(x1) && is.scalar(n1) && x1%%1 == 0 && n1%%1 == 0 && x1 >= 0 && n1 > 0)){
+    if (!(is.scalar(x1) && is.scalar(n1) && x1%%1 == 0 && n1%%1 == 0 && x1 >= 0 && n1 > 0)) {
       stop("'x1' and 'n1' must be nonnegative integers")
     }
-    if (x1 > n1){
+    if (x1 > n1) {
       stop("Number of trials must be at least as large as number of succeses.")
     }
-    if (!is.null(x2) && !is.null(n2)){
+    if (!is.null(x2) && !is.null(n2)) {
       if (!(is.scalar(x2) && is.scalar(n2) && x2%%1 == 0 && n2 %%1 == 0 && x2 >= 0 && n2 > 0)){
         stop("'x2' and 'n2' must be nonnegative integers")
       }
-      if (x2 > n2){
+      if (x2 > n2) {
         stop("Number of trials must be at least as large as number of succeses.")
       }
     }
@@ -79,22 +80,22 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
     if (!(alternative %in% c("less", "two.sided", "greater"))) {
       stop("'alternative' must be either 'less', 'two.sided', or 'greater'")
     }
-    if (!(is.scalar(null.hypoth))){
+    if (!(is.scalar(null.hypoth))) {
       stop("Null must be a scalar")
     }
     if (!is.scalar(conf.level) || conf.level < 0 || conf.level > 1){
       stop("'conf.level' must a scalar between 0 and 1.")
     }
-    if (!is.logical(exact)){
+    if (!is.logical(exact)) {
       stop("'exact' must be a logical.")
     }
-    if (!is.logical(correct)){
+    if (!is.logical(correct)) {
       stop("'correct' must be a logical.")
     }
-    if (!is.null(n2) && exact){
+    if (!is.null(n2) && exact) {
       stop("Exact binomial test not available for two samples.")  
     }
-    if (null.hypoth != 0 && !is.null(n2)){
+    if (null.hypoth != 0 && !is.null(n2)) {
       stop("Two sample test only allows a null of 0.")
     }
     # check to make sure additional digit request is numeric
@@ -108,7 +109,7 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
       twosamp <- FALSE
       est1 <- x1/n1
       se1 <- sqrt(est1 * (1-est1)/n1)
-      if (exact){
+      if (exact) {
         test <- stats::binom.test(x1, n1, p = null.hypoth, alternative = alternative, conf.level = conf.level)
         zstat <- NULL
         pval <- as.numeric(format(test$p.value, 
@@ -118,7 +119,7 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
         cih <- as.numeric(format(max(test$conf.int), 
                                  digits = digits))
         
-      } else{
+      } else {
         test <- stats::prop.test(x1, n1, p = null.hypoth, alternative = alternative, conf.level = conf.level, correct = correct)
         zstat <- as.numeric(format(sign(est1 - null.hypoth)*sqrt(test$statistic), 
                                    digits = digits))
@@ -128,6 +129,13 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
                                  digits = digits))
         cih <- as.numeric(format(est1 + stats::qnorm(cl)*se1, 
                                  digits = digits))
+        if (alternative == "less") {
+          cil <- as.numeric(format(min(test$conf.int), 
+                                   digits = digits))
+        } else if (alternative == "greater") {
+          cih <- as.numeric(format(max(test$conf.int), 
+                                   digits = digits))
+        }
       }
       est1 <- as.numeric(format(est1, digits = digits))
       se1 <- as.numeric(format(se1, digits = digits))
@@ -136,7 +144,7 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
                                             "]", sep = "")), ncol = 5)
       colnames(printMat) <- c("Variable", "Obs", "Mean", "Std. Error", paste0(conf.level*100, "% CI"))
       rownames(printMat) <- ""
-    } else{
+    } else {
       twosamp <- TRUE
       est <- c(x1/n1, x2/n2, x1/n1- x2/n2)
       se <- c(sqrt(est[1] * (1-est[1])/n1), sqrt(est[2] * (1-est[2])/n2), sqrt(est[1] * (1-est[1])/n1 + est[2] * (1-est[2])/n2))

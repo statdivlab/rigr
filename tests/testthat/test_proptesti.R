@@ -86,7 +86,8 @@ test_that("proptesti() returns correct numbers for one-sample test, left-sided",
   expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2) # test statistic
   expect_equal(p1$pval, p2$p.value, tolerance = 1e-2) # p-value
   expect_equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
-               c(p2$estimate[[1]] - 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
+               c(0,
+                 #p2$estimate[[1]] - 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
                  p2$estimate[[1]] + 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a))), 
                tolerance = 1e-2) # conf int
   expect_equal(p1$tab[[1]], "var1") # var name
@@ -112,7 +113,8 @@ test_that("proptesti() returns correct numbers for one-sample test, right-sided"
   expect_equal(p1$pval, p2$p.value, tolerance = 1e-2) # p-value
   expect_equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
                c(p2$estimate[[1]] - 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
-                 p2$estimate[[1]] + 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a))), 
+                 1),
+                 #p2$estimate[[1]] + 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a))), 
                tolerance = 1e-2) # conf int
   expect_equal(p1$tab[[1]], "var1") # var name
   expect_equal(as.numeric(p1$tab[[2]]), length(a)) # n obs

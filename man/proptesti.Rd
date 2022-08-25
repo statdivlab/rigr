@@ -42,7 +42,8 @@ test. Defaults to 0.95}
 
 \item{alternative}{a string: one of
 \code{"less"}, \code{"two.sided"}, or \code{"greater"} specifying the form
-of the test. Defaults to a two-sided test.}
+of the test. Defaults to a two-sided test. When either \code{"less"} or \code{"greater"} is 
+used, the corresponding one-sided confidence interval is returned.}
 
 \item{correct}{a logical indicating whether to perform a continuity correction}
 

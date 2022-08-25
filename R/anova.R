@@ -6,7 +6,7 @@
 #' 
 #' @param object an object of class \code{uRegress}, the model with fewer parameters (i.e. the null model).
 #' @param full_object an object of class \code{uRegress}, the model with more parameters (i.e. the full model).
-#' @param test a character string specifying the test statistic to be used. Can be one of 'Wald' or 'LRT', which 
+#' @param test a character string specifying the test statistic to be used. Can be one of \code{'Wald'} or \code{'LRT'}, which 
 #' corresponds to Wald or likelihood (partial likelihood for hazard regressions) ratio tests. Note that currently 
 #' the Wald test is only supported for symbolically nested models; that is, when the larger model contains all 
 #' the covariates (with the same names) in the smaller model. 
@@ -41,7 +41,7 @@
 #' @export 
 anova.uRegress <- function(object, full_object, test="LRT", robustSE = TRUE, useFdstn = TRUE, ...){
   
-  if(!("uRegress" %in% class(object))|!("uRegress" %in% class(full_object))){
+  if( !("uRegress" %in% class(object)) | !("uRegress" %in% class(full_object))) {
     stop("uRegress objects must be entered!")
   }
   
@@ -74,11 +74,11 @@ anova.uRegress <- function(object, full_object, test="LRT", robustSE = TRUE, use
   object_cov <- (rownames(object$coefficients))
   full_object_cov <- (rownames(full_object$coefficients))
   
-  if (!(all(object_cov %in% object_cov))) {
-    warning("The two models do not appear to be nested -- double check the input.")
+  if (!(all(object_cov %in% full_object_cov))) {
     if(test!="LRT"){
       stop("Only LRT is supported when the input models are not symbolically nested.")
     }
+    warning("The two models do not appear to be nested -- double check the input.")
   }
   
   # first do likelihood ratio test 
@@ -103,7 +103,7 @@ anova.uRegress <- function(object, full_object, test="LRT", robustSE = TRUE, use
       pos_of_coef <- which(object_cov==curr_coef)
       comb[pos_of_coef,pos_of_coef] <- 0
     }
-    comb <- comb[rowSums(comb)>0,]
+    comb <- comb[rowSums(comb)>0,,drop=FALSE]
     new_coef <- comb %*% full_object$coefficients[,1,drop=FALSE]
     if(robustSE){
       covMat <- comb %*% full_object$robustCov %*% t(comb)
