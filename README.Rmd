@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 
 `rigr` is an `R` package to streamline data analysis in `R`. Learning both `R` and introductory statistics at the same time can be challenging, and so we created `rigr` to facilitate common data analysis tasks and enable learners to focus on statistical concepts. 
 
-`rigr`, formerly known as [`uwIntroStats`](https://CRAN.R-project.org/package=uwIntroStats), provides easy-to-use interfaces for descriptive statistics, one- and two-sample inference, and regression analyses. `rigr` output includes key information while omitting unnecessary details that can be confusing to beginners. Heteroskedasticity-robust ("sandwich") standard errors are returned by default, and multiple partial F-tests and tests for contrasts are easy to specify. A single regression function (`regress()`) can fit both linear and generalized linear models, allowing students to more easily make connections between different classes of models.
+`rigr`, formerly known as [`uwIntroStats`](https://CRAN.R-project.org/package=uwIntroStats), provides easy-to-use interfaces for descriptive statistics, one- and two-sample inference, and regression analyses. `rigr` output includes key information while omitting unnecessary details that can be confusing to beginners. Heteroskedasticity-robust ("sandwich") standard errors are returned by default, and multiple partial F-tests and tests for contrasts are easy to specify. A single regression function (`regress()`) can fit both linear models, generalized linear models, and proportional hazards models, allowing students to more easily make connections between different classes of models.
 
 ## Installation 
 
