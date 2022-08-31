@@ -28,9 +28,9 @@ key information while omitting unnecessary details that can be confusing
 to beginners. Heteroskedasticity-robust (“sandwich”) standard errors are
 returned by default, and multiple partial F-tests and tests for
 contrasts are easy to specify. A single regression function
-(`regress()`) can fit both linear and generalized linear models,
-allowing students to more easily make connections between different
-classes of models.
+(`regress()`) can fit both linear models, generalized linear models, and
+proportional hazards models, allowing students to more easily make
+connections between different classes of models.
 
 ## Installation
 
