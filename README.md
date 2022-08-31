@@ -30,7 +30,13 @@ If this produces an error, please run `install.packages("remotes")` first then t
 
 ## Documentation
 
-Examples of how to use the main functions in `rigr` are provided in three vignettes. One details the `regress` function and its utilities, one details the `descrip` function for descriptive statistics, and the third details functions used for one- and two-sample inference, including `ttest`, `wilcoxon`, and `proptest`.
+
+Examples of how to use the main functions in `rigr` are provided in
+three vignettes. One details the `regress` function and its utilities,
+one details the `descrip` function for descriptive statistics, and the
+third details functions used for one- and two-sample inference,
+including `ttest`, `wilcoxon`, and `proptest`. You can find tutorials on how to use
+the package at https://statdivlab.github.io/rigr/.
 
 ## Humans
 
