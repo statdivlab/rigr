@@ -73,7 +73,7 @@
       <img src="" class="logo" alt=""><h1>Regression in rigr</h1>
                         <h4 data-toc-skip class="author">Taylor Okonek, Brian D. Williamson and Amy D. Willis</h4>
             
-            <h4 data-toc-skip class="date">2022-08-30</h4>
+            <h4 data-toc-skip class="date">2022-08-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/statdivlab/rigr/blob/HEAD/vignettes/regress_intro.Rmd" class="external-link"><code>vignettes/regress_intro.Rmd</code></a></small>
       <div class="d-none name"><code>regress_intro.Rmd</code></div>
@@ -134,6 +134,11 @@
 <td><code>"rate"</code></td>
 <td align="left">Poisson Regression</td>
 <td align="left"><code>glm(family = poisson)</code></td>
+</tr>
+<tr class="odd">
+<td><code>"hazard"</code></td>
+<td align="left">Proportional Hazards Regression</td>
+<td align="left"><code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph()</a></code></td>
 </tr>
 </tbody>
 </table>
@@ -248,7 +253,7 @@
 <div class="section level3">
 <h3 id="poisson-regression">Poisson Regression<a class="anchor" aria-label="anchor" href="#poisson-regression"></a>
 </h3>
-<p>The final functional that <code>regress</code> supports is <code>"rate"</code>, for use in Poisson regression. To regress <code>yrsquit</code> on <code>age</code>, we would run:</p>
+<p>The next functional that <code>regress</code> supports is <code>"rate"</code>, for use in Poisson regression. To regress <code>yrsquit</code> on <code>age</code>, we would run:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"rate"</span>, <span class="va">yrsquit</span> <span class="op">~</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">mri</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -280,12 +285,41 @@
 <span><span class="co">## Number of Fisher Scoring iterations: 6</span></span></code></pre>
 <p>Note that again we have two tables of output, denoted by <code>Raw Model</code> and <code>Transformed Model</code>, with <code>Transformed Model</code> displaying exponentiated estimated coefficients.</p>
 </div>
+<div class="section level3">
+<h3 id="proportional-hazards-regression">Proportional Hazards Regression<a class="anchor" aria-label="anchor" href="#proportional-hazards-regression"></a>
+</h3>
+<p>The final functional that <code>regress</code> supports is <code>"hazard"</code>, for use in proportional hazards regression. To regress <code>age</code> on the death status (note that we need to create a <code>Surv</code> object first), we would run:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"hazard"</span>, <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">obstime</span>, <span class="va">death</span><span class="op">)</span><span class="op">~</span><span class="va">age</span>, data<span class="op">=</span><span class="va">mri</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## regress(fnctl = "hazard", formula = Surv(obstime, death) ~ age, </span></span>
+<span><span class="co">##     data = mri)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Raw Model:</span></span>
+<span><span class="co">##            Estimate  Naive SE  Robust SE       F stat    df Pr(&gt;F)   </span></span>
+<span><span class="co">## [1] age     0.06795   0.01354   0.01412            23.17 1  &lt; 0.00005</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Transformed Model:</span></span>
+<span><span class="co">##            e(Est)    e(95%L)   e(95%H)         F stat    df Pr(&gt;F)   </span></span>
+<span><span class="co">## [1] age      1.070     1.041     1.100             23.17 1  &lt; 0.00005</span></span>
+<span><span class="co">## n =  735, number of events= 133 </span></span>
+<span><span class="co">## Overall significance test: </span></span>
+<span><span class="co">## Likelihood ratio test= 22.33  on 1 df,   p=2.292e-06</span></span>
+<span><span class="co">## Wald test            = 25.17  on 1 df,   p=5.24e-07</span></span>
+<span><span class="co">## Score (logrank) test = 25.44  on 1 df,   p=4.554e-07</span></span></code></pre>
+<p>Similar to the Poisson regression case, we have two tables of output, denoted by <code>Raw Model</code> and <code>Transformed Model</code>, with <code>Transformed Model</code> displaying exponentiated estimated coefficients (i.e., on the hazard scale).</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="regression-on-the-geometric-mean">Regression on the Geometric Mean<a class="anchor" aria-label="anchor" href="#regression-on-the-geometric-mean"></a>
 </h2>
 <p>Most often in linear regression we are interested in modeling the mean of the response variable. However, we are sometimes interested in modeling the mean of the log-transformed response variable, which allows us to make statements about the geometric mean of the response. In <code><a href="../reference/regress.html">regress()</a></code>, we can use the <code>"geometric mean"</code> functional to fit this model. Regression on the geometric mean of the <code>packyrs</code> variable in the <code>mri</code> dataset can be performed as follows:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"geometric mean"</span>, <span class="va">packyrs</span> <span class="op">~</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">mri</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## ( 1  cases deleted due to missing values)</span></span>
 <span><span class="co">## </span></span>
@@ -314,7 +348,7 @@
 <span><span class="co">## Multiple R-squared:  0.01899,    Adjusted R-squared:  0.01765 </span></span>
 <span><span class="co">## F-statistic: 15.17 on 1 and 732 DF,  p-value: 0.0001074</span></span></code></pre>
 <p>It should be noted that many of the <code>packyrs</code> observations are zero, but the geometric mean of data including an observation of zero is zero… regardless of how many non-zeros were also observed. Therefore, by default, zeroes in the outcome variable are replaced by a value equal to one-half the lowest nonzero value in the outcome variable. This is based on the idea that the lowest observed value could be a proxy for the lower limit of detection. If you wish to specify a different value with which to replace zeroes, you may do say using the <code>replaceZeroes</code> argument.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"geometric mean"</span>, <span class="va">packyrs</span> <span class="op">~</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">mri</span>, replaceZeroes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## ( 1  cases deleted due to missing values)</span></span>
 <span><span class="co">## </span></span>
@@ -360,7 +394,7 @@
 <h3 id="specifying-the-reference-group-with-dummy">Specifying the reference group with <code>dummy</code><a class="anchor" aria-label="anchor" href="#specifying-the-reference-group-with-dummy"></a>
 </h3>
 <p>The <code>dummy</code> function is useful for specifying the reference group that you wish to use with categorical variables. Below we show an example of using the reference group “Female” vs. the reference group “Male” in a regression on <code>sex</code>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="va">atrophy</span> <span class="op">~</span> <span class="fu"><a href="../reference/dummy.html">dummy</a></span><span class="op">(</span><span class="va">sex</span>, reference <span class="op">=</span> <span class="st">"Male"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">mri</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Call:</span></span>
@@ -387,7 +421,7 @@
 <span><span class="co">## Residual standard error: 12.56 on 733 degrees of freedom</span></span>
 <span><span class="co">## Multiple R-squared:  0.05729,    Adjusted R-squared:  0.05601 </span></span>
 <span><span class="co">## F-statistic: 44.53 on 1 and 733 DF,  p-value: 4.944e-11</span></span></code></pre>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="va">atrophy</span> <span class="op">~</span> <span class="fu"><a href="../reference/dummy.html">dummy</a></span><span class="op">(</span><span class="va">sex</span>, reference <span class="op">=</span> <span class="st">"Female"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">mri</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Call:</span></span>
@@ -420,7 +454,7 @@
 <h3 id="polynomial-regression">Polynomial regression<a class="anchor" aria-label="anchor" href="#polynomial-regression"></a>
 </h3>
 <p>You can fit higher-order polynomials using <code>polynomial</code>:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="va">atrophy</span> <span class="op">~</span> <span class="fu"><a href="../reference/polynomial.html">polynomial</a></span><span class="op">(</span><span class="va">age</span>, degree <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">mri</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Call:</span></span>
@@ -449,7 +483,7 @@
 <span><span class="co">## Multiple R-squared:  0.09148,    Adjusted R-squared:  0.089 </span></span>
 <span><span class="co">## F-statistic: 32.91 on 2 and 732 DF,  p-value: 2.06e-14</span></span></code></pre>
 <p>Note that all polynomials less than or equal to the degree specified are included in the model, and that the variables in the polynomial specification are mean-centered by default. You can change the centering using the <code>center</code> parameter in the polynomial function, an example of which is as follows.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="va">atrophy</span> <span class="op">~</span> <span class="fu"><a href="../reference/polynomial.html">polynomial</a></span><span class="op">(</span><span class="va">age</span>, degree <span class="op">=</span> <span class="fl">2</span>, center <span class="op">=</span> <span class="fl">65</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">mri</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Call:</span></span>
@@ -493,7 +527,7 @@
 <h2 id="user-specified-multiple-partial-f-tests">User-specified multiple partial F-tests<a class="anchor" aria-label="anchor" href="#user-specified-multiple-partial-f-tests"></a>
 </h2>
 <p>You can also perform multiple partial F-tests using formulas and the <code>U</code> function. This is useful when want to test a subset of variables all at once in your regression. For example, to test whether both the variables <code>packyrs</code> and <code>yrsquit</code> are associated with <code>atrophy</code> in a model with age as a predictor, we can run</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="va">atrophy</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">+</span> <span class="fu"><a href="../reference/U.html">U</a></span><span class="op">(</span><span class="st">"Smoking variables"</span> <span class="op">=</span> <span class="op">~</span><span class="va">packyrs</span> <span class="op">+</span> <span class="va">yrsquit</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">mri</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## ( 1  cases deleted due to missing values)</span></span>
 <span><span class="co">## </span></span>
@@ -532,7 +566,7 @@
 <h2 id="testing-contrasts-hypotheses-about-linear-combinations-of-regression-coefficients">Testing contrasts: hypotheses about linear combinations of regression coefficients<a class="anchor" aria-label="anchor" href="#testing-contrasts-hypotheses-about-linear-combinations-of-regression-coefficients"></a>
 </h2>
 <p>You may be interested in testing a null hypothesis about a linear combination of coefficients in our regression model. For example, to investigate “Is the mean atrophy for a female subject equal to the mean atrophy for a male subject who is 10 years younger?”, our hypothesis test involves both the coefficients on age and sex. We can test this hypothesis using the <code>lincom</code> function. First, we need to fit a linear model of age and sex on atrophy:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_rigr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="va">atrophy</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">mri</span><span class="op">)</span></span>
 <span><span class="va">mod_rigr</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -557,7 +591,7 @@
 <span><span class="co">## Multiple R-squared:   0.14,  Adjusted R-squared:  0.1376 </span></span>
 <span><span class="co">## F-statistic: 52.18 on 2 and 732 DF,  p-value: &lt; 2.2e-16</span></span></code></pre>
 <p>We then create a vector giving the linear combination of the coefficient that we hypothesized to be zero, and perform the test using <code>lincom</code>. The elements in <code>mod_combo</code> correspond to <code>Intercept</code>, <code>age</code>, and <code>sexMale</code>, because this was their order in the coefficient table shown above.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_combo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/lincom.html">lincom</a></span><span class="op">(</span><span class="va">mod_rigr</span>, <span class="va">mod_combo</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -567,7 +601,7 @@
 <span><span class="co">## [1,]   -0.855     1.236 -3.282  1.571 -0.692       0.489</span></span></code></pre>
 <p>Note that the standard errors returned by default are robust, as are the associated confidence intervals and p-values.</p>
 <p>We could also test the null hypothesis that the mean difference in atrophy between these two groups (females, and males 10 years younger) is equal to -1 as follows:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/lincom.html">lincom</a></span><span class="op">(</span><span class="va">mod_rigr</span>, <span class="va">mod_combo</span>, null.hypoth <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## H0: -10*age+1*sexMale   =  -1 </span></span>
