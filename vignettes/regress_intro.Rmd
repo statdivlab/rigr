@@ -82,7 +82,7 @@ regress("rate", yrsquit ~ age, data = mri)
 
 Note that again we have two tables of output, denoted by `Raw Model` and `Transformed Model`, with `Transformed Model` displaying exponentiated estimated coefficients. 
 
-## Proportional Hazards Regression 
+# Proportional Hazards Regression 
 
 The final functional that `regress` supports is `"hazard"`, for use in proportional hazards regression. To regress `age` on the death status (note that we need to create a `Surv` object first), we would run:
 
