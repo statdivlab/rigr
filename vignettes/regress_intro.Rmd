@@ -1,6 +1,6 @@
 ---
 title: "Regression in rigr"
-author: "Taylor Okonek, Brian D. Williamson and Amy D. Willis"
+author: "Taylor Okonek, Brian D. Williamson, Yiqun T. Chen, and Amy D. Willis"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
