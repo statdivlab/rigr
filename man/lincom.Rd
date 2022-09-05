@@ -12,6 +12,8 @@ lincom(
   null.hypoth = 0,
   conf.level = 0.95,
   robustSE = TRUE,
+  joint.test = FALSE,
+  useFdstn = FALSE,
   eform = reg$fnctl != "mean"
 )
 }
@@ -36,14 +38,23 @@ standard errors in calculation. Defaults to \code{TRUE}.
 If \code{TRUE}, then \code{robustSE} must
 have been \code{TRUE} when \code{reg} was created.}
 
+\item{joint.test}{a logical value indicating whether or not to use a joint Chi-square test 
+for all the null hypotheses. If joint.test is \code{TRUE}, then no confidence interval is calculated. 
+Defaults to \code{FALSE}.}
+
+\item{useFdstn}{a logical indicator that the F distribution should be used for test statistics 
+instead of the chi squared distribution. Defaults to \code{TRUE}. This option is not supported when 
+input \code{reg} is a hazard regression (i.e., \code{fnctl="hazard"}).}
+
 \item{eform}{a logical value indicating whether or not to exponentiate the
 estimated coefficient. By default this is performed based on the type of
 regression used.}
 }
 \value{
-A list of class \code{lincom}. The \code{comb} entries in the list are labeled
-\code{comb1}, \code{comb2}, etc. for as many linear combinations were used. Each is a list with
-the following components:
+A list of class \code{lincom} (\code{joint.test} is \code{False}) or 
+\code{lincom.joint} (\code{joint.test} is \code{True}). For the \code{lincom} class,
+\code{comb} entries in the list are labeled \code{comb1}, \code{comb2}, etc. for as many linear combinations were used. 
+Each is a list with the following components:
 \item{printMat}{A formatted table with inferential results for the linear combination of coefficients. 
 These include the point estimate, standard error, confidence interval, and t-test for the linear 
 combination.}
@@ -69,8 +80,12 @@ testC <- c(0, 0.5, -1)
 lincom(testReg, testC)
 
 # Test multiple combinations: 
-# whether .5*age - stroke = 0 and Intercept + 60*age = 125 
+# whether separately whether .5*age - stroke = 0 or Intercept + 60*age = 125 
 testC <- matrix(c(0, 0.5, -1, 1, 60, 0), byrow = TRUE, nrow = 2)
 lincom(testReg, testC, null.hypoth = c(0, 125))
+
+# Test joint null hypothesis:
+# H0: .5*age - stroke = 0 AND Intercept + 60*age = 125 
+lincom(testReg, testC, null.hypoth = c(0, 125), joint.test = TRUE)
 
 }

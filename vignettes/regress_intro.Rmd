@@ -1,6 +1,6 @@
 ---
 title: "Regression in rigr"
-author: "Taylor Okonek, Brian D. Williamson and Amy D. Willis"
+author: "Taylor Okonek, Brian D. Williamson, Yiqun T. Chen, and Amy D. Willis"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -32,6 +32,7 @@ We use the concept of a *functional* to handle our first goal: allowing you to s
 |`"geometric mean"` | Linear Regression on logarithmically transformed Y | `lm()`, with Y log-transformed |
 |`"odds"` | Logistic Regression | `glm(family = binomial)` |
 |`"rate"` | Poisson Regression | `glm(family = poisson)` |
+| `"hazard"` | Proportional Hazards Regression | `coxph()` |
 
 ## `formula` and `data`
 
@@ -73,13 +74,24 @@ Note that the only possible link function in `regress` with `fnctl = odds"` is t
 
 ## Poisson Regression
 
-The final functional that `regress` supports is `"rate"`, for use in Poisson regression. To regress `yrsquit` on `age`, we would run:
+The next functional that `regress` supports is `"rate"`, for use in Poisson regression. To regress `yrsquit` on `age`, we would run:
 
 ```{r}
 regress("rate", yrsquit ~ age, data = mri)
 ```
 
 Note that again we have two tables of output, denoted by `Raw Model` and `Transformed Model`, with `Transformed Model` displaying exponentiated estimated coefficients. 
+
+# Proportional Hazards Regression 
+
+The final functional that `regress` supports is `"hazard"`, for use in proportional hazards regression. To regress `age` on the death status (note that we need to create a `Surv` object first), we would run:
+
+```{r}
+library(survival)
+regress("hazard", Surv(obstime, death)~age, data=mri)
+```
+
+Similar to the Poisson regression case, we have two tables of output, denoted by `Raw Model` and `Transformed Model`, with `Transformed Model` displaying exponentiated estimated coefficients (i.e., on the hazard scale). 
 
 # Regression on the Geometric Mean
 

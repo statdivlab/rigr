@@ -14,8 +14,8 @@ regress(
   formula,
   data,
   intercept = TRUE,
-  weights = rep(1, nrow(data)),
-  subset = rep(TRUE, nrow(data)),
+  weights = rep(1, nrow(data.frame(data))),
+  subset = rep(TRUE, nrow(data.frame(data))),
   robustSE = TRUE,
   conf.level = 0.95,
   exponentiate = fnctl != "mean",
@@ -27,6 +27,8 @@ regress(
   qr = TRUE,
   singular.ok = TRUE,
   contrasts = NULL,
+  init = NULL,
+  ties = "efron",
   offset,
   control = list(...),
   ...
@@ -36,10 +38,10 @@ regress(
 \item{fnctl}{a character string indicating
 the functional (summary measure of the distribution) for which inference is
 desired. Choices include \code{"mean"}, \code{"geometric mean"},
-\code{"odds"}, \code{"rate"}.}
+\code{"odds"}, \code{"rate"}, \code{"hazard"}.}
 
 \item{formula}{an object of class \code{formula} as might be passed to 
-\code{lm} or \code{glm}. Functions of variables, specified using \code{\link[rigr]{dummy}}
+\code{lm}, \code{glm}, or \code{coxph}. Functions of variables, specified using \code{\link[rigr]{dummy}}
 or \code{\link[rigr]{polynomial}} may also be included in \code{formula}.}
 
 \item{data}{a data frame, matrix, or other data structure with matching
@@ -49,7 +51,9 @@ names to those entered in \code{formula}.}
 indicating whether a intercept exists or not. Default value is \code{TRUE} for all 
 functionals. Intercept may also be removed if a "-1" is present in \code{formula}. If "-1"
 is present in \code{formula} but \code{intercept = TRUE} is specified, the model will fit
-without an intercept.}
+without an intercept. Note that when \code{fnctl = "hazard"}, the intercept is always set to
+\code{FALSE} because Cox proportional hazards regression models do not explicitly estimate 
+an intercept.}
 
 \item{weights}{vector indicating
 optional weights for weighted regression.}
@@ -58,8 +62,8 @@ optional weights for weighted regression.}
 to be used for all inference.}
 
 \item{robustSE}{a logical indicator
-that standard errors are to be computed using the Huber-White sandwich
-estimator.}
+that standard errors (and confidence intervals) are to be computed using the Huber-White sandwich
+estimator. The default is TRUE.}
 
 \item{conf.level}{a numeric scalar
 indicating the level of confidence to be used in computing confidence
@@ -98,6 +102,14 @@ unexponentiated coefficients, and one with the exponentiated coefficients.}
 lm() or glm() function, respectively. You may optionally specify \code{method = "model.frame"}, which
 returns the model frame and does no fitting.}
 
+\item{init}{a numeric vector of initial values for the regression parameters for the hazard regression. 
+Default initial value is zero for all variables.}
+
+\item{ties}{a character string describing method for breaking ties in hazard regression. 
+Only \code{efron}, \code{breslow}, or \code{exact} is accepted. 
+See more details in the documentation for this argument in the survival::coxph function. 
+Default to \code{efron}.}
+
 \item{...}{additional arguments to be passed to the \code{lm} function call}
 }
 \value{
@@ -107,7 +119,7 @@ contained in a matrix $augCoefficients.
 }
 \description{
 Produces point estimates, interval estimates, and p values for an arbitrary
-functional (mean, geometric mean, proportion, odds) of a
+functional (mean, geometric mean, proportion, odds, hazard) of a
 variable of class \code{integer}, or \code{numeric} when
 regressed on an arbitrary number of covariates. Multiple Partial F-tests can
 be specified using the \code{\link[rigr]{U}} function.
@@ -115,9 +127,11 @@ be specified using the \code{\link[rigr]{U}} function.
 \details{
 Regression models include linear regression (for the ``mean'' functional), logistic
 regression with logit link (for the ``odds'' functional), Poisson regression with log link (for the
-``rate'' functional), and a linear regression of a log-transformed outcome 
-(for the ``geometric mean'' functional). Proportional hazards regression is currently not
-supported in the \code{regress} function. 
+``rate'' functional), linear regression of a log-transformed outcome 
+(for the ``geometric mean'' functional), and Cox proportional hazards regression (for the hazard functional). 
+
+Currently, for the hazard functional, only `coxph` syntax is supported; in other words, using `dummy`, `polynomial`,
+and \code{\link[rigr]{U}} functions will result in an error when `fnctl = hazard`.
 
 Note that the only possible link function in `regress` with `fnctl = odds"` is the logit link. 
 Similarly, the only possible link function in `regress` with `fnctl = "rate"` is the log link.
@@ -147,7 +161,9 @@ regress("mean", atrophy ~ height + sex + U(hs=~height:sex), data = mri)
 mri$sex_bin <- ifelse(mri$sex == "Female", 1, 0)
 regress("odds", sex_bin ~ atrophy, data = mri)
 
-
+# Cox regression of age on survival 
+library(survival)
+regress("hazard", Surv(obstime, death)~age, data=mri)
 }
 \seealso{
 Functions for fitting linear models (\code{\link[stats]{lm}}), and

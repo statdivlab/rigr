@@ -11,8 +11,8 @@ test_that("regress() throws error if formula is not specified", {
 test_that("regress() throws error if fnctl is not supported", {
   expect_error(regress("blah", atrophy~age, data = mri), 
                "unsupported functional")
-  expect_error(regress("hazard", atrophy~age, data = mri), # make sure hazard is unsupported now
-               "unsupported functional")
+  #expect_error(regress("hazard", atrophy~age, data = mri), # make sure hazard is unsupported now
+  #             "unsupported functional")
   expect_error(regress("mea", atrophy~age, data = mri), # shortened strings no longer supported
                "unsupported functional")
 })
@@ -61,6 +61,11 @@ test_that("polynomial() throws errors if degree misspecified", {
                "inappropriate degree of polynomial")
   expect_error(regress("mean", atrophy ~ polynomial(age, degree = c(1,2)), data = mri), 
                "polynomial degree must be a single number")
+})
+
+test_that("regress() throws error if fnctl=`hazard` but the outcome is not a survival object", {
+  expect_error(regress("hazard", atrophy~age, data = mri), 
+               "Response must be a survival object")
 })
 
 ### warning handling
@@ -324,6 +329,42 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean'", 
   # p-value
   expect_equal(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "Pr(>|t|)"],
                mod_lm_robust_p)
+})
+
+### test cox proportional hazards regression model
+# Create the simplest test data set 
+test1 <- data.frame(time=c(4,3,1,1,2,2,3), 
+              status=c(1,1,1,0,1,1,0), 
+              x=c(0,2,1,1,1,0,0), 
+              sex=c(0,0,0,0,1,1,1)) 
+# Fit a stratified model without F distribution or robust SE
+mod_coxph <- survival::coxph(Surv(time, status) ~ x + strata(sex), test1)
+mod_rigr <- regress("hazard", Surv(time, status) ~ x + strata(sex), data = test1, 
+                    useFdstn = FALSE, robustSE = FALSE)
+
+test_that("regress() returns same output as coxph() for fnctl = hazard", {
+  # Estimate
+  expect_equal(unname(mod_rigr$augCoefficients[, colnames(mod_rigr$augCoefficients) == "Estimate"]),
+               unname(mod_coxph$coefficients))
+  # naive SE
+  expect_equal(as.vector(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "se(coef)"]),
+               as.vector(sqrt(mod_coxph$var)))
+  
+})
+
+# Fit a stratified model without F distribution or robust SE
+mod_coxph <- survival::coxph(Surv(obstime, death) ~ sex + age + strata(race), mri)
+mod_rigr <- regress("hazard", Surv(obstime, death) ~ sex + age + strata(race), data = mri, 
+                    useFdstn = FALSE, robustSE = FALSE)
+
+test_that("regress() returns same output as coxph() for fnctl = hazard", {
+  # Estimate
+  expect_equal(unname(mod_rigr$augCoefficients[, colnames(mod_rigr$augCoefficients) == "Estimate"]),
+               unname(mod_coxph$coefficients))
+  # naive SE
+  expect_equal(as.vector(mod_rigr$coefficients[, colnames(mod_rigr$coefficients) == "se(coef)"]),
+               as.vector(sqrt(diag(mod_coxph$var))))
+  
 })
 
 ### interaction terms in lms
@@ -893,8 +934,8 @@ test_that("regress() returns same output as lm() when doing F-test using U() fun
 ### dummy works as it's supposed to for binary covariates
 
 mod_rigr <- regress("mean", atrophy ~ dummy(sex), data = mri)
-mri$sex.Female <- ifelse(mri$sex == "Female", 0, 1)
-mod_lm <- lm(atrophy ~ sex.Female, data = mri)
+mri$sex.Male <- ifelse(mri$sex == "Female", 0, 1)
+mod_lm <- lm(atrophy ~ sex.Male, data = mri)
 mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))
 mod_lm_robust_ci_lower <- mod_lm$coefficients + qt((1 - 0.95)/2, df = nrow(mri) - 2) * mod_lm_robust_se
 mod_lm_robust_ci_higher <- mod_lm$coefficients - qt((1 - 0.95)/2, df = nrow(mri) - 2) * mod_lm_robust_se

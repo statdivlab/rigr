@@ -1,0 +1,5 @@
+url: https://statdivlab.github.io/rigr/
+template:
+  bootstrap: 5
+development:
+  mode: auto
