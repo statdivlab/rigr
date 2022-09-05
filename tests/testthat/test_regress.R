@@ -327,8 +327,8 @@ test_that("regress() returns same output as lm() for fnctl = 'geometric mean'", 
 })
 
 ### interaction terms in lms
-
-fev_df <- read.table("http://www.emersonstatistics.com/datasets/fev.txt",header=TRUE)
+data(fev)
+fev_df <- fev
 mod_rigr <- regress("mean",fev~height*sex, fev_df)
 mod_lm <- lm(fev ~ height * sex, fev_df)
 mod_lm_robust_se <- sqrt(diag(sandwich::sandwich(mod_lm, adjust = TRUE)))

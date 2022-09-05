@@ -5,7 +5,8 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/rigr)](https://CRAN.R-project.org/package=rigr)
 [![R-CMD-check](https://github.com/statdivlab/rigr/workflows/R-CMD-check/badge.svg)](https://github.com/statdivlab/rigr/actions)
-[![codecov](https://codecov.io/gh/statdivlab/rigr/branch/main/graph/badge.svg)](https://codecov.io/gh/statdivlab/rigr)
+[![codecov](https://codecov.io/gh/statdivlab/rigr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/statdivlab/rigr)
+
 <!-- badges: end -->
 
 # `rigr`: Regression, Inference, and General Data Analysis Tools for R
@@ -68,9 +69,7 @@ Wolock](https://cwolock.github.io/), [Taylor
 Okonek](https://taylorokonek.github.io/), [Jim
 Hughes](https://www.biostat.washington.edu/people/james-hughes), [Amy
 Willis](http://statisticaldiversitylab.com/), [Andrew J
-Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd/)
-and [Travis Y Hee
-Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en/).
+Spieker](https://andrewspieker.com/) and Travis Y Hee Wai.
 
 ## Issues
 

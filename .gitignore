@@ -1,3 +1,5 @@
+.gitignore
+.Rbuildignore
 .DS_Store
 
 # Build files
@@ -43,3 +45,5 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+/doc/
+/Meta/
