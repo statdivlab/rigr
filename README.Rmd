@@ -49,7 +49,7 @@ Examples of how to use the main functions in `rigr` are provided in three vignet
 
 Maintainer: [Amy Willis](http://statisticaldiversitylab.com/)
 
-Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Brian D Williamson](https://bdwilliamson.github.io/), [Charles Wolock](https://cwolock.github.io/), [Taylor Okonek](https://taylorokonek.github.io/), [Yiqun T Chen](https://yiqunchen.github.io/), [Jim Hughes](https://www.biostat.washington.edu/people/james-hughes), [Amy Willis](http://statisticaldiversitylab.com/), [Andrew J Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker-phd/) and [Travis Y Hee Wai](https://scholar.google.com/citations?user=WaJn2wIAAAAJ&hl=en/).
+Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Brian D Williamson](https://bdwilliamson.github.io/), [Charles Wolock](https://cwolock.github.io/), [Taylor Okonek](https://taylorokonek.github.io/), [Yiqun T Chen](https://yiqunchen.github.io/), [Jim Hughes](https://www.biostat.washington.edu/people/james-hughes), [Amy Willis](http://statisticaldiversitylab.com/), [Andrew J Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker) and Travis Y Hee Wai.
 
 ## Issues
 
