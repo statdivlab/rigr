@@ -10,53 +10,54 @@
 #' @format A data frame with 735 rows and 30 variables:
 #' \describe{
 #' 
-#' \item{ptid}{participant identification number.}
+#' \item{ptid}{Participant identification number.}
 #' 
-#' \item{mridate}{the date on which the participant underwent MRI scan
+#' \item{mridate}{The date on which the participant underwent MRI scan
 #' in MMDDYY format.} 
 #' 
-#' \item{age}{participant age at time of MRI, in
+#' \item{age}{Participant age at time of MRI, in
 #' years.} 
 #' 
-#' \item{sex}{participant sex (male or female).} 
+#' \item{sex}{The sex of the partipant. Only `Male` and `Female` are represented.} 
 #' 
-#' \item{race}{indicator of participant's race
-#' (1=white, 2=black, 3=Asian, 4=other).} 
+#' \item{race}{Participant's race. One of the following: `White`, `Black`, `Asian`,
+#'  or `Subject did not identify as White, Black or Asian`. It is unclear if study
+#'   participants self-identified their race, or if it was guessed by the study organisers.} 
 #' 
-#' \item{weight}{participant's
+#' \item{weight}{Participant's
 #' weight at time of MRI (pounds).} 
 #' 
-#' \item{height}{participant's height
+#' \item{height}{Participant's height
 #' at time of MRI (centimeters).} 
 #' 
-#' \item{packyrs}{participant smoking
+#' \item{packyrs}{Participant smoking
 #' history in pack years (1 pack year = smoking 1 pack of cigarettes per day
 #' for 1 year). A participant who has never smoked has 0 pack years.}
 #' 
-#' \item{yrsquit}{number of years since quitting smoking. A current
+#' \item{yrsquit}{Number of years since quitting smoking. A current
 #' smoker will have a nonzero packyrs and a 0 for yrsquit. A never smoker will
 #' have a zero for both variables.} 
 #' 
-#' \item{alcoh}{average alcohol intake
+#' \item{alcoh}{Average alcohol intake
 #' for the participant for the two weeks prior to MRI (drinks per week, where
 #' one drink is 1 oz. whiskey, 4 oz. wine, or 12 oz.beer).}
 #' 
-#' \item{physact}{physical activity of the participant for the week
+#' \item{physact}{Physical activity of the participant for the week
 #' prior to MRI (1,000 kcal).} 
 #' 
-#' \item{chf}{indicator of whether the
+#' \item{chf}{Indicator of whether the
 #' participant had been diagnosed with congestive heart failure prior to MRI
 #' (0=no, 1=yes).} 
 #' 
-#' \item{chd}{indicator of whether the participant had
+#' \item{chd}{Indicator of whether the participant had
 #' been diagnosed with coronary heart disease prior to MRI (0=no, 1=diagnosis
 #' of angina, 2=diagnosis of myocardial infarction).}
 #' 
-#' \item{stroke}{indicator of whether the participant had been
+#' \item{stroke}{Indicator of whether the participant had been
 #' diagnosed with a cerebrovascular event prior to MRI (0=no, 1=diagnosis of a
 #' transient ischemic attack, 2=diagnosis of stroke).}
 #' 
-#' \item{diabetes}{indicator of whether the participant had been
+#' \item{diabetes}{Indicator of whether the participant had been
 #' diagnosed with diabetes prior to MRI (0=no, 1=yes).}
 #' 
 #' \item{genhlth}{an indicator of the participant's view of their own
@@ -147,7 +148,7 @@
 #' 
 #' \item{rank}{rank of the faculty member in this year: Assist (Assistant), Assoc (Associate), or Full (Full)}
 #' 
-#' \item{admin}{indicator of whether the faculty member had administrative duties (eg, department chair) in this year: 1 (yes), or 0 (no)}
+#' \item{admin}{Indicator of whether the faculty member had administrative duties (eg, department chair) in this year: 1 (yes), or 0 (no)}
 #' 
 #' \item{salary}{monthly salary of the faculty member in this year in dollars}
 #' 
@@ -183,7 +184,7 @@
 #' 
 #' \item{obstime}{time observed in remission (months)}
 #' 
-#' \item{inrem}{indicator whether patient still in remission at last follow-up (yes or no)}
+#' \item{inrem}{Indicator whether patient still in remission at last follow-up (yes or no)}
 #' 
 #' }
 #' 

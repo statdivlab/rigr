@@ -26,7 +26,7 @@ A data frame with 19792 rows and 11 variables:
 
 \item{rank}{rank of the faculty member in this year: Assist (Assistant), Assoc (Associate), or Full (Full)}
 
-\item{admin}{indicator of whether the faculty member had administrative duties (eg, department chair) in this year: 1 (yes), or 0 (no)}
+\item{admin}{Indicator of whether the faculty member had administrative duties (eg, department chair) in this year: 1 (yes), or 0 (no)}
 
 \item{salary}{monthly salary of the faculty member in this year in dollars}
 
