@@ -11,7 +11,7 @@
 
 \item{full_object}{an object of class \code{uRegress}, the model with more parameters (i.e. the full model).}
 
-\item{test}{a character string specifying the test statistic to be used. Can be one of 'Wald' or 'LRT', which 
+\item{test}{a character string specifying the test statistic to be used. Can be one of \code{'Wald'} or \code{'LRT'}, which 
 corresponds to Wald or likelihood (partial likelihood for hazard regressions) ratio tests. Note that currently 
 the Wald test is only supported for symbolically nested models; that is, when the larger model contains all 
 the covariates (with the same names) in the smaller model.}
