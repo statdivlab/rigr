@@ -17,7 +17,7 @@ authors:
     affiliation: 2
   - name: Taylor Okonek
     affiliation: 1
-  - name: Charles Wolock
+  - name: Charles J. Wolock
     affiliation: 1
   - name: Andrew J. Spieker
     affiliation: 3
