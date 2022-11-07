@@ -18,7 +18,7 @@ http://www.emersonstatistics.com/datasets/mri.doc."><!-- mathjax --><script src=
     
     <a class="navbar-brand me-2" href="../index.html">rigr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,81 +74,82 @@ http://www.emersonstatistics.com/datasets/mri.doc."><!-- mathjax --><script src=
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
     <p>A data frame with 735 rows and 30 variables:</p><dl><dt>ptid</dt>
-<dd><p>participant identification number.</p></dd>
+<dd><p>Participant identification number.</p></dd>
 
 
 <dt>mridate</dt>
-<dd><p>the date on which the participant underwent MRI scan
+<dd><p>The date on which the participant underwent MRI scan
 in MMDDYY format.</p></dd>
  
 
 <dt>age</dt>
-<dd><p>participant age at time of MRI, in
+<dd><p>Participant age at time of MRI, in
 years.</p></dd>
  
 
 <dt>sex</dt>
-<dd><p>participant sex (male or female).</p></dd>
+<dd><p>The sex of the partipant. Only `Male` and `Female` are represented.</p></dd>
  
 
 <dt>race</dt>
-<dd><p>indicator of participant's race
-(1=white, 2=black, 3=Asian, 4=other).</p></dd>
+<dd><p>Participant's race. One of the following: `White`, `Black`, `Asian`,
+ or `Subject did not identify as White, Black or Asian`. It is unclear if study
+  participants self-identified their race, or if it was guessed by the study organisers.</p></dd>
  
 
 <dt>weight</dt>
-<dd><p>participant's
+<dd><p>Participant's
 weight at time of MRI (pounds).</p></dd>
  
 
 <dt>height</dt>
-<dd><p>participant's height
+<dd><p>Participant's height
 at time of MRI (centimeters).</p></dd>
  
 
 <dt>packyrs</dt>
-<dd><p>participant smoking
+<dd><p>Participant smoking
 history in pack years (1 pack year = smoking 1 pack of cigarettes per day
 for 1 year). A participant who has never smoked has 0 pack years.</p></dd>
 
 
 <dt>yrsquit</dt>
-<dd><p>number of years since quitting smoking. A current
+<dd><p>Number of years since quitting smoking. A current
 smoker will have a nonzero packyrs and a 0 for yrsquit. A never smoker will
 have a zero for both variables.</p></dd>
  
 
 <dt>alcoh</dt>
-<dd><p>average alcohol intake
+<dd><p>Average alcohol intake
 for the participant for the two weeks prior to MRI (drinks per week, where
 one drink is 1 oz. whiskey, 4 oz. wine, or 12 oz.beer).</p></dd>
 
 
 <dt>physact</dt>
-<dd><p>physical activity of the participant for the week
+<dd><p>Physical activity of the participant for the week
 prior to MRI (1,000 kcal).</p></dd>
  
 
 <dt>chf</dt>
-<dd><p>indicator of whether the
+<dd><p>Indicator of whether the
 participant had been diagnosed with congestive heart failure prior to MRI
 (0=no, 1=yes).</p></dd>
  
 
 <dt>chd</dt>
-<dd><p>indicator of whether the participant had
+<dd><p>Indicator of whether the participant had
 been diagnosed with coronary heart disease prior to MRI (0=no, 1=diagnosis
 of angina, 2=diagnosis of myocardial infarction).</p></dd>
 
 
 <dt>stroke</dt>
-<dd><p>indicator of whether the participant had been
+<dd><p>Indicator of whether the participant had been
 diagnosed with a cerebrovascular event prior to MRI (0=no, 1=diagnosis of a
 transient ischemic attack, 2=diagnosis of stroke).</p></dd>
 
 
 <dt>diabetes</dt>
-<dd><p>indicator of whether the participant had been
+<dd><p>Indicator of whether the participant had been
 diagnosed with diabetes prior to MRI (0=no, 1=yes).</p></dd>
 
 

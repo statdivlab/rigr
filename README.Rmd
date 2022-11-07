@@ -33,9 +33,16 @@ You can install the stable release of `rigr` from CRAN as follows:
 
     install.packages("rigr")
 
-You can install the development version of `rigr` from GitHub using the code below.
+You can install the development version of `rigr` from GitHub using the code below. The installment is through the `R` package `remotes`.
 
-    remotes::install_github("statdivlab/rigr")
+```{r, echo=FALSE}
+  # run the following code to make sure that the remote package it installed
+  if (!requireNamespace("remotes", quietly = TRUE)) {
+    install.package("remotes")
+  }
+  # install the package
+  remotes::install_github("statdivlab/rigr")
+```
 
 If this produces an error, please run `install.packages("remotes")` first then try the above line again.
 
@@ -56,3 +63,7 @@ Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Brian D Williams
 If you encounter any **bugs**, please [file an issue](https://github.com/statdivlab/rigr/issues/). Better yet, [submit a pull request](https://github.com/statdivlab/rigr/pulls/)!
 
 Do you have a **question**? Please first check out the vignettes, then please post on the [Discussions](https://github.com/statdivlab/rigr/discussions/).
+
+## Code of Conduct
+
+Please note that the rigr project is released with a [Contributor Code of Conduct](<https://statdivlab.github.io/rigr/CODE_OF_CONDUCT.html).> By contributing to this project, you agree to abide by its terms.
