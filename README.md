@@ -33,7 +33,7 @@ You can install the development version of `rigr` from GitHub using the code bel
 
 ## Documentation
 
-Examples of how to use the main functions in `rigr` are provided in three vignettes. One details the `regress` function and its utilities, one details the `descrip` function for descriptive statistics, and the third details functions used for one- and two-sample inference, including `ttest`, `wilcoxon`, and `proptest`.
+Examples of how to use the main functions in `rigr` are provided in three vignettes, available [here](https://statdivlab.github.io/rigr/). One details the `regress` function and its utilities, one details the `descrip` function for descriptive statistics, and the third details functions used for one- and two-sample inference, including `ttest`, `wilcoxon`, and `proptest`. 
 
 ## Humans
 

@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rigr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
                         <h4 data-toc-skip class="author">Taylor Okonek,
 Brian D. Williamson, Yiqun T. Chen, and Amy D. Willis</h4>
             
-            <h4 data-toc-skip class="date">2022-08-30</h4>
+            <h4 data-toc-skip class="date">2022-11-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/statdivlab/rigr/blob/HEAD/vignettes/regress_intro.Rmd" class="external-link"><code>vignettes/regress_intro.Rmd</code></a></small>
       <div class="d-none name"><code>regress_intro.Rmd</code></div>
@@ -175,7 +175,7 @@ package; see its documentation by running <code><a href="../reference/mri.html">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Preparing our R session</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://statdivlab.github.io/rigr/">rigr</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## rigr version 1.0.2: Regression, Inference, and General Data Analysis Tools in R</span></span></code></pre>
+<pre><code><span><span class="co">## rigr version 1.0.5: Regression, Inference, and General Data Analysis Tools in R</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mri</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/regress.html">regress</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="va">atrophy</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">race</span>, data <span class="op">=</span> <span class="va">mri</span><span class="op">)</span></span></code></pre></div>
@@ -323,9 +323,10 @@ possible link function in <code>regress</code> with
 <code>Transformed Model</code> displaying exponentiated estimated
 coefficients.</p>
 </div>
-<div class="section level3">
-<h3 id="proportional-hazards-regression">Proportional Hazards Regression<a class="anchor" aria-label="anchor" href="#proportional-hazards-regression"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="proportional-hazards-regression">Proportional Hazards Regression<a class="anchor" aria-label="anchor" href="#proportional-hazards-regression"></a>
+</h2>
 <p>The final functional that <code>regress</code> supports is
 <code>"hazard"</code>, for use in proportional hazards regression. To
 regress <code>age</code> on the death status (note that we need to
@@ -357,7 +358,6 @@ create a <code>Surv</code> object first), we would run:</p>
 denoted by <code>Raw Model</code> and <code>Transformed Model</code>,
 with <code>Transformed Model</code> displaying exponentiated estimated
 coefficients (i.e., on the hazard scale).</p>
-</div>
 </div>
 <div class="section level2">
 <h2 id="regression-on-the-geometric-mean">Regression on the Geometric Mean<a class="anchor" aria-label="anchor" href="#regression-on-the-geometric-mean"></a>

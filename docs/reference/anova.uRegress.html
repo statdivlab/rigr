@@ -14,7 +14,7 @@ parameters is referred to as the null model (or the smaller model)."><!-- mathja
     
     <a class="navbar-brand me-2" href="../index.html">rigr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@ parameters is referred to as the null model (or the smaller model).</p>
 
 
 <dt>test</dt>
-<dd><p>a character string specifying the test statistic to be used. Can be one of 'Wald' or 'LRT', which 
+<dd><p>a character string specifying the test statistic to be used. Can be one of <code>'Wald'</code> or <code>'LRT'</code>, which 
 corresponds to Wald or likelihood (partial likelihood for hazard regressions) ratio tests. Note that currently 
 the Wald test is only supported for symbolically nested models; that is, when the larger model contains all 
 the covariates (with the same names) in the smaller model.</p></dd>
@@ -120,6 +120,7 @@ input <code>reg</code> is a hazard regression (i.e., <code>fnctl="hazard"</code>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Loading required libraries</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sandwich.R-Forge.R-project.org/" class="external-link">sandwich</a></span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>package ‘sandwich’ was built under R version 4.1.2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Reading in a dataset</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mri</span><span class="op">)</span></span></span>
@@ -133,10 +134,10 @@ input <code>reg</code> is a hazard regression (i.e., <code>fnctl="hazard"</code>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html" class="external-link">anova</a></span><span class="op">(</span><span class="va">testReg_null</span>, <span class="va">testReg_full</span>, test <span class="op">=</span> <span class="st">"Wald"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Analysis of Deviance Table </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Null model: ldl ~ age + stroke</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x7ffc3769a400&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x7faa62df3d20&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Full model: ldl ~ age + stroke + race</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x7ffc3769a400&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x7faa62df3d20&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      F stat num df den df p value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.1619 3.0000    719   0.922</span>
