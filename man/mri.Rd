@@ -90,8 +90,9 @@ volume in the participant at the time of MRI (L/sec).}
 measure of cognitive function (Digit Symbol Substitution Test) for the
 participant at the time of MRI. Maximum score possible is 100.}
 
-\item{atrophy}{a measure of global brain activity detected on MRI.
-Measurements range from 0 to 100, with 100 being the most severe atrophy.}
+\item{atrophy}{a measure of loss of neurons estimated by the degree of ventricular 
+enlargement relative to the predicted ventricular size; with 0 indicating no 
+atrophy and 100 indicating the most severe degree of atrophy.}
 
 \item{whgrd}{a measure of white matter changes detected on MRI. 0
 means no changes, 9 means marked changes.} 
