@@ -11,18 +11,18 @@ tags:
 authors:
   - name: Yiqun T. Chen
     orcid: 0000-0002-4100-1507
-    affiliation: 1
+    affiliation: 1, 2
   - name: Brian D. Williamson
     orcid: 0000-0002-7024-548X
-    affiliation: 2
+    affiliation: 3
   - name: Taylor Okonek
     affiliation: 1
   - name: Charles J. Wolock
     affiliation: 1
   - name: Andrew J. Spieker
-    affiliation: 3
-  - name: Travis Y. Hee Wai
     affiliation: 4
+  - name: Travis Y. Hee Wai
+    affiliation: 5
   - name: James P. Hughes
     affiliation: 1
   - name: Scott S. Emerson
@@ -34,14 +34,16 @@ authors:
 affiliations:
  - name: Department of Biostatistics, University of Washington, Seattle, USA
    index: 1
- - name: Kaiser Permanente Washington Health Research Institute, Seattle, USA
+ - name: Data Science Institute & Department of Biomedical Data Science, Stanford University, Stanford, USA
    index: 2
- - name: Vanderbilt University Medical Center, Nashville, USA
+ - name: Kaiser Permanente Washington Health Research Institute, Seattle, USA
    index: 3
- - name: VA Puget Sound Health Care System, Seattle, USA
+ - name: Vanderbilt University Medical Center, Nashville, USA
    index: 4
+ - name: VA Puget Sound Health Care System, Seattle, USA
+   index: 5
 
-date: 20 September 2022
+date: 19 December 2022
 
 bibliography: ./paper.bib
 
