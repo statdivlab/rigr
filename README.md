@@ -24,7 +24,7 @@ You can install the development version of `rigr` from GitHub using the code bel
 
     # run the following code to make sure that the remote package it installed
     if (!requireNamespace("remotes", quietly = TRUE)) {
-      install.package("remotes")
+      install.packages("remotes")
     }
     # install the package
     remotes::install_github("statdivlab/rigr")
