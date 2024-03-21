@@ -367,6 +367,24 @@ test_that("regress() returns same output as coxph() for fnctl = hazard", {
   
 })
 
+mri2 <- read.table("http://www.emersonstatistics.com/datasets/mri.txt", header = T)
+mri2$obstime_yrs <- mri2$obstime/365.25
+mri2$ldlcat <- cut(mri2$ldl, breaks=c(0, 70, 100, 130, 160, 190, 250), right=FALSE)
+mri2$surv <- Surv(mri2$obstime_yrs, mri2$death)
+mod_rigr_missing <-  regress("hazard", surv~factor(ldlcat), data = mri2)
+mri_rmna <- mri2[!is.na(mri2$ldlcat), ]
+mod_rigr_subset <- regress("hazard", surv~factor(ldlcat), data = mri_rmna)
+
+test_that("regress() properly removes missing data for fnctl = hazard", {
+  # Estimate
+  expect_equal(unname(mod_rigr_missing$augCoefficients[, colnames(mod_rigr_missing$augCoefficients) == "Estimate"]),
+               unname(mod_rigr_subset$augCoefficients[, colnames(mod_rigr_subset$augCoefficients) == "Estimate"]))
+  # naive SE
+  expect_equal(as.vector(mod_rigr_missing$coefficients[, colnames(mod_rigr_missing$coefficients) == "se(coef)"]),
+               as.vector(mod_rigr_subset$coefficients[, colnames(mod_rigr_subset$coefficients) == "se(coef)"]))
+  
+})
+
 ### interaction terms in lms
 data(fev)
 fev_df <- fev
