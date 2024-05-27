@@ -1264,6 +1264,7 @@ test_that("case diagnostics are correct", {
 test_that("regress works for a long formula", {
   mri_complete <- mri[mri %>% complete.cases, ]
   mri_tte <- survival::Surv(mri_complete$obstime, mri_complete$death)
+  mri_complete$mri_tte <- mri_tte
   expect_silent({
     my_regress <- regress("hazard", mri_tte ~ height + weight + race + sex + age + dsst + atrophy +
                           plt + sbp + fev + dsst + atrophy + chf + chf + alcoh, 
