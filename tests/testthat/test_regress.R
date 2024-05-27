@@ -1260,3 +1260,15 @@ test_that("case diagnostics are correct", {
 #   expect_s3_class(influence.measures(mri_reg1), "infl") 
 #   
 # })
+
+test_that("regress works for a long formula", {
+  mri_complete <- mri[mri %>% complete.cases, ]
+  mri_tte <- survival::Surv(mri_complete$obstime, mri_complete$death)
+  expect_silent({
+    my_regress <- regress("hazard", mri_tte ~ height + weight + race + sex + age + dsst + atrophy +
+                          plt + sbp + fev + dsst + atrophy + chf + chf + alcoh, 
+                        data=mri_complete )
+  })
+  expect_equal(nrow(my_regress$coefficients), 14)
+  
+})
