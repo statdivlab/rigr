@@ -211,6 +211,12 @@ regress <- function(fnctl, formula, data,
   # if intercept = FALSE, add a "-1" to the formula
   if (!intercept) {
     form <- deparse(formula)
+    # if formula is very long, deparse will split into several lines 
+    # (based on width.cutoff argument, default is 60)
+    # if this happens, paste it back into a single element 
+    if (length(form) > 1) {
+      form <- paste0(form, collapse = "")
+    }
     form <- paste(form, "-1")
     formula <- stats::as.formula(form, env=.GlobalEnv)
   }
