@@ -482,7 +482,7 @@ theta_hat <- mod_glm$coefficients
 n <- 2
 V_hat <- sandwich::sandwich(mod_glm, adjust = TRUE)
 smoke_F <- as.vector(t(R %*% theta_hat) %*% solve(R %*% (V_hat) %*% t(R)) %*% (R %*% theta_hat) / n)
-smoke_p <- 1 - pchisq(smoke_F, 2)
+smoke_p <- 1 - pchisq(2 * smoke_F, 2)
 
 test_that("regress() returns same output as lm() when doing F-test using U() function", {
   # Estimate
@@ -1272,4 +1272,18 @@ test_that("regress works for a long formula", {
   })
   expect_equal(nrow(my_regress$coefficients), 14)
   
+})
+
+### F-stat and Chi-squared tests are asymptotically equivalent using U(.)
+
+mod1 <- regress("mean", atrophy ~ age + U(smoke = ~packyrs + yrsquit),
+                data = mri, useFdstn = TRUE)
+mod2 <- regress("mean", atrophy ~ age + U(smoke = ~packyrs + yrsquit),
+                data = mri, useFdstn = FALSE)
+
+test_that("F-stat and chi-squared tests are asymptotically equivalennt for U()", {
+  expect_equal(mod2$augCoefficients["smoke", "Pr(>Chi2)"] -
+                 mod1$augCoefficients["smoke", "Pr(>F)"],
+               0,
+               tolerance = 0.001) # tolerance to accommodate finite sample approximation
 })
