@@ -7,6 +7,23 @@ reg_full <- regress("mean", y ~ x + z, data = dat, robustSE = FALSE)
 lm_null <- stats::lm(y ~ x, data = dat)
 lm_full <- stats::lm(y ~ x + z, data = dat)
 
+dat_miss <- dat
+dat_miss$x[sample(1:100, 10)] <- NA
+reg_full_miss <- regress("mean", y ~ x1+x2, data = dat_miss)
+reg_null_miss <- regress("mean", y ~ x2, data = dat_miss)
+
+test_that("anova.uRegress() throws an error if models are fit on different sample sizes", {
+            expect_error(anova(reg_null_miss, reg_full_miss),
+                         paste0("The full and reduced models are fit on data with different ",
+                                "sample sizes, but the test is only valid when performed on the ",
+                                "same dataset. This error often occurs when there is missing ",
+                                "data in a variable that is included in the full model but not in the reduced model."))
+          })
+
+test_that("anova.uRegress() does not throw an error if models are fit on same sample size", {
+  expect_no_error(anova(reg_null, reg_full, robustSE = FALSE))
+})
+
 
 test_that("anova.uRegress() throws an error if at least one of the two input 
           objects is not of class uRegress", {
