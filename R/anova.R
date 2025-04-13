@@ -48,8 +48,8 @@ anova.uRegress <- function(object, full_object, test="LRT", robustSE = TRUE, use
   if (!identical(object$fit$model, full_object$fit$model)) {
     stop(paste0("The full and reduced models do not appear to be fit on the ",
                 "same dataset. This error often occurs when there is missing ",
-                "data in one variable that is only included in one of the ",
-                "models."))
+                "data in a variable that is included in the full model but not ",
+                "in the reduced model."))
   }
   
   # if (NROW(object$fit$model) == NROW(full_object$fit$model)) {
