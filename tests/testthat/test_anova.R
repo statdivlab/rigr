@@ -53,7 +53,6 @@ hazard_reg_null <- regress("hazard", Surv(obstime, death)~age, data=mri)
 hazard_reg_full <- regress("hazard", Surv(obstime, death)~age+height+weight, data=mri)
 rate_reg_full <- regress("rate", obstime ~ age+height+weight, data = mri, robustSE = FALSE)
 
-
 test_that("anova.uRegress() throws an error if the two input objects are 
            regressions with different fnctls", {
             expect_error(anova(hazard_reg_null, reg_full, robustSE = FALSE), 
