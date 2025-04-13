@@ -9,8 +9,8 @@ lm_full <- stats::lm(y ~ x + z, data = dat)
 
 dat_miss <- dat
 dat_miss$x[sample(1:100, 10)] <- NA
-reg_full_miss <- regress("mean", y ~ x1+x2, data = dat_miss)
-reg_null_miss <- regress("mean", y ~ x2, data = dat_miss)
+reg_full_miss <- regress("mean", y ~ x + z, data = dat_miss)
+reg_null_miss <- regress("mean", y ~ z, data = dat_miss)
 
 test_that("anova.uRegress() throws an error if models are fit on different sample sizes", {
             expect_error(anova(reg_null_miss, reg_full_miss),
