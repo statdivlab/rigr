@@ -45,6 +45,17 @@ anova.uRegress <- function(object, full_object, test="LRT", robustSE = TRUE, use
     stop("uRegress objects must be entered!")
   }
   
+  if (!identical(object$fit$model, full_object$fit$model)) {
+    stop(paste0("The full and reduced models do not appear to be fit on the same",
+                "dataset. This error often occurs when there is missing data in",
+                "one variable that is only included in one of the models."))
+  }
+  
+  # if (NROW(object$fit$model) == NROW(full_object$fit$model)) {
+  #   stop(paste0("The full and reduced models are fit on data with different",
+  #               "sample sizes. This often suggests "))
+  # }
+  
   if(!(test %in% c("Wald","LRT"))){
     stop("Only Wald and LRT tests are available.")
   }
