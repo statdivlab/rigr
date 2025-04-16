@@ -1787,6 +1787,7 @@ printerGlm <- function (x, digits = max(3L, getOption("digits") - 3L), symbolic.
   invisible(x)
 }
 
+#' @export
 print.augCoefficients <-
   function (x,...,sigfigs=max(3,getOption("digits")-3),width=9,nonsci.limit=5,Psci=FALSE) {
     
@@ -1850,6 +1851,7 @@ print.augCoefficients <-
     invisible(frmtCoefficients)
   }
 
+#' @export
 fitted.uRegress <-
   function (object,...,X) {
     

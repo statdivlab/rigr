@@ -55,9 +55,15 @@ anova.uRegress <- function(object, full_object, test="LRT", robustSE = TRUE, use
     }
   }
   
-  # 
   if (object$fnctl != full_object$fnctl) {
     stop("uRegress objects must be created with the same fnctl!")
+  }
+  
+  if (NROW(object$fit$model) != NROW(full_object$fit$model)) {
+    stop(paste0("The full and reduced models are fit on data with different ",
+                "sample sizes, but the test is only valid when performed on the ",
+                "same dataset. This error often occurs when there is missing ",
+                "data in a variable that is included in the full model but not in the reduced model."))
   }
   
   # simple check for nested models

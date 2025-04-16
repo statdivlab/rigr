@@ -23,7 +23,6 @@
 #'
 #' @name rigr-package
 #' @aliases rigr-package rigr
-#' @docType package
 #' @author Scott S. Emerson, Andrew J. Spieker, Brian D.
 #' Williamson, Amy D. Willis, Charles Wolock, and Taylor Okonek
 #'
