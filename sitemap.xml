@@ -1,114 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://statdivlab.github.io/rigr/404.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/articles/descrip_intro.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/articles/one_and_two_sample_inference.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/articles/regress_intro.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/index.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/paper.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/U.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/anova.uRegress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/cooks.distance.uRegress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/descrip.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/dfbeta.uRegress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/dfbetas.uRegress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/dummy.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/fev.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/hatvalues.uRegress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/lincom.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/mri.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/polynomial.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/predict.uRegress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/proptest.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/proptesti.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/psa.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/regress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/residuals.uRegress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/rigr-package.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/rstandard.uRegress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/rstudent.uRegress.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/salary.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/ttest.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/ttesti.html</loc>
-  </url>
-  <url>
-    <loc>https://statdivlab.github.io/rigr/reference/wilcoxon.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://statdivlab.github.io/rigr/404.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/LICENSE-text.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/LICENSE.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/articles/descrip_intro.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/articles/index.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/articles/one_and_two_sample_inference.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/articles/regress_intro.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/authors.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/index.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/paper.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/U.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/anova.uRegress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/cooks.distance.uRegress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/descrip.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/dfbeta.uRegress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/dfbetas.uRegress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/dummy.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/fev.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/hatvalues.uRegress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/index.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/lincom.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/mri.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/polynomial.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/predict.uRegress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/proptest.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/proptesti.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/psa.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/regress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/residuals.uRegress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/rigr-package.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/rstandard.uRegress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/rstudent.uRegress.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/salary.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/ttest.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/ttesti.html</loc></url>
+<url><loc>https://statdivlab.github.io/rigr/reference/wilcoxon.html</loc></url>
 </urlset>
+
