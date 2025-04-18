@@ -29,7 +29,7 @@ A data frame with 50 rows and 9 variables:
 }
 }
 \source{
-\url{http://www.emersonstatistics.com/datasets/psa.txt}
+\url{https://rct-design.com/TeachingMaterials/Datasets/psa.txt}
 }
 \usage{
 psa
@@ -38,6 +38,6 @@ psa
 Data from a study of 50 men having hormonally treated prostate cancer. Includes information on 
 PSA levels, tumor characteristics, remission status, age, and disease state.
 More information, including a coding key, is available at
-\url{http://www.emersonstatistics.com/datasets/PSA.doc}.
+\url{https://rct-design.com/TeachingMaterials/Datasets/psa.txt}.
 }
 \keyword{datasets}

@@ -4,7 +4,7 @@
 #' (especially heart attacks and congestive heart failure) and cerebrovascular disease 
 #' (especially strokes) in the U.S. elderly. More information, including a coding key,
 #'  is available at
-#' \url{http://www.emersonstatistics.com/datasets/mri.doc}.
+#' \url{https://rct-design.com/TeachingMaterials/Datasets/mri.txt}.
 #' 
 #'
 #' @format A data frame with 735 rows and 30 variables:
@@ -116,7 +116,7 @@
 #' to their death. If 0, the number of days in \code{obstime} is the number of
 #' days between that participant's MRI and September 16, 1997.} }
 #' 
-#' @source \url{http://www.emersonstatistics.com/datasets/mri.txt}
+#' @source \url{https://rct-design.com/TeachingMaterials/Datasets/mri.txt}
 "mri"
 
 #' Salary dataset
@@ -125,7 +125,7 @@
 #' monthly salary each year from 1976 through 1995,  as well as sex, highest degree attained, 
 #' year of highest degree, field, year hired, rank, and administrative duties. 
 #' More information, including a coding key, is available at
-#' \url{http://www.emersonstatistics.com/datasets/salary.doc}.
+#' \url{https://rct-design.com/TeachingMaterials/Datasets/salary.txt}.
 #' 
 #'
 #' @format A data frame with 19792 rows and 11 variables:
@@ -155,7 +155,7 @@
 #' 
 #' }
 #' 
-#' @source \url{http://www.emersonstatistics.com/datasets/salary.txt}
+#' @source \url{https://rct-design.com/TeachingMaterials/Datasets/salary.txt}
 "salary"
 
 #' PSA dataset
@@ -163,7 +163,7 @@
 #' Data from a study of 50 men having hormonally treated prostate cancer. Includes information on 
 #' PSA levels, tumor characteristics, remission status, age, and disease state.
 #' More information, including a coding key, is available at
-#' \url{http://www.emersonstatistics.com/datasets/PSA.doc}.
+#' \url{https://rct-design.com/TeachingMaterials/Datasets/psa.txt}.
 #' 
 #'
 #' @format A data frame with 50 rows and 9 variables:
@@ -189,7 +189,7 @@
 #' 
 #' }
 #' 
-#' @source \url{http://www.emersonstatistics.com/datasets/psa.txt}
+#' @source \url{https://rct-design.com/TeachingMaterials/Datasets/psa.txt}
 "psa"
 
 #' FEV dataset
@@ -198,7 +198,7 @@
 #' lung function (measured by FEV). Each row corresponds to a single clinic visit and contains
 #' information on age, height, sex, FEV, and smoking status.
 #' More information, including a coding key, is available at
-#' \url{http://www.emersonstatistics.com/datasets/fev.doc}.
+#' \url{https://rct-design.com/TeachingMaterials/Datasets/fev.txt}.
 #' 
 #'
 #' @format A data frame with 654 rows and 7 variables:
@@ -219,5 +219,5 @@
 #' \item{smoke}{smoking habits ("yes" or "no")}
 #' } 
 #' 
-#' @source \url{http://www.emersonstatistics.com/datasets/fev.txt}
+#' @source \url{https://rct-design.com/TeachingMaterials/Datasets/fev.txt}
 "fev"

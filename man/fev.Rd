@@ -24,7 +24,7 @@ A data frame with 654 rows and 7 variables:
 }
 }
 \source{
-\url{http://www.emersonstatistics.com/datasets/fev.txt}
+\url{https://rct-design.com/TeachingMaterials/Datasets/fev.txt}
 }
 \usage{
 fev
@@ -34,6 +34,6 @@ Data from a study of 654 children on the relationship between smoking status and
 lung function (measured by FEV). Each row corresponds to a single clinic visit and contains
 information on age, height, sex, FEV, and smoking status.
 More information, including a coding key, is available at
-\url{http://www.emersonstatistics.com/datasets/fev.doc}.
+\url{https://rct-design.com/TeachingMaterials/Datasets/fev.txt}.
 }
 \keyword{datasets}
