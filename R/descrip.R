@@ -98,34 +98,34 @@
 #'   corresponding to variables and strata and columns corresponding to the 
 #'   descriptive statistics. Descriptive statistics include
 #'   \itemize{
-#'     \item{N:} { the number of observations.} 
-#'     \item{Msng:} { the number of observations with missing values.}
-#'     \item{Mean:} { the mean of the nonmissing observations (this is potentially 
-#'                   a restricted mean for right-censored time-to-event data).} 
-#'     \item{Std Dev:} { the standard deviation of the nonmissing observations 
+#'     \item N: the number of observations.
+#'     \item Msng: the number of observations with missing values.
+#'     \item Mean: the mean of the nonmissing observations (this is potentially 
+#'                   a restricted mean for right-censored time-to-event data).
+#'     \item Std Dev: the standard deviation of the nonmissing observations 
 #'                     (this is potentially a restricted standard deviation for 
-#'                     right-censored time to event data).} 
-#'     \item{Geom Mn:} { the geometric mean of the nonmissing observations 
+#'                     right-censored time to event data).
+#'     \item Geom Mn: the geometric mean of the nonmissing observations 
 #'                    (this is potentially a restricted geometric mean for 
 #'                    right-censored time to event data). Nonpositive values in 
 #'                    the variable will generate \code{NA}, unless \code{replaceZeroes} 
-#'                    was specified.}
-#'     \item{Min:} { the minimum value of the nonmissing observations (this is
-#'                  potentially restricted for right-censored time-to-event data).}
-#'     \item{Quantiles:} { columns corresponding to the quantiles specified by \code{probs} 
+#'                    was specified.
+#'     \item Min: the minimum value of the nonmissing observations (this is
+#'                  potentially restricted for right-censored time-to-event data).
+#'     \item Quantiles: columns corresponding to the quantiles specified by \code{probs} 
 #'                      (these are potentially restricted for right-censored 
-#'                      time-to-event data).}
-#'     \item{Max:} { the maximum value of the nonmissing observations (this is
-#'                  potentially restricted for right-censored time-to-event data).}
-#'     \item{Proportions:} { columns corresponding to the proportions as specified by
+#'                      time-to-event data).
+#'     \item Max: the maximum value of the nonmissing observations (this is
+#'                  potentially restricted for right-censored time-to-event data).
+#'     \item Proportions: columns corresponding to the proportions as specified by
 #'                         \code{above}, \code{below}, \code{labove}, \code{rbelow}, 
 #'                         \code{lbetween}, \code{rbetween}, \code{interval}, 
-#'                         \code{linterval}, \code{rinterval}, and \code{lrinterval}.} 
-#'     \item{restriction:} { the threshold for restricted means, standard deviations, 
-#'                          and geometric means.} 
-#'     \item{firstEvent:} { the time of the first event for censored time-to-event variables.} 
-#'     \item{lastEvent:} { the time of the last event for censored time-to-event variables.} 
-#'     \item{isDate:} { an indicator that the variable is a \code{Date} object.}
+#'                         \code{linterval}, \code{rinterval}, and \code{lrinterval}.
+#'     \item restriction: the threshold for restricted means, standard deviations, 
+#'                          and geometric means.
+#'     \item firstEvent: the time of the first event for censored time-to-event variables.
+#'     \item lastEvent: the time of the last event for censored time-to-event variables.
+#'     \item isDate: an indicator that the variable is a \code{Date} object.
 #'   } 
 #' 
 #' @examples
