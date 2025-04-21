@@ -219,34 +219,34 @@ included in each interval.</p></dd>
   statistics for each variable in the entire subsetted sample, as well as
   within each stratum if any is defined, are contained in a matrix with rows
   corresponding to variables and strata and columns corresponding to the
-  descriptive statistics. Descriptive statistics include</p><ul><li><p>N:  the number of observations.</p></li>
-<li><p>Msng:  the number of observations with missing values.</p></li>
-<li><p>Mean:  the mean of the nonmissing observations (this is potentially
+  descriptive statistics. Descriptive statistics include</p><ul><li><p>N: the number of observations.</p></li>
+<li><p>Msng: the number of observations with missing values.</p></li>
+<li><p>Mean: the mean of the nonmissing observations (this is potentially
                   a restricted mean for right-censored time-to-event data).</p></li>
-<li><p>Std Dev:  the standard deviation of the nonmissing observations
+<li><p>Std Dev: the standard deviation of the nonmissing observations
                     (this is potentially a restricted standard deviation for
                     right-censored time to event data).</p></li>
-<li><p>Geom Mn:  the geometric mean of the nonmissing observations
+<li><p>Geom Mn: the geometric mean of the nonmissing observations
                    (this is potentially a restricted geometric mean for
                    right-censored time to event data). Nonpositive values in
                    the variable will generate <code>NA</code>, unless <code>replaceZeroes</code>
                    was specified.</p></li>
-<li><p>Min:  the minimum value of the nonmissing observations (this is
+<li><p>Min: the minimum value of the nonmissing observations (this is
                  potentially restricted for right-censored time-to-event data).</p></li>
-<li><p>Quantiles:  columns corresponding to the quantiles specified by <code>probs</code>
+<li><p>Quantiles: columns corresponding to the quantiles specified by <code>probs</code>
                      (these are potentially restricted for right-censored
                      time-to-event data).</p></li>
-<li><p>Max:  the maximum value of the nonmissing observations (this is
+<li><p>Max: the maximum value of the nonmissing observations (this is
                  potentially restricted for right-censored time-to-event data).</p></li>
-<li><p>Proportions:  columns corresponding to the proportions as specified by
+<li><p>Proportions: columns corresponding to the proportions as specified by
                         <code>above</code>, <code>below</code>, <code>labove</code>, <code>rbelow</code>,
                         <code>lbetween</code>, <code>rbetween</code>, <code>interval</code>,
                         <code>linterval</code>, <code>rinterval</code>, and <code>lrinterval</code>.</p></li>
-<li><p>restriction:  the threshold for restricted means, standard deviations,
+<li><p>restriction: the threshold for restricted means, standard deviations,
                          and geometric means.</p></li>
-<li><p>firstEvent:  the time of the first event for censored time-to-event variables.</p></li>
-<li><p>lastEvent:  the time of the last event for censored time-to-event variables.</p></li>
-<li><p>isDate:  an indicator that the variable is a <code>Date</code> object.</p></li>
+<li><p>firstEvent: the time of the first event for censored time-to-event variables.</p></li>
+<li><p>lastEvent: the time of the last event for censored time-to-event variables.</p></li>
+<li><p>isDate: an indicator that the variable is a <code>Date</code> object.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

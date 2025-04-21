@@ -71,24 +71,22 @@
 <p>You can install the stable release of <code>rigr</code> from CRAN as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"rigr"</span>)</span></code></pre></div>
 <p>You can install the development version of <code>rigr</code> from GitHub using the code below. The installment is through the <code>R</code> package <code>remotes</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># run the following code to make sure that the remote package it installed</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"remotes"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>}</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># install the package</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"statdivlab/rigr"</span>)</span></code></pre></div>
-<p><code>rigr</code> is maintained by the <a href="http://statisticaldiversitylab.com/" class="external-link">StatDivLab</a>, but relies on community support to log issues and implement new features. Is there a method you would like to have implemented? Please submit a pull request or start a <a href="https://github.com/statdivlab/rigr/discussions/" class="external-link">discussion</a>!</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co">#&gt; Using GitHub PAT from the git credential store.</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; Skipping install of 'rigr' from a github remote, the SHA1 (8b901ee9) has not changed since last install.</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt;   Use `force = TRUE` to force installation</span></span></code></pre></div>
+<p>If this produces an error, please run <code>install.packages("remotes")</code> first then try the above line again.</p>
+<p><code>rigr</code> is maintained by the <a href="https://statdivlab.github.io/" class="external-link">StatDivLab</a>, but relies on community support to log issues and implement new features. Is there a method you would like to have implemented? Please submit a pull request or start a <a href="https://github.com/statdivlab/rigr/discussions/" class="external-link">discussion</a>!</p>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<p>Examples of how to use the main functions in <code>rigr</code> are provided in three vignettes, available <a href="https://statdivlab.github.io/rigr/">here</a>. One details the <code>regress</code> function and its utilities, one details the <code>descrip</code> function for descriptive statistics, and the third details functions used for one- and two-sample inference, including <code>ttest</code>, <code>wilcoxon</code>, and <code>proptest</code>.</p>
+<p>Examples of how to use the main functions in <code>rigr</code> are provided in three vignettes. One details the <code>regress</code> function and its utilities, one details the <code>descrip</code> function for descriptive statistics, and the third details functions used for one- and two-sample inference, including <code>ttest</code>, <code>wilcoxon</code>, and <code>proptest</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="humans">Humans<a class="anchor" aria-label="anchor" href="#humans"></a>
 </h2>
-<p>Maintainer: <a href="http://statisticaldiversitylab.com/" class="external-link">Amy Willis</a></p>
-<p>Authors: <a href="http://www.emersonstatistics.com/" class="external-link">Scott S Emerson</a>, <a href="https://bdwilliamson.github.io/" class="external-link">Brian D Williamson</a>, <a href="https://cwolock.github.io/" class="external-link">Charles Wolock</a>, <a href="https://taylorokonek.github.io/" class="external-link">Taylor Okonek</a>, <a href="https://yiqunchen.github.io/" class="external-link">Yiqun T Chen</a>, <a href="https://www.biostat.washington.edu/people/james-hughes" class="external-link">Jim Hughes</a>, <a href="http://statisticaldiversitylab.com/" class="external-link">Amy Willis</a>, <a href="https://www.vumc.org/biostatistics/person/andrew-spieker" class="external-link">Andrew J Spieker</a> and Travis Y Hee Wai.</p>
+<p>Maintainer: <a href="https://statdivlab.github.io/" class="external-link">Amy Willis</a></p>
+<p>Authors: <a href="http://www.emersonstatistics.com/" class="external-link">Scott S Emerson</a>, <a href="https://bdwilliamson.github.io/" class="external-link">Brian D Williamson</a>, <a href="https://cwolock.github.io/" class="external-link">Charles Wolock</a>, <a href="https://taylorokonek.github.io/" class="external-link">Taylor Okonek</a>, <a href="https://yiqunchen.github.io/" class="external-link">Yiqun T Chen</a>, <a href="https://www.biostat.washington.edu/people/james-hughes" class="external-link">Jim Hughes</a>, <a href="https://statdivlab.github.io/" class="external-link">Amy Willis</a>, <a href="https://www.vumc.org/biostatistics/person/andrew-spieker" class="external-link">Andrew J Spieker</a> and Travis Y Hee Wai.</p>
 </div>
 <div class="section level2">
 <h2 id="issues">Issues<a class="anchor" aria-label="anchor" href="#issues"></a>
@@ -99,7 +97,7 @@
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
 </h2>
-<p>Please note that the rigr project is released with a [Contributor Code of Conduct](<a href="https://statdivlab.github.io/rigr/CODE_OF_CONDUCT.html)." class="uri">https://statdivlab.github.io/rigr/CODE_OF_CONDUCT.html).</a> By contributing to this project, you agree to abide by its terms.</p>
+<p>Please note that the rigr project is released with a <a href="https://statdivlab.github.io/rigr/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
 
