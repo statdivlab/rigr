@@ -115,7 +115,7 @@ to their death. If 0, the number of days in \code{obstime} is the number of
 days between that participant's MRI and September 16, 1997.} }
 }
 \source{
-\url{http://www.emersonstatistics.com/datasets/mri.txt}
+\url{https://rct-design.com/TeachingMaterials/Datasets/mri.txt}
 }
 \usage{
 mri
@@ -125,6 +125,6 @@ Data from an observational study of the incidence of cardiovascular disease
 (especially heart attacks and congestive heart failure) and cerebrovascular disease 
 (especially strokes) in the U.S. elderly. More information, including a coding key,
  is available at
-\url{http://www.emersonstatistics.com/datasets/mri.doc}.
+\url{https://rct-design.com/TeachingMaterials/Datasets/mri.txt}.
 }
 \keyword{datasets}
