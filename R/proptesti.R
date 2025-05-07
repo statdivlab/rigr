@@ -144,6 +144,13 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
                                             "]", sep = "")), ncol = 5)
       colnames(printMat) <- c("Variable", "Obs", "Mean", "Std. Error", paste0(conf.level*100, "% CI"))
       rownames(printMat) <- ""
+      # bound ci in [0, 1]
+      if (cil < 0) {
+        cil <- 0
+      } 
+      if (cih > 1) {
+        cih <- 1
+      }
     } else {
       twosamp <- TRUE
       est <- c(x1/n1, x2/n2, x1/n1- x2/n2)
@@ -176,6 +183,8 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
       names(printMat) <- c("Group", "Obs", 
                            "Mean", "Std. Err.", paste(conf.level * 100, "% CI", sep = ""))
       row.names(printMat) <- c("", " ", "  ")
+      cil[1:2] <- c(ifelse(cil[1] < 0, 0, cil[1]), ifelse(cil[2] < 0, 0, cil[2]))
+      cih[1:2] <- c(ifelse(cih[1] > 1, 1, cih[1]), ifelse(cih[2] > 1, 1, cih[2]))
     }
     par <- c(null.hypoth = null.hypoth, alternative = alternative, 
              conf.level = conf.level, exact = exact,  twosamp = twosamp,
