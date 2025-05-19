@@ -187,10 +187,19 @@ proptest <- function (var1, var2 = NULL, by = NULL, exact = FALSE,
           binom <- stats::binom.test(x = sum(var1), n = length(var1), p = null.hypoth, 
                               alternative = alternative, conf.level = conf.level)
           se <- sqrt(est1*(1-est1)/length(var1))
-          cil <- as.numeric(format(min(binom$conf.int), 
-                                   digits = digits))
-          cih <- as.numeric(format(max(binom$conf.int), 
-                                   digits = digits))
+          if (alternative == "two.sided") {
+            cil <- as.numeric(format(min(binom$conf.int), 
+                                     digits = digits))
+            cih <- as.numeric(format(max(binom$conf.int), 
+                                     digits = digits))
+          } else {
+            ci_test <- stats::binom.test(x = sum(var1), n = length(var1), p = null.hypoth, 
+                                         alternative = "two.sided", conf.level = conf.level)
+            cil <- as.numeric(format(min(ci_test$conf.int), 
+                                     digits = digits))
+            cih <- as.numeric(format(max(ci_test$conf.int), 
+                                     digits = digits))
+          }
           se <- as.numeric(format(se, digits = digits))
           pval <- as.numeric(format(binom$p.value, 
                                     digits = digits))

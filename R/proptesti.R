@@ -114,10 +114,18 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
         zstat <- NULL
         pval <- as.numeric(format(test$p.value, 
                                   digits = digits))
-        cil <- as.numeric(format(min(test$conf.int), 
-                                 digits = digits))
-        cih <- as.numeric(format(max(test$conf.int), 
-                                 digits = digits))
+        if (alternative == "two.sided") {
+          cil <- as.numeric(format(min(test$conf.int), 
+                                   digits = digits))
+          cih <- as.numeric(format(max(test$conf.int), 
+                                   digits = digits))
+        } else {
+          ci_test <- stats::binom.test(x1, n1, p = null.hypoth, alternative = "two.sided", conf.level = conf.level)
+          cil <- as.numeric(format(min(ci_test$conf.int), 
+                                   digits = digits))
+          cih <- as.numeric(format(max(ci_test$conf.int), 
+                                   digits = digits))
+        }
         
       } else {
         test <- stats::prop.test(x1, n1, p = null.hypoth, alternative = alternative, conf.level = conf.level, correct = correct)
@@ -129,13 +137,14 @@ proptesti <- function(x1, n1, x2 = NULL, n2 = NULL, exact = FALSE,
                                  digits = digits))
         cih <- as.numeric(format(est1 + stats::qnorm(cl)*se1, 
                                  digits = digits))
-        if (alternative == "less") {
-          cil <- as.numeric(format(min(test$conf.int), 
-                                   digits = digits))
-        } else if (alternative == "greater") {
-          cih <- as.numeric(format(max(test$conf.int), 
-                                   digits = digits))
-        }
+        # as of issue 166, setting all CI's to be two sided even if test is one sided
+        # if (alternative == "less") {
+        #   cil <- as.numeric(format(min(test$conf.int), 
+        #                            digits = digits))
+        # } else if (alternative == "greater") {
+        #   cih <- as.numeric(format(max(test$conf.int), 
+        #                            digits = digits))
+        # }
       }
       est1 <- as.numeric(format(est1, digits = digits))
       se1 <- as.numeric(format(se1, digits = digits))

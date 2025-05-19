@@ -265,9 +265,13 @@ p2 <- binom.test(sum(a), length(a), alternative = "less")
 test_that("proptest() returns correct numbers for one-sample exact test, left-sided", {
   expect_s3_class(p1, "proptest")
   expect_equal(p1$pval, p2$p.value, tolerance = 1e-2) # p-value
-  expect_equal(as.numeric(strsplit(substr(p1$tab[[6]], start = 2, stop = nchar(p1$tab[[6]])-1), ", ")[[1]]),
-               p2$conf.int[1:2], 
-               tolerance = 1e-2) # conf int
+  # as of issue #166, make all CIs two sided
+  # expect_equal(as.numeric(strsplit(substr(p1$tab[[6]], start = 2, stop = nchar(p1$tab[[6]])-1), ", ")[[1]]),
+  #              p2$conf.int[1:2], 
+  #              tolerance = 1e-2) # conf int
+  expect_false(all.equal(as.numeric(strsplit(substr(p1$tab[[6]], start = 2, stop = nchar(p1$tab[[6]])-1), ", ")[[1]]),
+                                       p2$conf.int[1:2], 
+                                       tolerance = 1e-2) == TRUE)
   expect_equal(p1$tab[[1]], "a") # var name
   expect_equal(as.numeric(p1$tab[[2]]), length(a)) # n obs
   expect_equal(as.numeric(p1$tab[[3]]), sum(is.na(a))) # NAs
@@ -290,9 +294,14 @@ p2 <- binom.test(sum(a), length(a), alternative = "greater")
 test_that("proptest() returns correct numbers for one-sample exact test, right-sided", {
   expect_s3_class(p1, "proptest")
   expect_equal(p1$pval, p2$p.value, tolerance = 1e-2) # p-value
-  expect_equal(as.numeric(strsplit(substr(p1$tab[[6]], start = 2, stop = nchar(p1$tab[[6]])-1), ", ")[[1]]),
-               p2$conf.int[1:2], 
-               tolerance = 1e-2) # conf int
+  expect_equal(p1$pval, p2$p.value, tolerance = 1e-2) # p-value
+  # as of issue #166, make all CIs two sided
+  # expect_equal(as.numeric(strsplit(substr(p1$tab[[6]], start = 2, stop = nchar(p1$tab[[6]])-1), ", ")[[1]]),
+  #              p2$conf.int[1:2], 
+  #              tolerance = 1e-2) # conf int
+  expect_false(all.equal(as.numeric(strsplit(substr(p1$tab[[6]], start = 2, stop = nchar(p1$tab[[6]])-1), ", ")[[1]]),
+                         p2$conf.int[1:2], 
+                         tolerance = 1e-2) == TRUE)
   expect_equal(p1$tab[[1]], "a") # var name
   expect_equal(as.numeric(p1$tab[[2]]), length(a)) # n obs
   expect_equal(as.numeric(p1$tab[[3]]), sum(is.na(a))) # NAs

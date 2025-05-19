@@ -86,8 +86,8 @@ test_that("proptesti() returns correct numbers for one-sample test, left-sided",
   expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2) # test statistic
   expect_equal(p1$pval, p2$p.value, tolerance = 1e-2) # p-value
   expect_equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
-               c(0,
-                 #p2$estimate[[1]] - 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
+               # as of issue 166 make all CIs two sided
+               c(p2$estimate[[1]] - 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
                  p2$estimate[[1]] + 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a))), 
                tolerance = 1e-2) # conf int
   expect_equal(p1$tab[[1]], "var1") # var name
@@ -112,9 +112,9 @@ test_that("proptesti() returns correct numbers for one-sample test, right-sided"
   expect_equal(abs(p1$zstat), sqrt(p2$statistic[[1]]), tolerance = 1e-2) # test statistic
   expect_equal(p1$pval, p2$p.value, tolerance = 1e-2) # p-value
   expect_equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
+               # as of issue 166 make all CIs two sided
                c(p2$estimate[[1]] - 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a)), 
-                 1),
-                 #p2$estimate[[1]] + 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a))), 
+                 p2$estimate[[1]] + 1.96*sqrt(p2$estimate[[1]]*(1-p2$estimate[[1]])/length(a))), 
                tolerance = 1e-2) # conf int
   expect_equal(p1$tab[[1]], "var1") # var name
   expect_equal(as.numeric(p1$tab[[2]]), length(a)) # n obs
@@ -183,9 +183,13 @@ p2 <- binom.test(sum(a), length(a), alternative = "less")
 test_that("proptesti() returns correct numbers for one-sample test, exact, left-sided", {
   expect_s3_class(p1, "proptesti")
   expect_equal(p1$pval, p2$p.value, tolerance = 1e-2) # p-value
-  expect_equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
-               p2$conf.int[1:2], 
-               tolerance = 1e-2) # conf int
+  # as of issue #166, make all CIs two sided
+  # expect_equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
+  #              p2$conf.int[1:2], 
+  #              tolerance = 1e-2) # conf int
+  expect_false(all.equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
+                         p2$conf.int[1:2], 
+                         tolerance = 1e-2) == TRUE)
   expect_equal(p1$tab[[1]], "var1") # var name
   expect_equal(as.numeric(p1$tab[[2]]), length(a)) # n obs
   expect_equal(as.numeric(p1$tab[[3]]), p2$estimate[[1]], tolerance = 3) # estimate of mean
@@ -205,9 +209,13 @@ p2 <- binom.test(sum(a), length(a), alternative = "greater")
 test_that("proptesti() returns correct numbers for one-sample test, exact, right-sided", {
   expect_s3_class(p1, "proptesti")
   expect_equal(p1$pval, p2$p.value, tolerance = 1e-2) # p-value
-  expect_equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
-               p2$conf.int[1:2], 
-               tolerance = 1e-2) # conf int
+  # as of issue #166, make all CIs two sided
+  # expect_equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
+  #              p2$conf.int[1:2], 
+  #              tolerance = 1e-2) # conf int
+  expect_false(all.equal(as.numeric(strsplit(substr(p1$tab[[5]], start = 2, stop = nchar(p1$tab[[5]])-1), ", ")[[1]]),
+                         p2$conf.int[1:2], 
+                         tolerance = 1e-2) == TRUE)
   expect_equal(p1$tab[[1]], "var1") # var name
   expect_equal(as.numeric(p1$tab[[2]]), length(a)) # n obs
   expect_equal(as.numeric(p1$tab[[3]]), p2$estimate[[1]], tolerance = 3) # estimate of mean
