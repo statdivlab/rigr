@@ -367,7 +367,7 @@ test_that("regress() returns same output as coxph() for fnctl = hazard", {
   
 })
 
-mri2 <- read.table("https://rct-design.com/TeachingMaterials/Datasets/mri.txt", header = T)
+mri2 <- mri
 mri2$obstime_yrs <- mri2$obstime/365.25
 mri2$ldlcat <- cut(mri2$ldl, breaks=c(0, 70, 100, 130, 160, 190, 250), right=FALSE)
 mri2$surv <- Surv(mri2$obstime_yrs, mri2$death)
