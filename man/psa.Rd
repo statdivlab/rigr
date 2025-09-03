@@ -29,7 +29,7 @@ A data frame with 50 rows and 9 variables:
 }
 }
 \source{
-\url{https://rct-design.com/TeachingMaterials/Datasets/psa.txt}
+Dataset originally distributed at rct-design.com (Teaching Materials, Datasets section).
 }
 \usage{
 psa
@@ -37,7 +37,6 @@ psa
 \description{
 Data from a study of 50 men having hormonally treated prostate cancer. Includes information on 
 PSA levels, tumor characteristics, remission status, age, and disease state.
-More information, including a coding key, is available at
-\url{https://rct-design.com/TeachingMaterials/Datasets/psa.txt}.
+More information, including a coding key, is available at rct-design.com (Teaching Materials, Datasets section).
 }
 \keyword{datasets}

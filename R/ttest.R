@@ -38,6 +38,7 @@
 #' 
 #' @return a list of class \code{ttest}. The print method lays out the information in an easy-to-read
 #' format. 
+#' \describe{
 #' \item{tab}{A formatted table of descriptive and inferential statistics (total number of observations,
 #' number of missing observations, mean, standard error of the mean estimate, standard deviation), 
 #' along with a confidence interval for the mean.}
@@ -50,6 +51,7 @@
 #' \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
 #' \item{geo}{A formatted table of descriptive and inferential statistics for the geometric mean.}
 #' \item{call}{The call made to the \code{ttest} function.}
+#' }
 #' 
 #' @seealso \code{\link[stats]{t.test}}
 #' 

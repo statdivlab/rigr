@@ -1,5 +1,6 @@
 #' Create Dummy Variables
 #' 
+#' Creates dummy variables using a reference value.
 #' 
 #' @param x \code{y} variable used to create the dummy
 #' variables.

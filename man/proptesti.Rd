@@ -54,6 +54,7 @@ Non-integers are automatically rounded down.}
 \value{
 A list of class \code{proptesti}. The print method lays out the information in an easy-to-read
 format. 
+\describe{
 \item{tab}{A formatted table of descriptive and inferential results (total number of observations,
 sample proportion, standard error of the proportion estimate), 
 along with a confidence interval for the underlying proportion.}
@@ -62,6 +63,7 @@ statistic, if using an approximate test.}
 \item{pval}{the p-value
 for the test} 
 \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
+}
 }
 \description{
 Performs a one- or two-sample test of proportions using counts of successes and trials, rather than

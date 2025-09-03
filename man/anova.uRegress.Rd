@@ -29,14 +29,14 @@ input \code{reg} is a hazard regression (i.e., \code{fnctl="hazard"}).}
 }
 \value{
 A list of class \code{anova.uRegress} with the following components:
-\item{printMat}{A formatted table with inferential results (i.e., test statistics and p-values) for comparing two nested models.}
-\item{null model}{The null model in the comparison.}
-\item{full model}{The full model in the comparison.}
+\describe{
+ \item{printMat}{A formatted table with inferential results (i.e., test statistics and p-values) for comparing two nested models.}
+ \item{null_model}{The null model in the comparison.}
+ \item{full_model}{The full model in the comparison.}
+}
 }
 \description{
-Compute analysis of variance (or deviance) tables for two fitted, nested \code{uRegress} objects. The model with more
-parameters is referred to as the full model (or the larger model), and the model with fewer
-parameters is referred to as the null model (or the smaller model).
+Compute analysis of variance (or deviance) tables for two fitted, nested \code{uRegress} objects. The model with more parameters is referred to as the full model (or the larger model), and the model with fewer parameters is referred to as the null model (or the smaller model).
 }
 \examples{
 # Loading required libraries

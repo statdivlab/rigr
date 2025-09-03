@@ -28,7 +28,7 @@ A matrix containing the dummy
 variables.
 }
 \description{
-Create Dummy Variables
+Creates dummy variables using a reference value.
 }
 \examples{
 
