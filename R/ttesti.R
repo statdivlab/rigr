@@ -37,6 +37,7 @@
 #' 
 #' @return a list of class \code{ttesti}. The print method lays out the information in an easy-to-read
 #' format. 
+#' \describe{
 #' \item{tab}{A formatted table of descriptive and inferential statistics (number of observations,
 #' mean, standard error of the mean estimate, standard deviation), 
 #' along with a confidence interval for the mean.}
@@ -46,6 +47,7 @@
 #' \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
 #' \item{twosamp}{A logical value indicating whether a two-sample test was performed.}
 #' \item{call}{The call made to the \code{ttesti} function.}
+#' }
 #' 
 #' @examples
 #' 

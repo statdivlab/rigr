@@ -33,7 +33,7 @@ A data frame with 19792 rows and 11 variables:
 }
 }
 \source{
-\url{https://rct-design.com/TeachingMaterials/Datasets/salary.txt}
+Dataset originally distributed at rct-design.com (Teaching Materials, Datasets section).
 }
 \usage{
 salary
@@ -42,7 +42,6 @@ salary
 Data from a study of 1,597 faculty members at a single US university. Includes information on 
 monthly salary each year from 1976 through 1995,  as well as sex, highest degree attained, 
 year of highest degree, field, year hired, rank, and administrative duties. 
-More information, including a coding key, is available at
-\url{https://rct-design.com/TeachingMaterials/Datasets/salary.txt}.
+More information, including a coding key, is available at rct-design.com (Teaching Materials, Datasets section).
 }
 \keyword{datasets}

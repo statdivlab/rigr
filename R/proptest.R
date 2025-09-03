@@ -34,6 +34,7 @@
 #' 
 #' @return A list of class \code{proptest}. The print method lays out the information in an easy-to-read
 #' format. 
+#' \describe{
 #' \item{tab}{A formatted table of descriptive and inferential results (total number of observations,
 #' number of missing observations, sample proportion, standard error of the proportion estimate), 
 #' along with a confidence interval for the underlying proportion.}
@@ -45,7 +46,7 @@
 #' \item{var2}{The user-supplied second data vector. }
 #' \item{by}{The user-supplied stratification variable.}
 #' \item{par}{A vector of information about the type of test (null hypothesis, alternative hypothesis, etc.)}
-
+#' }
 #' 
 #' @seealso \code{\link[stats]{prop.test}}
 #' @examples

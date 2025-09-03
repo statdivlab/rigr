@@ -36,6 +36,7 @@
 #' @return A list of class \code{wilcoxon}
 #' is returned. The print method lays out the information in an easy-to-read
 #' format. 
+#' \describe{
 #' \item{statistic}{the value of the test
 #' statistic with a name describing it.} 
 #' \item{parameter}{the parameter(s) for
@@ -60,6 +61,7 @@
 #' hypotheses, for printing.} 
 #' \item{inf}{a formatted table of inference values,
 #' for printing.}
+#' }
 #' 
 #' @seealso \code{\link[stats]{wilcox.test}}
 #' @examples

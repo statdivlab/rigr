@@ -3,8 +3,7 @@
 #' Data from an observational study of the incidence of cardiovascular disease 
 #' (especially heart attacks and congestive heart failure) and cerebrovascular disease 
 #' (especially strokes) in the U.S. elderly. More information, including a coding key,
-#'  is available at
-#' \url{https://rct-design.com/TeachingMaterials/Datasets/mri.txt}.
+#'  is available at rct-design.com (Teaching Materials, Datasets section).
 #' 
 #'
 #' @format A data frame with 735 rows and 30 variables:
@@ -116,7 +115,7 @@
 #' to their death. If 0, the number of days in \code{obstime} is the number of
 #' days between that participant's MRI and September 16, 1997.} }
 #' 
-#' @source \url{https://rct-design.com/TeachingMaterials/Datasets/mri.txt}
+#' @source Dataset originally distributed at rct-design.com (Teaching Materials, Datasets section).
 "mri"
 
 #' Salary dataset
@@ -124,8 +123,7 @@
 #' Data from a study of 1,597 faculty members at a single US university. Includes information on 
 #' monthly salary each year from 1976 through 1995,  as well as sex, highest degree attained, 
 #' year of highest degree, field, year hired, rank, and administrative duties. 
-#' More information, including a coding key, is available at
-#' \url{https://rct-design.com/TeachingMaterials/Datasets/salary.txt}.
+#' More information, including a coding key, is available at rct-design.com (Teaching Materials, Datasets section).
 #' 
 #'
 #' @format A data frame with 19792 rows and 11 variables:
@@ -155,15 +153,14 @@
 #' 
 #' }
 #' 
-#' @source \url{https://rct-design.com/TeachingMaterials/Datasets/salary.txt}
+#' @source Dataset originally distributed at rct-design.com (Teaching Materials, Datasets section).
 "salary"
 
 #' PSA dataset
 #' 
 #' Data from a study of 50 men having hormonally treated prostate cancer. Includes information on 
 #' PSA levels, tumor characteristics, remission status, age, and disease state.
-#' More information, including a coding key, is available at
-#' \url{https://rct-design.com/TeachingMaterials/Datasets/psa.txt}.
+#' More information, including a coding key, is available at rct-design.com (Teaching Materials, Datasets section).
 #' 
 #'
 #' @format A data frame with 50 rows and 9 variables:
@@ -189,7 +186,7 @@
 #' 
 #' }
 #' 
-#' @source \url{https://rct-design.com/TeachingMaterials/Datasets/psa.txt}
+#' @source Dataset originally distributed at rct-design.com (Teaching Materials, Datasets section).
 "psa"
 
 #' FEV dataset
@@ -197,8 +194,7 @@
 #' Data from a study of 654 children on the relationship between smoking status and 
 #' lung function (measured by FEV). Each row corresponds to a single clinic visit and contains
 #' information on age, height, sex, FEV, and smoking status.
-#' More information, including a coding key, is available at
-#' \url{https://rct-design.com/TeachingMaterials/Datasets/fev.txt}.
+#' More information, including a coding key, is available at rct-design.com (Teaching Materials, Datasets section).
 #' 
 #'
 #' @format A data frame with 654 rows and 7 variables:
@@ -219,5 +215,5 @@
 #' \item{smoke}{smoking habits ("yes" or "no")}
 #' } 
 #' 
-#' @source \url{https://rct-design.com/TeachingMaterials/Datasets/fev.txt}
+#' @source Dataset originally distributed at rct-design.com (Teaching Materials, Datasets section).
 "fev"

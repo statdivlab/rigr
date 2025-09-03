@@ -34,11 +34,12 @@
 #' \code{lincom.joint} (\code{joint.test} is \code{True}). For the \code{lincom} class,
 #' \code{comb} entries in the list are labeled \code{comb1}, \code{comb2}, etc. for as many linear combinations were used. 
 #' Each is a list with the following components:
+#' \describe{
 #' \item{printMat}{A formatted table with inferential results for the linear combination of coefficients. 
 #' These include the point estimate, standard error, confidence interval, and t-test for the linear 
 #' combination.}
 #' \item{nms}{The name of the linear combination, for printing.}
-#' \item{null.hypoth}{The null hypothesis for the linear combination.}
+#' \item{null.hypoth}{The null hypothesis for the linear combination.}}
 #' 
 #' @examples
 #' # Loading required libraries
