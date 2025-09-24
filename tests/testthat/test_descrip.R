@@ -370,11 +370,11 @@ a <- as.numeric(factor(mri$weight))
 test_that("descrip() adds .V# to end of unnamed variables", {
   expect_equal(descrip_out[,"Mean"],
                mean(a))
-  expect_equal(descrip_out[," Min"],
+  expect_equal(descrip_out[,"Min"],
                min(a))
-  expect_equal(descrip_out[," Mdn"],
+  expect_equal(descrip_out[,"Mdn"],
                median(a))
-  expect_equal(descrip_out[," Max"],
+  expect_equal(descrip_out[,"Max"],
                max(a))
 })
 
