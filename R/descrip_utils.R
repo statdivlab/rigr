@@ -219,16 +219,30 @@ describe_vector <- function(x, probs = c(0.25, 0.5, 0.75), thresholds = NULL,
                 rslt <- c(rslt, rep(NA, 7 + length(probs) + ntholds))
             }
         } else {
+            is_binary <- all(x %in% c(0, 1))
             if (geomInclude) {
-                # add mean, sd, geometric mean, quantiles
-                rslt <- c(rslt, mean(x), stats::sd(x), ifelse1(
-                    geometricMean, 
-                    exp(mean(log(ifelse(x == 0, replaceZeroes, x)))), 
-                    NA
-                ), stats::quantile(x, probs))
+                if (is_binary) {
+                    # add mean, sd, geometric mean
+                    rslt <- c(rslt, mean(x), stats::sd(x), ifelse1(
+                        geometricMean, 
+                        exp(mean(log(ifelse(x == 0, replaceZeroes, x)))), 
+                        NA), rep(NA, length(probs)))
+                } else {
+                    # add mean, sd, geometric mean, quantiles
+                    rslt <- c(rslt, mean(x), stats::sd(x), ifelse1(
+                        geometricMean, 
+                        exp(mean(log(ifelse(x == 0, replaceZeroes, x)))), 
+                        NA
+                    ), stats::quantile(x, probs))
+                }
             } else {
-                # add mean, sd, quantiles
-                rslt <- c(rslt, mean(x), stats::sd(x), stats::quantile(x, probs))
+                if (is_binary) {
+                    # add mean, sd
+                    rslt <- c(rslt, mean(x), stats::sd(x), rep(NA, length(probs)))
+                } else {
+                    # add mean, sd, quantiles
+                    rslt <- c(rslt, mean(x), stats::sd(x), stats::quantile(x, probs))
+                }
             }
             if (ntholds > 0) {
                 # add thresholds if any are specified
