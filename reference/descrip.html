@@ -271,68 +271,181 @@ the Julian date since January 1, 1970.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create the table </span></span></span>
 <span class="r-in"><span><span class="fu">descrip</span><span class="op">(</span><span class="va">mri</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             N     Msng  Mean       Std Dev    Min        25%        Mdn      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ptid:     735     0   368.0      212.3     1.000      184.5      368.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  mridate:     735     0 1992-05-09   111.9   1991-10-19 1992-01-10 1992-07-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      age:     735     0   74.57      5.451     65.00      71.00      74.00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      sex:     735     0   1.498      0.5003    1.000      1.000      1.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     race:     735     0   3.509      0.9580    1.000      4.000      4.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   weight:     735     0   159.9      30.74     74.00      138.5      158.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   height:     735     0   165.8      9.710     139.0      158.0      165.9   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  packyrs:     735     1   19.60      27.11     0.0000     0.0000     6.500   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  yrsquit:     735     0   9.661      14.10     0.0000     0.0000     0.0000  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    alcoh:     735     0   2.109      4.852     0.0000     0.0000    0.01920  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  physact:     735     0   1.922      2.052     0.0000     0.5538     1.312   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      chf:     735     0  0.05578     0.2297    0.0000     0.0000     0.0000  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      chd:     735     0   0.3347     0.6862    0.0000     0.0000     0.0000  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   stroke:     735     0   0.2367     0.6207    0.0000     0.0000     0.0000  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> diabetes:     735     0   0.1075     0.3099    0.0000     0.0000     0.0000  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  genhlth:     735     0   2.588      0.9382    1.000      2.000      3.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ldl:     735    10   125.8      33.60     11.00      102.0      125.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      alb:     735     2   3.994      0.2690    3.200      3.800      4.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      crt:     735     2   1.064      0.3030    0.5000     0.9000     1.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      plt:     735     7   246.0      65.80     92.00      201.8      239.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      sbp:     735     0   131.1      19.66     78.00      118.0      130.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      aai:     735     9   1.103      0.1828    0.3171     1.027      1.112   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      fev:     735    10   2.207      0.6875    0.4083     1.745      2.158   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     dsst:     735    12   41.06      12.71     0.0000     32.00      40.00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  atrophy:     735     0   35.98      12.92     5.000      27.00      35.00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    whgrd:     735     1   2.007      1.410     0.0000     1.000      2.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   numinf:     735     0   0.6109     0.9895    0.0000     0.0000     0.0000  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   volinf:     735     1   3.223      17.36     0.0000     0.0000     0.0000  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  obstime:     735     0    1804      392.3     68.00       1837       1879   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    death:     735     0   0.1810     0.3852    0.0000     0.0000     0.0000  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              75%        Max      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ptid:     551.5      735.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  mridate:   1992-08-12 1992-10-12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      age:     78.00      99.00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      sex:     2.000      2.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     race:     4.000      4.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   weight:     179.0      264.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   height:     173.2      190.5   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  packyrs:     33.75      240.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  yrsquit:     18.50      56.00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    alcoh:     1.144      35.00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  physact:     2.513      13.81   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      chf:     0.0000     1.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      chd:     0.0000     2.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   stroke:     0.0000     2.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> diabetes:     0.0000     1.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  genhlth:     3.000      5.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ldl:     147.0      247.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      alb:     4.200      5.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      crt:     1.200      4.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      plt:     285.0      539.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      sbp:     142.0      210.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      aai:     1.207      1.728   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      fev:     2.649      4.471   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     dsst:     50.00      82.00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  atrophy:     44.00      84.00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    whgrd:     3.000      9.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   numinf:     1.000      5.000   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   volinf:    0.09420     197.0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  obstime:      2044       2159   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    death:     0.0000     1.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                           N     Msng </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   ptid:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                mridate:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    age:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             sex_Female:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               sex_Male:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Asian:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Black:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> race_Subject did not identify as White, Black or Asian:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_White:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 weight:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 height:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                packyrs:     735     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                yrsquit:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  alcoh:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                physact:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chf:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chd:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 stroke:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               diabetes:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                genhlth:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    ldl:     735    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    alb:     735     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    crt:     735     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    plt:     735     7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    sbp:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    aai:     735     9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    fev:     735    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   dsst:     735    12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                atrophy:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  whgrd:     735     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 numinf:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 volinf:     735     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                obstime:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  death:     735     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                           Mean       Std Dev  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   ptid:     368.0      212.3  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                mridate:   1992-05-09   111.9  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    age:     74.57      5.451  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             sex_Female:     0.5020     0.5003 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               sex_Male:     0.4980     0.5003 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Asian:    0.06395     0.2448 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Black:     0.1415     0.3488 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> race_Subject did not identify as White, Black or Asian:    0.01633     0.1268 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_White:     0.7782     0.4157 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 weight:     159.9      30.74  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 height:     165.8      9.710  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                packyrs:     19.60      27.11  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                yrsquit:     9.661      14.10  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  alcoh:     2.109      4.852  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                physact:     1.922      2.052  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chf:    0.05578     0.2297 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chd:     0.3347     0.6862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 stroke:     0.2367     0.6207 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               diabetes:     0.1075     0.3099 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                genhlth:     2.588      0.9382 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    ldl:     125.8      33.60  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    alb:     3.994      0.2690 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    crt:     1.064      0.3030 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    plt:     246.0      65.80  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    sbp:     131.1      19.66  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    aai:     1.103      0.1828 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    fev:     2.207      0.6875 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   dsst:     41.06      12.71  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                atrophy:     35.98      12.92  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  whgrd:     2.007      1.410  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 numinf:     0.6109     0.9895 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 volinf:     3.223      17.36  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                obstime:      1804      392.3  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  death:     0.1810     0.3852 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                           Min        25%       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   ptid:     1.000      184.5   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                mridate:   1991-10-19 1992-01-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    age:     65.00      71.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             sex_Female:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               sex_Male:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Asian:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Black:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> race_Subject did not identify as White, Black or Asian:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_White:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 weight:     74.00      138.5   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 height:     139.0      158.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                packyrs:     0.0000     0.0000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                yrsquit:     0.0000     0.0000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  alcoh:     0.0000     0.0000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                physact:     0.0000     0.5538  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chf:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chd:     0.0000     0.0000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 stroke:     0.0000     0.0000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               diabetes:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                genhlth:     1.000      2.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    ldl:     11.00      102.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    alb:     3.200      3.800   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    crt:     0.5000     0.9000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    plt:     92.00      201.8   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    sbp:     78.00      118.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    aai:     0.3171     1.027   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    fev:     0.4083     1.745   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   dsst:     0.0000     32.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                atrophy:     5.000      27.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  whgrd:     0.0000     1.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 numinf:     0.0000     0.0000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 volinf:     0.0000     0.0000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                obstime:     68.00       1837   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  death:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                           Mdn        75%       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   ptid:     368.0      551.5   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                mridate:   1992-07-05 1992-08-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    age:     74.00      78.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             sex_Female:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               sex_Male:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Asian:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Black:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> race_Subject did not identify as White, Black or Asian:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_White:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 weight:     158.0      179.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 height:     165.9      173.2   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                packyrs:     6.500      33.75   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                yrsquit:     0.0000     18.50   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  alcoh:    0.01920     1.144   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                physact:     1.312      2.513   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chf:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chd:     0.0000     0.0000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 stroke:     0.0000     0.0000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               diabetes:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                genhlth:     3.000      3.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    ldl:     125.0      147.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    alb:     4.000      4.200   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    crt:     1.000      1.200   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    plt:     239.0      285.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    sbp:     130.0      142.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    aai:     1.112      1.207   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    fev:     2.158      2.649   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   dsst:     40.00      50.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                atrophy:     35.00      44.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  whgrd:     2.000      3.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 numinf:     0.0000     1.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 volinf:     0.0000    0.09420  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                obstime:      1879       2044   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  death:      NA         NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                           Max       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   ptid:     735.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                mridate:   1992-10-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    age:     99.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             sex_Female:      NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               sex_Male:      NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Asian:      NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_Black:      NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> race_Subject did not identify as White, Black or Asian:      NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                             race_White:      NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 weight:     264.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 height:     190.5   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                packyrs:     240.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                yrsquit:     56.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  alcoh:     35.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                physact:     13.81   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chf:      NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    chd:     2.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 stroke:     2.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               diabetes:      NA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                genhlth:     5.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    ldl:     247.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    alb:     5.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    crt:     4.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    plt:     539.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    sbp:     210.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    aai:     1.728   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                    fev:     4.471   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                   dsst:     82.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                atrophy:     84.00   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  whgrd:     9.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 numinf:     5.000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 volinf:     197.0   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                obstime:      2159   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                  death:      NA     </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -345,7 +458,7 @@ the Julian date since January 1, 1970.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

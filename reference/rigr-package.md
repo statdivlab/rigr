@@ -1,0 +1,38 @@
+# Regression, Inference, and General Data Analysis Tools in R
+
+Developed by Scott S. Emerson, Andrew J. Spieker, Brian D. Williamson,
+and Travis Y. Hee Wai at the University of Washington Department of
+Biostatistics. Currently maintained by Prof. Amy Willis at the
+University of Washington Department of Biostatistics. Previously
+maintained by Charles Wolock and Taylor Okonek, also at the University
+of Washington Department of Biostatistics. Aims to facilitate
+regression, descriptive statistics, and one- and two-sample inference by
+implementing more intuitive layout and functionality for existing R
+functions.
+
+## Details
+
+|          |            |
+|----------|------------|
+| Package: | rigr       |
+| Type:    | Package    |
+| Version: | 1.0.0      |
+| Date:    | 2021-09-10 |
+| License: | MIT        |
+
+A set of tools designed to facilitate easy adoption of R for students in
+introductory classes with little programming experience. Compiles output
+from existing routines together in an intuitive format, and adds
+functionality to existing functions. For instance, the regression
+function can perform linear models and generalized linear models. The
+user can also specify multiple-partial F-tests to print out with the
+model coefficients, and robust standard errors are provided
+automatically. We also provide functions for descriptive statistics and
+one- and two-sample inference with improved, legible output.
+
+## Author
+
+Scott S. Emerson, Andrew J. Spieker, Brian D. Williamson, Amy D. Willis,
+Charles Wolock, and Taylor Okonek
+
+Maintainer: Amy Willis \<adwillis@uw.edu\>

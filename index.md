@@ -1,0 +1,93 @@
+# `rigr`: Regression, Inference, and General Data Analysis Tools for R
+
+## Introduction
+
+`rigr` is an `R` package to streamline data analysis in `R`. Learning
+both `R` and introductory statistics at the same time can be
+challenging, and so we created `rigr` to facilitate common data analysis
+tasks and enable learners to focus on statistical concepts.
+
+`rigr`, formerly known as
+[`uwIntroStats`](https://CRAN.R-project.org/package=uwIntroStats),
+provides easy-to-use interfaces for descriptive statistics, one- and
+two-sample inference, and regression analyses. `rigr` output includes
+key information while omitting unnecessary details that can be confusing
+to beginners. Heteroskedasticity-robust (“sandwich”) standard errors are
+returned by default, and multiple partial F-tests and tests for
+contrasts are easy to specify. A single regression function
+([`regress()`](https://statdivlab.github.io/rigr/reference/regress.md))
+can fit both linear models, generalized linear models, and proportional
+hazards models, allowing students to more easily make connections
+between different classes of models.
+
+## Installation
+
+You can install the stable release of `rigr` from CRAN as follows:
+
+``` R
+install.packages("rigr")
+```
+
+You can install the development version of `rigr` from GitHub using the
+code below. The installment is through the `R` package `remotes`.
+
+``` R
+#> Using GitHub PAT from the git credential store.
+#> Skipping install of 'rigr' from a github remote, the SHA1 (aacffec2) has not changed since last install.
+#>   Use `force = TRUE` to force installation
+```
+
+If this produces an error, please run `install.packages("remotes")`
+first then try the above line again.
+
+`rigr` is maintained by the [StatDivLab](https://statdivlab.github.io/),
+but relies on community support to log issues and implement new
+features. Is there a method you would like to have implemented? Please
+submit a pull request or start a
+[discussion](https://github.com/statdivlab/rigr/discussions/)!
+
+## Documentation
+
+Examples of how to use the main functions in `rigr` are provided in
+three vignettes. One details the `regress` function and its utilities,
+one details the `descrip` function for descriptive statistics, and the
+third details functions used for one- and two-sample inference,
+including `ttest`, `wilcoxon`, and `proptest`.
+
+## Humans
+
+Maintainer: [Amy Willis](https://statdivlab.github.io/)
+
+Authors: [Scott S Emerson](http://www.emersonstatistics.com/), [Brian D
+Williamson](https://bdwilliamson.github.io/), [Charles
+Wolock](https://cwolock.github.io/), [Taylor
+Okonek](https://taylorokonek.github.io/), [Yiqun T
+Chen](https://yiqunchen.github.io/), [Jim
+Hughes](https://www.biostat.washington.edu/people/james-hughes), [Amy
+Willis](https://statdivlab.github.io/), [Andrew J
+Spieker](https://www.vumc.org/biostatistics/person/andrew-spieker) and
+Travis Y Hee Wai.
+
+## Issues
+
+If you encounter any **bugs**, please [file an
+issue](https://github.com/statdivlab/rigr/issues/). Better yet, [submit
+a pull request](https://github.com/statdivlab/rigr/pulls/)!
+
+Do you have a **question**? Please first check out the vignettes, then
+please post on the
+[Discussions](https://github.com/statdivlab/rigr/discussions/).
+
+## Code of Conduct
+
+Please note that the rigr project is released with a [Contributor Code
+of Conduct](https://statdivlab.github.io/rigr/CODE_OF_CONDUCT.html). By
+contributing to this project, you agree to abide by its terms.
+
+## Citation
+
+If you use `rigr` for your analysis, please cite our paper:
+
+Chen, Y. T., et al. (2022). rigr: Regression, Inference, and General
+Data Analysis Tools in R. *Journal of Open Source Software*, 7(80),
+4847. <https://doi.org/10.21105/joss.04847>.
