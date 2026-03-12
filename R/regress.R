@@ -1031,9 +1031,14 @@ regress <- function(fnctl, formula, data,
   p <- dim(zzs$coefficients)[1]
   if (robustSE) m <- zzs$robustCov else m <- zzs$naiveCov
   zzs$coefficients[,secol+1] <- zzs$coefficients[,1] / zzs$coefficients[,secol]
-  u <- (1+intercept):p
-  waldStat <- t(zzs$coefficients[u,1]) %*% 
-    (solve(m[u,u]) %*% zzs$coefficients[u,1]) / (p - intercept)
+  if (p > 1) {
+    u <- (1+intercept):p
+    waldStat <- t(zzs$coefficients[u,1]) %*% 
+      (solve(m[u,u]) %*% zzs$coefficients[u,1]) / (p - intercept)
+  } else {
+    waldStat <- NA
+  }
+  
   if (fnctl != "hazard") {
     LRStat <- if (fnctl %in% c("mean","geometric mean")) 
       waldStat else (zzs$null.deviance - zzs$deviance) / (p - intercept) / zzs$deviance * (n-p)
@@ -1257,18 +1262,31 @@ regress <- function(fnctl, formula, data,
   ## Get overall robustSE F-test if it's glm or lm
   if (fnctl != "hazard") {
     if(robustSE){
-      r <- dim(zzs$coefficients)[1]-1
-      r <- max(1, r)
-      cntrst <- matrix(0,r,dim(zzs$coefficients)[1])
       
-      if(intercept | dim(cntrst)[2]>1){
-        cntrst[1:r, 2:dim(cntrst)[2]] <- diag(r)
-      } else{
-        cntrst[1:r,] <- diag(r)
+      p <- dim(zzs$coefficients)[1]
+      r <- p - 1
+      non_nas <- which(!is.na(zzs$coefficients[, 1]))
+      p_eff <- length(non_nas)
+      
+      if ((intercept && p_eff > 1) || (!intercept && p_eff > 0)) {
+        
+        cntrst <- matrix(0, p_eff - intercept, p_eff)
+        
+        # Only build contrasts for the non-NA coefficients
+        if (intercept) {
+          cntrst[ , 2:p_eff] <- diag(p_eff - 1)
+        } else {
+          cntrst[ , ] <- diag(p_eff)
+        }
+        
+        zzs$fstatistic <- uWaldtest(zzs, cntrst)[c(1, 3:4)]
+        
+      } else {
+        zzs$fstatistic <- c(value = NA_real_, numdf = 0, dendf = n - p_eff)
       }
-      zzs$fstatistic <- uWaldtest(zzs, cntrst)[c(1,3:4)]
     }
   }
+  
   zzs$args <- args
   zzs$anyRepeated <- FALSE
   

@@ -1,5 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- badges: start  -->
 
 [![CRAN
@@ -40,7 +41,7 @@ You can install the development version of `rigr` from GitHub using the
 code below. The installment is through the `R` package `remotes`.
 
     #> Using GitHub PAT from the git credential store.
-    #> Skipping install of 'rigr' from a github remote, the SHA1 (8b901ee9) has not changed since last install.
+    #> Skipping install of 'rigr' from a github remote, the SHA1 (aacffec2) has not changed since last install.
     #>   Use `force = TRUE` to force installation
 
 If this produces an error, please run `install.packages("remotes")`
@@ -89,3 +90,11 @@ please post on the
 Please note that the rigr project is released with a [Contributor Code
 of Conduct](https://statdivlab.github.io/rigr/CODE_OF_CONDUCT.html). By
 contributing to this project, you agree to abide by its terms.
+
+## Citation
+
+If you use `rigr` for your analysis, please cite our paper:
+
+Chen, Y. T., et al. (2022). rigr: Regression, Inference, and General
+Data Analysis Tools in R. *Journal of Open Source Software*, 7(80),
+4847. <https://doi.org/10.21105/joss.04847>.

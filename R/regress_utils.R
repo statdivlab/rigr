@@ -1315,6 +1315,7 @@ print.uRegress <- function (x,...,augmented=TRUE,digits=max(3,getOption("digits"
     x$coefficients <- x$augCoefficients
     x$conf.int <- NULL
   }
+  
   f(x,digits=digits,signif.stars=signif.stars, suppress=suppress)
 }
 

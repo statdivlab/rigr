@@ -67,3 +67,10 @@ Do you have a **question**? Please first check out the vignettes, then please po
 ## Code of Conduct
 
 Please note that the rigr project is released with a [Contributor Code of Conduct](https://statdivlab.github.io/rigr/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+
+## Citation
+
+If you use `rigr` for your analysis, please cite our paper:
+
+Chen, Y. T., et al. (2022). rigr: Regression, Inference, and General Data Analysis Tools in R. *Journal of Open Source Software*, 7(80), 4847. https://doi.org/10.21105/joss.04847.
+

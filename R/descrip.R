@@ -154,6 +154,19 @@ descrip <- function (..., strata = NULL, subset = NULL,
     L <- L[[1]]
   }
   
+  # if any elements of L are characters or factors, convert to indicators
+  for (nm in names(L)) {
+    x <- L[[nm]]
+    if (is.character(x)) {
+      x <- as.factor(x)
+    }
+    if (is.factor(x)) {
+      mm <- model.matrix(~ x - 1)
+      colnames(mm) <- paste0(nm, "_", levels(x))
+      L[[nm]] <- mm
+    } 
+  }
+  
   # p gets how many descriptive variables
   p <- length(L)
   nms <- NULL
