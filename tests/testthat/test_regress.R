@@ -1287,3 +1287,11 @@ test_that("F-stat and chi-squared tests are asymptotically equivalennt for U()",
                0,
                tolerance = 0.001) # tolerance to accommodate finite sample approximation
 })
+
+test_that("regress executes without an error for single predictor with all zeros", {
+  df <- data.frame(y = rpois(10, 10),
+                   x = rep(0, 20))
+  expect_no_error(regress("mean", formula = y ~ x, data = df))
+  expect_no_error(suppressWarnings(regress("rate", formula = y ~ x, data = df)))
+  # for rate, wraning about stats::pf producing NA values but not an error
+})

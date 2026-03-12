@@ -364,18 +364,11 @@ test_that("descrip() adds .V# to end of unnamed variables", {
 
 
 ### factor variable
-descrip_out <- descrip(factor(mri$weight))
-a <- as.numeric(factor(mri$weight))
+descrip_out <- descrip(mri$sex)
 
 test_that("descrip() adds .V# to end of unnamed variables", {
-  expect_equal(descrip_out[,"Mean"],
-               mean(a))
-  expect_equal(descrip_out[," Min"],
-               min(a))
-  expect_equal(descrip_out[," Mdn"],
-               median(a))
-  expect_equal(descrip_out[," Max"],
-               max(a))
+  expect_equal(descrip_out[1, "Mean"], mean(mri$sex == "Female"))
+  expect_equal(descrip_out[2, "Mean"], mean(mri$sex == "Male"))
 })
 
 ### above
