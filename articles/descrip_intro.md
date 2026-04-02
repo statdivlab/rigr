@@ -20,7 +20,7 @@ included in the `rigr` package; see its documentation by running
 library(rigr)
 ```
 
-    ## rigr version 1.0.8: Regression, Inference, and General Data Analysis Tools in R
+    ## rigr version 1.0.9: Regression, Inference, and General Data Analysis Tools in R
 
 ``` r
 data(fev)

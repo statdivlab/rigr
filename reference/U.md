@@ -34,7 +34,7 @@ data(mri)
 U(ma=~male+age)
 #> $ma
 #> ~male + age
-#> <environment: 0x5575a79b9df8>
+#> <environment: 0x5616ef728ec8>
 #> 
 
 # Create an unnamed partial formula
@@ -42,6 +42,6 @@ U(ma=~male+age)
 U(~male+age)
 #> $`~male + age`
 #> ~male + age
-#> <environment: 0x5575a79b9df8>
+#> <environment: 0x5616ef728ec8>
 #> 
 ```

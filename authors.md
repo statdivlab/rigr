@@ -34,12 +34,12 @@ Source:
 
 Willis A, Okonek T, Wolock C, Williamson B, Emerson S, Spieker A, Chen Y
 (2026). *rigr: Regression, Inference, and General Data Analysis Tools in
-R*. R package version 1.0.8, <https://statdivlab.github.io/rigr/>.
+R*. R package version 1.0.9, <https://statdivlab.github.io/rigr/>.
 
     @Manual{,
       title = {rigr: Regression, Inference, and General Data Analysis Tools in R},
       author = {Amy D Willis and Taylor Okonek and Charles J Wolock and Brian D Williamson and Scott S Emerson and Andrew J Spieker and Yiqun T Chen},
       year = {2026},
-      note = {R package version 1.0.8},
+      note = {R package version 1.0.9},
       url = {https://statdivlab.github.io/rigr/},
     }

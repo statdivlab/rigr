@@ -61,7 +61,7 @@ running [`?mri`](https://statdivlab.github.io/rigr/reference/mri.md).
 library(rigr)
 ```
 
-    ## rigr version 1.0.8: Regression, Inference, and General Data Analysis Tools in R
+    ## rigr version 1.0.9: Regression, Inference, and General Data Analysis Tools in R
 
 ``` r
 data(mri)
