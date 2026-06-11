@@ -6,10 +6,12 @@ on:
       - main
       - master
       - summer2022
+      - fix-wilcoxon-ci
   pull_request:
     branches:
       - main
       - master
+      - fix-wilcoxon-ci
 
 name: R-CMD-check
 
