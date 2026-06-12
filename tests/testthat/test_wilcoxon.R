@@ -625,10 +625,19 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T, scale = 1)
-  expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
-                                          stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T, scale = 1)
+  # Originally line 628
+  # expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T, scale = 1)
+  # Changed logic of expect_equal
+  expect_true(abs(wil1$conf.int[1] - wil2$conf.int[1]) < 1e-4)
+  expect_equal(wil1$conf.int[2], wil2$conf.int[2])
+  
+  # Originally line 629
+  # expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
+  #                                         stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
+  #              as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T, scale = 1)
+  parsed_ci = as.numeric(strsplit(substr(wil1$inf[1,3], start = 2, stop = nchar(wil1$inf[1,3]) - 1), ", ")[[1]])
+  expect_true(abs(parsed_ci[1] - as.numeric(wil2$conf.int[1])) < 1e-4)
+  expect_equal(parsed_ci[2], as.numeric(wil2$conf.int[2]))
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, conf.level = 0.8)
@@ -646,9 +655,14 @@ wil2 <- wilcox.test(a, b, paired = FALSE, correct = TRUE, conf.int = TRUE, conf.
 
 test_that("wilcoxon() returns correct CIs other than 95% (corrected)", {
   expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
-  expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
-                                          stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T, scale = 1)
+  # Originally line 649
+  # expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
+  #                                         stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
+  #              as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T, scale = 1)
+  parsed_ci_2 <- as.numeric(strsplit(substr(wil1$inf[1,3], start = 2, stop = nchar(wil1$inf[1,3]) - 1), ", ")[[1]])
+  expected_ci_2 <- as.numeric(wil2$conf.int)
+  
+  expect_true(all(abs(parsed_ci_2 - expected_ci_2) < 1e-4))
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
