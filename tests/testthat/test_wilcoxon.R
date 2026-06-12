@@ -625,10 +625,10 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T, scale = 1)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T)
+               as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T, scale = 1)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, conf.level = 0.8)
@@ -648,7 +648,7 @@ test_that("wilcoxon() returns correct CIs other than 95% (corrected)", {
   expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T)
+               as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T, scale = 1)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
