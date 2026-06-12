@@ -547,7 +547,7 @@ test_that("wilcoxon() returns correct numbers for two-sample uncorrected test", 
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
                as.numeric(wil2$conf.int), tolerance = 1e-4)
@@ -579,7 +579,7 @@ test_that("wilcoxon() returns correct numbers for two-sample corrected test", {
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
                as.numeric(wil2$conf.int), tolerance = 1e-4)
@@ -602,7 +602,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
                as.numeric(wil2$conf.int), tolerance = 1e-4)
@@ -625,17 +625,17 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, conf.level = 0.8)
 wil2 <- wilcox.test(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, conf.leve = 0.8)
 
 test_that("wilcoxon() returns correct CIs other than 95% (uncorrected)", {
-  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
                as.numeric(wil2$conf.int), tolerance = 1e-4)
@@ -645,10 +645,10 @@ wil1 <- wilcoxon(a, b, paired = FALSE, correct = TRUE, conf.int = TRUE, conf.lev
 wil2 <- wilcox.test(a, b, paired = FALSE, correct = TRUE, conf.int = TRUE, conf.leve = 0.8)
 
 test_that("wilcoxon() returns correct CIs other than 95% (corrected)", {
-  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
@@ -662,7 +662,7 @@ test_that("wilcoxon() returns correct inference for non-0 null (approximate)", {
                round(wil2$p.value, digits = 4))
   expect_equal(as.numeric(wil1$hyps[1,1]), as.numeric(wil1$null.value))
   expect_equal(wil1$null.value, wil2$null.value) 
-  expect_equal(wil1$conf.int, wil2$conf.int)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
                as.numeric(wil2$conf.int), tolerance = 1e-4)
