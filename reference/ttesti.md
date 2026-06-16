@@ -119,6 +119,7 @@ specified and a two-sample t-test is run.
 ## Examples
 
 ``` r
+
 # t-test given sample descriptives
 ttesti(24, 175, 35, null.hypoth=230)
 #> 

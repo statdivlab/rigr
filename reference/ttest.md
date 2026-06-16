@@ -133,6 +133,7 @@ Missing values must be given by `NA` to be recognized as missing values.
 ## Examples
 
 ``` r
+
 # Read in data set
 data(psa)
 attach(psa)

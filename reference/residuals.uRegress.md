@@ -47,6 +47,7 @@ externally studentized residuals.
 ## Examples
 
 ``` r
+
 # Reading in a dataset
 data(mri)
 

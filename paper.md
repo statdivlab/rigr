@@ -99,6 +99,7 @@ modifications preserved the general relationships among the variables in
 the dataset.
 
 ``` r
+
 # Loading library and dataset
 library(rigr)
 library(dplyr)
@@ -141,6 +142,7 @@ The next set of code demonstrates how `regress` can be used to run other
 regression models.
 
 ``` r
+
 # Logistic regression of atrophy on sex height, weight, race, and
 # a degree-2 polynomial of ldl.
 regress(fnctl = "odds", diabetes ~ height+weight*sex +
@@ -162,6 +164,7 @@ and p-values for linear combinations of regression coefficients using
 `rigr`.
 
 ``` r
+
 # Linear regression of LDL on age, stroke, and race (with robust SE by default)
 ldl_reg <- regress ("mean", ldl~age+stroke, data = mri)
 

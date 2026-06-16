@@ -117,6 +117,7 @@ lower level as 0, or logical variables.
 ## Examples
 
 ``` r
+
 # Read in data set
 data(psa)
 attach(psa)

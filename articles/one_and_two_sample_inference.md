@@ -1,6 +1,7 @@
 # One- and two-sample inference in rigr
 
 ``` r
+
 library(rigr)
 ```
 
@@ -15,6 +16,7 @@ be found by running
 data is part of the package, we can load it via
 
 ``` r
+
 data(mri)
 ```
 
@@ -47,6 +49,7 @@ whether the mean of the `ldl` variable is equal to 125 mg/dL can be
 performed using `rigr` as follows:
 
 ``` r
+
 ttest(mri$ldl, null.hypoth = 125)
 ```
 
@@ -74,6 +77,7 @@ mean LDL between males and females were zero, we could stratify using
 the `by` argument:
 
 ``` r
+
 ttest(mri$ldl, by = mri$sex)
 ```
 
@@ -105,6 +109,7 @@ others can be specified, along with non-zero null hypotheses, and tests
 at levels other than 0.95:
 
 ``` r
+
 ttest(mri$ldl, null.hypoth = 125, conf.level = 0.9)
 ```
 
@@ -124,6 +129,7 @@ ttest(mri$ldl, null.hypoth = 125, conf.level = 0.9)
     ##  Pr(|T| > t) =  0.520256
 
 ``` r
+
 ttest(mri$ldl, by = mri$sex, var.eq = FALSE)
 ```
 
@@ -149,6 +155,7 @@ sample standard deviation, and sample size) we can instead use the
 `ttesti` function:
 
 ``` r
+
 ttesti(length(mri$weight), mean(mri$weight), sd(mri$weight), null.hypoth = 155)
 ```
 
@@ -183,6 +190,7 @@ the proportion of LDL values that are greater than 128mg/dL is equal to
 0.5.
 
 ``` r
+
 proptest(mri$ldl > 128, null.hypoth = 0.5, exact = FALSE)
 ```
 
@@ -202,6 +210,7 @@ proptest(mri$ldl > 128, null.hypoth = 0.5, exact = FALSE)
     ##  p-value = 0.049
 
 ``` r
+
 proptest(mri$ldl > 128, null.hypoth = 0.5, exact = TRUE)
 ```
 
@@ -232,6 +241,7 @@ test whether the proportion of men with LDL greater than 128 mg/dL is
 the same as the proportion of women.
 
 ``` r
+
 proptest(mri$ldl > 128, by = mri$sex)
 ```
 
@@ -259,6 +269,7 @@ test whether the proportion of people with weight greater than 155 lbs
 is equal to 0.6.
 
 ``` r
+
 proptesti(sum(mri$weight > 155), length(mri$weight), exact = FALSE, null.hypoth= 0.6)
 ```
 
@@ -294,6 +305,7 @@ perform a paired (matched) test on made-up data comparing individuals
 with cystic fibrosis (CF) to health individuals.
 
 ``` r
+
 ## create the data
 cf <- c(1153, 1132, 1165, 1460, 1162, 1493, 1358, 1453, 1185, 1824, 1793, 1930, 2075)
 healthy <- c(996, 1080, 1182, 1452, 1634, 1619, 1140, 1123, 1113, 1463, 1632, 1614, 1836)
@@ -323,6 +335,7 @@ although unlike the Wilcoxon and Mann-Whitney tests, this confidence
 interval is semiparametric rather than nonparametric.
 
 ``` r
+
 wilcoxon(cf, healthy, paired = TRUE, conf.int = TRUE)
 ```
 

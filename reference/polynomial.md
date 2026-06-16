@@ -32,6 +32,7 @@ A matrix containing the linear splines.
 ## Examples
 
 ``` r
+
 # Reading in a dataset
 data(mri)
 

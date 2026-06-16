@@ -28,13 +28,13 @@ number. The most common example of a functional in regression is the
 [`regress()`](https://statdivlab.github.io/rigr/reference/regress.md)
 are
 
-| Functional         | Type of Regression                                 | base R command                                                    |
-|--------------------|:---------------------------------------------------|:------------------------------------------------------------------|
-| `"mean"`           | Linear Regression                                  | [`lm()`](https://rdrr.io/r/stats/lm.html)                         |
+| Functional | Type of Regression | base R command |
+|----|:---|:---|
+| `"mean"` | Linear Regression | [`lm()`](https://rdrr.io/r/stats/lm.html) |
 | `"geometric mean"` | Linear Regression on logarithmically transformed Y | [`lm()`](https://rdrr.io/r/stats/lm.html), with Y log-transformed |
-| `"odds"`           | Logistic Regression                                | `glm(family = binomial)`                                          |
-| `"rate"`           | Poisson Regression                                 | `glm(family = poisson)`                                           |
-| `"hazard"`         | Proportional Hazards Regression                    | [`coxph()`](https://rdrr.io/pkg/survival/man/coxph.html)          |
+| `"odds"` | Logistic Regression | `glm(family = binomial)` |
+| `"rate"` | Poisson Regression | `glm(family = poisson)` |
+| `"hazard"` | Proportional Hazards Regression | [`coxph()`](https://rdrr.io/pkg/survival/man/coxph.html) |
 
 ### `formula` and `data`
 
@@ -57,6 +57,7 @@ dataset is included in the `rigr` package; see its documentation by
 running [`?mri`](https://statdivlab.github.io/rigr/reference/mri.md).
 
 ``` r
+
 ## Preparing our R session
 library(rigr)
 ```
@@ -64,6 +65,7 @@ library(rigr)
     ## rigr version 1.0.9: Regression, Inference, and General Data Analysis Tools in R
 
 ``` r
+
 data(mri)
 regress("mean", atrophy ~ age + sex + race, data = mri)
 ```
@@ -134,6 +136,7 @@ For example, to model the odds of having diabetes for males compared to
 females, we could run a logistic regression as follows:
 
 ``` r
+
 regress("odds", diabetes ~ sex, data = mri)
 ```
 
@@ -181,6 +184,7 @@ The next functional that `regress` supports is `"rate"`, for use in
 Poisson regression. To regress `yrsquit` on `age`, we would run:
 
 ``` r
+
 regress("rate", yrsquit ~ age, data = mri)
 ```
 
@@ -223,6 +227,7 @@ proportional hazards regression. To regress `age` on the death status
 (note that we need to create a `Surv` object first), we would run:
 
 ``` r
+
 library(survival)
 regress("hazard", Surv(obstime, death)~age, data=mri)
 ```
@@ -265,6 +270,7 @@ Regression on the geometric mean of the `packyrs` variable in the `mri`
 dataset can be performed as follows:
 
 ``` r
+
 regress("geometric mean", packyrs ~ age, data = mri)
 ```
 
@@ -306,6 +312,7 @@ which to replace zeroes, you may do say using the `replaceZeroes`
 argument.
 
 ``` r
+
 regress("geometric mean", packyrs ~ age, data = mri, replaceZeroes = 1)
 ```
 
@@ -341,7 +348,7 @@ In the output from regress using the geometric mean functional, we see a
 table for the `Raw Model` and the `Transformed Model`. The `e(Est)`,
 `e(95%L)`, and `e(95%H)` columns in the `Transformed Model` table
 correspond to exponentiated values from the `Raw Model` - you’ll notice
-that $e^{5.119} \approx 167.2.$
+that $`e^{5.119} \approx 167.2.`$
 
 ## Re-parameterizations of a Variable
 
@@ -364,6 +371,7 @@ using the reference group “Female” vs. the reference group “Male” in a
 regression on `sex`.
 
 ``` r
+
 regress("mean", atrophy ~ dummy(sex, reference = "Male"), data = mri)
 ```
 
@@ -394,6 +402,7 @@ regress("mean", atrophy ~ dummy(sex, reference = "Male"), data = mri)
     ## F-statistic: 44.53 on 1 and 733 DF,  p-value: 4.944e-11
 
 ``` r
+
 regress("mean", atrophy ~ dummy(sex, reference = "Female"), data = mri)
 ```
 
@@ -431,6 +440,7 @@ category is reported.
 You can fit higher-order polynomials using `polynomial`:
 
 ``` r
+
 regress("mean", atrophy ~ polynomial(age, degree = 2), data = mri)
 ```
 
@@ -468,6 +478,7 @@ using the `center` parameter in the polynomial function, an example of
 which is as follows.
 
 ``` r
+
 regress("mean", atrophy ~ polynomial(age, degree = 2, center = 65), data = mri)
 ```
 
@@ -517,6 +528,7 @@ once in your regression. For example, to test whether both the variables
 age as a predictor, we can run
 
 ``` r
+
 regress("mean", atrophy ~ age + sex + U("Smoking variables" = ~packyrs + yrsquit), data = mri)
 ```
 
@@ -568,6 +580,7 @@ hypothesis using the `lincom` function. First, we need to fit a linear
 model of age and sex on atrophy:
 
 ``` r
+
 mod_rigr <- regress("mean", atrophy ~ age + sex, data = mri)
 mod_rigr
 ```
@@ -601,6 +614,7 @@ The elements in `mod_combo` correspond to `Intercept`, `age`, and
 above.
 
 ``` r
+
 mod_combo <- c(0, -10, 1)
 lincom(mod_rigr, mod_combo)
 ```
@@ -619,6 +633,7 @@ atrophy between these two groups (females, and males 10 years younger)
 is equal to -1 as follows:
 
 ``` r
+
 lincom(mod_rigr, mod_combo, null.hypoth = -1)
 ```
 

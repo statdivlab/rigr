@@ -228,6 +228,7 @@ proportions will be labeled using the Julian date since January 1, 1970.
 ## Examples
 
 ``` r
+
 # Read in the data
 data(mri) 
 

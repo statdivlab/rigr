@@ -85,10 +85,10 @@ testReg_full <- regress ("mean", ldl~age+stroke+race, data = mri)
 anova(testReg_null, testReg_full, test = "Wald")
 #> Analysis of Deviance Table 
 #> Null model: ldl ~ age + stroke
-#> <environment: 0x5616e9f02928>
+#> <environment: 0x55c958821830>
 #> 
 #> Full model: ldl ~ age + stroke + race
-#> <environment: 0x5616e9f02928>
+#> <environment: 0x55c958821830>
 #> 
 #>      F stat num df den df p value
 #> [1,] 0.1619 3.0000    719   0.922

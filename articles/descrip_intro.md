@@ -16,6 +16,7 @@ included in the `rigr` package; see its documentation by running
 [`?fev`](https://statdivlab.github.io/rigr/reference/fev.md).
 
 ``` r
+
 ## Preparing our R session
 library(rigr)
 ```
@@ -23,6 +24,7 @@ library(rigr)
     ## rigr version 1.0.9: Regression, Inference, and General Data Analysis Tools in R
 
 ``` r
+
 data(fev)
 ```
 
@@ -31,6 +33,7 @@ simply by running
 [`descrip()`](https://statdivlab.github.io/rigr/reference/descrip.md).
 
 ``` r
+
 descrip(fev)
 ```
 
@@ -66,6 +69,7 @@ into the
 function, as below.
 
 ``` r
+
 descrip(fev$fev, fev$height)
 ```
 
@@ -83,6 +87,7 @@ Suppose we wish to obtain descriptive statistics of the `fev` and
 the `strata` parameter in `descrip`:
 
 ``` r
+
 descrip(fev$fev, fev$height, strata = fev$smoke)
 ```
 
@@ -114,6 +119,7 @@ for `age > 10` *outside* of the
 function, and then give this variable to the `subset` parameter.
 
 ``` r
+
 greater_10 <- ifelse(fev$age > 10, 1, 0)
 descrip(fev$fev, fev$height, subset = greater_10)
 ```
@@ -133,6 +139,7 @@ as before, in addition to the `above` parameter to obtain this set of
 descriptive statistics:
 
 ``` r
+
 descrip(fev$fev, strata = fev$smoke, above = 2)
 ```
 

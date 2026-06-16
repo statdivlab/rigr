@@ -27,6 +27,7 @@ A partial formula (potentially named) for use in
 ## Examples
 
 ``` r
+
 # Reading in a dataset
 data(mri)
 
@@ -34,7 +35,7 @@ data(mri)
 U(ma=~male+age)
 #> $ma
 #> ~male + age
-#> <environment: 0x5616ef728ec8>
+#> <environment: 0x55c956753848>
 #> 
 
 # Create an unnamed partial formula
@@ -42,6 +43,6 @@ U(ma=~male+age)
 U(~male+age)
 #> $`~male + age`
 #> ~male + age
-#> <environment: 0x5616ef728ec8>
+#> <environment: 0x55c956753848>
 #> 
 ```

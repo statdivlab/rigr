@@ -43,6 +43,7 @@ entered X.
 ## Examples
 
 ``` r
+
 # Loading required libraries
 library(survival)
 library(sandwich)

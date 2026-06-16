@@ -39,6 +39,7 @@ A matrix containing the dummy variables.
 ## Examples
 
 ``` r
+
 data(mri)
 
 # Create a dummy variable for chd
