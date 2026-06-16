@@ -5,7 +5,7 @@
 library(rigr)
 ```
 
-    ## rigr version 1.0.9: Regression, Inference, and General Data Analysis Tools in R
+    ## rigr version 1.0.10: Regression, Inference, and General Data Analysis Tools in R
 
 The `rigr` package replicates many of the basic inferential functions
 from R’s `stats` package, with an eye toward inference as taught in an
