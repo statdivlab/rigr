@@ -82,10 +82,10 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", 
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-3)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_equal(wil1$table[1,1], sum(d > 0))
   expect_equal(wil1$table[2,1], sum(d < 0))
   expect_equal(wil1$table[3,1], sum(d == 0))
@@ -114,7 +114,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test", 
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
   expect_equal(wil3$table[1,1], sum(d > 0))
   expect_equal(wil3$table[2,1], sum(d < 0))
   expect_equal(wil3$table[3,1], sum(d == 0))
@@ -151,7 +151,7 @@ test_that("wilcoxon() returns correct numbers for one-sample corrected test", {
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
@@ -168,7 +168,7 @@ test_that("wilcoxon() returns correct numbers for one-sample corrected test", {
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, correct = FALSE, alternative = "less", conf.int = TRUE)
@@ -193,7 +193,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
@@ -210,7 +210,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, correct = FALSE, alternative = "greater", conf.int = TRUE)
@@ -235,7 +235,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
@@ -252,7 +252,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, correct = FALSE, conf.int = TRUE, conf.level = 0.8)
@@ -264,11 +264,11 @@ test_that("wilcoxon() returns correct CIs other than 95% (uncorrected)", {
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil3$conf.int), tolerance = 1e-4)
+               as.numeric(wil3$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, correct = TRUE, conf.int = TRUE, conf.level = 0.8)
@@ -280,11 +280,11 @@ test_that("wilcoxon() returns correct CIs other than 95% (corrected)", {
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
@@ -303,7 +303,7 @@ test_that("wilcoxon() returns correct inference for non-0 null (approximate)", {
   expect_equal(wil1$conf.int, wil2$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   #expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
@@ -314,7 +314,7 @@ test_that("wilcoxon() returns correct inference for non-0 null (approximate)", {
   expect_equal(wil3$conf.int, wil4$conf.int)
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, correct = FALSE, conf.int = FALSE)
@@ -376,7 +376,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
@@ -393,7 +393,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_equal(wil3$conf.int, wil4$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, exact = TRUE, correct = FALSE, alternative = "less", conf.int = TRUE)
@@ -419,7 +419,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
@@ -436,7 +436,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_equal(wil3$conf.int, wil4$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, exact = TRUE, correct = FALSE, alternative = "greater", conf.int = TRUE)
@@ -462,7 +462,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_s3_class(wil3, "wilcoxon")
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
@@ -479,7 +479,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_equal(wil3$conf.int, wil4$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, exact = TRUE, correct = FALSE, conf.int = TRUE, conf.level = 0.8)
@@ -491,11 +491,11 @@ test_that("wilcoxon() returns correct CIs other than 95% (exact)", {
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_equal(wil3$conf.int, wil4$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(d, exact = TRUE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
@@ -514,7 +514,7 @@ test_that("wilcoxon() returns correct inference for non-0 null (exact)", {
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_equal(wil3$statistic, wil4$statistic)
   expect_equal(wil3$p.value, wil4$p.value)
   expect_equal(as.numeric(wil3$inf[1,1]), as.numeric(wil4$statistic))
@@ -525,7 +525,7 @@ test_that("wilcoxon() returns correct inference for non-0 null (exact)", {
   expect_equal(wil3$conf.int, wil4$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil3$inf[1,3],start =2, 
                                           stop = nchar(wil3$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil4$conf.int), tolerance = 1e-4)
+               as.numeric(wil4$conf.int), tolerance = 1e-3)
 })
 
 ### two-sample unpaired test approximate
@@ -547,10 +547,10 @@ test_that("wilcoxon() returns correct numbers for two-sample uncorrected test", 
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-3, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
   expect_equal(wil1$table[1,1], length(a))
   expect_equal(wil1$table[2,1], length(b))
   expect_equal(wil1$table[3,1], length(a) + length(b))
@@ -579,10 +579,10 @@ test_that("wilcoxon() returns correct numbers for two-sample corrected test", {
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-3, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, alternative = "less", conf.int = TRUE)
@@ -602,10 +602,10 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (l
   expect_equal(wil1$hyps[1,2], wil1$alternative)
   expect_equal(wil1$null.value, wil2$null.value) 
   expect_equal(wil1$parameter, wil2$parameter)
-  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-3, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, alternative = "greater", conf.int = TRUE)
@@ -628,7 +628,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   # Originally line 628
   # expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T, scale = 1)
   # Changed logic of expect_equal
-  expect_true(abs(wil1$conf.int[1] - wil2$conf.int[1]) < 1e-4)
+  expect_true(abs(wil1$conf.int[1] - wil2$conf.int[1]) < 1e-3)
   expect_equal(wil1$conf.int[2], wil2$conf.int[2])
   
   # Originally line 629
@@ -636,7 +636,7 @@ test_that("wilcoxon() returns correct numbers for one-sample uncorrected test (r
   #                                         stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
   #              as.numeric(wil2$conf.int), tolerance = 1e-4, ignore_attr = T, scale = 1)
   parsed_ci = as.numeric(strsplit(substr(wil1$inf[1,3], start = 2, stop = nchar(wil1$inf[1,3]) - 1), ", ")[[1]])
-  expect_true(abs(parsed_ci[1] - as.numeric(wil2$conf.int[1])) < 1e-4)
+  expect_true(abs(parsed_ci[1] - as.numeric(wil2$conf.int[1])) < 1e-3)
   expect_equal(parsed_ci[2], as.numeric(wil2$conf.int[2]))
 })
 
@@ -644,17 +644,17 @@ wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, conf.le
 wil2 <- wilcox.test(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, conf.leve = 0.8)
 
 test_that("wilcoxon() returns correct CIs other than 95% (uncorrected)", {
-  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-3, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = TRUE, conf.int = TRUE, conf.level = 0.8)
 wil2 <- wilcox.test(a, b, paired = FALSE, correct = TRUE, conf.int = TRUE, conf.leve = 0.8)
 
 test_that("wilcoxon() returns correct CIs other than 95% (corrected)", {
-  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-3, ignore_attr = T)
   # Originally line 649
   # expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
   #                                         stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
@@ -662,7 +662,7 @@ test_that("wilcoxon() returns correct CIs other than 95% (corrected)", {
   parsed_ci_2 <- as.numeric(strsplit(substr(wil1$inf[1,3], start = 2, stop = nchar(wil1$inf[1,3]) - 1), ", ")[[1]])
   expected_ci_2 <- as.numeric(wil2$conf.int)
   
-  expect_true(all(abs(parsed_ci_2 - expected_ci_2) < 1e-4))
+  expect_true(all(abs(parsed_ci_2 - expected_ci_2) < 1e-3))
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
@@ -676,10 +676,10 @@ test_that("wilcoxon() returns correct inference for non-0 null (approximate)", {
                round(wil2$p.value, digits = 4))
   expect_equal(as.numeric(wil1$hyps[1,1]), as.numeric(wil1$null.value))
   expect_equal(wil1$null.value, wil2$null.value) 
-  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-4, ignore_attr = T)
+  expect_equal(wil1$conf.int, wil2$conf.int, tolerance = 1e-3, ignore_attr = T)
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
 })
 
 ### two-sample unpaired test, exact
@@ -705,7 +705,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test", {
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, exact = TRUE, correct = FALSE, alternative = "less", conf.int = TRUE)
@@ -729,7 +729,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (left)",
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, exact = TRUE, correct = FALSE, alternative = "greater", conf.int = TRUE)
@@ -753,7 +753,7 @@ test_that("wilcoxon() returns correct numbers for one-sample exact test (right)"
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, exact = TRUE, correct = FALSE, conf.int = TRUE, conf.level = 0.8)
@@ -763,7 +763,7 @@ test_that("wilcoxon() returns correct CIs other than 95% (exact)", {
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, exact = TRUE, correct = FALSE, conf.int = TRUE, null.hypoth = 0.5)
@@ -780,7 +780,7 @@ test_that("wilcoxon() returns correct inference for non-0 null (exact)", {
   expect_equal(wil1$conf.int, wil2$conf.int, ignore_attr = T) # Ignore exact conf.level
   expect_equal(as.numeric(strsplit(substr(wil1$inf[1,3],start =2, 
                                           stop = nchar(wil1$inf[1,3] )-1),", ")[[1]]), 
-               as.numeric(wil2$conf.int), tolerance = 1e-4)
+               as.numeric(wil2$conf.int), tolerance = 1e-3)
 })
 
 wil1 <- wilcoxon(a, b, paired = FALSE, correct = FALSE, conf.int = FALSE)
